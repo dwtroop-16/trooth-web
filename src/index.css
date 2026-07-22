@@ -1,0 +1,31 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #f4f0e8;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: #15503a; text-decoration: none; }
+a:hover { color: #0e3a29; }
+
+input, button, select, textarea { font-family: inherit; }
+
+::selection { background: #15503a; color: #f4f0e8; }
+input::placeholder, textarea::placeholder { color: #a79e8c; }
+
+@keyframes vFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes vScrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes vToast {
+  0% { opacity: 0; transform: translateY(16px); }
+  12% { opacity: 1; transform: translateY(0); }
+  88% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(16px); }
+}
