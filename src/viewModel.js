@@ -1,10 +1,11 @@
-import { F, P, CATCOLORS } from "./data.js";
 import { gradeFor, hexA, spark, statusMeta, methodMeta } from "./helpers.js";
 
-// Ported from the original renderVals(). Given the current state and a set of
-// action callbacks, it returns the full view-model the components render.
-export function buildVals(state, actions) {
+// Ported from the original renderVals(). Given the current state, a set of
+// action callbacks, and the data ({ F, P, CATCOLORS }), it returns the full
+// view-model the components render.
+export function buildVals(state, actions, data) {
   const s = state;
+  const { F, P, CATCOLORS } = data;
   const { setState, openF, openP, goHome, setCat, submit } = actions;
   const cats = ["Financial", "Sports", "Weather", "Politics"];
 
