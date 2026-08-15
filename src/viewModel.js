@@ -6,7 +6,7 @@ import { gradeFor, hexA, spark, statusMeta, methodMeta } from "./helpers.js";
 export function buildVals(state, actions, data) {
   const s = state;
   const { F, P, CATCOLORS } = data;
-  const { setState, openF, openP, goHome, setCat, submit } = actions;
+  const { setState, openF, openP, goHome, setCat, submit, account } = actions;
   const cats = ["Financial", "Sports", "Weather", "Politics"];
 
   // rank within each category by accuracy
@@ -211,6 +211,7 @@ export function buildVals(state, actions, data) {
     mCat: s.mCat, onMCat: (e) => setState({ mCat: e.target.value }),
     mDeadline: s.mDeadline, onDeadline: (e) => setState({ mDeadline: e.target.value }),
     mConf: s.mConf, onConf: (e) => setState({ mConf: +e.target.value }),
-    submitModal: submit, toast: s.toast,
+    submitModal: submit, toast: s.toast, submitting: s.submitting,
+    account, accountModal: s.accountModal,
   };
 }

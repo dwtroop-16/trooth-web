@@ -56,6 +56,25 @@ export function mapCategories(rows) {
 // Returns { F, P, CATCOLORS, source }. Falls back to bundled data when
 // Supabase isn't configured, so the app always has something to render.
 
+// --- writes --------------------------------------------------------
+// Saves a visitor's "Log a prediction" submission into the moderation
+// queue (see 002_submissions.sql). Throws if Supabase isn't configured
+// or the insert fails, so the caller can show an error instead of
+// silently pretending it worked.
+
+export async function submitPrediction({ claim, category, confidence, deadline, userId }) {
+  if (!hasSupabase) {
+    throw new Error("Trooth: no backend configured, can't save a submission.");
+  }
+  if (!userId) {
+    throw new Error("Trooth: no active session, can't attribute this submission.");
+  }
+  const { error } = await supabase.from("submitted_predictions").insert([
+    { claim, category, confidence, deadline: deadline || null, user_id: userId },
+  ]);
+  if (error) throw error;
+}
+
 export async function loadData() {
   if (!hasSupabase) {
     return { F: STATIC_F, P: STATIC_P, CATCOLORS: STATIC_CAT, source: "static" };
