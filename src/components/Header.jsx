@@ -43,6 +43,15 @@ export default function Header({ vals }) {
           </div>
           <Hover
             as="button"
+            onClick={vals.account.open}
+            style="display:flex;align-items:center;gap:7px;background:#FBF9F4;border:1px solid #E3DCCD;border-radius:9px;padding:8px 12px;font-size:13px;font-weight:600;color:#4A4438;cursor:pointer;white-space:nowrap;"
+            hover="background:#F1ECE0;"
+          >
+            <span style={css("width:7px;height:7px;border-radius:50%;background:" + (vals.account.isRegistered ? "#15503A" : "#C9A227") + ";")}></span>
+            {vals.account.label}
+          </Hover>
+          <Hover
+            as="button"
             onClick={vals.openModal}
             style="background:#15503A;color:#F4F0E8;border:none;border-radius:9px;padding:10px 15px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;"
             hover="background:#0E3A29;"

@@ -41,7 +41,18 @@ export default function LogModal({ vals }) {
           <input type="range" min={50} max={99} value={vals.mConf} onChange={vals.onConf} style={css("width:100%;accent-color:#15503A;cursor:pointer;")} />
         </div>
 
-        <Hover as="button" onClick={vals.submitModal} style="width:100%;margin-top:24px;background:#15503A;color:#F4F0E8;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;" hover="background:#0E3A29;">Put it on the record</Hover>
+        <Hover
+          as="button"
+          onClick={vals.submitModal}
+          disabled={vals.submitting}
+          style={
+            "width:100%;margin-top:24px;background:#15503A;color:#F4F0E8;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:600;" +
+            (vals.submitting ? "cursor:not-allowed;opacity:0.65;" : "cursor:pointer;")
+          }
+          hover={vals.submitting ? "" : "background:#0E3A29;"}
+        >
+          {vals.submitting ? "Saving…" : "Put it on the record"}
+        </Hover>
       </div>
     </div>
   );
