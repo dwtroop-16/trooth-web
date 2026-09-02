@@ -1,19 +1,34 @@
 * { box-sizing: border-box; }
 
+:root {
+  --paper: #F4F0E8;
+  --surface: #FBF9F4;
+  --ink: #1A1712;
+  --body: #4A4438;
+  --muted: #77705F;
+  --faint: #A79E8C;
+  --forest: #15503A;
+  --forest-deep: #0E3A29;
+  --hair: #E3DCCD;
+  --row: #EDE7DA;
+  --radius: 9px;
+  --radius-sm: 7px;
+}
+
 body {
   margin: 0;
-  background: #f4f0e8;
+  background: var(--paper);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-a { color: #15503a; text-decoration: none; }
-a:hover { color: #0e3a29; }
+a { color: var(--forest); text-decoration: none; }
+a:hover { color: var(--forest-deep); }
 
 input, button, select, textarea { font-family: inherit; }
 
-::selection { background: #15503a; color: #f4f0e8; }
-input::placeholder, textarea::placeholder { color: #a79e8c; }
+::selection { background: var(--forest); color: var(--paper); }
+input::placeholder, textarea::placeholder { color: var(--faint); }
 
 @keyframes vFadeUp {
   from { opacity: 0; transform: translateY(10px); }

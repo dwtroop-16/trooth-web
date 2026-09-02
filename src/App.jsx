@@ -256,7 +256,7 @@ export default function App() {
   const vals = buildVals(state, { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account, openModal: openTipModal }, data);
 
   return (
-    <div style={css("min-height:100vh;background:#F4F0E8;font-family:Archivo,sans-serif;color:#1A1712;display:flex;flex-direction:column;")}>
+    <div style={css("min-height:100vh;background:var(--paper);font-family:Archivo,sans-serif;color:var(--ink);display:flex;flex-direction:column;")}>
       <Header vals={vals} />
       <div style={css("flex:1;")}>
         {vals.isHome && <Home vals={vals} openClaim={openClaim} />}
