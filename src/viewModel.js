@@ -1,217 +1,273 @@
-import { gradeFor, hexA, spark, statusMeta, methodMeta } from "./helpers.js";
+import { formatWhen, formatPct, formatMetric, statusMeta } from "./helpers.js";
+import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
+import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
+import { pathFor, normalizeDomain } from "./router.js";
 
-// Ported from the original renderVals(). Given the current state, a set of
-// action callbacks, and the data ({ F, P, CATCOLORS }), it returns the full
-// view-model the components render.
+function officialFor(forecast) {
+  const domain = forecast.domain;
+  const sub = SUBJECTS[forecast.subject?.id];
+  const allow = OFFICIAL_PRINT[domain] || { name: "Official print", url: "/method" };
+  if (domain === "politics") {
+    return { name: "Certified SOS / FEC / congress.gov", url: allow.url };
+  }
+  if (sub && domain === "weather") return { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" };
+  if (sub && domain === "finance") return { name: "FRED", url: "https://fred.stlouisfed.org/series/SP500" };
+  return allow;
+}
+
+export function toPublicClaimCard(forecast, speaker, score, actual) {
+  const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
+  const grade = publicGrade(status);
+  const src = officialFor(forecast);
+  const actualValue = actual && actual.status === "resolved" ? actual.value : "pending";
+  const actualSourceName = actual && actual.status === "resolved" ? actual.source.name : src.name;
+  const actualSourceUrl = actual && actual.status === "resolved" ? actual.source.url : src.url;
+  const card = {
+    id: forecast.id,
+    speakerId: speaker?.id || forecast.speaker_id,
+    speakerName: (speaker && speaker.name) || forecast.speaker.name,
+    speakerOrg: (speaker && speaker.org) || forecast.speaker.org,
+    claimText: forecast.claim.text,
+    sourceUrl: forecast.source.url,
+    publishedAt: forecast.published_at,
+    horizon: forecast.horizon_end,
+    actual: actualValue,
+    actualSourceName,
+    actualSourceUrl,
+    grade,
+    status,
+    domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
+    domainKey: forecast.domain,
+    unit: forecast.claim.unit,
+    band: forecast.claim.band,
+    subjectLabel: forecast.subject.label,
+    accounts: speaker?.accounts || [],
+    error: score?.abs_error ?? null,
+    ape: score?.ape ?? null,
+    brier: score?.brier ?? null,
+  };
+  renderPublicClaimCard(card);
+  return card;
+}
+
+export function speakerStats(speaker, forecasts, scores) {
+  const mine = forecasts.filter((f) => f.speaker_id === speaker.id);
+  const byF = Object.fromEntries(scores.map((s) => [s.forecast_id, s]));
+  let n_captured = mine.length;
+  let n_scorable = 0;
+  let n_resolved = 0;
+  let n_pending = 0;
+  let n_unscorable = 0;
+  let n_void = 0;
+  let n_hit = 0;
+  const abs = [];
+  const apes = [];
+  const briers = [];
+  for (const f of mine) {
+    if (f.scorable) n_scorable += 1;
+    const st = byF[f.id]?.status || (f.scorable ? "pending" : "unscorable");
+    if (st === "hit" || st === "miss") n_resolved += 1;
+    if (st === "hit") n_hit += 1;
+    if (st === "pending") n_pending += 1;
+    if (st === "unscorable") n_unscorable += 1;
+    if (st === "void") n_void += 1;
+    const s = byF[f.id];
+    if (s && s.abs_error != null) abs.push(s.abs_error);
+    if (s && s.ape != null) apes.push(s.ape);
+    if (s && s.brier != null) briers.push(s.brier);
+  }
+  const hit_rate = n_resolved ? n_hit / n_resolved : null;
+  const mean = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
+  return {
+    n_captured,
+    n_scorable,
+    n_resolved,
+    n_pending,
+    n_unscorable,
+    n_void,
+    n_hit,
+    hit_rate,
+    mean_abs_error: mean(abs),
+    mean_ape: mean(apes),
+    mean_brier: mean(briers),
+  };
+}
+
 export function buildVals(state, actions, data) {
+  const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account } = actions;
+  const speakers = data.speakers || [];
+  const forecasts = data.forecasts || [];
+  const actuals = data.actuals || [];
+  const scores = data.scores || [];
+  const CATCOLORS = data.CATCOLORS;
   const s = state;
-  const { F, P, CATCOLORS } = data;
-  const { setState, openF, openP, goHome, setCat, submit, account } = actions;
-  const cats = ["Financial", "Sports", "Weather", "Politics"];
+  const cat = normalizeDomain(s.cat);
+  const cats = DOMAINS;
 
-  // rank within each category by accuracy
-  const rankMap = {};
-  cats.forEach((c) => {
-    F.filter((f) => f.cat === c)
-      .sort((a, b) => b.acc - a.acc)
-      .forEach((f, i) => {
-        rankMap[f.id] = i + 1;
-      });
-  });
+  const scoreBy = Object.fromEntries(scores.map((sc) => [sc.forecast_id, sc]));
+  const actualByKey = Object.fromEntries(actuals.map((a) => [a.match_key, a]));
+  const speakerBy = Object.fromEntries(speakers.map((sp) => [sp.id, sp]));
 
-  // ---- HOME rows (topic search takes precedence over name search)
-  const q = (s.q || "").toLowerCase().trim();
-  const tq = (s.topicQ || "").toLowerCase().trim();
-  const scopeCats = s.cat === "All" ? cats : [s.cat];
-
-  // topic universe (unique focus labels) for the suggestion chips
-  const seenT = {},
-    topicUniverse = [];
-  F.filter((f) => scopeCats.includes(f.cat)).forEach((f) =>
-    f.breakdown.forEach((b) => {
-      const k = b.label.toLowerCase();
-      if (!seenT[k]) {
-        seenT[k] = 1;
-        topicUniverse.push(b.label);
-      }
-    })
+  const cards = forecasts.map((f) =>
+    toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key])
   );
-  const topicChips = topicUniverse.map((label) => {
-    const active = label.toLowerCase() === tq;
+  const cardById = Object.fromEntries(cards.map((c) => [c.id, c]));
+
+  const q = (s.q || "").toLowerCase().trim();
+  const scope = cat === "All" ? cats : [cat];
+
+  const statsRows = speakers
+    .map((sp) => {
+      const st = speakerStats(sp, forecasts, scores);
+      const domainLabel = sp.domain === "finance" ? "Finance" : sp.domain[0].toUpperCase() + sp.domain.slice(1);
+      return { speaker: sp, stats: st, domainLabel };
+    })
+    .filter((row) => scope.includes(row.domainLabel))
+    .filter((row) => {
+      if (!q) return true;
+      const sp = row.speaker;
+      const hitName = [sp.name, sp.org, ...(sp.accounts || [])].join(" ").toLowerCase().includes(q);
+      const hitClaim = cards.some((c) => c.speakerId === sp.id && c.claimText.toLowerCase().includes(q));
+      return hitName || hitClaim;
+    })
+    .sort((a, b) => {
+      const ar = a.stats.hit_rate == null ? -1 : a.stats.hit_rate;
+      const br = b.stats.hit_rate == null ? -1 : b.stats.hit_rate;
+      if (br !== ar) return br - ar;
+      return b.stats.n_resolved - a.stats.n_resolved;
+    });
+
+  const rows = statsRows.map((row, i) => {
+    const cm = CATCOLORS[row.domainLabel] || CATCOLORS.Finance;
     return {
-      label,
-      style:
-        "padding:7px 13px;border-radius:20px;font-size:13px;cursor:pointer;" +
-        (active
-          ? "font-weight:600;background:#15503A;color:#F4F0E8;border:1px solid #15503A;"
-          : "font-weight:500;background:#F1ECE0;color:#4A4438;border:1px solid #E3DCCD;"),
-      onClick: () => setState({ topicQ: active ? "" : label }),
+      rank: i + 1,
+      speakerId: row.speaker.id,
+      name: row.speaker.name,
+      org: row.speaker.org,
+      initials: row.speaker.initials,
+      avatar: row.speaker.avatar,
+      domain: row.domainLabel,
+      catColor: cm.color,
+      catTint: cm.tint,
+      nResolved: row.stats.n_resolved,
+      hitRate: formatPct(row.stats.hit_rate),
+      pending: row.stats.n_pending,
+      open: () => openSpeaker(row.speaker.id),
     };
   });
-  const phMap = {
-    Financial: "Try “rates”, “equities”, “crypto”, “FX”, “macro”…",
-    Sports: "Try “spreads”, “playoffs”, “player props”, “totals”…",
-    Weather: "Try “hurricanes”, “heat”, “winter”, “severe”…",
-    Politics: "Try “senate”, “turnout”, “primaries”, “polls”…",
-    All: "Search any call — rates, hurricanes, playoffs, senate…",
-  };
 
-  let rows,
-    rankNote = "ranked by career accuracy",
-    accHeader = "Accuracy",
-    focusHeader = "Focus";
-  if (tq) {
-    const matched = [];
-    F.filter((f) => scopeCats.includes(f.cat)).forEach((f) => {
-      let best = null;
-      f.breakdown.forEach((b) => {
-        const bl = b.label.toLowerCase();
-        if (bl.includes(tq) || tq.includes(bl)) {
-          if (!best || b.pct > best.pct) best = { label: b.label, pct: b.pct };
-        }
-      });
-      if (!best) {
-        const pr = P.find((x) => x.f === f.id && x.claim.toLowerCase().includes(tq));
-        if (pr) best = { label: "Mentioned in a call", pct: f.acc };
-        else if (
-          f.name.toLowerCase().includes(tq) ||
-          f.handle.toLowerCase().includes(tq) ||
-          f.org.toLowerCase().includes(tq)
-        )
-          best = { label: f.cat, pct: f.acc };
-      }
-      if (best) matched.push({ f, best });
-    });
-    matched.sort((a, b) => b.best.pct - a.best.pct);
-    rows = matched.map((m, i) => {
-      const f = m.f,
-        val = m.best.pct,
-        gr = gradeFor(val),
-        cm = CATCOLORS[f.cat];
-      return {
-        rank: i + 1, name: f.name, handle: f.handle, org: f.org, initials: f.initials, avatar: f.avatar,
-        verified: f.verified, primaryCat: m.best.label, catColor: cm.color, catTint: cm.tint, resolved: f.resolved,
-        accuracy: val, grade: gr.g, gradeColor: gr.c, gradeTint: hexA(gr.c, 0.12),
-        spark: spark(f.spark, 132, 34), open: () => openF(f.id),
-      };
-    });
-    rankNote = "ranked by accuracy on this call type";
-    accHeader = "On topic";
-    focusHeader = "Matched focus";
-  } else {
-    let list = F.filter(
-      (f) =>
-        (s.cat === "All" || f.cat === s.cat) &&
-        (!q || f.name.toLowerCase().includes(q) || f.handle.toLowerCase().includes(q) || f.org.toLowerCase().includes(q))
-    );
-    list = list.sort((a, b) => b.acc - a.acc);
-    rows = list.map((f, i) => {
-      const gr = gradeFor(f.acc),
-        cm = CATCOLORS[f.cat];
-      return {
-        rank: i + 1, name: f.name, handle: f.handle, org: f.org, initials: f.initials, avatar: f.avatar,
-        verified: f.verified, primaryCat: f.cat, catColor: cm.color, catTint: cm.tint, resolved: f.resolved,
-        accuracy: f.acc, grade: gr.g, gradeColor: gr.c, gradeTint: hexA(gr.c, 0.12),
-        spark: spark(f.spark, 132, 34), open: () => openF(f.id),
-      };
-    });
-  }
+  const recentResolved = cards
+    .filter((c) => c.status === "hit" || c.status === "miss")
+    .sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
 
-  const categories = ["All", ...cats].map((c) => ({ label: c, active: s.cat === c, onClick: () => setCat(c) }));
-  const boardTitle = tq
-    ? "Best on “" + (s.topicQ || "").trim() + "”"
-    : s.cat === "All"
-    ? "Leaderboard"
-    : s.cat + " forecasters";
-  const totalResolved = F.reduce((a, f) => a + f.resolved, 0);
+  const categories = ["All", ...cats].map((c) => ({
+    label: c,
+    active: cat === c,
+    onClick: () => setCat(c),
+  }));
 
-  // ---- PROFILE
   let p = null;
-  if (s.view === "profile" && s.fId) {
-    const f = F.find((x) => x.id === s.fId);
-    if (f) {
-      const gr = gradeFor(f.acc);
-      const diff = f.acc - f.conf;
-      const calib =
-        diff > 4
-          ? { label: "Underconfident.", c: "#1B7A4B" }
-          : diff < -4
-          ? { label: "Overconfident.", c: "#BC2E29" }
-          : { label: "Well calibrated.", c: "#2E6BA6" };
-      const preds = P.filter((x) => x.f === f.id).map((x) => {
-        const sm = statusMeta(x.status);
-        const imp = x.status === "pending" ? "—" : (x.impact > 0 ? "+" : "") + x.impact.toFixed(1) + " pts";
-        const impC = x.status === "pending" ? "#A79E8C" : x.impact > 0 ? "#1B7A4B" : "#BC2E29";
-        return {
-          claim: x.claim, primaryCat: f.cat, date: x.date, conf: x.conf, statusLabel: sm.label,
-          statusColor: sm.color, statusTint: sm.tint, impact: imp, impactColor: impC, open: () => openP(x.id),
-        };
-      });
-      const cm = CATCOLORS[f.cat];
+  if (s.view === "profile" && s.speakerId) {
+    const sp = speakerBy[s.speakerId];
+    if (sp) {
+      const st = speakerStats(sp, forecasts, scores);
+      const domainLabel = sp.domain === "finance" ? "Finance" : sp.domain[0].toUpperCase() + sp.domain.slice(1);
+      const cm = CATCOLORS[domainLabel] || CATCOLORS.Finance;
+      const track = cards.filter((c) => c.speakerId === sp.id);
       p = {
-        name: f.name, handle: f.handle, org: f.org, initials: f.initials, avatar: f.avatar, verified: f.verified,
-        bio: f.bio, primaryCat: f.cat, catColor: cm.color, catTint: cm.tint,
-        accuracy: f.acc, grade: gr.g, gradeColor: gr.c, gradeTint: hexA(gr.c, 0.12),
-        resolved: f.resolved, pending: f.pending, rankInCat: rankMap[f.id], avgConf: f.conf,
-        calibLabel: calib.label, calibColor: calib.c, heroSpark: spark(f.spark, 220, 52),
-        breakdown: f.breakdown.map((b) => {
-          const g = gradeFor(b.pct);
-          return { label: b.label, pct: b.pct, color: g.c, width: b.pct + "%" };
-        }),
-        predictions: preds,
+        id: sp.id,
+        name: sp.name,
+        org: sp.org,
+        accounts: sp.accounts || [],
+        initials: sp.initials,
+        avatar: sp.avatar,
+        bio: sp.bio,
+        domain: domainLabel,
+        catColor: cm.color,
+        catTint: cm.tint,
+        n_captured: st.n_captured,
+        n_scorable: st.n_scorable,
+        n_resolved: st.n_resolved,
+        n_pending: st.n_pending,
+        n_unscorable: st.n_unscorable,
+        n_void: st.n_void,
+        hit_rate: formatPct(st.hit_rate),
+        mae: formatMetric(st.mean_abs_error, 2),
+        ape: formatMetric(st.mean_ape, 3),
+        brier: formatMetric(st.mean_brier, 3),
+        track,
       };
     }
   }
 
-  // ---- PREDICTION DETAIL
   let d = null;
-  if (s.view === "prediction" && s.pId) {
-    const x = P.find((y) => y.id === s.pId);
-    if (x) {
-      const f = F.find((y) => y.id === x.f);
-      const sm = statusMeta(x.status),
-        mm = methodMeta(x.method),
-        cm = CATCOLORS[f.cat];
-      const total = x.agree + x.dispute;
-      const ap = total ? Math.round((x.agree / total) * 100) : 0;
-      const imp = x.status === "pending" ? "—" : (x.impact > 0 ? "+" : "") + x.impact.toFixed(1) + " pts";
-      const impC = x.status === "pending" ? "#8A8375" : x.impact > 0 ? "#1B7A4B" : "#BC2E29";
+  if (s.view === "prediction" && s.forecastId) {
+    const card = cardById[s.forecastId];
+    if (card) {
+      const sm = statusMeta(card.status);
+      const cm = CATCOLORS[card.domain] || CATCOLORS.Finance;
       d = {
-        claim: x.claim, primaryCat: f.cat, catColor: cm.color, catTint: cm.tint, date: x.date, conf: x.conf,
-        fName: f.name, handle: f.handle, initials: f.initials, avatar: f.avatar, accuracy: f.acc,
-        resolvedDate: x.resolvedDate, // (added: original view-model omitted this)
-        statusLabel: sm.label, statusColor: sm.color, statusTint: sm.tint, statusBorder: sm.border, statusIcon: sm.icon,
-        methodLabel: mm.label, methodColor: mm.color,
-        outcome:
-          x.status === "pending"
-            ? "This prediction has not resolved yet. It stays pending — and out of the grade — until the outcome is known."
-            : x.outcome,
-        source: x.source || "Awaiting resolution", impact: imp, impactColor: impC,
-        impactArrow: x.impact >= 0 ? "M14 7h7v7" : "M14 17h7v-7",
-        agree: x.agree, dispute: x.dispute, agreePct: ap, disputePct: 100 - ap, agreeW: ap + "%", disputeW: 100 - ap + "%",
-        backToProfile: () => openF(f.id), openForecaster: () => openF(f.id),
+        ...card,
+        publishedLabel: formatWhen(card.publishedAt),
+        horizonLabel: formatWhen(card.horizon),
+        statusLabel: sm.label,
+        statusColor: sm.color,
+        statusTint: sm.tint,
+        statusBorder: sm.border,
+        statusIcon: sm.icon,
+        catColor: cm.color,
+        catTint: cm.tint,
+        backToProfile: () => openSpeaker(card.speakerId),
+        openSpeaker: () => openSpeaker(card.speakerId),
       };
     }
   }
+
+  const nCaptured = forecasts.length;
+  const nPending = scores.filter((sc) => sc.status === "pending").length;
+  const nResolved = scores.filter((sc) => sc.status === "hit" || sc.status === "miss").length;
 
   return {
-    goHome, categories, q: s.q, onSearch: (e) => setState({ q: e.target.value }),
+    goHome,
+    goMethod,
+    goChangelog,
+    categories,
+    q: s.q,
+    onSearch: (e) => setState({ q: e.target.value }),
     openModal: () => setState({ modal: true }),
-    isHome: s.view === "home", isProfile: s.view === "profile" && !!p, isPrediction: s.view === "prediction" && !!d,
-    stat: { forecasters: F.length, resolved: totalResolved.toLocaleString() },
-    boardTitle, resultCount: rows.length + (rows.length === 1 ? " forecaster" : " forecasters"),
-    rankNote, accHeader, focusHeader,
-    topicQ: s.topicQ, onTopic: (e) => setState({ topicQ: e.target.value }), clearTopic: () => setState({ topicQ: "" }),
-    topicActive: !!tq, topicScope: s.cat === "All" ? "ALL CATEGORIES" : s.cat.toUpperCase(),
-    topicPlaceholder: phMap[s.cat] || phMap.All, topicChips,
-    rows, noResults: rows.length === 0,
-    p, d,
-    modal: s.modal, closeModal: () => setState({ modal: false }), stop: (e) => e.stopPropagation(),
-    mClaim: s.mClaim, onClaim: (e) => setState({ mClaim: e.target.value }),
-    mCat: s.mCat, onMCat: (e) => setState({ mCat: e.target.value }),
-    mDeadline: s.mDeadline, onDeadline: (e) => setState({ mDeadline: e.target.value }),
-    mConf: s.mConf, onConf: (e) => setState({ mConf: +e.target.value }),
-    submitModal: submit, toast: s.toast, submitting: s.submitting,
-    account, accountModal: s.accountModal,
+    isHome: s.view === "home",
+    isProfile: s.view === "profile" && !!p,
+    isPrediction: s.view === "prediction" && !!d,
+    isMethod: s.view === "method",
+    isChangelog: s.view === "changelog",
+    stat: {
+      speakers: speakers.length,
+      captured: nCaptured,
+      resolved: nResolved,
+      pending: nPending,
+    },
+    boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
+    resultCount: rows.length + (rows.length === 1 ? " speaker" : " speakers"),
+    rankNote: "hit rate on resolved only — pending is not a miss",
+    rows,
+    noResults: rows.length === 0,
+    recentResolved,
+    p,
+    d,
+    modal: s.modal,
+    closeModal: () => setState({ modal: false }),
+    stop: (e) => e.stopPropagation(),
+    mClaim: s.mClaim,
+    onClaim: (e) => setState({ mClaim: e.target.value }),
+    mCat: normalizeDomain(s.mCat),
+    onMCat: (e) => setState({ mCat: e.target.value }),
+    mUrl: s.mUrl || "",
+    onUrl: (e) => setState({ mUrl: e.target.value }),
+    submitModal: submit,
+    toast: s.toast,
+    submitting: s.submitting,
+    account,
+    accountModal: s.accountModal,
+    formatWhen,
   };
 }

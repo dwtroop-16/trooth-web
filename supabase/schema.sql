@@ -1,89 +1,127 @@
 -- =============================================================
---  Trooth — Supabase / PostgreSQL schema (Phase 1: data layer)
---  Run this FIRST in the Supabase SQL editor, then run seed.sql.
+--  Trooth schema v1.1.0 (site page map)
+--  BREAKING vs Phase-1: categories / forecasters / forecaster_focus /
+--  predictions (status correct|incorrect|partial|pending, method community)
+--  are retired. Do not migrate Partial or community-vote grades forward.
+--  See DEPLOY.md.
 --
---  Phase 1 goal: back the current app with a real database, with
---  NO visible change. Everything here is read-only for the public
---  (anonymous) role. Writes, auth, and resolution come in later phases.
+--  forecasts / actuals / scores follow the Architect SQL sketch.
+--  speakers is a site scorecard index (not a scoring source).
+--  source_tips is a tip inbox — never copied into scores.
 -- =============================================================
 
-create extension if not exists "pgcrypto";  -- gen_random_uuid()
+create extension if not exists "pgcrypto";
 
--- 1. categories -------------------------------------------------
---    The four fixed categories, with their accent colors. The app
---    currently hard-codes these; keeping them here lets the DB own
---    them later without a frontend change.
-create table if not exists categories (
-  name  text primary key,          -- 'Financial','Sports','Weather','Politics'
-  color text not null,             -- accent hex
-  tint  text not null              -- pill background hex
+-- Retired Phase-1 tables (do not recreate; drop manually after snapshot):
+--   categories, forecasters, forecaster_focus, predictions, submitted_predictions
+
+CREATE TABLE IF NOT EXISTS speakers (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  org TEXT,
+  domain TEXT NOT NULL,
+  source_accounts TEXT[] NOT NULL DEFAULT '{}',
+  avatar TEXT,
+  initials TEXT,
+  bio TEXT
 );
 
--- 2. forecasters -----------------------------------------------
-create table if not exists forecasters (
-  id             text primary key,          -- 'f1' (natural key for now)
-  name           text not null,
-  handle         text not null,
-  org            text,
-  category       text not null references categories(name),
-  accuracy       integer not null,          -- career accuracy %  (was acc)
-  resolved       integer not null default 0,
-  pending        integer not null default 0,
-  avg_confidence integer,                   -- stated confidence % (was conf)
-  verified       boolean not null default false,
-  avatar         text,                      -- avatar hex color
-  initials       text,
-  bio            text,
-  spark          integer[] not null default '{}',  -- last-8 trend points
-  created_at     timestamptz not null default now()
+CREATE TABLE IF NOT EXISTS forecasts (
+  id TEXT PRIMARY KEY,
+  schema_version TEXT NOT NULL,
+  captured_at TEXT NOT NULL,
+  published_at TEXT NOT NULL,
+  source_type TEXT NOT NULL,
+  source_url TEXT NOT NULL,
+  source_account TEXT,
+  speaker_id TEXT REFERENCES speakers(id),
+  speaker_name TEXT NOT NULL,
+  speaker_org TEXT,
+  domain TEXT NOT NULL,
+  subject_id TEXT NOT NULL,
+  subject_label TEXT NOT NULL,
+  horizon_end TEXT NOT NULL,
+  claim_text TEXT NOT NULL,
+  claim_type TEXT NOT NULL,
+  claim_value TEXT NOT NULL,
+  claim_unit TEXT NOT NULL,
+  claim_probability REAL,
+  band_low REAL,
+  band_high REAL,
+  scorable INTEGER NOT NULL,
+  unscorable_reason TEXT,
+  match_key TEXT NOT NULL
 );
-create index if not exists forecasters_category_idx on forecasters(category);
 
--- 3. forecaster_focus  (the "Accuracy by focus" breakdown) ------
-create table if not exists forecaster_focus (
-  id             uuid primary key default gen_random_uuid(),
-  forecaster_id  text not null references forecasters(id) on delete cascade,
-  label          text not null,
-  pct            integer not null,
-  sort_order     integer not null default 0
+CREATE TABLE IF NOT EXISTS actuals (
+  id TEXT PRIMARY KEY,
+  match_key TEXT NOT NULL UNIQUE,
+  domain TEXT NOT NULL,
+  value TEXT NOT NULL,
+  unit TEXT NOT NULL,
+  observed_at TEXT NOT NULL,
+  source_name TEXT NOT NULL,
+  source_url TEXT NOT NULL,
+  status TEXT NOT NULL
 );
-create index if not exists focus_forecaster_idx on forecaster_focus(forecaster_id);
 
--- 4. predictions ------------------------------------------------
---    NOTE: predicted_on / resolved_on are kept as display text for
---    now (e.g. 'Aug 4, 2025') so Phase 1 is a 1:1 mirror of the
---    current app. A later phase can migrate these to real `date`s.
-create table if not exists predictions (
-  id             text primary key,          -- 'p1'
-  forecaster_id  text not null references forecasters(id) on delete cascade,
-  claim          text not null,
-  confidence     integer not null,          -- stated confidence %
-  status         text not null default 'pending'
-                   check (status in ('correct','incorrect','partial','pending')),
-  predicted_on   text,                      -- was date
-  resolved_on    text,                      -- was resolvedDate
-  method         text check (method in ('auto','editorial','community')),
-  outcome        text,
-  source         text,
-  agree_votes    integer not null default 0,
-  dispute_votes  integer not null default 0,
-  impact         numeric(4,1) not null default 0,
-  created_at     timestamptz not null default now()
+CREATE TABLE IF NOT EXISTS scores (
+  id TEXT PRIMARY KEY,
+  forecast_id TEXT NOT NULL REFERENCES forecasts(id),
+  actual_id TEXT REFERENCES actuals(id),
+  match_key TEXT NOT NULL,
+  status TEXT NOT NULL,
+  hit INTEGER,
+  error REAL,
+  abs_error REAL,
+  ape REAL,
+  brier REAL,
+  scored_at TEXT NOT NULL
 );
-create index if not exists predictions_forecaster_idx on predictions(forecaster_id);
 
--- =============================================================
---  ROW LEVEL SECURITY — public read-only (Phase 1)
---  Anonymous visitors may SELECT everything (it's a public
---  leaderboard). No INSERT/UPDATE/DELETE for anyone yet; those
---  arrive with auth in a later phase.
--- =============================================================
-alter table categories       enable row level security;
-alter table forecasters      enable row level security;
-alter table forecaster_focus enable row level security;
-alter table predictions      enable row level security;
+-- Guest/user URL tips. NOT a scoring source. Never grade these.
+CREATE TABLE IF NOT EXISTS source_tips (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_url TEXT NOT NULL,
+  note TEXT,
+  domain TEXT,
+  user_id UUID,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 
-create policy "public read categories"  on categories       for select using (true);
-create policy "public read forecasters" on forecasters       for select using (true);
-create policy "public read focus"       on forecaster_focus  for select using (true);
-create policy "public read predictions" on predictions       for select using (true);
+CREATE INDEX IF NOT EXISTS forecasts_speaker_idx ON forecasts(speaker_id);
+CREATE INDEX IF NOT EXISTS forecasts_domain_idx ON forecasts(domain);
+CREATE INDEX IF NOT EXISTS scores_forecast_idx ON scores(forecast_id);
+CREATE INDEX IF NOT EXISTS scores_status_idx ON scores(status);
+
+-- Score status is rubric-only. No partial. No community.
+ALTER TABLE scores DROP CONSTRAINT IF EXISTS scores_status_check;
+ALTER TABLE scores ADD CONSTRAINT scores_status_check
+  CHECK (status IN ('hit', 'miss', 'pending', 'unscorable', 'void'));
+
+ALTER TABLE actuals DROP CONSTRAINT IF EXISTS actuals_status_check;
+ALTER TABLE actuals ADD CONSTRAINT actuals_status_check
+  CHECK (status IN ('pending', 'resolved', 'void'));
+
+ALTER TABLE forecasts DROP CONSTRAINT IF EXISTS forecasts_domain_check;
+ALTER TABLE forecasts ADD CONSTRAINT forecasts_domain_check
+  CHECK (domain IN ('finance', 'sports', 'weather', 'politics'));
+
+ALTER TABLE speakers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE forecasts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE actuals ENABLE ROW LEVEL SECURITY;
+ALTER TABLE scores ENABLE ROW LEVEL SECURITY;
+ALTER TABLE source_tips ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "public read speakers" ON speakers;
+DROP POLICY IF EXISTS "public read forecasts" ON forecasts;
+DROP POLICY IF EXISTS "public read actuals" ON actuals;
+DROP POLICY IF EXISTS "public read scores" ON scores;
+CREATE POLICY "public read speakers" ON speakers FOR SELECT USING (true);
+CREATE POLICY "public read forecasts" ON forecasts FOR SELECT USING (true);
+CREATE POLICY "public read actuals" ON actuals FOR SELECT USING (true);
+CREATE POLICY "public read scores" ON scores FOR SELECT USING (true);
+
+-- Tips: authenticated insert only; never public-scored.
+DROP POLICY IF EXISTS "auth insert source_tips" ON source_tips;
+CREATE POLICY "auth insert source_tips" ON source_tips FOR INSERT TO authenticated WITH CHECK (true);

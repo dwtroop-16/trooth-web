@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Trooth — prediction accountability. Public forecasts, scored against what really happened.",
+  "description": "Trooth — public forecasts scored against official prints.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "node --test src/*.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",
