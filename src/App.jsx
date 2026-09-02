@@ -1,19 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { buildVals } from "./viewModel.js";
 import { loadData, submitSourceTip } from "./dataSource.js";
-import { hasSupabase, ensureSession, onAuthChange, upgradeGuest, signIn, signOut } from "./lib/supabase.js";
+import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 import { parsePath, pathFor, normalizeDomain } from "./router.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
-import Profile from "./components/Profile.jsx";
-import PredictionDetail from "./components/PredictionDetail.jsx";
-import Method from "./components/Method.jsx";
-import Changelog from "./components/Changelog.jsx";
-import LogModal from "./components/LogModal.jsx";
-import AccountModal from "./components/AccountModal.jsx";
-import Toast from "./components/Toast.jsx";
+import Footer from "./components/Footer.jsx";
 import { css } from "./helpers.js";
+
+const Profile = lazy(() => import("./components/Profile.jsx"));
+const PredictionDetail = lazy(() => import("./components/PredictionDetail.jsx"));
+const Method = lazy(() => import("./components/Method.jsx"));
+const Changelog = lazy(() => import("./components/Changelog.jsx"));
+const LogModal = lazy(() => import("./components/LogModal.jsx"));
+const AccountModal = lazy(() => import("./components/AccountModal.jsx"));
+const Toast = lazy(() => import("./components/Toast.jsx"));
 
 function initialFromLocation() {
   const parsed = parsePath(window.location.pathname);
@@ -50,6 +52,7 @@ export default function App() {
   const [data, setData] = useState(BUNDLED);
   const [session, setSession] = useState(null);
   const toastTimer = useRef(null);
+  const authReady = useRef(false);
 
   useEffect(() => {
     let alive = true;
@@ -57,13 +60,6 @@ export default function App() {
       .then((d) => { if (alive && d.source === "supabase") setData(d); })
       .catch((err) => console.error("Trooth: live data load failed, using bundled data.", err));
     return () => { alive = false; };
-  }, []);
-
-  useEffect(() => {
-    let alive = true;
-    ensureSession().then((s) => { if (alive) setSession(s); });
-    const unsubscribe = onAuthChange((s) => setSession(s));
-    return () => { alive = false; unsubscribe(); };
   }, []);
 
   useEffect(() => {
@@ -110,6 +106,16 @@ export default function App() {
     toastTimer.current = setTimeout(() => setState({ toast: "" }), 2800);
   };
 
+  const loadAuth = async () => {
+    if (authReady.current || !hasSupabase) return session;
+    authReady.current = true;
+    const auth = await import("./lib/supabase.js");
+    const sess = await auth.ensureSession();
+    setSession(sess);
+    auth.onAuthChange((s) => setSession(s));
+    return sess;
+  };
+
   const user = session?.user || null;
   const isRegistered = !!user && user.is_anonymous === false;
 
@@ -124,7 +130,9 @@ export default function App() {
       flashToast("Tip not stored — no backend. This is not official ingest and is never scored.");
       return;
     }
-    if (!user) {
+    const sess = await loadAuth();
+    const u = sess?.user;
+    if (!u) {
       flashToast("Couldn't verify your session — try refreshing the page.");
       return;
     }
@@ -134,7 +142,7 @@ export default function App() {
         sourceUrl: url,
         note,
         domain: normalizeDomain(state.mCat).toLowerCase(),
-        userId: user.id,
+        userId: u.id,
       });
       setState({ modal: false, mClaim: "", mCat: "Finance", mUrl: "" });
       flashToast("Tip queued for Ingest. It is not a forecast and will not be graded.");
@@ -146,7 +154,14 @@ export default function App() {
     }
   };
 
-  const openAccountModal = () => setState({ accountModal: true, accountMode: "save", aEmail: "", aPassword: "" });
+  const openAccountModal = () => {
+    loadAuth();
+    setState({ accountModal: true, accountMode: "save", aEmail: "", aPassword: "" });
+  };
+  const openTipModal = () => {
+    loadAuth();
+    setState({ modal: true });
+  };
   const closeAccountModal = () => setState({ accountModal: false });
   const setAccountMode = (mode) => setState({ accountMode: mode });
 
@@ -169,7 +184,8 @@ export default function App() {
     if (!creds) return;
     setState({ accountSubmitting: true });
     try {
-      const { user: updated } = await upgradeGuest(creds);
+      const auth = await import("./lib/supabase.js");
+      const { user: updated } = await auth.upgradeGuest(creds);
       setState({ accountModal: false, aEmail: "", aPassword: "" });
       flashToast(
         updated?.email_confirmed_at
@@ -190,7 +206,8 @@ export default function App() {
     if (!creds) return;
     setState({ accountSubmitting: true });
     try {
-      await signIn(creds);
+      const auth = await import("./lib/supabase.js");
+      await auth.signIn(creds);
       setState({ accountModal: false, aEmail: "", aPassword: "" });
       flashToast("Signed in.");
     } catch (err) {
@@ -204,8 +221,9 @@ export default function App() {
   const logoutAccount = async () => {
     setState({ accountSubmitting: true });
     try {
-      await signOut();
-      const sess = await ensureSession();
+      const auth = await import("./lib/supabase.js");
+      await auth.signOut();
+      const sess = await auth.ensureSession();
       setSession(sess);
       setState({ accountModal: false });
       flashToast("Signed out.");
@@ -235,19 +253,24 @@ export default function App() {
     submitting: state.accountSubmitting,
   };
 
-  const vals = buildVals(state, { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account }, data);
+  const vals = buildVals(state, { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account, openModal: openTipModal }, data);
 
   return (
-    <div style={css("min-height:100vh;background:#F4F0E8;font-family:Archivo,sans-serif;color:#1A1712;")}>
+    <div style={css("min-height:100vh;background:#F4F0E8;font-family:Archivo,sans-serif;color:#1A1712;display:flex;flex-direction:column;")}>
       <Header vals={vals} />
-      {vals.isHome && <Home vals={vals} openClaim={openClaim} />}
-      {vals.isProfile && <Profile vals={vals} openClaim={openClaim} />}
-      {vals.isPrediction && <PredictionDetail vals={vals} />}
-      {vals.isMethod && <Method goHome={goHome} />}
-      {vals.isChangelog && <Changelog goHome={goHome} />}
-      {vals.modal && <LogModal vals={vals} />}
-      {vals.accountModal && <AccountModal vals={vals} />}
-      {vals.toast && <Toast text={vals.toast} />}
+      <div style={css("flex:1;")}>
+        {vals.isHome && <Home vals={vals} openClaim={openClaim} />}
+        <Suspense fallback={null}>
+          {vals.isProfile && <Profile vals={vals} openClaim={openClaim} />}
+          {vals.isPrediction && <PredictionDetail vals={vals} />}
+          {vals.isMethod && <Method goHome={goHome} />}
+          {vals.isChangelog && <Changelog goHome={goHome} />}
+          {vals.modal && <LogModal vals={vals} />}
+          {vals.accountModal && <AccountModal vals={vals} />}
+          {vals.toast && <Toast text={vals.toast} />}
+        </Suspense>
+      </div>
+      <Footer vals={vals} />
     </div>
   );
 }

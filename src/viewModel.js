@@ -94,7 +94,7 @@ export function speakerStats(speaker, forecasts, scores) {
 }
 
 export function buildVals(state, actions, data) {
-  const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account } = actions;
+  const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account, openModal } = actions;
   const speakers = data.speakers || [];
   const forecasts = data.forecasts || [];
   const actuals = data.actuals || [];
@@ -159,6 +159,13 @@ export function buildVals(state, actions, data) {
   const recentResolved = cards
     .filter((c) => c.status === "hit" || c.status === "miss")
     .sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
+
+  const scopedCards = cards.filter((c) => scope.includes(c.domain));
+  const featuredClaim =
+    scopedCards.find((c) => c.status === "pending") ||
+    scopedCards.find((c) => c.status === "hit" || c.status === "miss") ||
+    scopedCards[0] ||
+    null;
 
   const categories = ["All", ...cats].map((c) => ({
     label: c,
@@ -234,7 +241,7 @@ export function buildVals(state, actions, data) {
     categories,
     q: s.q,
     onSearch: (e) => setState({ q: e.target.value }),
-    openModal: () => setState({ modal: true }),
+    openModal: openModal || (() => setState({ modal: true })),
     isHome: s.view === "home",
     isProfile: s.view === "profile" && !!p,
     isPrediction: s.view === "prediction" && !!d,
@@ -252,6 +259,7 @@ export function buildVals(state, actions, data) {
     rows,
     noResults: rows.length === 0,
     recentResolved,
+    featuredClaim,
     p,
     d,
     modal: s.modal,

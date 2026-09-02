@@ -1,4 +1,4 @@
-import { supabase, hasSupabase } from "./lib/supabase.js";
+import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 
 const BUNDLED = {
@@ -75,6 +75,7 @@ export async function submitSourceTip({ sourceUrl, note, domain, userId }) {
   if (!userId) {
     throw new Error("Trooth: no active session, can't attribute this tip.");
   }
+  const { supabase } = await import("./lib/supabase.js");
   const { error } = await supabase.from("source_tips").insert([
     { source_url: sourceUrl, note: note || null, domain: domain || null, user_id: userId },
   ]);
@@ -83,6 +84,7 @@ export async function submitSourceTip({ sourceUrl, note, domain, userId }) {
 
 export async function loadData() {
   if (!hasSupabase) return BUNDLED;
+  const { supabase } = await import("./lib/supabase.js");
   const [spRes, fRes, aRes, sRes] = await Promise.all([
     supabase.from("speakers").select("*"),
     supabase.from("forecasts").select("*"),
