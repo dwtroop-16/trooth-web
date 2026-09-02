@@ -1,96 +1,102 @@
 import { supabase, hasSupabase } from "./lib/supabase.js";
-import { F as STATIC_F, P as STATIC_P, CATCOLORS as STATIC_CAT } from "./data.js";
+import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 
-// --- DB row → app shape mappers (pure; unit-testable) ------------------
+const BUNDLED = {
+  speakers: SPEAKERS,
+  forecasts: FORECASTS,
+  actuals: ACTUALS,
+  scores: SCORES,
+  CATCOLORS,
+  source: "static",
+};
 
-export function mapForecasters(rows, focusRows) {
-  const focusBy = {};
-  for (const fr of focusRows || []) (focusBy[fr.forecaster_id] ||= []).push(fr);
-  for (const k in focusBy) focusBy[k].sort((a, b) => a.sort_order - b.sort_order);
-  return rows.map((r) => ({
+function mapForecastRow(r) {
+  return {
+    schema_version: r.schema_version,
     id: r.id,
-    name: r.name,
-    handle: r.handle,
-    org: r.org,
-    cat: r.category,
-    acc: r.accuracy,
-    resolved: r.resolved,
-    pending: r.pending,
-    conf: r.avg_confidence,
-    verified: r.verified,
-    avatar: r.avatar,
-    initials: r.initials,
-    bio: r.bio,
-    spark: r.spark || [],
-    breakdown: (focusBy[r.id] || []).map((b) => ({ label: b.label, pct: b.pct })),
-  }));
+    speaker_id: r.speaker_id,
+    captured_at: r.captured_at,
+    published_at: r.published_at,
+    source: { type: r.source_type, url: r.source_url, account: r.source_account },
+    speaker: { name: r.speaker_name, org: r.speaker_org },
+    domain: r.domain,
+    subject: { id: r.subject_id, label: r.subject_label },
+    horizon_end: r.horizon_end,
+    claim: {
+      text: r.claim_text,
+      type: r.claim_type,
+      value: r.claim_value,
+      unit: r.claim_unit,
+      probability: r.claim_probability,
+      band: r.band_low == null ? null : { low: r.band_low, high: r.band_high },
+    },
+    scorable: !!r.scorable,
+    unscorable_reason: r.unscorable_reason,
+    match_key: r.match_key,
+  };
 }
 
-export function mapPredictions(rows) {
-  return rows.map((r) => ({
+function mapActualRow(r) {
+  return {
+    schema_version: r.schema_version || "1.1.0",
     id: r.id,
-    f: r.forecaster_id,
-    claim: r.claim,
-    conf: r.confidence,
+    match_key: r.match_key,
+    domain: r.domain,
+    value: r.value,
+    unit: r.unit,
+    observed_at: r.observed_at,
+    source: { name: r.source_name, url: r.source_url },
     status: r.status,
-    date: r.predicted_on || "",
-    resolvedDate: r.resolved_on || "",
-    method: r.method,
-    outcome: r.outcome || "",
-    source: r.source || "",
-    agree: r.agree_votes,
-    dispute: r.dispute_votes,
-    // Postgres `numeric` comes back as a string via the API — coerce to number
-    // so the app's arithmetic (toFixed, comparisons) works.
-    impact: Number(r.impact),
-  }));
+  };
 }
 
-export function mapCategories(rows) {
-  const out = {};
-  for (const r of rows) out[r.name] = { color: r.color, tint: r.tint };
-  return out;
+function mapScoreRow(r) {
+  return {
+    schema_version: r.schema_version || "1.1.0",
+    id: r.id,
+    forecast_id: r.forecast_id,
+    actual_id: r.actual_id,
+    match_key: r.match_key,
+    status: r.status,
+    hit: r.hit,
+    error: r.error == null ? null : Number(r.error),
+    abs_error: r.abs_error == null ? null : Number(r.abs_error),
+    ape: r.ape == null ? null : Number(r.ape),
+    brier: r.brier == null ? null : Number(r.brier),
+    scored_at: r.scored_at,
+  };
 }
 
-// --- loader ------------------------------------------------------------
-// Returns { F, P, CATCOLORS, source }. Falls back to bundled data when
-// Supabase isn't configured, so the app always has something to render.
-
-// --- writes --------------------------------------------------------
-// Saves a visitor's "Log a prediction" submission into the moderation
-// queue (see 002_submissions.sql). Throws if Supabase isn't configured
-// or the insert fails, so the caller can show an error instead of
-// silently pretending it worked.
-
-export async function submitPrediction({ claim, category, confidence, deadline, userId }) {
+// Tips only. Never written to forecasts, actuals, or scores.
+export async function submitSourceTip({ sourceUrl, note, domain, userId }) {
   if (!hasSupabase) {
-    throw new Error("Trooth: no backend configured, can't save a submission.");
+    throw new Error("Trooth: no backend configured, can't save a tip.");
   }
   if (!userId) {
-    throw new Error("Trooth: no active session, can't attribute this submission.");
+    throw new Error("Trooth: no active session, can't attribute this tip.");
   }
-  const { error } = await supabase.from("submitted_predictions").insert([
-    { claim, category, confidence, deadline: deadline || null, user_id: userId },
+  const { error } = await supabase.from("source_tips").insert([
+    { source_url: sourceUrl, note: note || null, domain: domain || null, user_id: userId },
   ]);
   if (error) throw error;
 }
 
 export async function loadData() {
-  if (!hasSupabase) {
-    return { F: STATIC_F, P: STATIC_P, CATCOLORS: STATIC_CAT, source: "static" };
-  }
-  const [fRes, focusRes, pRes, cRes] = await Promise.all([
-    supabase.from("forecasters").select("*"),
-    supabase.from("forecaster_focus").select("*"),
-    supabase.from("predictions").select("*"),
-    supabase.from("categories").select("*"),
+  if (!hasSupabase) return BUNDLED;
+  const [spRes, fRes, aRes, sRes] = await Promise.all([
+    supabase.from("speakers").select("*"),
+    supabase.from("forecasts").select("*"),
+    supabase.from("actuals").select("*"),
+    supabase.from("scores").select("*"),
   ]);
-  const err = fRes.error || focusRes.error || pRes.error || cRes.error;
+  const err = spRes.error || fRes.error || aRes.error || sRes.error;
   if (err) throw err;
   return {
-    F: mapForecasters(fRes.data, focusRes.data),
-    P: mapPredictions(pRes.data),
-    CATCOLORS: mapCategories(cRes.data),
+    speakers: spRes.data || [],
+    forecasts: (fRes.data || []).map(mapForecastRow),
+    actuals: (aRes.data || []).map(mapActualRow),
+    scores: (sRes.data || []).map(mapScoreRow),
+    CATCOLORS,
     source: "supabase",
   };
 }
