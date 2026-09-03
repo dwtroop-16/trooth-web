@@ -1,0 +1,89 @@
+{
+  "added_forecast_ids": [
+    "fct_01M1GWDVSDRPBD8C1MZRRFP2CZ",
+    "fct_01M1GWDVSDARQQNKNXC9GV61YZ",
+    "fct_01M1GWDVSDT3RC47J201QEWMHC",
+    "fct_01M1GWDVSDVYECYNZ9NNFXGS0Z",
+    "fct_01M1GWDVSD02JHJ7677EQ7M63V",
+    "fct_01M1GWDVSDS874F1JXWA9SQ811",
+    "fct_01M1GWDVSD2MV2YAGAYYJHC5R4",
+    "fct_01M1GWDVSD77XCYMX92Q4DEMSZ",
+    "fct_01M1GWDVSD0J0TG1Q5EYDDEJC8",
+    "fct_01M1GWDVSDNKQHW17X4DQYJRS6",
+    "fct_01M1GWDVSDW84DAXGTKZBEMXEW",
+    "fct_01M1GWDVSDTY3ZQYMDR6KXGZ4P",
+    "fct_01M1GWDVSDBW9TYHYSJ74SS6Z5",
+    "fct_01M1GWDVSD9P297QT9PQK0FERX"
+  ],
+  "skipped": [
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Today: Chance of precipitation is 20%.",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 20%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Tonight: New rainfall amounts between a quarter and half of an inch possible.",
+      "reason": "no_explicit_value",
+      "quote": "12-hour period precip band, not a calendar-day amount: New rainfall amounts between a quarter and half of an inch possible"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Thursday: New rainfall amounts between a quarter and half of an inch possible.",
+      "reason": "no_explicit_value",
+      "quote": "12-hour period precip band, not a calendar-day amount: New rainfall amounts between a quarter and half of an inch possible"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Thursday Night: New rainfall amounts between a tenth and quarter of an inch possible.",
+      "reason": "no_explicit_value",
+      "quote": "12-hour period precip band, not a calendar-day amount: New rainfall amounts between a tenth and quarter of an inch possible"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Tonight: Chance of precipitation is 70%.",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 70%."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Thursday: Chance of precipitation is 60%.",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 60%."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Thursday Night: Chance of precipitation is 60%.",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 60%."
+    }
+  ],
+  "errors": [],
+  "resolved_ids": [],
+  "still_pending": [
+    "fct_01M1GWDVSDRPBD8C1MZRRFP2CZ",
+    "fct_01M1GWDVSDARQQNKNXC9GV61YZ",
+    "fct_01M1GWDVSDT3RC47J201QEWMHC",
+    "fct_01M1GWDVSDVYECYNZ9NNFXGS0Z",
+    "fct_01M1GWDVSD02JHJ7677EQ7M63V",
+    "fct_01M1GWDVSDS874F1JXWA9SQ811",
+    "fct_01M1GWDVSD2MV2YAGAYYJHC5R4",
+    "fct_01M1GWDVSD77XCYMX92Q4DEMSZ",
+    "fct_01M1GWDVSD0J0TG1Q5EYDDEJC8",
+    "fct_01M1GWDVSDNKQHW17X4DQYJRS6",
+    "fct_01M1GWDVSDW84DAXGTKZBEMXEW",
+    "fct_01M1GWDVSDTY3ZQYMDR6KXGZ4P",
+    "fct_01M1GWDVSDBW9TYHYSJ74SS6Z5",
+    "fct_01M1GWDVSD9P297QT9PQK0FERX"
+  ],
+  "voids": [],
+  "corrections": [
+    {
+      "at": "2026-09-02T11:03:58Z",
+      "reason": "legal_scope",
+      "review_id": "rr_2026-09-02_nws-okx-central-park-forecast",
+      "detail": "source.url retargeted from MapClick HTML to api.weather.gov gridpoint forecast JSON. Speaker set to NWS New York (OKX). claim.text trimmed to scoreable clause (agency quote cap 50 words). Forecast ids unchanged. Did not fetch weather.gov HTML. Did not ingest KNYC observations."
+    }
+  ]
+}

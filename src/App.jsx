@@ -7,12 +7,15 @@ import { parsePath, pathFor, normalizeDomain } from "./router.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import Footer from "./components/Footer.jsx";
+import NotFound from "./components/NotFound.jsx";
+import SampleBanner from "./components/SampleBanner.jsx";
 import { css } from "./helpers.js";
 
 const Profile = lazy(() => import("./components/Profile.jsx"));
 const PredictionDetail = lazy(() => import("./components/PredictionDetail.jsx"));
 const Method = lazy(() => import("./components/Method.jsx"));
 const Changelog = lazy(() => import("./components/Changelog.jsx"));
+const Claims = lazy(() => import("./components/Claims.jsx"));
 const LogModal = lazy(() => import("./components/LogModal.jsx"));
 const AccountModal = lazy(() => import("./components/AccountModal.jsx"));
 const Toast = lazy(() => import("./components/Toast.jsx"));
@@ -25,6 +28,9 @@ function initialFromLocation() {
     forecastId: parsed.forecastId || null,
     cat: "All",
     q: "",
+    claimStatus: "All",
+    claimSpeaker: "All",
+    claimHorizon: "All",
     modal: false,
     toast: "",
     mClaim: "",
@@ -45,7 +51,14 @@ const BUNDLED = {
   actuals: ACTUALS,
   scores: SCORES,
   CATCOLORS,
+  source: "static",
 };
+
+function SuspenseFallback() {
+  return (
+    <div style={css("padding:20px;font-family:Newsreader,serif;color:var(--muted);")}>Loading…</div>
+  );
+}
 
 export default function App() {
   const [state, setStateRaw] = useState(initialFromLocation);
@@ -96,9 +109,8 @@ export default function App() {
   const goHome = () => navigate(pathFor("home"));
   const goMethod = () => navigate(pathFor("method"));
   const goChangelog = () => navigate(pathFor("changelog"));
-  const setCat = (c) => {
-    navigate(pathFor("home"), { cat: normalizeDomain(c), q: "" });
-  };
+  const setCat = (c) => setState({ cat: normalizeDomain(c) });
+  const goClaims = () => navigate(pathFor("claims"));
 
   const flashToast = (text) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -253,18 +265,35 @@ export default function App() {
     submitting: state.accountSubmitting,
   };
 
-  const vals = buildVals(state, { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account, openModal: openTipModal }, data);
+  const vals = buildVals(state, { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal: openTipModal }, data);
+
+  useEffect(() => {
+    let title = "Trooth";
+    if (vals.isNotFound) title = "Not found · Trooth";
+    else if (vals.isClaims) title = "Claims · Trooth";
+    else if (vals.isMethod) title = "Method · Trooth";
+    else if (vals.isChangelog) title = "Changelog · Trooth";
+    else if (vals.isProfile && vals.p) title = vals.p.name + " · Trooth";
+    else if (vals.isPrediction && vals.d) {
+      const claim = String(vals.d.claimText || "");
+      title = (claim.length > 48 ? claim.slice(0, 48) : claim) + " · Trooth";
+    }
+    document.title = title;
+  }, [vals.isHome, vals.isClaims, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.p, vals.d]);
 
   return (
     <div style={css("min-height:100vh;background:var(--paper);font-family:Archivo,sans-serif;color:var(--ink);display:flex;flex-direction:column;")}>
       <Header vals={vals} />
+      {data.source !== "supabase" && <SampleBanner onMethod={goMethod} />}
       <div style={css("flex:1;")}>
         {vals.isHome && <Home vals={vals} openClaim={openClaim} />}
-        <Suspense fallback={null}>
+        {vals.isNotFound && <NotFound goHome={goHome} />}
+        <Suspense fallback={<SuspenseFallback />}>
           {vals.isProfile && <Profile vals={vals} openClaim={openClaim} />}
           {vals.isPrediction && <PredictionDetail vals={vals} />}
-          {vals.isMethod && <Method goHome={goHome} />}
+          {vals.isMethod && <Method goHome={goHome} goChangelog={goChangelog} />}
           {vals.isChangelog && <Changelog goHome={goHome} />}
+          {vals.isClaims && <Claims vals={vals} openClaim={openClaim} />}
           {vals.modal && <LogModal vals={vals} />}
           {vals.accountModal && <AccountModal vals={vals} />}
           {vals.toast && <Toast text={vals.toast} />}
