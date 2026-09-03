@@ -288,4 +288,3 @@ export const SCORES = FORECASTS.map((f, i) => {
   return scr(i + 1, f.id, "pending");
 });
 
-export const CHANGELOG = [];

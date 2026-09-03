@@ -54,3 +54,16 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
 @media (max-width: 860px) {
   .trooth-home-grid { grid-template-columns: 1fr; }
 }
+
+.trooth-board-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(72px, 0.55fr) 72px 92px 72px;
+  align-items: center;
+  gap: 12px;
+}
+@media (max-width: 700px) {
+  .trooth-board-row {
+    grid-template-columns: minmax(0, 1fr) 72px 92px 72px;
+  }
+  .trooth-board-domain { display: none; }
+}

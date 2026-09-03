@@ -3,6 +3,7 @@ import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
 export default function Home({ vals, openClaim }) {
+  const q = (vals.q || "").trim();
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;")}>
       <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 16px;")}>
@@ -28,22 +29,46 @@ export default function Home({ vals, openClaim }) {
         ))}
       </div>
 
+      {q ? (
+        <div style={css("margin-bottom:28px;")}>
+          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;")}>
+            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Claims</h2>
+            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">All claims</Hover>
+          </div>
+          <div style={css("display:flex;flex-direction:column;gap:10px;")}>
+            {vals.matchingClaims.slice(0, 8).map((card) => (
+              <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
+            ))}
+            {vals.matchingClaims.length === 0 && (
+              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;color:var(--muted);font-size:14px;")}>
+                No claims match.
+              </div>
+            )}
+          </div>
+        </div>
+      ) : null}
+
       <div className="trooth-home-grid">
         <div>
-          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;")}>
+          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap;")}>
             <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>{vals.boardTitle}</h2>
             <span style={css("font-size:12.5px;color:var(--muted);")}>{vals.resultCount} · {vals.rankNote}</span>
           </div>
           <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);overflow:hidden;")}>
-            <div style={css("display:grid;grid-template-columns:minmax(0,1fr) 100px 88px;align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;")}>
-              <span>Speaker</span><span>Hit rate</span><span>Pending</span>
+            <div className="trooth-board-row" style={css("padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;")}>
+              <span>Speaker</span>
+              <span className="trooth-board-domain">Domain</span>
+              <span>Resolved</span>
+              <span>Hit rate</span>
+              <span>Pending</span>
             </div>
             {vals.rows.map((r) => (
               <Hover
                 key={r.speakerId}
                 onClick={r.open}
-                style="display:grid;grid-template-columns:minmax(0,1fr) 100px 88px;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--row);cursor:pointer;"
+                style="padding:10px 16px;border-bottom:1px solid var(--row);cursor:pointer;"
                 hover="background:#FFFFFF;"
+                className="trooth-board-row"
               >
                 <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
                   <span style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
@@ -52,6 +77,8 @@ export default function Home({ vals, openClaim }) {
                     <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
                   </div>
                 </div>
+                <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
+                <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
                 <span style={css("font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
                 <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
               </Hover>
@@ -59,6 +86,9 @@ export default function Home({ vals, openClaim }) {
             {vals.noResults && (
               <div style={css("padding:28px;text-align:center;color:var(--muted);font-size:14px;")}>No speakers match.</div>
             )}
+          </div>
+          <div style={css("margin-top:8px;")}>
+            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">All claims</Hover>
           </div>
         </div>
 
@@ -76,7 +106,10 @@ export default function Home({ vals, openClaim }) {
 
       {vals.recentResolved.length > 0 && (
         <div style={css("margin-top:32px;")}>
-          <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0 0 10px;color:var(--ink);")}>Recent resolved</h2>
+          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;")}>
+            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Recent resolved</h2>
+            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">All claims</Hover>
+          </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
             {vals.recentResolved.slice(0, 5).map((card) => (
               <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />

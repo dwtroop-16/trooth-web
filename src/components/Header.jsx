@@ -9,7 +9,7 @@ export default function Header({ vals }) {
           <span style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-0.01em;")}>Trooth</span>
         </button>
         <div style={css("flex:1;")} />
-        <div style={css("display:flex;align-items:center;gap:8px;background:#FBF9F4;border:1px solid #E3DCCD;border-radius:9px;padding:7px 11px;width:min(280px,42vw);")}>
+        <div style={css("display:flex;align-items:center;gap:8px;background:#FBF9F4;border:1px solid #E3DCCD;border-radius:9px;padding:7px 11px;width:min(340px,52vw);")}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A79E8C" strokeWidth="2.2">
             <circle cx="11" cy="11" r="7"></circle>
             <path d="M21 21l-4.3-4.3"></path>
@@ -17,7 +17,7 @@ export default function Header({ vals }) {
           <input
             value={vals.q}
             onChange={vals.onSearch}
-            placeholder="Search speakers"
+            placeholder="Search speakers or claims"
             style={css("border:none;background:none;outline:none;font-size:14px;color:#1A1712;width:100%;min-width:0;")}
           />
         </div>

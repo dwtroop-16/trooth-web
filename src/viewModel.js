@@ -93,8 +93,23 @@ export function speakerStats(speaker, forecasts, scores) {
   };
 }
 
+function sortClaimList(list) {
+  const bucket = (c) => {
+    if (c.status === "hit" || c.status === "miss") return 0;
+    if (c.status === "pending") return 1;
+    return 2;
+  };
+  return [...list].sort((a, b) => {
+    const ba = bucket(a);
+    const bb = bucket(b);
+    if (ba !== bb) return ba - bb;
+    return String(b.publishedAt).localeCompare(String(a.publishedAt));
+  });
+}
+
 export function buildVals(state, actions, data) {
-  const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, submit, account, openModal } = actions;
+
+  const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal } = actions;
   const speakers = data.speakers || [];
   const forecasts = data.forecasts || [];
   const actuals = data.actuals || [];
@@ -167,6 +182,48 @@ export function buildVals(state, actions, data) {
     scopedCards[0] ||
     null;
 
+  const claimMatchesQuery = (c) => {
+    if (!q) return true;
+    return [c.speakerName, c.speakerOrg, c.claimText].join(" ").toLowerCase().includes(q);
+  };
+
+  const matchingClaims = q
+    ? sortClaimList(scopedCards.filter(claimMatchesQuery))
+    : [];
+
+  const claimStatus = s.claimStatus || "All";
+  const claimSpeaker = s.claimSpeaker || "All";
+  const claimHorizon = s.claimHorizon || "All";
+  const now = Date.now();
+
+  let claimList = scopedCards.filter(claimMatchesQuery);
+  if (claimStatus !== "All") {
+    claimList = claimList.filter((c) => c.grade === claimStatus);
+  }
+  if (claimSpeaker !== "All") {
+    claimList = claimList.filter((c) => c.speakerId === claimSpeaker);
+  }
+  if (claimHorizon === "pending") {
+    claimList = claimList.filter((c) => {
+      const t = new Date(c.horizon).getTime();
+      return Number.isNaN(t) || t > now;
+    });
+  } else if (claimHorizon === "past") {
+    claimList = claimList.filter((c) => {
+      const t = new Date(c.horizon).getTime();
+      return !Number.isNaN(t) && t <= now;
+    });
+  }
+  claimList = sortClaimList(claimList);
+
+  const speakerOptions = [
+    { id: "All", name: "All speakers" },
+    ...speakers
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((sp) => ({ id: sp.id, name: sp.name })),
+  ];
+
   const categories = ["All", ...cats].map((c) => ({
     label: c,
     active: cat === c,
@@ -238,6 +295,7 @@ export function buildVals(state, actions, data) {
     goHome,
     goMethod,
     goChangelog,
+    goClaims,
     categories,
     q: s.q,
     onSearch: (e) => setState({ q: e.target.value }),
@@ -247,6 +305,18 @@ export function buildVals(state, actions, data) {
     isPrediction: s.view === "prediction" && !!d,
     isMethod: s.view === "method",
     isChangelog: s.view === "changelog",
+    isClaims: s.view === "claims",
+    isNotFound: s.view === "notfound" || (s.view === "profile" && !p) || (s.view === "prediction" && !d),
+    matchingClaims,
+    claimList,
+    claimListCount: claimList.length + (claimList.length === 1 ? " claim" : " claims"),
+    claimStatus,
+    setClaimStatus: (v) => setState({ claimStatus: v }),
+    claimSpeaker,
+    setClaimSpeaker: (v) => setState({ claimSpeaker: v }),
+    claimHorizon,
+    setClaimHorizon: (v) => setState({ claimHorizon: v }),
+    speakerOptions,
     stat: {
       speakers: speakers.length,
       captured: nCaptured,
