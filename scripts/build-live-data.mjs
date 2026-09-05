@@ -21,7 +21,6 @@ const ACTUAL_FILES = [
   "data/actuals/nws-knyc.jsonl",
   "data/actuals/nfl-2025-week1.jsonl",
   "data/actuals/nfl-2025-titles.jsonl",
-  "data/actuals/nfl-2025-w2.jsonl",
   "data/actuals/nfl-2025-w2w4.jsonl",
   "data/actuals/nfl-2025-w5w14.jsonl",
   "data/actuals/nfl-2025-w15playoffs.jsonl",

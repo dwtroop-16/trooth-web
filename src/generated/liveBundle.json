@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T09:36:33.381Z",
+  "generated_at": "2026-09-05T09:38:16.419Z",
   "source": "live",
   "SPEAKERS": [
     {
@@ -16772,12 +16772,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NDV6N3BZ0ZMVHD746",
+      "id": "act_01M1REE948JBAFBS293BG600BB",
       "match_key": "sports|nfl-2025-cleveland-baltimore-20250914|nfl-2025-cleveland-baltimore-20250914|score",
       "domain": "sports",
       "value": "17-41",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/browns-at-ravens-2025-reg-2"
@@ -16786,12 +16786,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6N792JH32HH07JX1AP",
+      "id": "act_01M1REE948XXKQWFAJBHVBZ940",
       "match_key": "sports|nfl-2025-jacksonville-cincinnati-20250914|nfl-2025-jacksonville-cincinnati-20250914|score",
       "domain": "sports",
       "value": "27-31",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/jaguars-at-bengals-2025-reg-2"
@@ -16800,12 +16800,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6N3NWNXH6DHNMRS4CQ",
+      "id": "act_01M1REE948JGXK754C2ZVA3PV8",
       "match_key": "sports|nfl-2025-denver-indianapolis-20250914|nfl-2025-denver-indianapolis-20250914|score",
       "domain": "sports",
       "value": "28-29",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/broncos-at-colts-2025-reg-2"
@@ -16814,12 +16814,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NSZNWBV6A6S28N9D9",
+      "id": "act_01M1REE948JPJG03N190KWMMED",
       "match_key": "sports|nfl-2025-philadelphia-kansas-city-20250914|nfl-2025-philadelphia-kansas-city-20250914|score",
       "domain": "sports",
       "value": "20-17",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/eagles-at-chiefs-2025-reg-2"
@@ -16828,12 +16828,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6N5QACQGHF5BEFEX25",
+      "id": "act_01M1REE9484MF0D73H1ZNKHVN0",
       "match_key": "sports|nfl-2025-ny-giants-dallas-20250914|nfl-2025-ny-giants-dallas-20250914|score",
       "domain": "sports",
       "value": "37-40",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/giants-at-cowboys-2025-reg-2"
@@ -16842,12 +16842,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NZK29AGXNPKMHQJAT",
+      "id": "act_01M1REE9486JZ3DXQZWNQC33BT",
       "match_key": "sports|nfl-2025-chicago-detroit-20250914|nfl-2025-chicago-detroit-20250914|score",
       "domain": "sports",
       "value": "21-52",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/bears-at-lions-2025-reg-2"
@@ -16856,12 +16856,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6N0ZQV4PGZQNGFDQ0J",
+      "id": "act_01M1REE9482WAY23PKGVMQZJXH",
       "match_key": "sports|nfl-2025-la-rams-tennessee-20250914|nfl-2025-la-rams-tennessee-20250914|score",
       "domain": "sports",
       "value": "33-19",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/rams-at-titans-2025-reg-2"
@@ -16870,12 +16870,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NF7QR8DAMA4M08XY2",
+      "id": "act_01M1REE9488NQ1T6F196HYSH1V",
       "match_key": "sports|nfl-2025-new-england-miami-20250914|nfl-2025-new-england-miami-20250914|score",
       "domain": "sports",
       "value": "33-27",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/patriots-at-dolphins-2025-reg-2"
@@ -16884,12 +16884,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NDSJFMTKG9PYEMJ10",
+      "id": "act_01M1REE9487FTM4N8C0V1MNRBY",
       "match_key": "sports|nfl-2025-san-francisco-new-orleans-20250914|nfl-2025-san-francisco-new-orleans-20250914|score",
       "domain": "sports",
       "value": "26-21",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/49ers-at-saints-2025-reg-2"
@@ -16898,12 +16898,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NC3MH3C2Z8TSE766R",
+      "id": "act_01M1REE9483AN85C1HQRQ3CE77",
       "match_key": "sports|nfl-2025-buffalo-ny-jets-20250914|nfl-2025-buffalo-ny-jets-20250914|score",
       "domain": "sports",
       "value": "30-10",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/bills-at-jets-2025-reg-2"
@@ -16912,12 +16912,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6N487PAAWQ88W0S704",
+      "id": "act_01M1REE9480722VZQCRZKA9HT0",
       "match_key": "sports|nfl-2025-seattle-pittsburgh-20250914|nfl-2025-seattle-pittsburgh-20250914|score",
       "domain": "sports",
       "value": "31-17",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/seahawks-at-steelers-2025-reg-2"
@@ -16926,12 +16926,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NP1P37NA2FCCVTSKY",
+      "id": "act_01M1REE948AKH661J13ESK3XH3",
       "match_key": "sports|nfl-2025-carolina-arizona-20250914|nfl-2025-carolina-arizona-20250914|score",
       "domain": "sports",
       "value": "22-27",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/panthers-at-cardinals-2025-reg-2"
@@ -16940,12 +16940,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NX7EMAQ3FFQARQ3ZW",
+      "id": "act_01M1REE948DDYPCNVWTNPFZ23Y",
       "match_key": "sports|nfl-2025-atlanta-minnesota-20250914|nfl-2025-atlanta-minnesota-20250914|score",
       "domain": "sports",
       "value": "22-6",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/falcons-at-vikings-2025-reg-2"
@@ -16954,12 +16954,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6NCCQYTPN1EY0NR2GW",
+      "id": "act_01M1REE948CANYD9SAFGGNGJ2Y",
       "match_key": "sports|nfl-2025-tampa-bay-houston-20250915|nfl-2025-tampa-bay-houston-20250915|score",
       "domain": "sports",
       "value": "20-19",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/buccaneers-at-texans-2025-reg-2"
@@ -16968,12 +16968,12 @@
     },
     {
       "schema_version": "1.1.0",
-      "id": "act_01M1REBA6N7HDN5A483NA3CS6F",
+      "id": "act_01M1REE948E3CCSSEG29K2YD7V",
       "match_key": "sports|nfl-2025-la-chargers-las-vegas-20250915|nfl-2025-la-chargers-las-vegas-20250915|score",
       "domain": "sports",
       "value": "20-9",
       "unit": "score",
-      "observed_at": "2026-09-05T09:28:14Z",
+      "observed_at": "2026-09-05T09:29:51Z",
       "source": {
         "name": "NFL",
         "url": "https://www.nfl.com/games/chargers-at-raiders-2025-reg-2"
