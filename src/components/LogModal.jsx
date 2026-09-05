@@ -9,7 +9,7 @@ export default function LogModal({ vals }) {
     <div onClick={vals.closeModal} style={css("position:fixed;inset:0;z-index:40;background:rgba(26,23,18,0.42);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;animation:vScrimIn .2s ease;")}>
       <div onClick={vals.stop} style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;width:100%;max-width:480px;box-shadow:0 24px 56px -28px rgba(26,23,18,0.55);animation:vFadeUp .26s ease;")}>
         <div style={css("display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;")}>
-          <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);")}>Tip a source</h2>
+          <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);")}>Suggest a source</h2>
           <Hover as="button" onClick={vals.closeModal} style="background:none;border:none;cursor:pointer;color:var(--faint);font-size:20px;line-height:1;padding:4px;" hover="color:var(--ink);">×</Hover>
         </div>
         <p style={css("font-size:13px;color:var(--muted);margin:0 0 18px;line-height:1.45;")}>

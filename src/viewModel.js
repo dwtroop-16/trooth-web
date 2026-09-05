@@ -322,10 +322,11 @@ export function buildVals(state, actions, data) {
       })
       .filter((row) => matchesQuery(row.speaker))
       .sort((a, b) => {
+        if (b.stats.n_resolved !== a.stats.n_resolved) return b.stats.n_resolved - a.stats.n_resolved;
         const ar = a.stats.hit_rate == null ? -1 : a.stats.hit_rate;
         const br = b.stats.hit_rate == null ? -1 : b.stats.hit_rate;
         if (br !== ar) return br - ar;
-        return b.stats.n_resolved - a.stats.n_resolved;
+        return a.speaker.name.localeCompare(b.speaker.name);
       });
 
     return statsRows.map((row, i) => {
@@ -348,17 +349,9 @@ export function buildVals(state, actions, data) {
     });
   };
 
-  const rows = buildBoardRows(cat);
-
-  const categoryBoards = cats.map((domain) => {
-    const boardRows = buildBoardRows(domain);
-    return {
-      domain,
-      rows: boardRows,
-      resultCount: boardRows.length + (boardRows.length === 1 ? " speaker" : " speakers"),
-      empty: boardRows.length === 0,
-    };
-  });
+  const BOARD_CAP = 12;
+  const allRows = buildBoardRows(cat);
+  const rows = allRows.slice(0, BOARD_CAP);
 
   const recentResolved = cards
     .filter((c) => c.status === "hit" || c.status === "miss")
@@ -517,12 +510,12 @@ export function buildVals(state, actions, data) {
       pending: nPending,
     },
     boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
-    resultCount: rows.length + (rows.length === 1 ? " speaker" : " speakers"),
-    rankNote: "hit rate on resolved only — pending is not a miss",
+    resultCount: (allRows.length === 0 ? "0 speakers" : rows.length + (rows.length === 1 ? " speaker" : " speakers") + (allRows.length > BOARD_CAP ? " (top " + BOARD_CAP + ")" : "")),
+    rankNote: "resolved first, then hit rate — pending is not a miss",
     rows,
-    categoryBoards,
-    showAllBoards: cat === "All",
-    noResults: rows.length === 0,
+    boardShowDomain: cat === "All",
+    boardCapped: allRows.length > BOARD_CAP,
+    noResults: allRows.length === 0,
     recentResolved,
     featuredClaim,
     p,

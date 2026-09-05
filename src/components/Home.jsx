@@ -55,7 +55,12 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
 
 export default function Home({ vals, openClaim }) {
   const q = (vals.q || "").trim();
-  const showAllBoards = vals.showAllBoards;
+  const showDomain = vals.boardShowDomain;
+  const recent = vals.recentResolved.slice(0, 6);
+  // Avoid duplicating the featured card inside recent when both are shown.
+  const featuredId = vals.featuredClaim?.id;
+  const recentOnly = featuredId ? recent.filter((c) => c.id !== featuredId) : recent;
+
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;")}>
       <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 16px;")}>
@@ -85,11 +90,11 @@ export default function Home({ vals, openClaim }) {
         <div style={css("margin-bottom:28px;")}>
           <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;")}>
             <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Claims</h2>
-            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">All claims</Hover>
+            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
           </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
             {vals.matchingClaims.slice(0, 8).map((card) => (
-              <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
+              <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
             ))}
             {vals.matchingClaims.length === 0 && (
               <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;color:var(--muted);font-size:14px;")}>
@@ -100,80 +105,37 @@ export default function Home({ vals, openClaim }) {
         </div>
       ) : null}
 
-      {showAllBoards ? (
-        <div>
-          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;")}>
-            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Leaderboard</h2>
-            <span style={css("font-size:12.5px;color:var(--muted);")}>{vals.rankNote}</span>
-          </div>
-          <div className="trooth-boards-grid">
-            {vals.categoryBoards.map((board) => (
-              <Scoreboard
-                key={board.domain}
-                title={board.domain}
-                resultCount={board.resultCount}
-                rows={board.rows}
-                empty={board.empty}
-                emptyLabel="No speakers yet"
-                showDomain={false}
-              />
-            ))}
-          </div>
-          <div style={css("margin-top:8px;")}>
-            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">All claims</Hover>
-          </div>
+      <Scoreboard
+        title={vals.boardTitle}
+        resultCount={vals.resultCount}
+        rankNote={vals.rankNote}
+        rows={vals.rows}
+        empty={vals.noResults}
+        emptyLabel={q ? "No speakers match." : "No speakers yet"}
+        showDomain={showDomain}
+      />
+      <div style={css("margin-top:8px;")}>
+        <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
+      </div>
 
-          <div style={css("margin-top:28px;")}>
-            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0 0 8px;color:var(--ink);")}>Claim</h2>
-            {vals.featuredClaim ? (
-              <ClaimCard card={vals.featuredClaim} compact onOpen={() => openClaim(vals.featuredClaim.id)} />
-            ) : (
-              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;color:var(--muted);font-size:14px;")}>
-                No claims in this filter yet.
-              </div>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="trooth-home-grid">
-          <div>
-            <Scoreboard
-              title={vals.boardTitle}
-              resultCount={vals.resultCount}
-              rankNote={vals.rankNote}
-              rows={vals.rows}
-              empty={vals.noResults}
-              emptyLabel={q ? "No speakers match." : "No speakers yet"}
-              showDomain={false}
-            />
-            <div style={css("margin-top:8px;")}>
-              <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">All claims</Hover>
-            </div>
-          </div>
-
-          <div>
-            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0 0 8px;color:var(--ink);")}>Claim</h2>
-            {vals.featuredClaim ? (
-              <ClaimCard card={vals.featuredClaim} compact onOpen={() => openClaim(vals.featuredClaim.id)} />
-            ) : (
-              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;color:var(--muted);font-size:14px;")}>
-                No claims in this filter yet.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {vals.recentResolved.length > 0 && (
+      {!q && (
         <div style={css("margin-top:32px;")}>
           <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;")}>
-            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Recent resolved</h2>
-            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">All claims</Hover>
+            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Claims</h2>
+            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
           </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
-            {vals.recentResolved.slice(0, 5).map((card) => (
-              <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
+            {vals.featuredClaim ? (
+              <ClaimCard card={vals.featuredClaim} compact quiet onOpen={() => openClaim(vals.featuredClaim.id)} />
+            ) : null}
+            {recentOnly.map((card) => (
+              <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
             ))}
+            {!vals.featuredClaim && recentOnly.length === 0 && (
+              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;color:var(--muted);font-size:14px;")}>
+                No claims in this filter yet.
+              </div>
+            )}
           </div>
         </div>
       )}
