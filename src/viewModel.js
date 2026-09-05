@@ -353,11 +353,11 @@ export function buildVals(state, actions, data) {
   const allRows = buildBoardRows(cat);
   const rows = allRows.slice(0, BOARD_CAP);
 
-  const recentResolved = cards
+  const scopedCards = cards.filter((c) => scope.includes(c.domain));
+  const recentResolved = scopedCards
     .filter((c) => c.status === "hit" || c.status === "miss")
     .sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
 
-  const scopedCards = cards.filter((c) => scope.includes(c.domain));
   const featuredClaim =
     scopedCards.find((c) => c.status === "pending") ||
     scopedCards.find((c) => c.status === "hit" || c.status === "miss") ||

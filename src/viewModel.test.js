@@ -67,3 +67,17 @@ test("home exposes featured claim and recent resolved list", () => {
   assert.ok(vals.featuredClaim === null || typeof vals.featuredClaim.id === "string");
   assert.ok(Array.isArray(vals.recentResolved));
 });
+
+test("recentResolved is scoped to the active domain tab", () => {
+  const finance = buildVals({ view: "home", cat: "Finance", q: "" }, actions, data);
+  assert.ok(Array.isArray(finance.recentResolved));
+  assert.ok(finance.recentResolved.every((c) => c.domain === "Finance"));
+  assert.ok(
+    finance.recentResolved.every((c) => c.speakerId !== "stephen-a-smith"),
+    "Stephen A. Smith sports claims must not appear on Finance"
+  );
+
+  const sports = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
+  assert.ok(Array.isArray(sports.recentResolved));
+  assert.ok(sports.recentResolved.every((c) => c.domain === "Sports"));
+});
