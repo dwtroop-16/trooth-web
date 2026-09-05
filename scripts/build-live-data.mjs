@@ -21,6 +21,12 @@ const ACTUAL_FILES = [
   "data/actuals/nws-knyc.jsonl",
   "data/actuals/nfl-2025-week1.jsonl",
   "data/actuals/nfl-2025-titles.jsonl",
+  "data/actuals/nfl-2025-w2.jsonl",
+  "data/actuals/nfl-2025-w2w4.jsonl",
+  "data/actuals/nfl-2025-w5w14.jsonl",
+  "data/actuals/nfl-2025-w15playoffs.jsonl",
+  "data/actuals/ncaa-fbs-2025-titles.jsonl",
+  "data/actuals/ncaa-fbs-2025-w1.jsonl",
 ];
 const SCORES_FILE = "scorer/out/scores.jsonl";
 const SPEAKERS_REG = "speakers-v1.json";
@@ -392,6 +398,18 @@ export const SCORES = live.SCORES;
 export const DATA_SOURCE = live.source || "live";
 `;
   writeFileSync(join(SITE, "src/data.js"), dataJs);
+
+  // Team labels for profile division/team boards (browser-safe; no /workspace/trooth fetch)
+  const nflTeams = readJson(join(ROOT, "nfl-team-ids-v1.json"));
+  const fbsTeams = readJson(join(ROOT, "ncaa-fbs-team-ids-v1.json"));
+  const teamLabels = { nfl: {}, fbs: {} };
+  for (const [slug, meta] of Object.entries(nflTeams.teams || {})) {
+    teamLabels.nfl[slug] = (meta && meta.label) || slug;
+  }
+  for (const [slug, meta] of Object.entries(fbsTeams.teams || {})) {
+    teamLabels.fbs[slug] = (meta && meta.label) || slug;
+  }
+  writeFileSync(join(SITE, "src/generated/teamLabels.json"), JSON.stringify(teamLabels, null, 2) + "\n");
 
   // Changelog days into site working copy
   const changelogSrc = join(ROOT, "changelog");
