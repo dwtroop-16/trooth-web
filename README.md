@@ -22,7 +22,7 @@ Tip a source is not ingest and is never scored.
 
 ## Run it
 Install, test, and start the Vite dev server via package.json scripts.
-See DEPLOY.md before any host publish. Production deploy and DNS changes are forbidden without user approval. The live site is Netlify-password-protected.
+See DEPLOY.md before any host publish. Production deploy and DNS changes are forbidden without user approval. Visitor password is off (removed 2026-09-05).
 
 ## Data
 
