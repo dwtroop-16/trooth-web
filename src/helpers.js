@@ -52,3 +52,16 @@ export function css(str) {
   }
   return out;
 }
+
+/** Display hostname for a URL (no protocol/path). Falls back to the raw string. */
+export function hostnameFromUrl(url) {
+  if (url == null || url === "") return "";
+  const s = String(url).trim();
+  try {
+    const u = new URL(s);
+    return u.hostname || s;
+  } catch {
+    return s.replace(/^https?:\/\//i, "").split("/")[0] || s;
+  }
+}
+

@@ -3,17 +3,19 @@ import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
 function ProfileStatTable({ title, columns, rows, emptyLabel }) {
+  const rowClass =
+    columns.length >= 5 ? "trooth-profile-board-row trooth-profile-board-row--5" : "trooth-profile-board-row";
   return (
     <div>
       <h3 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0 0 8px;color:var(--ink);")}>{title}</h3>
       <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);overflow:hidden;")}>
-        <div className="trooth-profile-board-row" style={css("padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;")}>
+        <div className={rowClass} style={css("padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;")}>
           {columns.map((c) => (
             <span key={c.key}>{c.label}</span>
           ))}
         </div>
         {rows.map((row) => (
-          <div key={row.key} className="trooth-profile-board-row" style={css("padding:10px 16px;border-bottom:1px solid var(--row);")}>
+          <div key={row.key} className={rowClass} style={css("padding:10px 16px;border-bottom:1px solid var(--row);")}>
             {columns.map((c) => (
               <span
                 key={c.key}

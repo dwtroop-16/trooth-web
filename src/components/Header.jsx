@@ -1,4 +1,5 @@
 import { css } from "../helpers.js";
+import Hover from "./Hover.jsx";
 
 export default function Header({ vals }) {
   return (
@@ -21,6 +22,14 @@ export default function Header({ vals }) {
             style={css("border:none;background:none;outline:none;font-size:14px;color:#1A1712;width:100%;min-width:0;")}
           />
         </div>
+        <Hover
+          as="button"
+          onClick={vals.openModal}
+          style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);white-space:nowrap;flex-shrink:0;"
+          hover="color:var(--forest);"
+        >
+          Suggest a source
+        </Hover>
       </div>
     </header>
   );

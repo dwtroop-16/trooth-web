@@ -45,16 +45,6 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
   100% { opacity: 0; transform: translateY(16px); }
 }
 
-.trooth-home-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
-  gap: 22px;
-  align-items: start;
-}
-@media (max-width: 860px) {
-  .trooth-home-grid { grid-template-columns: 1fr; }
-}
-
 .trooth-board-row {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(72px, 0.55fr) 72px 92px 72px;
@@ -68,23 +58,30 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
   .trooth-board-domain { display: none; }
 }
 
-.trooth-boards-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 22px;
-  align-items: start;
-}
-@media (min-width: 900px) {
-  .trooth-boards-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 .trooth-board-row--scoped {
   grid-template-columns: minmax(0, 1.4fr) 72px 92px 72px;
 }
 @media (max-width: 700px) {
   .trooth-board-row--scoped {
     grid-template-columns: minmax(0, 1fr) 72px 92px 72px;
+  }
+}
+
+/* Profile division / team tables — prevent DIVISIONRESOLVED run-on */
+.trooth-profile-board-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 88px 100px 88px;
+  align-items: center;
+  gap: 12px;
+}
+.trooth-profile-board-row--5 {
+  grid-template-columns: minmax(0, 1.3fr) minmax(72px, 0.7fr) 88px 100px 88px;
+}
+@media (max-width: 700px) {
+  .trooth-profile-board-row {
+    grid-template-columns: minmax(0, 1fr) 72px 88px 72px;
+  }
+  .trooth-profile-board-row--5 {
+    grid-template-columns: minmax(0, 1fr) minmax(64px, 0.6fr) 72px 88px 72px;
   }
 }
