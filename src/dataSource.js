@@ -7,7 +7,7 @@ const BUNDLED = {
   actuals: ACTUALS,
   scores: SCORES,
   CATCOLORS,
-  source: "static",
+  source: "live",
 };
 
 function mapForecastRow(r) {

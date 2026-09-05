@@ -5,13 +5,20 @@ import { pathFor, normalizeDomain } from "./router.js";
 
 function officialFor(forecast) {
   const domain = forecast.domain;
-  const sub = SUBJECTS[forecast.subject?.id];
+  const sid = forecast.subject?.id || "";
+  const sub = SUBJECTS[sid];
   const allow = OFFICIAL_PRINT[domain] || { name: "Official print", url: "/method" };
   if (domain === "politics") {
     return { name: "Certified SOS / FEC / congress.gov", url: allow.url };
   }
   if (sub && domain === "weather") return { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" };
   if (sub && domain === "finance") return { name: "FRED", url: "https://fred.stlouisfed.org/series/SP500" };
+  // Do not guess a game box URL. Pending sports link the league host; Scorer supplies the permalink when resolved.
+  if (domain === "sports") {
+    if (sid.startsWith("nfl-")) return { name: "NFL official box score", url: "https://www.nfl.com/" };
+    if (sid.startsWith("fbs-") || sid.startsWith("ncaa-")) return { name: "NCAA official box score", url: "https://www.ncaa.com/" };
+    return { name: "League official box score", url: "/method" };
+  }
   return allow;
 }
 
