@@ -51,7 +51,7 @@ const BUNDLED = {
   actuals: ACTUALS,
   scores: SCORES,
   CATCOLORS,
-  source: "static",
+  source: "live",
 };
 
 function SuspenseFallback() {
@@ -284,7 +284,7 @@ export default function App() {
   return (
     <div style={css("min-height:100vh;background:var(--paper);font-family:Archivo,sans-serif;color:var(--ink);display:flex;flex-direction:column;")}>
       <Header vals={vals} />
-      {data.source !== "supabase" && <SampleBanner onMethod={goMethod} />}
+      {(data.source === "static" || data.source === "sample") && <SampleBanner onMethod={goMethod} />}
       <div style={css("flex:1;")}>
         {vals.isHome && <Home vals={vals} openClaim={openClaim} />}
         {vals.isNotFound && <NotFound goHome={goHome} />}
