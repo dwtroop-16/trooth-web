@@ -12,7 +12,7 @@ Do not deploy this branch to the production Netlify site.
 Do not change DNS.
 Do not merge this PR as a deploy.
 
-The live site is currently Netlify-password-protected. Removing that gate, publishing a production build, or pointing a domain at a new deploy requires an explicit user go-ahead.
+Visitor password was removed 2026-09-05 (user approved). Publishing a production build or pointing a domain at a new deploy still requires an explicit user go-ahead.
 
 ## Breaking database change
 
