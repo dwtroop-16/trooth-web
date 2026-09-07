@@ -28,6 +28,7 @@ const ACTUAL_FILES = [
   "data/actuals/ncaa-fbs-2025-titles.jsonl",
   "data/actuals/ncaa-fbs-2025-w1.jsonl",
   "data/actuals/ncaa-fbs-2025-05l-addon.jsonl",
+  "data/actuals/fred-macro-2025.jsonl",
 ];
 const SCORES_FILE = "scorer/out/scores.jsonl";
 const SPEAKERS_REG = "speakers-v1.json";
