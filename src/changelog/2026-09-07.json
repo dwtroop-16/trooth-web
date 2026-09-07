@@ -645,7 +645,56 @@
     "fct_01M1RH2TWRB0Y1CXASJWGP91C9",
     "fct_01M1RH2TWRTHDY80Y73X5GPMGJ",
     "fct_01M1RH2TWRBPFFXMHV8JHPK2TH",
-    "fct_01M1RH2TWRPQWV080VM441XN05"
+    "fct_01M1RH2TWRPQWV080VM441XN05",
+    "fct_01M1XZA59GRQGDP632XH02V028",
+    "fct_01M1XZA59GDSH5CKKHQ8H0YVX8",
+    "fct_01M1XZA59GN6D5P2BZ043SKY3Q",
+    "fct_01M1XZA59GMC9WW9461E2P7ZZ5",
+    "fct_01M1XZA59G2HG9R583QJDN3MWY",
+    "fct_01M1XZA59GM61JK7RBNB2V3QGC",
+    "fct_01M1XZA59G094JG3CF7XDF61CV",
+    "fct_01M1XZA59H465AVHEHWG9XQ3WF",
+    "fct_01M1XZA59H1JWGQNAJZJ6P84W5",
+    "fct_01M1XZA59H1SN7SKYY35RKVMV4",
+    "fct_01M1XZA59HW5K39GGZS9B9FCM1",
+    "fct_01M1XZA59HD9S1CSCQX8AGBFHC",
+    "fct_01M1XZA59HBCX7FM4NTTYHZFJX"
   ],
-  "voids": []
+  "voids": [],
+  "added_forecast_ids": [
+    "fct_01M1XZA59GRQGDP632XH02V028",
+    "fct_01M1XZA59GDSH5CKKHQ8H0YVX8",
+    "fct_01M1XZA59GN6D5P2BZ043SKY3Q",
+    "fct_01M1XZA59GMC9WW9461E2P7ZZ5",
+    "fct_01M1XZA59G2HG9R583QJDN3MWY",
+    "fct_01M1XZA59GM61JK7RBNB2V3QGC",
+    "fct_01M1XZA59G094JG3CF7XDF61CV",
+    "fct_01M1XZA59H465AVHEHWG9XQ3WF",
+    "fct_01M1XZA59H1JWGQNAJZJ6P84W5",
+    "fct_01M1XZA59H1SN7SKYY35RKVMV4",
+    "fct_01M1XZA59HW5K39GGZS9B9FCM1",
+    "fct_01M1XZA59HD9S1CSCQX8AGBFHC",
+    "fct_01M1XZA59HBCX7FM4NTTYHZFJX"
+  ],
+  "skipped": [
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Thursday: Chance of precipitation is 40%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 40%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Thursday Night: Chance of precipitation is 40%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 40%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Labor Day: Sunny, with a high near 80.",
+      "reason": "duplicate",
+      "quote": "Labor Day: Sunny, with a high near 80."
+    }
+  ],
+  "errors": []
 }

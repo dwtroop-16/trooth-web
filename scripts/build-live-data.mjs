@@ -16,6 +16,7 @@ const FORECAST_FILES = [
   "ingest/forecasts/2026-09-03.jsonl",
   "ingest/forecasts/2026-09-04.jsonl",
   "ingest/forecasts/2026-09-05.jsonl",
+  "ingest/forecasts/2026-09-07.jsonl",
 ];
 const ACTUAL_FILES = [
   "data/actuals/nws-knyc.jsonl",
