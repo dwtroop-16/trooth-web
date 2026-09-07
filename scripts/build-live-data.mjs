@@ -415,7 +415,7 @@ export const DATA_SOURCE = live.source || "live";
   const changelogSrc = join(ROOT, "changelog");
   const changelogDst = join(SITE, "src/changelog");
   mkdirSync(changelogDst, { recursive: true });
-  const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05"];
+  const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-07"];
   for (const d of days) {
     copyFileSync(join(changelogSrc, d + ".json"), join(changelogDst, d + ".json"));
   }
