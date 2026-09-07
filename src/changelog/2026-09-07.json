@@ -477,7 +477,10 @@
     "fct_01M1RH2TWRCNHJTQY3YPBXBMJZ",
     "fct_01M1RH2TWRB0Y1CXASJWGP91C9",
     "fct_01M1RH2TWRBPFFXMHV8JHPK2TH",
-    "fct_01M1RH2TWRPQWV080VM441XN05"
+    "fct_01M1RH2TWRPQWV080VM441XN05",
+    "fct_01M1YRWF1MC91S48499A55NES1",
+    "fct_01M1YRWF1MTH1702CWKM3G37TM",
+    "fct_01M1YRWF1MCQSHMJSR6K59NS5Y"
   ],
   "still_pending": [
     "fct_01M1GWDVSDNKQHW17X4DQYJRS6",
@@ -658,9 +661,19 @@
     "fct_01M1XZA59H1SN7SKYY35RKVMV4",
     "fct_01M1XZA59HW5K39GGZS9B9FCM1",
     "fct_01M1XZA59HD9S1CSCQX8AGBFHC",
-    "fct_01M1XZA59HBCX7FM4NTTYHZFJX"
+    "fct_01M1XZA59HBCX7FM4NTTYHZFJX",
+    "fct_01M1YRWF1M8F5488NTMY63S848",
+    "fct_01M1YRWF1M22KVMDETNEJKD3T5",
+    "fct_01M1YRWF1M2JQZAYMBX9JW612X"
   ],
-  "voids": [],
+  "voids": [
+    "fct_01M1YRWF1MC91S48499A55NES1",
+    "fct_01M1YRWF1MTH1702CWKM3G37TM",
+    "fct_01M1YRWF1MCQSHMJSR6K59NS5Y",
+    "fct_01M1YRWF1M8F5488NTMY63S848",
+    "fct_01M1YRWF1M22KVMDETNEJKD3T5",
+    "fct_01M1YRWF1M2JQZAYMBX9JW612X"
+  ],
   "added_forecast_ids": [
     "fct_01M1XZA59GRQGDP632XH02V028",
     "fct_01M1XZA59GDSH5CKKHQ8H0YVX8",
@@ -674,7 +687,13 @@
     "fct_01M1XZA59H1SN7SKYY35RKVMV4",
     "fct_01M1XZA59HW5K39GGZS9B9FCM1",
     "fct_01M1XZA59HD9S1CSCQX8AGBFHC",
-    "fct_01M1XZA59HBCX7FM4NTTYHZFJX"
+    "fct_01M1XZA59HBCX7FM4NTTYHZFJX",
+    "fct_01M1YRWF1MC91S48499A55NES1",
+    "fct_01M1YRWF1MTH1702CWKM3G37TM",
+    "fct_01M1YRWF1MCQSHMJSR6K59NS5Y",
+    "fct_01M1YRWF1M8F5488NTMY63S848",
+    "fct_01M1YRWF1M22KVMDETNEJKD3T5",
+    "fct_01M1YRWF1M2JQZAYMBX9JW612X"
   ],
   "skipped": [
     {
@@ -694,7 +713,23 @@
       "claim_text": "Labor Day: Sunny, with a high near 80.",
       "reason": "duplicate",
       "quote": "Labor Day: Sunny, with a high near 80."
+    },
+    {
+      "reason": "legal_hold",
+      "url": "https://www.yahoo.com/news/historian-correctly-predicted-9-last-171554178.html",
+      "note": "05n HOLD Yahoo Lichtman backup"
+    },
+    {
+      "reason": "legal_hold",
+      "url": "https://sabatoscrystalball.substack.com/p/keeping-it-classy-a-revised-model",
+      "note": "05n HOLD Abramowitz probabilistic"
+    },
+    {
+      "reason": "legal_block",
+      "url": "https://www.newsweek.com/who-will-win-election-forecasters-1977746",
+      "note": "05n BLOCK Newsweek ToS"
     }
   ],
-  "errors": []
+  "errors": [],
+  "note_politics_05n": "Politics 05n: added 6 (3 prez + 3 senate majority). Legal Pass only. No Yahoo/Abramowitz/Newsweek."
 }
