@@ -690,5 +690,84 @@
     "fct_01M2367TQ9986RY653GEQZ7DK7",
     "fct_01M2367TQ99G0V0842AXNYAQGF"
   ],
-  "voids": []
+  "voids": [],
+  "added_forecast_ids": [
+    "fct_01M25VHSXYN6DJ33GQJSM8ZJY2",
+    "fct_01M25VHSXYFFGJKPQHPF3Y36DD",
+    "fct_01M25VHSXYDT6XRZVKABD0B19M",
+    "fct_01M25VHSXYFRWTW7B2VSX1XSTJ",
+    "fct_01M25VHSXYP6103CASXT6YNX1Y",
+    "fct_01M25VHSXYZT5RSHDHP4Q6MY5R",
+    "fct_01M25VHSXYRRV4J56PQYN37692",
+    "fct_01M25VHSXY4ZMGZ8P1V8SK39JV"
+  ],
+  "skipped": [
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Tonight: Chance of precipitation is 20%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 20%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Friday: Mostly sunny, with a high near 80.",
+      "reason": "duplicate",
+      "quote": "Friday: Mostly sunny, with a high near 80."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Friday Night: Mostly clear, with a low around 63.",
+      "reason": "duplicate",
+      "quote": "Friday Night: Mostly clear, with a low around 63."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Saturday Night: Chance of precipitation is 60%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 60%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Saturday Night: New rainfall amounts between a quarter and half of an inch possible",
+      "reason": "no_explicit_value",
+      "quote": "12-hour QPF band (not calendar-day): New rainfall amounts between a quarter and half of an inch possible."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Sunday: Chance of precipitation is 60%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 60%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Sunday Night: Partly cloudy, with a low around 68.",
+      "reason": "duplicate",
+      "quote": "Sunday Night: Partly cloudy, with a low around 68."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Tuesday: Mostly sunny, with a high near 82.",
+      "reason": "duplicate",
+      "quote": "Tuesday: Mostly sunny, with a high near 82."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Tuesday Night: Partly cloudy, with a low around 70.",
+      "reason": "duplicate",
+      "quote": "Tuesday Night: Partly cloudy, with a low around 70."
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Wednesday: Chance of precipitation is 30%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 30%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Wednesday: Mostly sunny, with a high near 85.",
+      "reason": "duplicate",
+      "quote": "Wednesday: Mostly sunny, with a high near 85."
+    }
+  ],
+  "errors": []
 }
