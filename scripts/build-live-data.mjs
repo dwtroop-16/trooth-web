@@ -20,6 +20,7 @@ const FORECAST_FILES = [
   "ingest/forecasts/2026-09-08.jsonl",
   "ingest/forecasts/2026-09-09.jsonl",
   "ingest/forecasts/2026-09-10.jsonl",
+  "ingest/forecasts/2026-09-11.jsonl",
 ];
 const ACTUAL_FILES = [
   "data/actuals/nws-knyc.jsonl",
@@ -28,6 +29,24 @@ const ACTUAL_FILES = [
   "data/actuals/nfl-2025-w2w4.jsonl",
   "data/actuals/nfl-2025-w5w14.jsonl",
   "data/actuals/nfl-2025-w15playoffs.jsonl",
+  "data/actuals/nfl-2025-v190-titles-mvp.jsonl",
+  "data/actuals/nfl-2025-reg1-05o.jsonl",
+  "data/actuals/nfl-2025-reg2-05o.jsonl",
+  "data/actuals/nfl-2025-reg3-05o.jsonl",
+  "data/actuals/nfl-2025-reg4-05o.jsonl",
+  "data/actuals/nfl-2025-reg5-05o.jsonl",
+  "data/actuals/nfl-2025-reg6-05o.jsonl",
+  "data/actuals/nfl-2025-reg7-05o.jsonl",
+  "data/actuals/nfl-2025-reg8-05o.jsonl",
+  "data/actuals/nfl-2025-reg10-05o.jsonl",
+  "data/actuals/nfl-2025-reg12-05o.jsonl",
+  "data/actuals/nfl-2025-reg13-05o.jsonl",
+  "data/actuals/nfl-2025-reg14-05o.jsonl",
+  "data/actuals/nfl-2025-reg16-05o.jsonl",
+  "data/actuals/nfl-2025-reg18-05o.jsonl",
+  "data/actuals/nfl-2025-post1-05o.jsonl",
+  "data/actuals/nfl-2025-post2-05o.jsonl",
+  "data/actuals/nfl-2025-post4-05o.jsonl",
   "data/actuals/ncaa-fbs-2025-titles.jsonl",
   "data/actuals/ncaa-fbs-2025-w1.jsonl",
   "data/actuals/ncaa-fbs-2025-05l-addon.jsonl",
@@ -421,7 +440,7 @@ export const DATA_SOURCE = live.source || "live";
   const changelogSrc = join(ROOT, "changelog");
   const changelogDst = join(SITE, "src/changelog");
   mkdirSync(changelogDst, { recursive: true });
-  const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10"];
+  const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11"];
   for (const d of days) {
     copyFileSync(join(changelogSrc, d + ".json"), join(changelogDst, d + ".json"));
   }
