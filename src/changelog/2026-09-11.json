@@ -1757,19 +1757,77 @@
     "fct_01M27MKE3J8CR49EWTTX20ETP0",
     "fct_01M27MKE3JF9WNG256CGRPSG3S",
     "fct_01M27MKE3J2TGJB8X56M2TCV5A",
-    "fct_01M27MKE3JZ0FTC1SZ50243GMW"
+    "fct_01M27MKE3JZ0FTC1SZ50243GMW",
+    "fct_01M28BNVX8WHX3RCN5497PN84T",
+    "fct_01M28BNVX872YNX4YZ0B8XYSF6",
+    "fct_01M28BNVX94QJSWWF9Z66B4MPP",
+    "fct_01M28BNVX9AG2P3SM5MN0NT3DR",
+    "fct_01M28BNVX9GKNJ63G3NSXZ3Q46",
+    "fct_01M28BNVX90R1GX2E5ZVG545X6",
+    "fct_01M28BNVX9071N8H88Y2VGETSD",
+    "fct_01M28BNVX9PBXWS4CYAM8CE816",
+    "fct_01M28BNVX9VFYAC2SZF68BCDA9",
+    "fct_01M28BNVX9D0528FGSWH0E9CRW",
+    "fct_01M28BNVX9SMCE6WEVAH1YK4BW",
+    "fct_01M28BNVX98DVW2B095TGG4HVB",
+    "fct_01M28BNVX9JVRT1DY3XXY9WRCP"
   ],
   "skipped": [
     {
       "reason": "legal_hold",
-      "note": "05q AFC/NFC/MVP \u2014 no Architect subjects yet"
+      "note": "05q AFC/NFC/MVP — no Architect subjects yet"
     },
     {
       "reason": "legal_hold",
-      "note": "SportsCenter Van Pelt video \u2014 need free transcript"
+      "note": "SportsCenter Van Pelt video — need free transcript"
+    },
+    {
+      "reason": "qualitative",
+      "quote": "Saturday Night: Chance of precipitation is 90%",
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "note": "12-hour precip band or PoP%; not calendar-day inches"
+    },
+    {
+      "reason": "no_explicit_value",
+      "quote": "Saturday Night: New rainfall amounts between a half and three quarters of an inch possible",
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "note": "12-hour precip band or PoP%; not calendar-day inches"
+    },
+    {
+      "reason": "qualitative",
+      "quote": "Sunday: Chance of precipitation is 90%",
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "note": "12-hour precip band or PoP%; not calendar-day inches"
+    },
+    {
+      "reason": "no_explicit_value",
+      "quote": "Sunday: New rainfall amounts between three quarters and one inch possible",
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "note": "12-hour precip band or PoP%; not calendar-day inches"
+    },
+    {
+      "reason": "duplicate",
+      "quote": "Sunday Night: Partly cloudy, with a low around 68.",
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "subject_id": "us-nyc-central-park-tmin",
+      "horizon_date": "2026-09-14"
+    },
+    {
+      "reason": "qualitative",
+      "quote": "Thursday: Chance of precipitation is 40%",
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "note": "12-hour precip band or PoP%; not calendar-day inches"
     }
   ],
   "errors": [],
-  "note_05q": "ESPN/TSN 2025 expert panel SB LX only via TSN URL: added 68. Incl Scott Van Pelt \u2192 baltimore. No double-emit ESPN.",
-  "note_05q_addon": "05q AFC/NFC/MVP add-on: added 204 ({'nfl-2025-afc-champion': 68, 'nfl-2025-nfc-champion': 68, 'nfl-2025-mvp': 68}). TSN only. Van Pelt included."
+  "note_05q": "ESPN/TSN 2025 expert panel SB LX only via TSN URL: added 68. Incl Scott Van Pelt → baltimore. No double-emit ESPN.",
+  "note_05q_addon": "05q AFC/NFC/MVP add-on: added 204 ({'nfl-2025-afc-champion': 68, 'nfl-2025-nfc-champion': 68, 'nfl-2025-mvp': 68}). TSN only. Van Pelt included.",
+  "nws_okx_ingest": {
+    "ran_at": "2026-09-11T13:49:25Z",
+    "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+    "published_at": "2026-09-11T07:39:50Z",
+    "added": 13,
+    "skipped": 6,
+    "errors": 0
+  }
 }
