@@ -21,6 +21,7 @@ const FORECAST_FILES = [
   "ingest/forecasts/2026-09-09.jsonl",
   "ingest/forecasts/2026-09-10.jsonl",
   "ingest/forecasts/2026-09-11.jsonl",
+  "ingest/forecasts/2026-09-14.jsonl",
 ];
 const ACTUAL_FILES = [
   "data/actuals/nws-knyc.jsonl",
@@ -440,7 +441,7 @@ export const DATA_SOURCE = live.source || "live";
   const changelogSrc = join(ROOT, "changelog");
   const changelogDst = join(SITE, "src/changelog");
   mkdirSync(changelogDst, { recursive: true });
-  const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11"];
+  const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14"];
   for (const d of days) {
     copyFileSync(join(changelogSrc, d + ".json"), join(changelogDst, d + ".json"));
   }

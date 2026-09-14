@@ -1,0 +1,45 @@
+{
+  "added_forecast_ids": [
+    "fct_01M2G0FH2XSPJ0EWC7V63W3W1V",
+    "fct_01M2G0FH2XB8F0YPSJN4XXY8VD",
+    "fct_01M2G0FH2X1FR9DRM3S3XEBKJN",
+    "fct_01M2G0FH2XGRBXM77ZJ8YK1SR4",
+    "fct_01M2G0FH2X148C0JHXG97K7QT9",
+    "fct_01M2G0FH2XDEBZNNRA9WDTXXD6",
+    "fct_01M2G0FH2X6XCKR7DY10EX6T4Y",
+    "fct_01M2G0FH2X52V2N05KJ754DAY0",
+    "fct_01M2G0FH2XW5YETA36JG0J4XRG",
+    "fct_01M2G0FH2XXPTJXK6JW7SF5KBD",
+    "fct_01M2G0FH2XVCN7830B1J5T3AHN",
+    "fct_01M2G0FH2YX4RDMK9WA93F855G",
+    "fct_01M2G0FH2YEEBCS6G99J0A3JX7",
+    "fct_01M2G0FH2YYTWGXSVJBR5YTWYP"
+  ],
+  "skipped": [
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Saturday Night: Chance of precipitation is 30%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 30%"
+    },
+    {
+      "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+      "claim_text": "Sunday: Chance of precipitation is 30%",
+      "reason": "no_explicit_value",
+      "quote": "PoP% is not a precip amount: Chance of precipitation is 30%"
+    }
+  ],
+  "errors": [],
+  "resolved_ids": [],
+  "still_pending": [],
+  "voids": [],
+  "corrections": [],
+  "nws_okx_ingest": {
+    "ran_at": "2026-09-14T13:07:38Z",
+    "source_url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+    "published_at": "2026-09-14T09:27:10Z",
+    "added": 14,
+    "skipped": 2,
+    "errors": 0
+  }
+}

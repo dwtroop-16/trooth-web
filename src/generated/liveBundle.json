@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-11T20:21:54.310Z",
+  "generated_at": "2026-09-14T14:52:58.816Z",
   "source": "live",
   "SPEAKERS": [
     {
@@ -42008,6 +42008,468 @@
       "scorable": true,
       "unscorable_reason": null,
       "match_key": "weather|us-nyc-central-park-tmin|2026-09-18|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2XSPJ0EWC7V63W3W1V",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmax",
+        "label": "Central Park daily high"
+      },
+      "horizon_end": "2026-09-14T23:59:59Z",
+      "claim": {
+        "text": "Today: Sunny, with a high near 75.",
+        "type": "numeric",
+        "value": 75,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmax|2026-09-14|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2XB8F0YPSJN4XXY8VD",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmin",
+        "label": "Central Park daily low"
+      },
+      "horizon_end": "2026-09-15T23:59:59Z",
+      "claim": {
+        "text": "Tonight: Clear. Low around 58, with temperatures rising to around 60 overnight.",
+        "type": "numeric",
+        "value": 58,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmin|2026-09-15|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2X1FR9DRM3S3XEBKJN",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmax",
+        "label": "Central Park daily high"
+      },
+      "horizon_end": "2026-09-15T23:59:59Z",
+      "claim": {
+        "text": "Tuesday: Sunny, with a high near 72.",
+        "type": "numeric",
+        "value": 72,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmax|2026-09-15|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2XGRBXM77ZJ8YK1SR4",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmin",
+        "label": "Central Park daily low"
+      },
+      "horizon_end": "2026-09-16T23:59:59Z",
+      "claim": {
+        "text": "Tuesday Night: Mostly clear, with a low around 61.",
+        "type": "numeric",
+        "value": 61,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmin|2026-09-16|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2X148C0JHXG97K7QT9",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmax",
+        "label": "Central Park daily high"
+      },
+      "horizon_end": "2026-09-16T23:59:59Z",
+      "claim": {
+        "text": "Wednesday: Sunny, with a high near 79.",
+        "type": "numeric",
+        "value": 79,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmax|2026-09-16|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2XDEBZNNRA9WDTXXD6",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmin",
+        "label": "Central Park daily low"
+      },
+      "horizon_end": "2026-09-17T23:59:59Z",
+      "claim": {
+        "text": "Wednesday Night: Partly cloudy. Low around 66, with temperatures rising to around 68 overnight.",
+        "type": "numeric",
+        "value": 66,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmin|2026-09-17|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2X6XCKR7DY10EX6T4Y",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmax",
+        "label": "Central Park daily high"
+      },
+      "horizon_end": "2026-09-17T23:59:59Z",
+      "claim": {
+        "text": "Thursday: Mostly sunny, with a high near 80.",
+        "type": "numeric",
+        "value": 80,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmax|2026-09-17|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2X52V2N05KJ754DAY0",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmin",
+        "label": "Central Park daily low"
+      },
+      "horizon_end": "2026-09-18T23:59:59Z",
+      "claim": {
+        "text": "Thursday Night: Partly cloudy, with a low around 68.",
+        "type": "numeric",
+        "value": 68,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmin|2026-09-18|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2XW5YETA36JG0J4XRG",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmax",
+        "label": "Central Park daily high"
+      },
+      "horizon_end": "2026-09-18T23:59:59Z",
+      "claim": {
+        "text": "Friday: Partly sunny, with a high near 82.",
+        "type": "numeric",
+        "value": 82,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmax|2026-09-18|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2XXPTJXK6JW7SF5KBD",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmin",
+        "label": "Central Park daily low"
+      },
+      "horizon_end": "2026-09-19T23:59:59Z",
+      "claim": {
+        "text": "Friday Night: A slight chance of rain showers between 8pm and 2am. Partly cloudy, with a low around 65.",
+        "type": "numeric",
+        "value": 65,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmin|2026-09-19|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2XVCN7830B1J5T3AHN",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmax",
+        "label": "Central Park daily high"
+      },
+      "horizon_end": "2026-09-19T23:59:59Z",
+      "claim": {
+        "text": "Saturday: Partly sunny, with a high near 78.",
+        "type": "numeric",
+        "value": 78,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmax|2026-09-19|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2YX4RDMK9WA93F855G",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmin",
+        "label": "Central Park daily low"
+      },
+      "horizon_end": "2026-09-20T23:59:59Z",
+      "claim": {
+        "text": "Saturday Night: A chance of rain showers after 8pm. Mostly cloudy, with a low around 64.",
+        "type": "numeric",
+        "value": 64,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmin|2026-09-20|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2YEEBCS6G99J0A3JX7",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmax",
+        "label": "Central Park daily high"
+      },
+      "horizon_end": "2026-09-20T23:59:59Z",
+      "claim": {
+        "text": "Sunday: A chance of rain showers. Partly sunny, with a high near 76.",
+        "type": "numeric",
+        "value": 76,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmax|2026-09-20|degF"
+    },
+    {
+      "schema_version": "1.0.0",
+      "id": "fct_01M2G0FH2YYTWGXSVJBR5YTWYP",
+      "speaker_id": "nws-okx",
+      "captured_at": "2026-09-14T13:07:38Z",
+      "published_at": "2026-09-14T09:27:10Z",
+      "source": {
+        "type": "agency",
+        "url": "https://api.weather.gov/gridpoints/OKX/34,45/forecast",
+        "account": null
+      },
+      "speaker": {
+        "name": "NWS New York (OKX)",
+        "org": "National Weather Service"
+      },
+      "domain": "weather",
+      "subject": {
+        "id": "us-nyc-central-park-tmin",
+        "label": "Central Park daily low"
+      },
+      "horizon_end": "2026-09-21T23:59:59Z",
+      "claim": {
+        "text": "Sunday Night: A chance of rain showers. Mostly cloudy, with a low around 62.",
+        "type": "numeric",
+        "value": 62,
+        "unit": "degF",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "weather|us-nyc-central-park-tmin|2026-09-21|degF"
     }
   ],
   "ACTUALS": [
