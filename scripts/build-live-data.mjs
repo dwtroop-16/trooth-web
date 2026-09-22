@@ -57,6 +57,13 @@ const ACTUAL_FILES = [
   "data/actuals/ncaa-fbs-2025-titles.jsonl",
   "data/actuals/ncaa-fbs-2025-w1.jsonl",
   "data/actuals/ncaa-fbs-2025-05l-addon.jsonl",
+  "data/actuals/ncaa-fbs-2025-reg1-remainder.jsonl",
+  "data/actuals/ncaa-fbs-2025-reg2.jsonl",
+  "data/actuals/ncaa-fbs-2025-reg4.jsonl",
+  "data/actuals/ncaa-fbs-2025-reg6.jsonl",
+  "data/actuals/ncaa-fbs-2025-reg8.jsonl",
+  "data/actuals/ncaa-fbs-2025-reg9.jsonl",
+  "data/actuals/ncaa-fbs-2025-reg10.jsonl",
   "data/actuals/fred-macro-2025.jsonl",
   "data/actuals/politics-2024-president.jsonl",
 ];
