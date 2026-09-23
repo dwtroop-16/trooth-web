@@ -6,8 +6,8 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
   return (
     <div>
-      <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap;")}>
-        <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>{title}</h2>
+      <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;")}>
+        <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>{title}</h2>
         {rankNote ? (
           <span style={css("font-size:12.5px;color:var(--muted);")}>{resultCount} · {rankNote}</span>
         ) : (
@@ -46,7 +46,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
           </Hover>
         ))}
         {empty && (
-          <div style={css("padding:28px;text-align:center;color:var(--muted);font-size:14px;")}>{emptyLabel}</div>
+          <div style={css("padding:28px 20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{emptyLabel}</div>
         )}
       </div>
     </div>
@@ -57,17 +57,17 @@ export default function Home({ vals, openClaim }) {
   const q = (vals.q || "").trim();
   const showDomain = vals.boardShowDomain;
   const recent = vals.recentResolved.slice(0, 6);
-  // Avoid duplicating the featured card inside recent when both are shown.
   const featuredId = vals.featuredClaim?.id;
   const recentOnly = featuredId ? recent.filter((c) => c.id !== featuredId) : recent;
+  const matchCount = vals.matchCount || 0;
 
   return (
-    <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;")}>
-      <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 16px;")}>
+    <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;")}>
+      <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 18px;")}>
         Public forecasts vs official prints · pending is not a miss
       </div>
 
-      <div style={css("display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;")}>
+      <div style={css("display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;")}>
         {vals.categories.map((tab) => (
           <Hover
             key={tab.label}
@@ -87,18 +87,43 @@ export default function Home({ vals, openClaim }) {
       </div>
 
       {q ? (
+        <div
+          style={css(
+            "margin-bottom:22px;padding:14px 16px;background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;"
+          )}
+        >
+          <div>
+            <div style={css("font-family:Newsreader,serif;font-size:18px;font-weight:600;color:var(--ink);")}>
+              {vals.matchCountLabel || (matchCount === 1 ? "1 match" : matchCount + " matches")}
+            </div>
+            <div style={css("font-size:13px;color:var(--muted);margin-top:2px;")}>
+              Across all domains for “{q}”
+            </div>
+          </div>
+          <Hover
+            as="button"
+            onClick={vals.seeAllResults}
+            style="background:var(--forest);color:var(--paper);border:1px solid var(--forest);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;"
+            hover="background:var(--forest-deep);border-color:var(--forest-deep);"
+          >
+            See all results
+          </Hover>
+        </div>
+      ) : null}
+
+      {q ? (
         <div style={css("margin-bottom:28px;")}>
-          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;")}>
-            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Claims</h2>
-            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
+          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;")}>
+            <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>Matching claims</h2>
+            <Hover as="button" onClick={vals.seeAllResults} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all results</Hover>
           </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
             {vals.matchingClaims.slice(0, 8).map((card) => (
               <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
             ))}
             {vals.matchingClaims.length === 0 && (
-              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;color:var(--muted);font-size:14px;")}>
-                No claims match.
+              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>
+                No claims match “{q}”. Try another speaker, subject, grade, or source host — or clear search (Esc).
               </div>
             )}
           </div>
@@ -111,18 +136,22 @@ export default function Home({ vals, openClaim }) {
         rankNote={vals.rankNote}
         rows={vals.rows}
         empty={vals.noResults}
-        emptyLabel={q ? "No speakers match." : "No speakers yet"}
+        emptyLabel={
+          q
+            ? `No speakers match “${q}” in this tab. Claim matches above still search all domains.`
+            : "No speakers yet"
+        }
         showDomain={showDomain}
       />
-      <div style={css("margin-top:8px;")}>
-        <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
+      <div style={css("margin-top:10px;")}>
+        <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>
       </div>
 
       {!q && (
-        <div style={css("margin-top:32px;")}>
-          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;")}>
-            <h2 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:0;color:var(--ink);")}>Claims</h2>
-            <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
+        <div style={css("margin-top:36px;")}>
+          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;")}>
+            <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>Claims</h2>
+            <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
           </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
             {vals.featuredClaim ? (
@@ -132,7 +161,7 @@ export default function Home({ vals, openClaim }) {
               <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
             ))}
             {!vals.featuredClaim && recentOnly.length === 0 && (
-              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;color:var(--muted);font-size:14px;")}>
+              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>
                 No claims in this filter yet.
               </div>
             )}

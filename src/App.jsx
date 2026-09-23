@@ -3,7 +3,7 @@ import { buildVals } from "./viewModel.js";
 import { loadData, submitSourceTip } from "./dataSource.js";
 import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
-import { parsePath, pathFor, normalizeDomain } from "./router.js";
+import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import Footer from "./components/Footer.jsx";
@@ -20,17 +20,26 @@ const LogModal = lazy(() => import("./components/LogModal.jsx"));
 const AccountModal = lazy(() => import("./components/AccountModal.jsx"));
 const Toast = lazy(() => import("./components/Toast.jsx"));
 
-function initialFromLocation() {
+function filtersFromLocation() {
   const parsed = parsePath(window.location.pathname);
+  const filters =
+    parsed.view === "claims"
+      ? parseClaimsQuery(window.location.search)
+      : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All" };
+  return { parsed, filters };
+}
+
+function initialFromLocation() {
+  const { parsed, filters } = filtersFromLocation();
   return {
     view: parsed.view,
     speakerId: parsed.speakerId || null,
     forecastId: parsed.forecastId || null,
-    cat: "All",
-    q: "",
-    claimStatus: "All",
-    claimSpeaker: "All",
-    claimHorizon: "All",
+    cat: filters.domain || "All",
+    q: filters.q || "",
+    claimStatus: filters.grade || "All",
+    claimSpeaker: filters.speaker || "All",
+    claimHorizon: filters.horizon || "All",
     modal: false,
     toast: "",
     mClaim: "",
@@ -77,12 +86,17 @@ export default function App() {
 
   useEffect(() => {
     const onPop = () => {
-      const parsed = parsePath(window.location.pathname);
+      const { parsed, filters } = filtersFromLocation();
       setStateRaw((prev) => ({
         ...prev,
         view: parsed.view,
         speakerId: parsed.speakerId || null,
         forecastId: parsed.forecastId || null,
+        cat: parsed.view === "claims" ? filters.domain : prev.cat,
+        q: parsed.view === "claims" ? filters.q : prev.q,
+        claimStatus: parsed.view === "claims" ? filters.grade : prev.claimStatus,
+        claimSpeaker: parsed.view === "claims" ? filters.speaker : prev.claimSpeaker,
+        claimHorizon: parsed.view === "claims" ? filters.horizon : prev.claimHorizon,
       }));
     };
     window.addEventListener("popstate", onPop);
@@ -93,15 +107,52 @@ export default function App() {
   const scrollTop = () => window.scrollTo({ top: 0 });
 
   const navigate = (path, patch = {}) => {
-    if (window.location.pathname !== path) window.history.pushState({}, "", path);
-    const parsed = parsePath(path);
+    const [pathname, search = ""] = path.split("?");
+    const full = search ? `${pathname}?${search}` : pathname;
+    const current = window.location.pathname + window.location.search;
+    if (current !== full) window.history.pushState({}, "", full);
+    const parsed = parsePath(pathname);
+    const claimsFilters = parsed.view === "claims" ? parseClaimsQuery(search ? `?${search}` : "") : null;
     setState({
       view: parsed.view,
       speakerId: parsed.speakerId || null,
       forecastId: parsed.forecastId || null,
+      ...(claimsFilters
+        ? {
+            cat: claimsFilters.domain,
+            q: claimsFilters.q,
+            claimStatus: claimsFilters.grade,
+            claimSpeaker: claimsFilters.speaker,
+            claimHorizon: claimsFilters.horizon,
+          }
+        : {}),
       ...patch,
     });
     scrollTop();
+  };
+
+  const claimsPathFromState = (s) =>
+    pathForClaims({
+      q: s.q,
+      domain: s.cat,
+      grade: s.claimStatus,
+      speaker: s.claimSpeaker,
+      horizon: s.claimHorizon,
+    });
+
+  const setClaimsFilter = (patch, { push = false, replace = false } = {}) => {
+    setStateRaw((prev) => {
+      const next = { ...prev, ...patch };
+      if (next.view === "claims") {
+        const full = claimsPathFromState(next);
+        const current = window.location.pathname + window.location.search;
+        if (full !== current) {
+          if (replace || !push) window.history.replaceState({}, "", full);
+          else window.history.pushState({}, "", full);
+        }
+      }
+      return next;
+    });
   };
 
   const openSpeaker = (id) => navigate(pathFor("profile", id));
@@ -109,8 +160,40 @@ export default function App() {
   const goHome = () => navigate(pathFor("home"));
   const goMethod = () => navigate(pathFor("method"));
   const goChangelog = () => navigate(pathFor("changelog"));
-  const setCat = (c) => setState({ cat: normalizeDomain(c) });
-  const goClaims = () => navigate(pathFor("claims"));
+  const setCat = (c) => {
+    const cat = normalizeDomain(c);
+    setStateRaw((prev) => {
+      if (prev.view === "claims") {
+        const next = { ...prev, cat };
+        const full = claimsPathFromState(next);
+        const current = window.location.pathname + window.location.search;
+        if (full !== current) window.history.pushState({}, "", full);
+        return next;
+      }
+      return { ...prev, cat };
+    });
+  };
+  const goClaims = (opts = {}) => {
+    // onClick may pass a SyntheticEvent; treat only plain option objects as filters.
+    if (!opts || typeof opts !== "object" || typeof opts.preventDefault === "function" || opts.nativeEvent) {
+      opts = {};
+    }
+    const q = opts.q !== undefined ? opts.q : "";
+    const domain = opts.domain !== undefined ? opts.domain : "All";
+    const grade = opts.grade !== undefined ? opts.grade : "All";
+    const speaker = opts.speaker !== undefined ? opts.speaker : "All";
+    const horizon = opts.horizon !== undefined ? opts.horizon : "All";
+    navigate(
+      pathForClaims({ q, domain, grade, speaker, horizon }),
+      {
+        cat: normalizeDomain(domain),
+        q: (q || "").trim(),
+        claimStatus: grade || "All",
+        claimSpeaker: speaker || "All",
+        claimHorizon: horizon || "All",
+      }
+    );
+  };
 
   const flashToast = (text) => {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -265,7 +348,33 @@ export default function App() {
     submitting: state.accountSubmitting,
   };
 
-  const vals = buildVals(state, { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal: openTipModal }, data);
+  const setStateWithClaimsQ = (patch) => {
+    // Prefer replaceState while typing q on /claims
+    if (state.view === "claims" && Object.prototype.hasOwnProperty.call(patch, "q")) {
+      setClaimsFilter(patch, { replace: true });
+      return;
+    }
+    setState(patch);
+  };
+
+  const vals = buildVals(
+    state,
+    {
+      setState: setStateWithClaimsQ,
+      setClaimsFilter,
+      openSpeaker,
+      openClaim,
+      goHome,
+      setCat,
+      goMethod,
+      goChangelog,
+      goClaims,
+      submit,
+      account,
+      openModal: openTipModal,
+    },
+    data
+  );
 
   useEffect(() => {
     let title = "Trooth";
