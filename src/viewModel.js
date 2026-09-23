@@ -1,4 +1,4 @@
-import { formatWhen, formatPct, formatMetric, statusMeta } from "./helpers.js";
+import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
@@ -9,6 +9,43 @@ const FBS_TEAM_LABELS = teamLabels.fbs || {};
 const NFL_SLUGS = new Set(Object.keys(NFL_TEAM_LABELS));
 const FBS_SLUGS = new Set(Object.keys(FBS_TEAM_LABELS));
 const ALL_TEAM_SLUGS = new Set([...NFL_SLUGS, ...FBS_SLUGS]);
+
+/** Flatten searchable text for a public claim card (global index fields). */
+export function claimSearchText(card) {
+  if (!card) return "";
+  const actual =
+    card.actual == null || card.actual === ""
+      ? ""
+      : typeof card.actual === "string"
+        ? card.actual
+        : String(card.actual);
+  const parts = [
+    card.id,
+    card.speakerName,
+    card.speakerOrg,
+    card.claimText,
+    card.subjectId,
+    card.subjectLabel,
+    card.grade,
+    card.status,
+    card.sourceHost,
+    card.sourceUrl,
+    actual,
+    card.actualSourceName,
+    card.sportLabel,
+    ...(card.teamLabels || []),
+    ...(card.accounts || []),
+  ];
+  return parts.filter((p) => p != null && p !== "").join(" ").toLowerCase();
+}
+
+/** Substring match across speaker/org/claim/subject/grade/host/actual/teams/id. */
+export function claimMatchesQuery(card, q) {
+  const query = (q || "").toLowerCase().trim();
+  if (!query) return true;
+  return claimSearchText(card).includes(query);
+}
+
 
 const DIVISION_SPORT_ORDER = ["NFL", "NCAA FBS"];
 
@@ -182,6 +219,8 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const actualValue = actual && actual.status === "resolved" ? actual.value : "pending";
   const actualSourceName = actual && actual.status === "resolved" ? actual.source.name : src.name;
   const actualSourceUrl = actual && actual.status === "resolved" ? actual.source.url : src.url;
+  const { division, teams } = forecastBoardAttribution(forecast);
+  const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const card = {
     id: forecast.id,
     speakerId: speaker?.id || forecast.speaker_id,
@@ -189,6 +228,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     speakerOrg: (speaker && speaker.org) || forecast.speaker.org,
     claimText: forecast.claim.text,
     sourceUrl: forecast.source.url,
+    sourceHost: hostnameFromUrl(forecast.source.url),
     publishedAt: forecast.published_at,
     horizon: forecast.horizon_end,
     actual: actualValue,
@@ -200,7 +240,10 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     domainKey: forecast.domain,
     unit: forecast.claim.unit,
     band: forecast.claim.band,
-    subjectLabel: forecast.subject.label,
+    subjectId: forecast.subject?.id || "",
+    subjectLabel: forecast.subject?.label || "",
+    sportLabel: division || "",
+    teamLabels,
     accounts: speaker?.accounts || [],
     error: score?.abs_error ?? null,
     ape: score?.ape ?? null,
@@ -270,6 +313,7 @@ function sortClaimList(list) {
 export function buildVals(state, actions, data) {
 
   const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal } = actions;
+  // actions.setClaimsFilter optional (URL sync on /claims)
   const speakers = data.speakers || [];
   const forecasts = data.forecasts || [];
   const actuals = data.actuals || [];
@@ -364,21 +408,59 @@ export function buildVals(state, actions, data) {
     scopedCards[0] ||
     null;
 
-  const claimMatchesQuery = (c) => {
-    if (!q) return true;
-    return [c.speakerName, c.speakerOrg, c.claimText].join(" ").toLowerCase().includes(q);
-  };
-
+  // Global search: all domains (not only active tab)
   const matchingClaims = q
-    ? sortClaimList(scopedCards.filter(claimMatchesQuery))
+    ? sortClaimList(cards.filter((c) => claimMatchesQuery(c, q)))
     : [];
+  const matchCount = matchingClaims.length;
+  const matchCountLabel =
+    matchCount === 0
+      ? "No matches"
+      : matchCount === 1
+        ? "1 match"
+        : matchCount + " matches";
+
+  const matchingSpeakers = q
+    ? speakers
+        .filter((sp) => {
+          const hay = [sp.name, sp.org, ...(sp.accounts || [])].join(" ").toLowerCase();
+          if (hay.includes(q)) return true;
+          return cards.some((c) => c.speakerId === sp.id && claimMatchesQuery(c, q));
+        })
+        .slice(0, 4)
+        .map((sp) => ({
+          id: sp.id,
+          name: sp.name,
+          org: sp.org,
+          kind: "speaker",
+          open: () => openSpeaker(sp.id),
+        }))
+    : [];
+
+  const searchSuggestions = [];
+  for (const sp of matchingSpeakers) {
+    if (searchSuggestions.length >= 8) break;
+    searchSuggestions.push(sp);
+  }
+  for (const c of matchingClaims) {
+    if (searchSuggestions.length >= 8) break;
+    searchSuggestions.push({
+      id: c.id,
+      name: c.speakerName,
+      claimText: c.claimText,
+      grade: c.grade,
+      domain: c.domain,
+      kind: "claim",
+      open: () => openClaim(c.id),
+    });
+  }
 
   const claimStatus = s.claimStatus || "All";
   const claimSpeaker = s.claimSpeaker || "All";
   const claimHorizon = s.claimHorizon || "All";
   const now = Date.now();
 
-  let claimList = scopedCards.filter(claimMatchesQuery);
+  let claimList = scopedCards.filter((c) => claimMatchesQuery(c, q));
   if (claimStatus !== "All") {
     claimList = claimList.filter((c) => c.grade === claimStatus);
   }
@@ -485,6 +567,21 @@ export function buildVals(state, actions, data) {
     categories,
     q: s.q,
     onSearch: (e) => setState({ q: e.target.value }),
+    clearSearch: () => setState({ q: "" }),
+    submitSearch: () => {
+      const query = (s.q || "").trim();
+      if (typeof goClaims === "function") {
+        goClaims({ q: query, domain: cat !== "All" ? cat : "All", replace: false });
+      }
+    },
+    seeAllResults: () => {
+      if (typeof goClaims === "function") {
+        goClaims({ q: (s.q || "").trim(), domain: cat !== "All" ? cat : "All", replace: false });
+      }
+    },
+    matchCount,
+    matchCountLabel,
+    searchSuggestions,
     openModal: openModal || (() => setState({ modal: true })),
     isHome: s.view === "home",
     isProfile: s.view === "profile" && !!p,
@@ -497,11 +594,20 @@ export function buildVals(state, actions, data) {
     claimList,
     claimListCount: claimList.length + (claimList.length === 1 ? " claim" : " claims"),
     claimStatus,
-    setClaimStatus: (v) => setState({ claimStatus: v }),
+    setClaimStatus: (v) => {
+      if (typeof actions.setClaimsFilter === "function") actions.setClaimsFilter({ claimStatus: v }, { push: true });
+      else setState({ claimStatus: v });
+    },
     claimSpeaker,
-    setClaimSpeaker: (v) => setState({ claimSpeaker: v }),
+    setClaimSpeaker: (v) => {
+      if (typeof actions.setClaimsFilter === "function") actions.setClaimsFilter({ claimSpeaker: v }, { push: true });
+      else setState({ claimSpeaker: v });
+    },
     claimHorizon,
-    setClaimHorizon: (v) => setState({ claimHorizon: v }),
+    setClaimHorizon: (v) => {
+      if (typeof actions.setClaimsFilter === "function") actions.setClaimsFilter({ claimHorizon: v }, { push: true });
+      else setState({ claimHorizon: v });
+    },
     speakerOptions,
     stat: {
       speakers: speakers.length,

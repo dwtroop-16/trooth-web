@@ -85,3 +85,33 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
     grid-template-columns: minmax(0, 1fr) minmax(64px, 0.6fr) 72px 88px 72px;
   }
 }
+
+/* Header: mobile search wraps under logo; calm nav rhythm */
+.trooth-header-inner {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+@media (max-width: 720px) {
+  .trooth-header-nav {
+    order: 3;
+    width: 100%;
+    padding-bottom: 2px;
+  }
+  .trooth-header-search {
+    order: 2;
+    flex: 1 1 100% !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+  .trooth-header-spacer {
+    display: none;
+  }
+  .trooth-header-tip {
+    margin-left: auto;
+  }
+  .trooth-board-row,
+  .trooth-board-row--scoped {
+    gap: 8px;
+    font-size: 12px;
+  }
+}
