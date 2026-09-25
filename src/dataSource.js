@@ -1,14 +1,20 @@
 import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
+import { applyRubric } from "./rubric.js";
 
-const BUNDLED = {
+/** Scores as published: Scorer rows re-graded under the public rubric (see rubric.js). */
+export function withRubric(data) {
+  return { ...data, scores: applyRubric(data) };
+}
+
+export const BUNDLED = withRubric({
   speakers: SPEAKERS,
   forecasts: FORECASTS,
   actuals: ACTUALS,
   scores: SCORES,
   CATCOLORS,
   source: "live",
-};
+});
 
 function mapForecastRow(r) {
   return {
@@ -93,12 +99,12 @@ export async function loadData() {
   ]);
   const err = spRes.error || fRes.error || aRes.error || sRes.error;
   if (err) throw err;
-  return {
+  return withRubric({
     speakers: spRes.data || [],
     forecasts: (fRes.data || []).map(mapForecastRow),
     actuals: (aRes.data || []).map(mapActualRow),
     scores: (sRes.data || []).map(mapScoreRow),
     CATCOLORS,
     source: "supabase",
-  };
+  });
 }
