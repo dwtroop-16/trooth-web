@@ -244,6 +244,38 @@ export function resolveActualSource(forecast, score, actual) {
   return { name: src.name, url: src.url, origin: "official" };
 }
 
+/**
+ * Game subject teams as { away, home } display labels. Order: catalog away/home slugs on the subject,
+ * then the canonical {away}-{home} id pattern. Returns null when teams cannot be determined (never invented).
+ */
+export function gameTeamLabels(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const sid = forecast?.subject?.id || "";
+  const division = sportDivision(sid);
+  const known = (slug) => typeof slug === "string" && (NFL_TEAM_LABELS[slug] || FBS_TEAM_LABELS[slug]);
+  if (known(subject?.away) && known(subject?.home)) {
+    return { away: teamLabelFor(subject.away, division), home: teamLabelFor(subject.home, division) };
+  }
+  const game = parseGameTeams(sid);
+  if (game) return { away: teamLabelFor(game.away, division), home: teamLabelFor(game.home, division) };
+  return null;
+}
+
+/**
+ * Sports score actuals are stored "{away_pts}-{home_pts}" (game-subjects-v1). Display in house style,
+ * away first, same order as the stored value: "Kansas City Chiefs 21, Los Angeles Chargers 27".
+ * Unknown teams keep the score with away/home labels only: "Away 21, Home 27". Anything else is unchanged.
+ */
+export function formatSportsActual(forecast, value, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  if (forecast?.domain !== "sports") return value;
+  const m = typeof value === "string" ? value.trim().match(/^(\d+)-(\d+)$/) : null;
+  if (!m) return value;
+  const unit = forecast?.claim?.unit || subject?.unit;
+  if (unit !== "score") return value;
+  const teams = gameTeamLabels(forecast, subject);
+  if (teams) return `${teams.away} ${m[1]}, ${teams.home} ${m[2]}`;
+  return `Away ${m[1]}, Home ${m[2]}`;
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
   const grade = publicGrade(status);
@@ -253,7 +285,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   // show "pending" even if an actual has already been observed for the match key.
   const graded = status === "hit" || status === "miss";
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
-  const actualValue = shown ? shown.value : "pending";
+  const actualValue = shown ? formatSportsActual(forecast, shown.value) : "pending";
   // Graded cards: the Scorer's own actual_source_url wins, else the actuals join (#45).
   const actualSource = graded ? resolveActualSource(forecast, score, shown) : { name: src.name, url: src.url };
   const actualSourceName = actualSource.name;
@@ -274,6 +306,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     publishedAt: forecast.published_at,
     horizon: forecast.horizon_end,
     actual: actualValue,
+    actualRaw,
     actualSourceName,
     actualSourceUrl,
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
