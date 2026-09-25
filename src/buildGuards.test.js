@@ -14,8 +14,11 @@ import {
   assertReferencedActuals,
   findStaleScores,
   staleSummary,
-  DEFAULT_LAG_HOURS,
+  lagHoursFor,
+  isUnscorableSubject,
+  POLITICS_NULL_LAG_FALLBACK_HOURS,
 } from "../scripts/bundleChecks.mjs";
+import * as bundleChecks from "../scripts/bundleChecks.mjs";
 
 const HERE = fileURLToPath(new URL(".", import.meta.url));
 const TROOTH = "/workspace/trooth";
@@ -156,28 +159,112 @@ test("stale guard flags pending scores past horizon + catalog lag with a resolve
   assert.match(staleSummary(stale), /^WARNING stale-scorer guard: 1 pending score\(s\).*weather 1/);
 });
 
-test("stale guard ignores graded rows, unresolved actuals, and uses domain default lag", () => {
+test("stale guard ignores graded rows and unresolved actuals", () => {
   const now = "2026-10-01T00:00:00Z";
-  assert.deepEqual(findStaleScores({ scores: [{ ...STALE_S, status: "miss" }], forecasts: [STALE_F], actuals: [STALE_A], now }), []);
-  assert.deepEqual(findStaleScores({ scores: [STALE_S], forecasts: [STALE_F], actuals: [{ ...STALE_A, status: "provisional" }], now }), []);
-  const r = findStaleScores({ scores: [STALE_S], forecasts: [STALE_F], actuals: [STALE_A], subjectsById: {}, now });
-  assert.equal(r[0].lag_hours, DEFAULT_LAG_HOURS.weather);
+  const subjectsById = { tmax: { domain: "weather", resolution: { lag_hours: 18 } } };
+  assert.deepEqual(findStaleScores({ scores: [{ ...STALE_S, status: "miss" }], forecasts: [STALE_F], actuals: [STALE_A], subjectsById, now }), []);
+  assert.deepEqual(findStaleScores({ scores: [STALE_S], forecasts: [STALE_F], actuals: [{ ...STALE_A, status: "provisional" }], subjectsById, now }), []);
   assert.equal(staleSummary([]).startsWith("stale-scorer guard: OK"), true);
 });
 
-test("stale guard on the live bundle + upstream NWS prints finds QA F1's 9 weather rows", { skip: !safeExists(join(TROOTH, "data/actuals/nws-knyc.jsonl")) }, () => {
+test("stale guard: no hardcoded domain defaults; a subject without a catalog lag is never judged", () => {
+  const now = "2026-10-01T00:00:00Z";
+  const base = { scores: [STALE_S], forecasts: [STALE_F], actuals: [STALE_A], now };
+  assert.equal("DEFAULT_LAG_HOURS" in bundleChecks, false, "domain default table is gone");
+  assert.deepEqual(findStaleScores({ ...base, subjectsById: {} }), [], "subject missing from catalog");
+  assert.deepEqual(findStaleScores({ ...base }), [], "no catalog at all");
+  assert.deepEqual(findStaleScores({ ...base, subjectsById: { tmax: { domain: "weather", resolution: { lag_hours: null } } } }), []);
+  assert.deepEqual(findStaleScores({ ...base, subjectsById: { tmax: { domain: "weather", resolution: {} } } }), []);
+  // Lag comes from the catalog per subject: 6h vs 48h on the same row.
+  const at = "2026-09-24T12:00:00Z"; // horizon 2026-09-23T23:59:59Z + 12h01s
+  assert.equal(findStaleScores({ ...base, now: at, subjectsById: { tmax: { domain: "weather", resolution: { lag_hours: 6 } } } }).length, 1);
+  assert.equal(findStaleScores({ ...base, now: at, subjectsById: { tmax: { domain: "weather", resolution: { lag_hours: 48 } } } }).length, 0);
+  const zero = findStaleScores({ ...base, now: "2026-09-24T00:00:00Z", subjectsById: { tmax: { domain: "weather", resolution: { lag_hours: 0 } } } });
+  assert.equal(zero[0].lag_hours, 0);
+});
+
+test("stale guard: politics subjects with null lag_hours fall back to 24h", () => {
+  const f = { id: "p1", domain: "politics", subject: { id: "us-senate-majority-2026" }, horizon_end: "2026-11-04T05:00:00Z" };
+  const sc = { id: "sp", forecast_id: "p1", status: "pending", match_key: "politics|us-senate-majority-2026|us-senate-majority-2026|enum" };
+  const a = { id: "ap", match_key: sc.match_key, status: "resolved" };
+  const subjectsById = { "us-senate-majority-2026": { domain: "politics", resolution: { kind: "chamber_organization", lag_hours: null } } };
+  const args = { scores: [sc], forecasts: [f], actuals: [a], subjectsById };
+  assert.equal(POLITICS_NULL_LAG_FALLBACK_HOURS, 24);
+  assert.deepEqual(findStaleScores({ ...args, now: "2026-11-05T05:00:00Z" }), [], "exactly horizon + 24h is not yet stale");
+  const r = findStaleScores({ ...args, now: "2026-11-05T05:00:01Z" });
+  assert.equal(r.length, 1);
+  assert.equal(r[0].lag_hours, 24);
+  assert.equal(r[0].due_at, "2026-11-05T05:00:00.000Z");
+  // A politics subject with a numeric catalog lag uses that lag, not 24h.
+  const withLag = { "us-senate-majority-2026": { domain: "politics", resolution: { lag_hours: 72 } } };
+  assert.deepEqual(findStaleScores({ ...args, subjectsById: withLag, now: "2026-11-06T05:00:00Z" }), []);
+  // The 24h fallback is politics-only.
+  assert.equal(lagHoursFor({ domain: "finance", resolution: { lag_hours: null } }, "finance"), null);
+  assert.equal(lagHoursFor({ domain: "sports", resolution: { lag_hours: null } }, "sports"), null);
+});
+
+test("stale guard: unscorable subjects (us-equity-*-rating) never trigger the warning", () => {
+  const f = { id: "r1", domain: "finance", subject: { id: "us-equity-nvda-rating" }, horizon_end: "2026-01-01T00:00:00Z", scorable: true };
+  const sc = { id: "sr", forecast_id: "r1", status: "pending", match_key: "finance|us-equity-nvda-rating|us-equity-nvda-rating|enum" };
+  const a = { id: "ar", match_key: sc.match_key, status: "resolved" };
+  const now = "2027-01-01T00:00:00Z";
+  const unscorable = { domain: "finance", status: "live", resolution: { kind: "unscorable", lag_hours: null } };
+  assert.equal(isUnscorableSubject(unscorable), true);
+  assert.deepEqual(findStaleScores({ scores: [sc], forecasts: [f], actuals: [a], subjectsById: { "us-equity-nvda-rating": unscorable }, now }), []);
+  // Even with a numeric lag, an unscorable subject or forecast is skipped.
+  const withLag = { ...unscorable, resolution: { kind: "unscorable", lag_hours: 36 } };
+  assert.deepEqual(findStaleScores({ scores: [sc], forecasts: [f], actuals: [a], subjectsById: { "us-equity-nvda-rating": withLag }, now }), []);
+  const scorableSub = { domain: "finance", resolution: { kind: "exchange_close", lag_hours: 36 } };
+  assert.deepEqual(findStaleScores({ scores: [sc], forecasts: [{ ...f, scorable: false }], actuals: [a], subjectsById: { "us-equity-nvda-rating": scorableSub }, now }), []);
+  assert.equal(findStaleScores({ scores: [sc], forecasts: [f], actuals: [a], subjectsById: { "us-equity-nvda-rating": scorableSub }, now }).length, 1, "control");
+});
+
+function upstreamCatalog() {
+  const byId = {};
+  for (const f of ["subjects-v1.json", "games-2025-nfl.json", "games-2026-nfl.json", "games-2025-fbs.json", "games-2026-fbs.json"]) {
+    for (const s of JSON.parse(readFileSync(join(TROOTH, f), "utf8")).subjects || []) byId[s.id] = s;
+  }
+  return byId;
+}
+
+test("catalog lag: lagHoursFor reads subjects-v1.json per subject (ratings null, politics 24h, rest verbatim)", { skip: !safeExists(join(TROOTH, "subjects-v1.json")) }, () => {
+  const byId = upstreamCatalog();
+  const ratings = Object.values(byId).filter((s) => /^us-equity-[a-z]+-rating$/.test(s.id));
+  assert.equal(ratings.length, 20);
+  for (const s of ratings) {
+    assert.equal(s.resolution.lag_hours, null, s.id);
+    assert.equal(lagHoursFor(s, s.domain), null, s.id);
+  }
+  for (const s of Object.values(byId)) {
+    if (isUnscorableSubject(s)) continue;
+    const raw = s.resolution?.lag_hours;
+    if (typeof raw === "number") assert.equal(lagHoursFor(s, s.domain), raw, s.id);
+    else if (s.domain === "politics") assert.equal(lagHoursFor(s, s.domain), 24, s.id);
+    else assert.equal(lagHoursFor(s, s.domain), null, s.id);
+  }
+  assert.equal(lagHoursFor(byId["us-nyc-central-park-tmax"], "weather"), 18);
+  assert.equal(lagHoursFor(byId["us-president-2024-winner"], "politics"), 24);
+});
+
+test("stale guard on the live bundle + upstream NWS prints (catalog lag) finds QA F1's 9 weather rows", { skip: !safeExists(join(TROOTH, "data/actuals/nws-knyc.jsonl")) }, () => {
   const upstream = readFileSync(join(TROOTH, "data/actuals/nws-knyc.jsonl"), "utf8")
     .split("\n")
     .filter((l) => l.trim())
     .map((l) => JSON.parse(l));
-  const lagBy = Object.fromEntries(Object.keys(SUBJECTS).map((id) => [id, { resolution: { lag_hours: 18 } }]));
-  const stale = findStaleScores({ scores: SCORES, forecasts: FORECASTS, actuals: [...ACTUALS, ...upstream], subjectsById: lagBy, now: "2026-09-25T11:00:00Z" });
+  const stale = findStaleScores({ scores: SCORES, forecasts: FORECASTS, actuals: [...ACTUALS, ...upstream], subjectsById: upstreamCatalog(), now: "2026-09-25T11:00:00Z" });
   const qa = [
     "fct_01M2N5E573AAFK12RZ8MVZ7YTQ", "fct_01M2QQNE8KT2YH034N6S2F7C9W", "fct_01M2QQNE8KXFZH0CM1YWPZ43TJ",
     "fct_01M2TAF8DA405PG3JGNGMEEQQA", "fct_01M2TAF8DAFMHYBKM344ASD5H5", "fct_01M321WHMDXF7PJXAGBTYQHKT8",
     "fct_01M321WHMD81MP4CKT578HVT14", "fct_01M34MAHZ6TN7WA5NH8T2WHSAS", "fct_01M377XV8XCHCMSCNQ4VAJTS28",
   ];
   assert.deepEqual(stale.map((r) => r.forecast_id).sort(), [...qa].sort());
+  assert.ok(stale.every((r) => r.lag_hours === 18));
+  assert.ok(stale.every((r) => !/-rating\|/.test(r.match_key)), "no unscorable rating rows");
+});
+
+test("build script: no hardcoded domain lag defaults", () => {
+  const src = readFileSync(join(HERE, "..", "scripts", "build-live-data.mjs"), "utf8") + readFileSync(join(HERE, "..", "scripts", "bundleChecks.mjs"), "utf8");
+  assert.doesNotMatch(src, /DEFAULT_LAG_HOURS|weather:\s*18,\s*finance:\s*36/);
 });
 
 // ---------------- 4. Supabase flags ----------------
