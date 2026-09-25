@@ -38,7 +38,11 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
         <span style={metaItem}><span style={faint}>Actual · </span>{actualLabel}</span>
         <span style={metaItem}>
           <span style={faint}>Actual source · </span>
-          <a href={rendered.actualSourceUrl} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{actualHost}</a>
+          {rendered.actualSourcePending ? (
+            "pending"
+          ) : (
+            <a href={rendered.actualSourceUrl} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{actualHost}</a>
+          )}
         </span>
       </div>
     </>
