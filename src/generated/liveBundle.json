@@ -91972,6 +91972,7 @@
       "label": "2026 NCAA FBS national champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/sports/2025/2/20/2027vegas.aspx",
@@ -91983,6 +91984,7 @@
       "label": "2026 Heisman Trophy winner",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "heisman-2026-player-ids-v1.json",
       "resolution": {
         "kind": "award",
         "url": "https://www.heisman.com/about-the-heisman/balloting-info/"
@@ -91993,6 +91995,7 @@
       "label": "2026 CFP seed 1",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92004,6 +92007,7 @@
       "label": "2026 CFP seed 2",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92015,6 +92019,7 @@
       "label": "2026 CFP seed 3",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92026,6 +92031,7 @@
       "label": "2026 CFP seed 4",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92037,6 +92043,7 @@
       "label": "2026 CFP seed 5",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92048,6 +92055,7 @@
       "label": "2026 CFP seed 6",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92059,6 +92067,7 @@
       "label": "2026 CFP seed 7",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92070,6 +92079,7 @@
       "label": "2026 CFP seed 8",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92081,6 +92091,7 @@
       "label": "2026 CFP seed 9",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92092,6 +92103,7 @@
       "label": "2026 CFP seed 10",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92103,6 +92115,7 @@
       "label": "2026 CFP seed 11",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92114,6 +92127,7 @@
       "label": "2026 CFP seed 12",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/",
@@ -92127,6 +92141,7 @@
       "unit": "score",
       "away": "kansas-city",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chiefs-at-chargers-2025-reg-1",
@@ -92141,6 +92156,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "green-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-packers-2025-reg-1",
@@ -92155,6 +92171,7 @@
       "unit": "score",
       "away": "houston",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-rams-2025-reg-1",
@@ -92169,6 +92186,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-falcons-2025-reg-1",
@@ -92183,6 +92201,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-browns-2025-reg-1",
@@ -92197,6 +92216,7 @@
       "unit": "score",
       "away": "miami",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/dolphins-at-colts-2025-reg-1",
@@ -92211,6 +92231,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-patriots-2025-reg-1",
@@ -92225,6 +92246,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-saints-2025-reg-1",
@@ -92239,6 +92261,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-jets-2025-reg-1",
@@ -92253,6 +92276,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-commanders-2025-reg-1",
@@ -92267,6 +92291,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-jaguars-2025-reg-1",
@@ -92281,6 +92306,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-broncos-2025-reg-1",
@@ -92295,6 +92321,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-seahawks-2025-reg-1",
@@ -92309,6 +92336,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-bears-2025-reg-1",
@@ -92323,6 +92351,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-bills-2025-reg-1",
@@ -92337,6 +92366,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-patriots-2025-post-4",
@@ -92349,6 +92379,7 @@
       "label": "Super Bowl LX champion (2025 NFL season)",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://www.nfl.com/games/seahawks-at-patriots-2025-post-4",
@@ -92360,6 +92391,7 @@
       "label": "2025 Big Ten football champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://www.ncaa.com/news/football/article/2025-12-06/2025-big-ten-championship-game-date-time-tv-channel-history",
@@ -92371,6 +92403,7 @@
       "label": "2025 NCAA FBS national champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://collegefootballplayoff.com/sports/2026/1/27/NCG-recap.aspx",
@@ -92382,6 +92415,7 @@
       "label": "2025 Heisman Trophy winner",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "heisman-2025-player-ids-v1.json",
       "resolution": {
         "kind": "award",
         "url": "https://www.heisman.com/articles/indiana-quarterback-fernando-mendoza-wins-2025-heisman-trophy/"
@@ -92394,6 +92428,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-panthers-2025-reg-3",
@@ -92408,6 +92443,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-vikings-2025-reg-3",
@@ -92422,6 +92458,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-browns-2025-reg-3",
@@ -92436,6 +92473,7 @@
       "unit": "score",
       "away": "houston",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-jaguars-2025-reg-3",
@@ -92450,6 +92488,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-titans-2025-reg-3",
@@ -92464,6 +92503,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-eagles-2025-reg-3",
@@ -92478,6 +92518,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-commanders-2025-reg-3",
@@ -92492,6 +92533,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "tampa-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-buccaneers-2025-reg-3",
@@ -92506,6 +92548,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-patriots-2025-reg-3",
@@ -92520,6 +92563,7 @@
       "unit": "score",
       "away": "denver",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-chargers-2025-reg-3",
@@ -92534,6 +92578,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-seahawks-2025-reg-3",
@@ -92548,6 +92593,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "san-francisco",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-49ers-2025-reg-3",
@@ -92562,6 +92608,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-bears-2025-reg-3",
@@ -92576,6 +92623,7 @@
       "unit": "score",
       "away": "kansas-city",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chiefs-at-giants-2025-reg-3",
@@ -92590,6 +92638,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-ravens-2025-reg-3",
@@ -92604,6 +92653,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-steelers-2025-reg-4",
@@ -92618,6 +92668,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "tampa-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-buccaneers-2025-reg-4",
@@ -92632,6 +92683,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "detroit",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-lions-2025-reg-4",
@@ -92646,6 +92698,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-rams-2025-reg-4",
@@ -92660,6 +92713,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "dallas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-cowboys-2025-reg-4",
@@ -92674,6 +92728,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-ravens-2025-reg-2",
@@ -92688,6 +92743,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-bengals-2025-reg-2",
@@ -92702,6 +92758,7 @@
       "unit": "score",
       "away": "denver",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-colts-2025-reg-2",
@@ -92716,6 +92773,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-chiefs-2025-reg-2",
@@ -92730,6 +92788,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "dallas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-cowboys-2025-reg-2",
@@ -92744,6 +92803,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "detroit",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-lions-2025-reg-2",
@@ -92758,6 +92818,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-titans-2025-reg-2",
@@ -92772,6 +92833,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-dolphins-2025-reg-2",
@@ -92786,6 +92848,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-saints-2025-reg-2",
@@ -92800,6 +92863,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-jets-2025-reg-2",
@@ -92814,6 +92878,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-steelers-2025-reg-2",
@@ -92828,6 +92893,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "arizona",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-cardinals-2025-reg-2",
@@ -92842,6 +92908,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-vikings-2025-reg-2",
@@ -92856,6 +92923,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-texans-2025-reg-2",
@@ -92870,6 +92938,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-raiders-2025-reg-2",
@@ -92884,6 +92953,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-browns-2025-reg-5",
@@ -92898,6 +92968,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-jets-2025-reg-5",
@@ -92912,6 +92983,7 @@
       "unit": "score",
       "away": "denver",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-eagles-2025-reg-5",
@@ -92926,6 +92998,7 @@
       "unit": "score",
       "away": "houston",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-ravens-2025-reg-5",
@@ -92940,6 +93013,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-colts-2025-reg-5",
@@ -92954,6 +93028,7 @@
       "unit": "score",
       "away": "miami",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/dolphins-at-panthers-2025-reg-5",
@@ -92968,6 +93043,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-saints-2025-reg-5",
@@ -92982,6 +93058,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-seahawks-2025-reg-5",
@@ -92996,6 +93073,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "arizona",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-cardinals-2025-reg-5",
@@ -93010,6 +93088,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-bengals-2025-reg-5",
@@ -93024,6 +93103,7 @@
       "unit": "score",
       "away": "washington",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-chargers-2025-reg-5",
@@ -93038,6 +93118,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-bills-2025-reg-5",
@@ -93052,6 +93133,7 @@
       "unit": "score",
       "away": "kansas-city",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chiefs-at-jaguars-2025-reg-5",
@@ -93066,6 +93148,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-jaguars-2025-reg-7",
@@ -93080,6 +93163,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-jets-2025-reg-7",
@@ -93094,6 +93178,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-chiefs-2025-reg-7",
@@ -93108,6 +93193,7 @@
       "unit": "score",
       "away": "miami",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/dolphins-at-browns-2025-reg-7",
@@ -93122,6 +93208,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-titans-2025-reg-7",
@@ -93136,6 +93223,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-bears-2025-reg-7",
@@ -93150,6 +93238,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-vikings-2025-reg-7",
@@ -93164,6 +93253,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-chargers-2025-reg-7",
@@ -93178,6 +93268,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-broncos-2025-reg-7",
@@ -93192,6 +93283,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "arizona",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-cardinals-2025-reg-7",
@@ -93206,6 +93298,7 @@
       "unit": "score",
       "away": "washington",
       "home": "dallas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-cowboys-2025-reg-7",
@@ -93220,6 +93313,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "san-francisco",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-49ers-2025-reg-7",
@@ -93234,6 +93328,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "detroit",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-lions-2025-reg-7",
@@ -93248,6 +93343,7 @@
       "unit": "score",
       "away": "houston",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-seahawks-2025-reg-7",
@@ -93262,6 +93358,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-patriots-2025-reg-9",
@@ -93276,6 +93373,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-steelers-2025-reg-9",
@@ -93290,6 +93388,7 @@
       "unit": "score",
       "away": "denver",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-texans-2025-reg-9",
@@ -93304,6 +93403,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-bengals-2025-reg-9",
@@ -93318,6 +93418,7 @@
       "unit": "score",
       "away": "kansas-city",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chiefs-at-bills-2025-reg-9",
@@ -93332,6 +93433,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-dolphins-2025-reg-9",
@@ -93346,6 +93448,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "detroit",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-lions-2025-reg-9",
@@ -93360,6 +93463,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "green-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-packers-2025-reg-9",
@@ -93374,6 +93478,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-titans-2025-reg-9",
@@ -93388,6 +93493,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-giants-2025-reg-9",
@@ -93402,6 +93508,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-raiders-2025-reg-9",
@@ -93416,6 +93523,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-rams-2025-reg-9",
@@ -93430,6 +93538,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-commanders-2025-reg-9",
@@ -93444,6 +93553,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "dallas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-cowboys-2025-reg-9",
@@ -93458,6 +93568,7 @@
       "unit": "score",
       "away": "washington",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-dolphins-2025-reg-11",
@@ -93472,6 +93583,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-steelers-2025-reg-11",
@@ -93486,6 +93598,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-bills-2025-reg-11",
@@ -93500,6 +93613,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-rams-2025-reg-11",
@@ -93514,6 +93628,7 @@
       "unit": "score",
       "away": "kansas-city",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chiefs-at-broncos-2025-reg-11",
@@ -93528,6 +93643,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-patriots-2025-reg-11",
@@ -93542,6 +93658,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-falcons-2025-reg-11",
@@ -93556,6 +93673,7 @@
       "unit": "score",
       "away": "houston",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-titans-2025-reg-11",
@@ -93570,6 +93688,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-vikings-2025-reg-11",
@@ -93584,6 +93703,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-giants-2025-reg-11",
@@ -93598,6 +93718,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-jaguars-2025-reg-11",
@@ -93612,6 +93733,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "arizona",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-cardinals-2025-reg-11",
@@ -93626,6 +93748,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-browns-2025-reg-11",
@@ -93640,6 +93763,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-eagles-2025-reg-11",
@@ -93654,6 +93778,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-raiders-2025-reg-11",
@@ -93668,6 +93793,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-chiefs-2025-reg-12",
@@ -93682,6 +93808,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "arizona",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-cardinals-2025-reg-12",
@@ -93696,6 +93823,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-rams-2025-reg-12",
@@ -93710,6 +93838,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "san-francisco",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-49ers-2025-reg-12",
@@ -93724,6 +93853,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-bears-2025-reg-12",
@@ -93738,6 +93868,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-bengals-2025-reg-12",
@@ -93752,6 +93883,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "detroit",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-lions-2025-reg-12",
@@ -93766,6 +93898,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "green-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-packers-2025-reg-12",
@@ -93780,6 +93913,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-titans-2025-reg-12",
@@ -93794,6 +93928,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-ravens-2025-reg-12",
@@ -93808,6 +93943,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-raiders-2025-reg-12",
@@ -93822,6 +93958,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "dallas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-cowboys-2025-reg-12",
@@ -93836,6 +93973,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-saints-2025-reg-12",
@@ -93850,6 +93988,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-bills-2025-reg-14",
@@ -93864,6 +94003,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-jaguars-2025-reg-14",
@@ -93878,6 +94018,7 @@
       "unit": "score",
       "away": "miami",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/dolphins-at-jets-2025-reg-14",
@@ -93892,6 +94033,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "tampa-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-buccaneers-2025-reg-14",
@@ -93906,6 +94048,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-ravens-2025-reg-14",
@@ -93920,6 +94063,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-falcons-2025-reg-14",
@@ -93934,6 +94078,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-browns-2025-reg-14",
@@ -93948,6 +94093,7 @@
       "unit": "score",
       "away": "washington",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-vikings-2025-reg-14",
@@ -93962,6 +94108,7 @@
       "unit": "score",
       "away": "denver",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-raiders-2025-reg-14",
@@ -93976,6 +94123,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "green-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-packers-2025-reg-14",
@@ -93990,6 +94138,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "arizona",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-cardinals-2025-reg-14",
@@ -94004,6 +94153,7 @@
       "unit": "score",
       "away": "houston",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-chiefs-2025-reg-14",
@@ -94018,6 +94168,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-chargers-2025-reg-14",
@@ -94032,6 +94183,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "tampa-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-buccaneers-2025-reg-15",
@@ -94046,6 +94198,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-patriots-2025-reg-15",
@@ -94060,6 +94213,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-broncos-2025-reg-15",
@@ -94074,6 +94228,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-rams-2025-reg-15",
@@ -94088,6 +94243,7 @@
       "unit": "score",
       "away": "miami",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/dolphins-at-steelers-2025-reg-15",
@@ -94102,6 +94258,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-texans-2025-reg-15",
@@ -94116,6 +94273,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-bengals-2025-reg-15",
@@ -94130,6 +94288,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-bears-2025-reg-15",
@@ -94144,6 +94303,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-chiefs-2025-reg-15",
@@ -94158,6 +94318,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-eagles-2025-reg-15",
@@ -94172,6 +94333,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-jaguars-2025-reg-15",
@@ -94186,6 +94348,7 @@
       "unit": "score",
       "away": "washington",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-giants-2025-reg-15",
@@ -94200,6 +94363,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-saints-2025-reg-15",
@@ -94214,6 +94378,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-seahawks-2025-reg-15",
@@ -94228,6 +94393,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "san-francisco",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-49ers-2025-reg-15",
@@ -94242,6 +94408,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "dallas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-cowboys-2025-reg-15",
@@ -94256,6 +94423,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-browns-2025-reg-16",
@@ -94270,6 +94438,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-dolphins-2025-reg-16",
@@ -94284,6 +94453,7 @@
       "unit": "score",
       "away": "kansas-city",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chiefs-at-titans-2025-reg-16",
@@ -94298,6 +94468,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "dallas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-cowboys-2025-reg-16",
@@ -94312,6 +94483,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-giants-2025-reg-16",
@@ -94326,6 +94498,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-saints-2025-reg-16",
@@ -94340,6 +94513,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-panthers-2025-reg-16",
@@ -94354,6 +94528,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "arizona",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-cardinals-2025-reg-16",
@@ -94368,6 +94543,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-broncos-2025-reg-16",
@@ -94382,6 +94558,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-texans-2025-reg-16",
@@ -94396,6 +94573,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "detroit",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-lions-2025-reg-16",
@@ -94410,6 +94588,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-ravens-2025-reg-16",
@@ -94424,6 +94603,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-colts-2025-reg-16",
@@ -94438,6 +94618,7 @@
       "unit": "score",
       "away": "houston",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-chargers-2025-reg-17",
@@ -94452,6 +94633,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "green-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-packers-2025-reg-17",
@@ -94466,6 +94648,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-raiders-2025-reg-17",
@@ -94480,6 +94663,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-bills-2025-reg-17",
@@ -94494,6 +94678,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "san-francisco",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-49ers-2025-reg-17",
@@ -94508,6 +94693,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-commanders-2025-reg-17",
@@ -94522,6 +94708,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-vikings-2025-reg-17",
@@ -94536,6 +94723,7 @@
       "unit": "score",
       "away": "denver",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-chiefs-2025-reg-17",
@@ -94550,6 +94738,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-colts-2025-reg-17",
@@ -94564,6 +94753,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-bengals-2025-reg-17",
@@ -94578,6 +94768,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-browns-2025-reg-17",
@@ -94592,6 +94783,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-titans-2025-reg-17",
@@ -94606,6 +94798,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-dolphins-2025-reg-17",
@@ -94620,6 +94813,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-jets-2025-reg-17",
@@ -94634,6 +94828,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-panthers-2025-reg-17",
@@ -94648,6 +94843,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-falcons-2025-reg-17",
@@ -94662,6 +94858,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-jaguars-2025-post-1",
@@ -94676,6 +94873,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-eagles-2025-post-1",
@@ -94690,6 +94888,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-patriots-2025-post-1",
@@ -94704,6 +94903,7 @@
       "unit": "score",
       "away": "houston",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-steelers-2025-post-1",
@@ -94718,6 +94918,7 @@
       "unit": "score",
       "away": "houston",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-patriots-2025-post-2",
@@ -94732,6 +94933,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-bears-2025-post-2",
@@ -94746,6 +94948,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-broncos-2025-post-3",
@@ -94760,6 +94963,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-seahawks-2025-post-3",
@@ -94774,6 +94978,7 @@
       "unit": "score",
       "away": "nebraska",
       "home": "cincinnati",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459593",
@@ -94788,6 +94993,7 @@
       "unit": "score",
       "away": "auburn",
       "home": "baylor",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459148",
@@ -94802,6 +95008,7 @@
       "unit": "score",
       "away": "syracuse",
       "home": "tennessee",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459397",
@@ -94816,6 +95023,7 @@
       "unit": "score",
       "away": "utah",
       "home": "ucla",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459185",
@@ -94830,6 +95038,7 @@
       "unit": "score",
       "away": "lsu",
       "home": "clemson",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458846",
@@ -94844,6 +95053,7 @@
       "unit": "score",
       "away": "texas",
       "home": "ohio-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459545",
@@ -94858,6 +95068,7 @@
       "unit": "score",
       "away": "alabama",
       "home": "florida-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459216",
@@ -94872,6 +95083,7 @@
       "unit": "score",
       "away": "virginia-tech",
       "home": "south-carolina",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458958",
@@ -94886,6 +95098,7 @@
       "unit": "score",
       "away": "notre-dame",
       "home": "miami-fl",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459624",
@@ -94900,6 +95113,7 @@
       "unit": "score",
       "away": "tcu",
       "home": "north-carolina",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459035",
@@ -94912,6 +95126,7 @@
       "label": "2025 SEC football champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://www.ncaa.com/news/football/article/2025-12-06/2025-sec-championship-game-date-time-tv-channel-history",
@@ -94923,6 +95138,7 @@
       "label": "2025 Big 12 football champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://www.ncaa.com/news/football/article/2025-12-06/2025-big-12-championship-game-date-time-tv-channel-history",
@@ -94934,6 +95150,7 @@
       "label": "2025 ACC football champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://www.ncaa.com/news/football/article/2025-12-07/2025-acc-championship-game-date-time-tv-channel-history",
@@ -94947,6 +95164,7 @@
       "unit": "score",
       "away": "colorado",
       "home": "houston",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458853",
@@ -94961,6 +95179,7 @@
       "unit": "score",
       "away": "pitt",
       "home": "west-virginia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459528",
@@ -94975,6 +95194,7 @@
       "unit": "score",
       "away": "clemson",
       "home": "georgia-tech",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459482",
@@ -94989,6 +95209,7 @@
       "unit": "score",
       "away": "wisconsin",
       "home": "alabama",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459303",
@@ -95003,6 +95224,7 @@
       "unit": "score",
       "away": "georgia",
       "home": "tennessee",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459399",
@@ -95017,6 +95239,7 @@
       "unit": "score",
       "away": "south-florida",
       "home": "miami-fl",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458876",
@@ -95031,6 +95254,7 @@
       "unit": "score",
       "away": "vanderbilt",
       "home": "south-carolina",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458994",
@@ -95045,6 +95269,7 @@
       "unit": "score",
       "away": "arkansas",
       "home": "ole-miss",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459180",
@@ -95059,6 +95284,7 @@
       "unit": "score",
       "away": "texas-am",
       "home": "notre-dame",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459068",
@@ -95073,6 +95299,7 @@
       "unit": "score",
       "away": "florida",
       "home": "lsu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458804",
@@ -95087,6 +95314,7 @@
       "unit": "score",
       "away": "florida-state",
       "home": "virginia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459218",
@@ -95101,6 +95329,7 @@
       "unit": "score",
       "away": "tcu",
       "home": "arizona-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459038",
@@ -95115,6 +95344,7 @@
       "unit": "score",
       "away": "notre-dame",
       "home": "arkansas",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459248",
@@ -95129,6 +95359,7 @@
       "unit": "score",
       "away": "auburn",
       "home": "texas-am",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459069",
@@ -95143,6 +95374,7 @@
       "unit": "score",
       "away": "lsu",
       "home": "ole-miss",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458847",
@@ -95157,6 +95389,7 @@
       "unit": "score",
       "away": "usc",
       "home": "illinois",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459535",
@@ -95171,6 +95404,7 @@
       "unit": "score",
       "away": "indiana",
       "home": "iowa",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459370",
@@ -95185,6 +95419,7 @@
       "unit": "score",
       "away": "ohio-state",
       "home": "washington",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459548",
@@ -95199,6 +95434,7 @@
       "unit": "score",
       "away": "alabama",
       "home": "georgia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459415",
@@ -95213,6 +95449,7 @@
       "unit": "score",
       "away": "oregon",
       "home": "penn-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459289",
@@ -95227,6 +95464,7 @@
       "unit": "score",
       "away": "pitt",
       "home": "florida-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459220",
@@ -95241,6 +95479,7 @@
       "unit": "score",
       "away": "arkansas",
       "home": "tennessee",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459249",
@@ -95255,6 +95494,7 @@
       "unit": "score",
       "away": "south-carolina",
       "home": "lsu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458842",
@@ -95269,6 +95509,7 @@
       "unit": "score",
       "away": "michigan",
       "home": "usc",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459601",
@@ -95283,6 +95524,7 @@
       "unit": "score",
       "away": "florida",
       "home": "texas-am",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458807",
@@ -95297,6 +95539,7 @@
       "unit": "score",
       "away": "ohio-state",
       "home": "illinois",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459536",
@@ -95311,6 +95554,7 @@
       "unit": "score",
       "away": "georgia",
       "home": "auburn",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459152",
@@ -95325,6 +95569,7 @@
       "unit": "score",
       "away": "oklahoma",
       "home": "texas",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459561",
@@ -95339,6 +95584,7 @@
       "unit": "score",
       "away": "alabama",
       "home": "missouri",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459234",
@@ -95353,6 +95599,7 @@
       "unit": "score",
       "away": "indiana",
       "home": "oregon",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459290",
@@ -95367,6 +95614,7 @@
       "unit": "score",
       "away": "byu",
       "home": "texas-tech",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459654",
@@ -95381,6 +95629,7 @@
       "unit": "score",
       "away": "indiana",
       "home": "penn-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459525",
@@ -95395,6 +95644,7 @@
       "unit": "score",
       "away": "oregon",
       "home": "iowa",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459293",
@@ -95409,6 +95659,7 @@
       "unit": "score",
       "away": "georgia",
       "home": "mississippi-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459081",
@@ -95423,6 +95674,7 @@
       "unit": "score",
       "away": "texas-am",
       "home": "missouri",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459072",
@@ -95437,6 +95689,7 @@
       "unit": "score",
       "away": "florida-state",
       "home": "clemson",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459223",
@@ -95451,6 +95704,7 @@
       "unit": "score",
       "away": "lsu",
       "home": "alabama",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458849",
@@ -95465,6 +95719,7 @@
       "unit": "score",
       "away": "navy",
       "home": "notre-dame",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459629",
@@ -95479,6 +95734,7 @@
       "unit": "score",
       "away": "auburn",
       "home": "vanderbilt",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459156",
@@ -95493,6 +95749,7 @@
       "unit": "score",
       "away": "ohio-state",
       "home": "purdue",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459090",
@@ -95507,6 +95764,7 @@
       "unit": "score",
       "away": "clemson",
       "home": "louisville",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459485",
@@ -95521,6 +95779,7 @@
       "unit": "score",
       "away": "notre-dame",
       "home": "pitt",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459532",
@@ -95535,6 +95794,7 @@
       "unit": "score",
       "away": "south-carolina",
       "home": "texas-am",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458999",
@@ -95549,6 +95809,7 @@
       "unit": "score",
       "away": "michigan",
       "home": "northwestern",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459604",
@@ -95563,6 +95824,7 @@
       "unit": "score",
       "away": "south-florida",
       "home": "navy",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458882",
@@ -95577,6 +95839,7 @@
       "unit": "score",
       "away": "wisconsin",
       "home": "indiana",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459310",
@@ -95591,6 +95854,7 @@
       "unit": "score",
       "away": "iowa",
       "home": "usc",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459381",
@@ -95605,6 +95869,7 @@
       "unit": "score",
       "away": "oklahoma",
       "home": "alabama",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459559",
@@ -95619,6 +95884,7 @@
       "unit": "score",
       "away": "virginia",
       "home": "duke",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458927",
@@ -95633,6 +95899,7 @@
       "unit": "score",
       "away": "texas",
       "home": "georgia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459418",
@@ -95647,6 +95914,7 @@
       "unit": "score",
       "away": "lsu",
       "home": "oklahoma",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458850",
@@ -95661,6 +95929,7 @@
       "unit": "score",
       "away": "oregon",
       "home": "washington",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459295",
@@ -95675,6 +95944,7 @@
       "unit": "score",
       "away": "clemson",
       "home": "south-carolina",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459001",
@@ -95689,6 +95959,7 @@
       "unit": "score",
       "away": "vanderbilt",
       "home": "tennessee",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459405",
@@ -95703,6 +95974,7 @@
       "unit": "score",
       "away": "georgia",
       "home": "georgia-tech",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459425",
@@ -95717,6 +95989,7 @@
       "unit": "score",
       "away": "texas-am",
       "home": "texas",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459074",
@@ -95731,6 +96004,7 @@
       "unit": "score",
       "away": "miami-fl",
       "home": "pitt",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459534",
@@ -95745,6 +96019,7 @@
       "unit": "score",
       "away": "alabama",
       "home": "auburn",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459158",
@@ -95759,6 +96034,7 @@
       "unit": "score",
       "away": "ole-miss",
       "home": "mississippi-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459083",
@@ -95773,6 +96049,7 @@
       "unit": "score",
       "away": "ohio-state",
       "home": "michigan",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459552",
@@ -95787,6 +96064,7 @@
       "unit": "score",
       "away": "unlv",
       "home": "boise-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534366",
@@ -95801,6 +96079,7 @@
       "unit": "score",
       "away": "miami-oh",
       "home": "western-michigan",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534368",
@@ -95815,6 +96094,7 @@
       "unit": "score",
       "away": "kennesaw-state",
       "home": "jacksonville-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534363",
@@ -95829,6 +96109,7 @@
       "unit": "score",
       "away": "troy",
       "home": "james-madison",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534364",
@@ -95843,6 +96124,7 @@
       "unit": "score",
       "away": "north-texas",
       "home": "tulane",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534365",
@@ -95857,6 +96139,7 @@
       "unit": "score",
       "away": "byu",
       "home": "texas-tech",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534367",
@@ -95871,6 +96154,7 @@
       "unit": "score",
       "away": "georgia",
       "home": "alabama",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534369",
@@ -95885,6 +96169,7 @@
       "unit": "score",
       "away": "duke",
       "home": "virginia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534371",
@@ -95899,6 +96184,7 @@
       "unit": "score",
       "away": "indiana",
       "home": "ohio-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6534370",
@@ -95913,6 +96199,7 @@
       "unit": "score",
       "away": "miami-fl",
       "home": "ohio-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531852",
@@ -95927,6 +96214,7 @@
       "unit": "score",
       "away": "oregon",
       "home": "texas-tech",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531849",
@@ -95941,6 +96229,7 @@
       "unit": "score",
       "away": "alabama",
       "home": "indiana",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531850",
@@ -95955,6 +96244,7 @@
       "unit": "score",
       "away": "ole-miss",
       "home": "georgia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531851",
@@ -96012,6 +96302,7 @@
       "label": "2024 US presidential election winner",
       "domain": "politics",
       "unit": "enum",
+      "enum_file": "us-president-2024-winner-ids-v1.json",
       "resolution": {
         "kind": "certified_canvass",
         "url": "https://www.archives.gov/electoral-college/2024"
@@ -96022,6 +96313,7 @@
       "label": "2026 US Senate majority (organizing party)",
       "domain": "politics",
       "unit": "enum",
+      "enum_file": "us-senate-majority-ids-v1.json",
       "resolution": {
         "kind": "chamber_organization",
         "url": "https://www.senate.gov/senators/index.htm"
@@ -96034,6 +96326,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-colts-2025-reg-10",
@@ -96048,6 +96341,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-vikings-2025-reg-10",
@@ -96062,6 +96356,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "tampa-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-buccaneers-2025-reg-10",
@@ -96076,6 +96371,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-chargers-2025-reg-10",
@@ -96090,6 +96386,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "green-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-packers-2025-reg-10",
@@ -96104,6 +96401,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-broncos-2025-reg-10",
@@ -96118,6 +96416,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-bears-2025-reg-10",
@@ -96132,6 +96431,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-dolphins-2025-reg-10",
@@ -96146,6 +96446,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-jets-2025-reg-10",
@@ -96160,6 +96461,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-panthers-2025-reg-10",
@@ -96174,6 +96476,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-texans-2025-reg-10",
@@ -96188,6 +96491,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-seahawks-2025-reg-10",
@@ -96202,6 +96506,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "san-francisco",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-49ers-2025-reg-10",
@@ -96216,6 +96521,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-commanders-2025-reg-10",
@@ -96230,6 +96536,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-ravens-2025-reg-13",
@@ -96244,6 +96551,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-eagles-2025-reg-13",
@@ -96258,6 +96566,7 @@
       "unit": "score",
       "away": "houston",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/texans-at-colts-2025-reg-13",
@@ -96272,6 +96581,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "cleveland",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-browns-2025-reg-13",
@@ -96286,6 +96596,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "tennessee",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-titans-2025-reg-13",
@@ -96300,6 +96611,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-dolphins-2025-reg-13",
@@ -96314,6 +96626,7 @@
       "unit": "score",
       "away": "atlanta",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/falcons-at-jets-2025-reg-13",
@@ -96328,6 +96641,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "tampa-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-buccaneers-2025-reg-13",
@@ -96342,6 +96656,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-panthers-2025-reg-13",
@@ -96356,6 +96671,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-seahawks-2025-reg-13",
@@ -96370,6 +96686,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-steelers-2025-reg-13",
@@ -96384,6 +96701,7 @@
       "unit": "score",
       "away": "las-vegas",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/raiders-at-chargers-2025-reg-13",
@@ -96398,6 +96716,7 @@
       "unit": "score",
       "away": "denver",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-commanders-2025-reg-13",
@@ -96412,6 +96731,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-patriots-2025-reg-13",
@@ -96426,6 +96746,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "detroit",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-lions-2025-reg-14",
@@ -96440,6 +96761,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "seattle",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-seahawks-2025-reg-16",
@@ -96454,6 +96776,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-bears-2025-reg-16",
@@ -96468,6 +96791,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-commanders-2025-reg-16",
@@ -96482,6 +96806,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-jaguars-2025-reg-18",
@@ -96496,6 +96821,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-broncos-2025-reg-18",
@@ -96510,6 +96836,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-rams-2025-reg-18",
@@ -96524,6 +96851,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-steelers-2025-reg-18",
@@ -96538,6 +96866,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-falcons-2025-reg-18",
@@ -96552,6 +96881,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "minnesota",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-vikings-2025-reg-18",
@@ -96566,6 +96896,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-giants-2025-reg-18",
@@ -96580,6 +96911,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-bengals-2025-reg-18",
@@ -96594,6 +96926,7 @@
       "unit": "score",
       "away": "indianapolis",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/colts-at-texans-2025-reg-18",
@@ -96608,6 +96941,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-bears-2025-reg-18",
@@ -96622,6 +96956,7 @@
       "unit": "score",
       "away": "kansas-city",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chiefs-at-raiders-2025-reg-18",
@@ -96636,6 +96971,7 @@
       "unit": "score",
       "away": "washington",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-eagles-2025-reg-18",
@@ -96650,6 +96986,7 @@
       "unit": "score",
       "away": "miami",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/dolphins-at-patriots-2025-reg-18",
@@ -96664,6 +97001,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-bills-2025-reg-18",
@@ -96678,6 +97016,7 @@
       "unit": "score",
       "away": "carolina",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/panthers-at-patriots-2025-reg-4",
@@ -96692,6 +97031,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-giants-2025-reg-4",
@@ -96706,6 +97046,7 @@
       "unit": "score",
       "away": "new-orleans",
       "home": "buffalo",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/saints-at-bills-2025-reg-4",
@@ -96720,6 +97061,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-texans-2025-reg-4",
@@ -96734,6 +97076,7 @@
       "unit": "score",
       "away": "washington",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-falcons-2025-reg-4",
@@ -96748,6 +97091,7 @@
       "unit": "score",
       "away": "jacksonville",
       "home": "san-francisco",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jaguars-at-49ers-2025-reg-4",
@@ -96762,6 +97106,7 @@
       "unit": "score",
       "away": "baltimore",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/ravens-at-chiefs-2025-reg-4",
@@ -96776,6 +97121,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-raiders-2025-reg-4",
@@ -96790,6 +97136,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-dolphins-2025-reg-4",
@@ -96804,6 +97151,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-broncos-2025-reg-4",
@@ -96818,6 +97166,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "la-rams",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-rams-2025-reg-5",
@@ -96832,6 +97181,7 @@
       "unit": "score",
       "away": "arizona",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cardinals-at-colts-2025-reg-6",
@@ -96846,6 +97196,7 @@
       "unit": "score",
       "away": "la-chargers",
       "home": "miami",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/chargers-at-dolphins-2025-reg-6",
@@ -96860,6 +97211,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "las-vegas",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-raiders-2025-reg-6",
@@ -96874,6 +97226,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "tampa-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-buccaneers-2025-reg-6",
@@ -96888,6 +97241,7 @@
       "unit": "score",
       "away": "detroit",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/lions-at-chiefs-2025-reg-6",
@@ -96902,6 +97256,7 @@
       "unit": "score",
       "away": "philadelphia",
       "home": "ny-giants",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/eagles-at-giants-2025-reg-6",
@@ -96916,6 +97271,7 @@
       "unit": "score",
       "away": "denver",
       "home": "ny-jets",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/broncos-at-jets-2025-reg-6",
@@ -96930,6 +97286,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-steelers-2025-reg-6",
@@ -96944,6 +97301,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-panthers-2025-reg-6",
@@ -96958,6 +97316,7 @@
       "unit": "score",
       "away": "new-england",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/patriots-at-saints-2025-reg-6",
@@ -96972,6 +97331,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-ravens-2025-reg-6",
@@ -96986,6 +97346,7 @@
       "unit": "score",
       "away": "seattle",
       "home": "jacksonville",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/seahawks-at-jaguars-2025-reg-6",
@@ -97000,6 +97361,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "green-bay",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bengals-at-packers-2025-reg-6",
@@ -97014,6 +97376,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-falcons-2025-reg-6",
@@ -97028,6 +97391,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "washington",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-commanders-2025-reg-6",
@@ -97042,6 +97406,7 @@
       "unit": "score",
       "away": "pittsburgh",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/steelers-at-bengals-2025-reg-7",
@@ -97056,6 +97421,7 @@
       "unit": "score",
       "away": "minnesota",
       "home": "la-chargers",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/vikings-at-chargers-2025-reg-8",
@@ -97070,6 +97436,7 @@
       "unit": "score",
       "away": "ny-giants",
       "home": "philadelphia",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/giants-at-eagles-2025-reg-8",
@@ -97084,6 +97451,7 @@
       "unit": "score",
       "away": "dallas",
       "home": "denver",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/cowboys-at-broncos-2025-reg-8",
@@ -97098,6 +97466,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "indianapolis",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/titans-at-colts-2025-reg-8",
@@ -97112,6 +97481,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "pittsburgh",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-steelers-2025-reg-8",
@@ -97126,6 +97496,7 @@
       "unit": "score",
       "away": "miami",
       "home": "atlanta",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/dolphins-at-falcons-2025-reg-8",
@@ -97140,6 +97511,7 @@
       "unit": "score",
       "away": "ny-jets",
       "home": "cincinnati",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/jets-at-bengals-2025-reg-8",
@@ -97154,6 +97526,7 @@
       "unit": "score",
       "away": "cleveland",
       "home": "new-england",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/browns-at-patriots-2025-reg-8",
@@ -97168,6 +97541,7 @@
       "unit": "score",
       "away": "buffalo",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bills-at-panthers-2025-reg-8",
@@ -97182,6 +97556,7 @@
       "unit": "score",
       "away": "san-francisco",
       "home": "houston",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/49ers-at-texans-2025-reg-8",
@@ -97196,6 +97571,7 @@
       "unit": "score",
       "away": "tampa-bay",
       "home": "new-orleans",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/buccaneers-at-saints-2025-reg-8",
@@ -97210,6 +97586,7 @@
       "unit": "score",
       "away": "washington",
       "home": "kansas-city",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/commanders-at-chiefs-2025-reg-8",
@@ -97224,6 +97601,7 @@
       "unit": "score",
       "away": "chicago",
       "home": "baltimore",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/bears-at-ravens-2025-reg-8",
@@ -97238,6 +97616,7 @@
       "unit": "score",
       "away": "la-rams",
       "home": "carolina",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/rams-at-panthers-2025-post-1",
@@ -97252,6 +97631,7 @@
       "unit": "score",
       "away": "green-bay",
       "home": "chicago",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.nfl.com/games/packers-at-bears-2025-post-1",
@@ -97264,6 +97644,7 @@
       "label": "2025 AFC champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://www.nfl.com/games/patriots-at-broncos-2025-post-3",
@@ -97275,6 +97656,7 @@
       "label": "2025 NFC champion",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "nfl-team-ids-v1.json",
       "resolution": {
         "kind": "league_result",
         "url": "https://www.nfl.com/games/rams-at-seahawks-2025-post-3",
@@ -97286,6 +97668,7 @@
       "label": "2025 AP NFL Most Valuable Player",
       "domain": "sports",
       "unit": "enum",
+      "enum_file": "nfl-2025-mvp-player-ids-v1.json",
       "resolution": {
         "kind": "award",
         "url": "https://www.nfl.com/news/list-of-nfl-honors-award-winners-from-2025-nfl-season"
@@ -97298,6 +97681,7 @@
       "unit": "score",
       "away": "illinois",
       "home": "duke",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458920",
@@ -97312,6 +97696,7 @@
       "unit": "score",
       "away": "ole-miss",
       "home": "kentucky",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459179",
@@ -97326,6 +97711,7 @@
       "unit": "score",
       "away": "baylor",
       "home": "smu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459096",
@@ -97340,6 +97726,7 @@
       "unit": "score",
       "away": "iowa",
       "home": "iowa-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458981",
@@ -97354,6 +97741,7 @@
       "unit": "score",
       "away": "kansas",
       "home": "missouri",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459014",
@@ -97368,6 +97756,7 @@
       "unit": "score",
       "away": "oklahoma-state",
       "home": "oregon",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459283",
@@ -97382,6 +97771,7 @@
       "unit": "score",
       "away": "south-florida",
       "home": "florida",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458803",
@@ -97396,6 +97786,7 @@
       "unit": "score",
       "away": "arizona-state",
       "home": "mississippi-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459076",
@@ -97410,6 +97801,7 @@
       "unit": "score",
       "away": "ucla",
       "home": "unlv",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459407",
@@ -97424,6 +97816,7 @@
       "unit": "score",
       "away": "michigan",
       "home": "oklahoma",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459563",
@@ -97438,6 +97831,7 @@
       "unit": "score",
       "away": "smu",
       "home": "tcu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459037",
@@ -97452,6 +97846,7 @@
       "unit": "score",
       "away": "illinois",
       "home": "indiana",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459521",
@@ -97466,6 +97861,7 @@
       "unit": "score",
       "away": "michigan-state",
       "home": "usc",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459658",
@@ -97480,6 +97876,7 @@
       "unit": "score",
       "away": "south-carolina",
       "home": "missouri",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458993",
@@ -97494,6 +97891,7 @@
       "unit": "score",
       "away": "auburn",
       "home": "oklahoma",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459151",
@@ -97508,6 +97906,7 @@
       "unit": "score",
       "away": "purdue",
       "home": "notre-dame",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459087",
@@ -97522,6 +97921,7 @@
       "unit": "score",
       "away": "michigan",
       "home": "nebraska",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459594",
@@ -97536,6 +97936,7 @@
       "unit": "score",
       "away": "tulane",
       "home": "ole-miss",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458817",
@@ -97550,6 +97951,7 @@
       "unit": "score",
       "away": "texas-tech",
       "home": "utah",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459189",
@@ -97564,6 +97966,7 @@
       "unit": "score",
       "away": "florida",
       "home": "miami-fl",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458805",
@@ -97578,6 +97981,7 @@
       "unit": "score",
       "away": "clemson",
       "home": "north-carolina",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459118",
@@ -97592,6 +97996,7 @@
       "unit": "score",
       "away": "boise-state",
       "home": "notre-dame",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459566",
@@ -97606,6 +98011,7 @@
       "unit": "score",
       "away": "michigan-state",
       "home": "nebraska",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459595",
@@ -97620,6 +98026,7 @@
       "unit": "score",
       "away": "iowa-state",
       "home": "cincinnati",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458985",
@@ -97634,6 +98041,7 @@
       "unit": "score",
       "away": "mississippi-state",
       "home": "texas-am",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459070",
@@ -97648,6 +98056,7 @@
       "unit": "score",
       "away": "texas",
       "home": "florida",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458806",
@@ -97662,6 +98071,7 @@
       "unit": "score",
       "away": "texas-tech",
       "home": "houston",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458855",
@@ -97676,6 +98086,7 @@
       "unit": "score",
       "away": "wisconsin",
       "home": "michigan",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459306",
@@ -97690,6 +98101,7 @@
       "unit": "score",
       "away": "vanderbilt",
       "home": "alabama",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459558",
@@ -97704,6 +98116,7 @@
       "unit": "score",
       "away": "miami-fl",
       "home": "florida-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459219",
@@ -97718,6 +98131,7 @@
       "unit": "score",
       "away": "utah",
       "home": "byu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459193",
@@ -97732,6 +98146,7 @@
       "unit": "score",
       "away": "missouri",
       "home": "auburn",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459153",
@@ -97746,6 +98161,7 @@
       "unit": "score",
       "away": "lsu",
       "home": "vanderbilt",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458848",
@@ -97760,6 +98176,7 @@
       "unit": "score",
       "away": "georgia-tech",
       "home": "duke",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458924",
@@ -97774,6 +98191,7 @@
       "unit": "score",
       "away": "texas-tech",
       "home": "arizona-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459509",
@@ -97788,6 +98206,7 @@
       "unit": "score",
       "away": "oklahoma",
       "home": "south-carolina",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458996",
@@ -97802,6 +98221,7 @@
       "unit": "score",
       "away": "texas-am",
       "home": "arkansas",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459071",
@@ -97816,6 +98236,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "alabama",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459402",
@@ -97830,6 +98251,7 @@
       "unit": "score",
       "away": "usc",
       "home": "notre-dame",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459656",
@@ -97844,6 +98266,7 @@
       "unit": "score",
       "away": "ole-miss",
       "home": "georgia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459182",
@@ -97858,6 +98281,7 @@
       "unit": "score",
       "away": "northwestern",
       "home": "nebraska",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459596",
@@ -97872,6 +98296,7 @@
       "unit": "score",
       "away": "south-florida",
       "home": "memphis",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458880",
@@ -97886,6 +98311,7 @@
       "unit": "score",
       "away": "michigan",
       "home": "michigan-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459603",
@@ -97900,6 +98326,7 @@
       "unit": "score",
       "away": "ole-miss",
       "home": "oklahoma",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459183",
@@ -97914,6 +98341,7 @@
       "unit": "score",
       "away": "wisconsin",
       "home": "oregon",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459292",
@@ -97928,6 +98356,7 @@
       "unit": "score",
       "away": "alabama",
       "home": "south-carolina",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458997",
@@ -97942,6 +98371,7 @@
       "unit": "score",
       "away": "missouri",
       "home": "vanderbilt",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459239",
@@ -97956,6 +98386,7 @@
       "unit": "score",
       "away": "byu",
       "home": "iowa-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458987",
@@ -97970,6 +98401,7 @@
       "unit": "score",
       "away": "texas",
       "home": "mississippi-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459079",
@@ -97984,6 +98416,7 @@
       "unit": "score",
       "away": "texas-am",
       "home": "lsu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458843",
@@ -97998,6 +98431,7 @@
       "unit": "score",
       "away": "cincinnati",
       "home": "utah",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459196",
@@ -98012,6 +98446,7 @@
       "unit": "score",
       "away": "indiana",
       "home": "maryland",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459524",
@@ -98026,6 +98461,7 @@
       "unit": "score",
       "away": "south-carolina",
       "home": "ole-miss",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458998",
@@ -98040,6 +98476,7 @@
       "unit": "score",
       "away": "georgia-tech",
       "home": "nc-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459202",
@@ -98054,6 +98491,7 @@
       "unit": "score",
       "away": "miami-fl",
       "home": "smu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459101",
@@ -98068,6 +98506,7 @@
       "unit": "score",
       "away": "florida",
       "home": "georgia",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458809",
@@ -98082,6 +98521,7 @@
       "unit": "score",
       "away": "usc",
       "home": "nebraska",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459597",
@@ -98096,6 +98536,7 @@
       "unit": "score",
       "away": "penn-state",
       "home": "ohio-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459549",
@@ -98110,6 +98551,7 @@
       "unit": "score",
       "away": "vanderbilt",
       "home": "texas",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459560",
@@ -98124,6 +98566,7 @@
       "unit": "score",
       "away": "oklahoma",
       "home": "tennessee",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459403",
@@ -98138,6 +98581,7 @@
       "unit": "score",
       "away": "tennessee",
       "home": "florida",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458812",
@@ -98152,6 +98596,7 @@
       "unit": "score",
       "away": "michigan",
       "home": "maryland",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459605",
@@ -98166,6 +98611,7 @@
       "unit": "score",
       "away": "louisville",
       "home": "smu",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459103",
@@ -98180,6 +98626,7 @@
       "unit": "score",
       "away": "byu",
       "home": "cincinnati",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459663",
@@ -98194,6 +98641,7 @@
       "unit": "score",
       "away": "arkansas",
       "home": "texas",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459250",
@@ -98208,6 +98656,7 @@
       "unit": "score",
       "away": "miami-fl",
       "home": "virginia-tech",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6458967",
@@ -98222,6 +98671,7 @@
       "unit": "score",
       "away": "missouri",
       "home": "oklahoma",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459237",
@@ -98236,6 +98686,7 @@
       "unit": "score",
       "away": "pitt",
       "home": "georgia-tech",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459533",
@@ -98250,6 +98701,7 @@
       "unit": "score",
       "away": "nebraska",
       "home": "penn-state",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459599",
@@ -98264,6 +98716,7 @@
       "unit": "score",
       "away": "usc",
       "home": "oregon",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6459294",
@@ -98278,6 +98731,7 @@
       "unit": "score",
       "away": "tulane",
       "home": "ole-miss",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531845",
@@ -98292,6 +98746,7 @@
       "unit": "score",
       "away": "james-madison",
       "home": "oregon",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531841",
@@ -98306,6 +98761,7 @@
       "unit": "score",
       "away": "alabama",
       "home": "oklahoma",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531844",
@@ -98320,6 +98776,7 @@
       "unit": "score",
       "away": "miami-fl",
       "home": "texas-am",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531848",
@@ -98334,6 +98791,7 @@
       "unit": "score",
       "away": "miami-fl",
       "home": "indiana",
+      "enum_file": "ncaa-fbs-team-ids-v1.json",
       "resolution": {
         "kind": "league_box",
         "url": "https://www.ncaa.com/game/6531855",
@@ -98358,8 +98816,10 @@
       "label": "NVDA analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98380,8 +98840,10 @@
       "label": "AVGO analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98402,8 +98864,10 @@
       "label": "AMD analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98424,8 +98888,10 @@
       "label": "ARM analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98458,8 +98924,10 @@
       "label": "MU analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98480,8 +98948,10 @@
       "label": "AMAT analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98502,8 +98972,10 @@
       "label": "INTC analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98524,8 +98996,10 @@
       "label": "ON analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     },
@@ -98546,8 +99020,10 @@
       "label": "LRCX analyst rating",
       "domain": "finance",
       "unit": "enum",
+      "enum_file": "us-equity-analyst-rating-ids-v1.json",
       "resolution": {
         "kind": "unscorable",
+        "reason": "no_official_print",
         "url": null
       }
     }

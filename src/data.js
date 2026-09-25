@@ -26,3 +26,4 @@ export const FORECASTS = live.FORECASTS;
 export const ACTUALS = live.ACTUALS;
 export const SCORES = live.SCORES;
 export const DATA_SOURCE = live.source || "live";
+export const GENERATED_AT = live.generated_at || null;
