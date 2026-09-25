@@ -212,6 +212,38 @@ function officialFor(forecast) {
   return allow;
 }
 
+function presentString(v) {
+  return typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+}
+
+/**
+ * Actual-source link for a card. Order:
+ *   1. Scorer's own score.actual_source_url (authoritative; name from score, else the joined actual).
+ *   2. Backup join: resolved actual (by match_key) source.
+ *   3. Current behavior: official-print allowlist for the domain (no per-claim URL is invented).
+ * Returns { name, url, origin } where origin is "score" | "actuals" | "official".
+ */
+export function resolveActualSource(forecast, score, actual) {
+  const resolved = actual && actual.status === "resolved" ? actual : null;
+  const src = officialFor(forecast);
+  // Legal 05b Clarification 2026-10-02: an aged-out observation (actual carries retention_note)
+  // links the actual's own endpoint URL; the timestamped observation_ref is plain text only.
+  // Checked first so Scorer's actual_source_url can never undo the endpoint-plus-note form.
+  if (resolved && presentString(resolved.source?.retention_note)) {
+    return { name: resolved.source.name, url: resolved.source.url, origin: "actuals_retained" };
+  }
+  const scoreUrl = presentString(score?.actual_source_url);
+  if (scoreUrl) {
+    const name =
+      presentString(score?.actual_source_name) || presentString(resolved?.source?.name) || src.name;
+    return { name, url: scoreUrl, origin: "score" };
+  }
+  if (resolved) {
+    return { name: resolved.source.name, url: resolved.source.url, origin: "actuals" };
+  }
+  return { name: src.name, url: src.url, origin: "official" };
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
   const grade = publicGrade(status);
@@ -222,8 +254,10 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const graded = status === "hit" || status === "miss";
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
   const actualValue = shown ? shown.value : "pending";
-  const actualSourceName = shown ? shown.source.name : src.name;
-  const actualSourceUrl = shown ? shown.source.url : src.url;
+  // Graded cards: the Scorer's own actual_source_url wins, else the actuals join (#45).
+  const actualSource = graded ? resolveActualSource(forecast, score, shown) : { name: src.name, url: src.url };
+  const actualSourceName = actualSource.name;
+  const actualSourceUrl = actualSource.url;
   // Legal 05b Clarification 2026-10-02 (data-driven): an actual carrying retention_note has aged
   // out of the API. Link stays the endpoint; observation_ref is shown as plain text with observed_at.
   const retained = shown && shown.source?.retention_note ? shown : null;
@@ -245,6 +279,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
     actualObservedAt: retained ? retained.observed_at ?? null : null,
     actualRetentionNote: retained ? retained.source.retention_note : null,
+    actualSourceOrigin: actualSource.origin,
     grade,
     status,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),

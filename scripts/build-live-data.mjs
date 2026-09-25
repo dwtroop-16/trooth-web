@@ -195,6 +195,12 @@ function siteSubject(s) {
   };
 }
 
+function nonEmptyString(v) {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t ? t : null;
+}
+
 function mapScore(row) {
   return {
     schema_version: row.schema_version || "1.1.0",
@@ -209,6 +215,11 @@ function mapScore(row) {
     ape: row.ape == null ? null : Number(row.ape),
     brier: row.brier == null ? null : Number(row.brier),
     scored_at: row.scored_at,
+    // Scorer's own official-print permalink for hit/miss rows. Passed through verbatim; never guessed.
+    actual_source_url: nonEmptyString(row.actual_source_url),
+    ...(nonEmptyString(row.actual_source_name)
+      ? { actual_source_name: nonEmptyString(row.actual_source_name) }
+      : {}),
   };
 }
 
