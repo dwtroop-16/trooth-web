@@ -57,12 +57,16 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
         {graded ? (
         <span style={linkRuleParts.length ? metaWrap : metaItem}>
           <span style={faint}>Actual source · </span>
-          {rendered.actualSourceParts.map((part, i) =>
-            part.kind === "link" ? (
-              <a key={i} href={part.href} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{part.text || actualHost}</a>
-            ) : LINK_RULE_ROLES.has(part.role) ? (
-              <span key={i} data-link-rule={part.role}>{i > 0 ? " " : ""}{part.text}</span>
-            ) : null
+          {rendered.actualSourcePending ? (
+            "pending"
+          ) : (
+            rendered.actualSourceParts.map((part, i) =>
+              part.kind === "link" ? (
+                <a key={i} href={part.href} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{part.text || actualHost}</a>
+              ) : LINK_RULE_ROLES.has(part.role) ? (
+                <span key={i} data-link-rule={part.role}>{i > 0 ? " " : ""}{part.text}</span>
+              ) : null
+            )
           )}
         </span>
         ) : null}

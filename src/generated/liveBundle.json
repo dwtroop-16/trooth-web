@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T12:56:03.830Z",
+  "generated_at": "2026-10-02T12:56:04.365Z",
   "source": "live",
   "SPEAKERS": [
     {
@@ -55952,6 +55952,171 @@
       "scorable": true,
       "unscorable_reason": null,
       "match_key": "finance|us-equity-nvda-price-target-12m|2027-08-27|USD"
+    },
+    {
+      "schema_version": "1.3.0",
+      "id": "fct_01M3YAZ8SHX81R1XD37W4KPE97",
+      "speaker_id": "fox-joel-klatt",
+      "captured_at": "2026-10-02T12:56:04Z",
+      "published_at": "2026-10-01T14:46:03Z",
+      "source": {
+        "type": "outlet",
+        "url": "https://www.foxsports.com/stories/college-football/joel-klatt-show-michigan-wolverines-usc-trojans-week-5-picks",
+        "account": "foxsports"
+      },
+      "speaker": {
+        "name": "Joel Klatt",
+        "org": "FOX Sports"
+      },
+      "domain": "sports",
+      "subject": {
+        "id": "fbs-2026-ohio-state-iowa-20261003",
+        "label": "2026 FBS: Ohio State at Iowa (2026-10-03)"
+      },
+      "horizon_end": "2026-10-04T11:30:00Z",
+      "claim": {
+        "text": "Ohio State 35, Iowa 13",
+        "type": "categorical",
+        "value": "35-13",
+        "unit": "score",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "sports|fbs-2026-ohio-state-iowa-20261003|fbs-2026-ohio-state-iowa-20261003|score"
+    },
+    {
+      "schema_version": "1.3.0",
+      "id": "fct_01M3YAZ8SHWS1HJXA322Z6PNS3",
+      "speaker_id": "fox-joel-klatt",
+      "captured_at": "2026-10-02T12:56:04Z",
+      "published_at": "2026-10-01T14:46:03Z",
+      "source": {
+        "type": "outlet",
+        "url": "https://www.foxsports.com/stories/college-football/joel-klatt-show-michigan-wolverines-usc-trojans-week-5-picks",
+        "account": "foxsports"
+      },
+      "speaker": {
+        "name": "Joel Klatt",
+        "org": "FOX Sports"
+      },
+      "domain": "sports",
+      "subject": {
+        "id": "fbs-2026-alabama-mississippi-state-20261003",
+        "label": "2026 FBS: Alabama at Mississippi State (2026-10-03)"
+      },
+      "horizon_end": "2026-10-04T08:00:00Z",
+      "claim": {
+        "text": "I think Alabama wins this one 35-28.",
+        "type": "categorical",
+        "value": "35-28",
+        "unit": "score",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "sports|fbs-2026-alabama-mississippi-state-20261003|fbs-2026-alabama-mississippi-state-20261003|score"
+    },
+    {
+      "schema_version": "1.3.0",
+      "id": "fct_01M3YAZ8SH8PVF87AS8C63PY5G",
+      "speaker_id": "fox-joel-klatt",
+      "captured_at": "2026-10-02T12:56:04Z",
+      "published_at": "2026-10-01T14:46:03Z",
+      "source": {
+        "type": "outlet",
+        "url": "https://www.foxsports.com/stories/college-football/joel-klatt-show-michigan-wolverines-usc-trojans-week-5-picks",
+        "account": "foxsports"
+      },
+      "speaker": {
+        "name": "Joel Klatt",
+        "org": "FOX Sports"
+      },
+      "domain": "sports",
+      "subject": {
+        "id": "fbs-2026-florida-missouri-20261003",
+        "label": "2026 FBS: Florida at Missouri (2026-10-03)"
+      },
+      "horizon_end": "2026-10-04T11:30:00Z",
+      "claim": {
+        "text": "I think Florida wins this one 42-32.",
+        "type": "categorical",
+        "value": "42-32",
+        "unit": "score",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "sports|fbs-2026-florida-missouri-20261003|fbs-2026-florida-missouri-20261003|score"
+    },
+    {
+      "schema_version": "1.3.0",
+      "id": "fct_01M3YAZ8SHBPN37GFRAYHSMNKD",
+      "speaker_id": "fox-joel-klatt",
+      "captured_at": "2026-10-02T12:56:04Z",
+      "published_at": "2026-10-01T14:46:03Z",
+      "source": {
+        "type": "outlet",
+        "url": "https://www.foxsports.com/stories/college-football/joel-klatt-show-michigan-wolverines-usc-trojans-week-5-picks",
+        "account": "foxsports"
+      },
+      "speaker": {
+        "name": "Joel Klatt",
+        "org": "FOX Sports"
+      },
+      "domain": "sports",
+      "subject": {
+        "id": "fbs-2026-miami-fl-clemson-20261003",
+        "label": "2026 FBS: Miami (FL) at Clemson (2026-10-03)"
+      },
+      "horizon_end": "2026-10-04T15:30:00Z",
+      "claim": {
+        "text": "I've got Miami winning 42-17 on the road, and they cover 16.5.",
+        "type": "categorical",
+        "value": "42-17",
+        "unit": "score",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "sports|fbs-2026-miami-fl-clemson-20261003|fbs-2026-miami-fl-clemson-20261003|score"
+    },
+    {
+      "schema_version": "1.3.0",
+      "id": "fct_01M3YAZ8SHFWW4D7H2GT0FRX33",
+      "speaker_id": "fox-joel-klatt",
+      "captured_at": "2026-10-02T12:56:04Z",
+      "published_at": "2026-10-01T14:46:03Z",
+      "source": {
+        "type": "outlet",
+        "url": "https://www.foxsports.com/stories/college-football/joel-klatt-show-michigan-wolverines-usc-trojans-week-5-picks",
+        "account": "foxsports"
+      },
+      "speaker": {
+        "name": "Joel Klatt",
+        "org": "FOX Sports"
+      },
+      "domain": "sports",
+      "subject": {
+        "id": "fbs-2026-washington-usc-20261003",
+        "label": "2026 FBS: Washington at USC (2026-10-03)"
+      },
+      "horizon_end": "2026-10-04T15:30:00Z",
+      "claim": {
+        "text": "I think USC wins this one 35-21, and they cover the 9.5.",
+        "type": "categorical",
+        "value": "21-35",
+        "unit": "score",
+        "probability": null,
+        "band": null
+      },
+      "scorable": true,
+      "unscorable_reason": null,
+      "match_key": "sports|fbs-2026-washington-usc-20261003|fbs-2026-washington-usc-20261003|score"
     }
   ],
   "ACTUALS": [
@@ -99834,6 +99999,76 @@
       "unit": "enum",
       "resolution": {
         "kind": "unscorable",
+        "url": null
+      }
+    },
+    "fbs-2026-ohio-state-iowa-20261003": {
+      "id": "fbs-2026-ohio-state-iowa-20261003",
+      "label": "2026 FBS: Ohio State at Iowa (2026-10-03)",
+      "domain": "sports",
+      "unit": "score",
+      "away": "ohio-state",
+      "home": "iowa",
+      "resolution": {
+        "kind": "league_box",
+        "league": "ncaa-fbs",
+        "value_format": "{away_pts}-{home_pts}",
+        "url": null
+      }
+    },
+    "fbs-2026-alabama-mississippi-state-20261003": {
+      "id": "fbs-2026-alabama-mississippi-state-20261003",
+      "label": "2026 FBS: Alabama at Mississippi State (2026-10-03)",
+      "domain": "sports",
+      "unit": "score",
+      "away": "alabama",
+      "home": "mississippi-state",
+      "resolution": {
+        "kind": "league_box",
+        "league": "ncaa-fbs",
+        "value_format": "{away_pts}-{home_pts}",
+        "url": null
+      }
+    },
+    "fbs-2026-florida-missouri-20261003": {
+      "id": "fbs-2026-florida-missouri-20261003",
+      "label": "2026 FBS: Florida at Missouri (2026-10-03)",
+      "domain": "sports",
+      "unit": "score",
+      "away": "florida",
+      "home": "missouri",
+      "resolution": {
+        "kind": "league_box",
+        "league": "ncaa-fbs",
+        "value_format": "{away_pts}-{home_pts}",
+        "url": null
+      }
+    },
+    "fbs-2026-miami-fl-clemson-20261003": {
+      "id": "fbs-2026-miami-fl-clemson-20261003",
+      "label": "2026 FBS: Miami (FL) at Clemson (2026-10-03)",
+      "domain": "sports",
+      "unit": "score",
+      "away": "miami-fl",
+      "home": "clemson",
+      "resolution": {
+        "kind": "league_box",
+        "league": "ncaa-fbs",
+        "value_format": "{away_pts}-{home_pts}",
+        "url": null
+      }
+    },
+    "fbs-2026-washington-usc-20261003": {
+      "id": "fbs-2026-washington-usc-20261003",
+      "label": "2026 FBS: Washington at USC (2026-10-03)",
+      "domain": "sports",
+      "unit": "score",
+      "away": "washington",
+      "home": "usc",
+      "resolution": {
+        "kind": "league_box",
+        "league": "ncaa-fbs",
+        "value_format": "{away_pts}-{home_pts}",
         "url": null
       }
     }
