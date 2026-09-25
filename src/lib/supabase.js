@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { supabaseConfigured } from "./flags.js";
 
 // Vite exposes only vars prefixed VITE_ to the client. Guard the access so the
 // module is also importable outside Vite (e.g. Node tests), where import.meta.env
@@ -9,7 +10,8 @@ const anonKey = env.VITE_SUPABASE_ANON_KEY;
 
 // Create a client only when configured. If the env vars are missing, the app
 // falls back to the bundled data (see dataSource.js) so it never breaks.
-export const supabase = url && anonKey ? createClient(url, anonKey) : null;
+// Placeholder or malformed values (e.g. .env.example copied verbatim) count as not configured.
+export const supabase = supabaseConfigured(env) ? createClient(url, anonKey) : null;
 export const hasSupabase = Boolean(supabase);
 
 // --- auth ------------------------------------------------------------

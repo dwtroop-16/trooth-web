@@ -1,4 +1,4 @@
-import { hasSupabase } from "./lib/flags.js";
+import { hasSupabase, useSupabaseData } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 
 const BUNDLED = {
@@ -85,8 +85,10 @@ export async function submitSourceTip({ sourceUrl, note, domain, userId }) {
   if (error) throw error;
 }
 
+// Page data: the bundled live data unless Supabase tables are explicitly opted in
+// (VITE_DATA_SOURCE=supabase with a real project). No network request otherwise.
 export async function loadData() {
-  if (!hasSupabase) return BUNDLED;
+  if (!useSupabaseData) return BUNDLED;
   const { supabase } = await import("./lib/supabase.js");
   const [spRes, fRes, aRes, sRes] = await Promise.all([
     supabase.from("speakers").select("*"),
