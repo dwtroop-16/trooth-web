@@ -63,9 +63,9 @@ export default function Home({ vals, openClaim }) {
 
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;")}>
-      <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 18px;")}>
+      <h1 style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:400;line-height:normal;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 18px;")}>
         Public forecasts vs official prints · pending is not a miss
-      </div>
+      </h1>
 
       <div style={css("display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;")}>
         {vals.categories.map((tab) => (
