@@ -22,7 +22,9 @@ test("bundled 2026-09-02.json surfaces the legal_scope correction, not skipped[]
   const entries = publicChangelogEntries([{ ...day, date: "2026-09-02" }]);
   assert.equal(entries.length, 1);
   assert.equal(entries[0].kind, "correction");
-  assert.match(entries[0].summary, /legal_scope/);
+  assert.equal(entries[0].reason.code, "legal_scope");
+  assert.equal(entries[0].reason.title, "legal_scope");
+  assert.doesNotMatch(entries[0].summary, /legal_scope/); // plain label, raw code only in title
   assert.match(entries[0].summary, /api\.weather\.gov/);
   const blob = JSON.stringify(entries);
   assert.equal(blob.includes("no_explicit_value"), false);

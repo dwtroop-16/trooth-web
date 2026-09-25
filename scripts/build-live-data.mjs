@@ -73,10 +73,14 @@ const ACTUAL_FILES = [
 ];
 const SCORES_FILE = "scorer/out/scores.jsonl";
 const SPEAKERS_REG = "speakers-v1.json";
+// subjects-v1.json "includes" lists all four game catalogs; load every one so each game
+// subject carries its catalog away/home slugs (used to label score actuals on cards).
 const SUBJECTS_FILES = [
   "subjects-v1.json",
   "games-2025-nfl.json",
   "games-2026-nfl.json",
+  "games-2025-fbs.json",
+  "games-2026-fbs.json",
 ];
 
 const AVATAR_PALETTE = [
@@ -198,16 +202,53 @@ function loadSubjectCatalog() {
   return byId;
 }
 
+/**
+ * Slim copy of the catalog's designated resolution (where the official actual will come from).
+ * Only fields the site needs to name/link the designated actual source; copied verbatim, never guessed.
+ */
+function siteResolution(res) {
+  if (!res || typeof res !== "object" || !res.kind) return null;
+  const out = { kind: res.kind };
+  for (const k of ["url", "reason", "series_id", "series_upper", "series_lower", "ticker", "listing_host", "station", "league", "value_format"]) {
+    if (typeof res[k] === "string" && res[k].trim() !== "") out[k] = res[k].trim();
+  }
+  if (!("url" in out)) out.url = null;
+  return out;
+}
+
 function siteSubject(s) {
-  return {
+  const out = {
     id: s.id,
     label: s.label || s.id,
     domain: s.domain,
     unit: s.unit == null ? "" : s.unit,
   };
+  // Game subjects: catalog away/home team slugs (score value format is "{away_pts}-{home_pts}").
+  if (typeof s.away === "string" && s.away) out.away = s.away;
+  if (typeof s.home === "string" && s.home) out.home = s.home;
+  // Enum subjects (e.g. title winners): which id file the value comes from (team vs player ids).
+  if (typeof s.enum_file === "string" && s.enum_file) out.enum_file = s.enum_file;
+  const resolution = siteResolution(s.resolution);
+  if (resolution) out.resolution = resolution;
+  return out;
 }
 
-function mapScore(row) {
+function buildSiteSubjects(usedSubjectIds, subjectsById, fallbackFor) {
+  const SUBJECTS = {};
+  for (const sid of usedSubjectIds) {
+    const cat = subjectsById[sid];
+    SUBJECTS[sid] = cat ? siteSubject(cat) : fallbackFor(sid);
+  }
+  return SUBJECTS;
+}
+
+function nonEmptyString(v) {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t ? t : null;
+}
+
+export function mapScore(row) {
   return {
     schema_version: row.schema_version || "1.1.0",
     id: row.id,
@@ -221,6 +262,22 @@ function mapScore(row) {
     ape: row.ape == null ? null : Number(row.ape),
     brier: row.brier == null ? null : Number(row.brier),
     scored_at: row.scored_at,
+    // Scorer's own official-print permalink for hit/miss rows. Passed through verbatim; never guessed.
+    actual_source_url: nonEmptyString(row.actual_source_url),
+    ...(nonEmptyString(row.actual_source_name)
+      ? { actual_source_name: nonEmptyString(row.actual_source_name) }
+      : {}),
+    // Scorer review hold (scorer/holds.jsonl): grade withheld while a human/Legal check runs.
+    ...(reviewHold(row.review_hold) ? { review_hold: reviewHold(row.review_hold) } : {}),
+  };
+}
+
+function reviewHold(h) {
+  if (!h || typeof h !== "object" || !nonEmptyString(h.reason)) return null;
+  return {
+    reason: nonEmptyString(h.reason),
+    flag_target: nonEmptyString(h.flag_target),
+    opened_at: nonEmptyString(h.opened_at),
   };
 }
 
@@ -371,21 +428,15 @@ function build() {
     });
   }
 
-  const SUBJECTS = {};
-  for (const sid of usedSubjectIds) {
-    const cat = subjectsById[sid];
-    if (cat) {
-      SUBJECTS[sid] = siteSubject(cat);
-    } else {
-      const fromF = forecasts.find((x) => x.subject.id === sid);
-      SUBJECTS[sid] = {
-        id: sid,
-        label: fromF?.subject?.label || sid,
-        domain: fromF?.domain || "sports",
-        unit: fromF?.claim?.unit ?? "",
-      };
-    }
-  }
+  const SUBJECTS = buildSiteSubjects(usedSubjectIds, subjectsById, (sid) => {
+    const fromF = forecasts.find((x) => x.subject.id === sid);
+    return {
+      id: sid,
+      label: fromF?.subject?.label || sid,
+      domain: fromF?.domain || "sports",
+      unit: fromF?.claim?.unit ?? "",
+    };
+  });
 
   const ACTUALS = [...actualByKey.values()].map(mapActual);
   const SCORES = scoresRaw.map(mapScore);
@@ -439,6 +490,7 @@ export const FORECASTS = live.FORECASTS;
 export const ACTUALS = live.ACTUALS;
 export const SCORES = live.SCORES;
 export const DATA_SOURCE = live.source || "live";
+export const GENERATED_AT = live.generated_at || null;
 `;
   writeFileSync(join(SITE, "src/data.js"), dataJs);
 
@@ -488,4 +540,37 @@ export const DATA_SOURCE = live.source || "live";
   return summary;
 }
 
-build();
+/**
+ * --subjects-only: refresh SUBJECTS in the existing live bundle from the subject catalogs,
+ * leaving SPEAKERS / FORECASTS / ACTUALS / SCORES / generated_at byte-for-byte untouched.
+ * Used to add catalog metadata (away/home, designated resolution) without re-pulling scores.
+ */
+function refreshSubjectsOnly() {
+  const subjectsById = loadSubjectCatalog();
+  const outPath = join(SITE, "src/generated/liveBundle.json");
+  const bundle = readJson(outPath);
+  const prev = bundle.SUBJECTS || {};
+  const used = new Set([...Object.keys(prev), ...(bundle.FORECASTS || []).map((f) => f.subject?.id).filter(Boolean)]);
+  bundle.SUBJECTS = buildSiteSubjects([...used], subjectsById, (sid) => {
+    if (prev[sid]) return prev[sid];
+    const fromF = (bundle.FORECASTS || []).find((x) => x.subject?.id === sid);
+    return { id: sid, label: fromF?.subject?.label || sid, domain: fromF?.domain || "sports", unit: fromF?.claim?.unit ?? "" };
+  });
+  writeFileSync(outPath, JSON.stringify(bundle, null, 2) + "\n");
+  const subs = Object.values(bundle.SUBJECTS);
+  console.log(JSON.stringify({
+    subjects: subs.length,
+    with_resolution: subs.filter((s) => s.resolution).length,
+    with_away_home: subs.filter((s) => s.away && s.home).length,
+    forecasts: (bundle.FORECASTS || []).length,
+    scores: (bundle.SCORES || []).length,
+    actuals: (bundle.ACTUALS || []).length,
+  }, null, 2));
+}
+
+// Run only when executed directly (tests import mapScore without writing anything).
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isMain) {
+  if (process.argv.includes("--subjects-only")) refreshSubjectsOnly();
+  else build();
+}
