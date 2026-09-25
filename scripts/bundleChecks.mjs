@@ -63,12 +63,35 @@ export function assertReferencedActuals(actuals, scores) {
   }
 }
 
-/** Default publication lag when a catalog resolution does not carry lag_hours. */
-export const DEFAULT_LAG_HOURS = { weather: 18, finance: 36, sports: 12, politics: 24 };
+/** Only politics subjects with a null catalog lag_hours get a fallback lag (Architect, 2026-09-25). */
+export const POLITICS_NULL_LAG_FALLBACK_HOURS = 24;
+
+/** True when the catalog marks a subject unscorable (e.g. the 20 us-equity-*-rating subjects). */
+export function isUnscorableSubject(sub) {
+  if (!sub) return false;
+  return sub.resolution?.kind === "unscorable" || sub.scorable === false || sub.status === "unscorable";
+}
+
+/**
+ * Publication lag for a subject, read from its catalog `resolution.lag_hours` (subjects-v1.json
+ * and the game catalogs). Returns null when the guard must not judge the row:
+ * unscorable subjects, subjects missing from the catalog, and non-politics subjects without a
+ * numeric lag. Politics subjects whose lag_hours is null fall back to 24h.
+ */
+export function lagHoursFor(sub, domain) {
+  if (!sub || isUnscorableSubject(sub)) return null;
+  const raw = sub.resolution?.lag_hours;
+  const lag = typeof raw === "number" ? raw : typeof raw === "string" && raw.trim() !== "" ? Number(raw) : NaN;
+  if (Number.isFinite(lag) && lag >= 0) return lag;
+  const dom = sub.domain || domain;
+  if (dom === "politics" && raw == null) return POLITICS_NULL_LAG_FALLBACK_HOURS;
+  return null;
+}
 
 /**
  * Stale-Scorer guard: pending scores whose match_key already has a resolved actual and whose
- * horizon_end + lag_hours is in the past at `now`. These should have been graded by the Scorer.
+ * horizon_end + the subject's catalog lag_hours is in the past at `now`. These should have been graded by the Scorer.
+ * Unscorable forecasts/subjects and subjects without a usable lag are never flagged.
  * Returns rows sorted by forecast_id: { forecast_id, score_id, match_key, actual_id, horizon_end, lag_hours, due_at }.
  */
 export function findStaleScores({ scores, forecasts, actuals, subjectsById, now }) {
@@ -84,11 +107,12 @@ export function findStaleScores({ scores, forecasts, actuals, subjectsById, now 
     const actual = resolvedByKey.get(s.match_key);
     if (!actual) continue;
     const f = forecastById.get(s.forecast_id);
-    const endMs = f && f.horizon_end ? Date.parse(f.horizon_end) : NaN;
+    if (!f || f.scorable === false) continue;
+    const endMs = f.horizon_end ? Date.parse(f.horizon_end) : NaN;
     if (!Number.isFinite(endMs)) continue;
     const sub = subjectsById && f.subject?.id ? subjectsById[f.subject.id] : null;
-    const catLag = Number(sub?.resolution?.lag_hours);
-    const lag = Number.isFinite(catLag) && catLag >= 0 ? catLag : DEFAULT_LAG_HOURS[f.domain] ?? 24;
+    const lag = lagHoursFor(sub, f.domain);
+    if (lag == null) continue;
     const dueMs = endMs + lag * 3600 * 1000;
     if (nowMs > dueMs) {
       stale.push({
