@@ -14,6 +14,7 @@ export function loadChangelogDays() {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function loadPublicChangelog() {
-  return publicChangelogEntries(loadChangelogDays());
+/** context: { forecasts, scores, speakers } from the published bundle (speaker/claim + later grade). */
+export function loadPublicChangelog(context) {
+  return publicChangelogEntries(loadChangelogDays(), context);
 }

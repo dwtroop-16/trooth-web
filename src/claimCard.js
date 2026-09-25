@@ -36,6 +36,31 @@ export function formatActual(actual) {
   return actual;
 }
 
+/** "Actual source: pending": allowed only while the actual is pending, with no URL. */
+export function isPendingActualSource(card) {
+  return (
+    !!card &&
+    formatActual(card.actual) === "pending" &&
+    missing(card.actualSourceUrl) &&
+    typeof card.actualSourceName === "string" &&
+    card.actualSourceName.trim().toLowerCase() === "pending"
+  );
+}
+
+/**
+ * "Actual source · None (<reason>)": allowed only on Unscorable cards (there will never be an actual),
+ * with no URL. The reason is the plain-English label of the unscorable reason code.
+ */
+export function isNoneActualSource(card) {
+  return (
+    !!card &&
+    card.grade === "Unscorable" &&
+    missing(card.actualSourceUrl) &&
+    typeof card.actualSourceName === "string" &&
+    /^None\b/.test(card.actualSourceName.trim())
+  );
+}
+
 export function assertPublicClaimCard(card) {
   if (!card || typeof card !== "object") fail("card", "card object is required");
 
@@ -47,7 +72,11 @@ export function assertPublicClaimCard(card) {
   // actual may be 0 or falsey numeric, but not null/undefined/""
   if (card.actual === undefined || card.actual === null || card.actual === "") fail("actual");
   if (missing(card.actualSourceName)) fail("actual source");
-  if (missing(card.actualSourceUrl)) fail("actual source");
+  // A URL is required, except while the actual itself is pending and no source is designated yet:
+  // then the card shows "Actual source: pending" instead of a wrong or guessed source.
+  if (missing(card.actualSourceUrl) && !isPendingActualSource(card) && !isNoneActualSource(card)) {
+    fail("actual source");
+  }
   if (missing(card.grade)) fail("grade");
 
   const grade = String(card.grade);
@@ -62,6 +91,9 @@ export function assertPublicClaimCard(card) {
 export function renderPublicClaimCard(card) {
   assertPublicClaimCard(card);
   const actual = formatActual(card.actual);
+  const actualSourcePending = isPendingActualSource(card);
+  const actualSourceNone = isNoneActualSource(card);
+  const actualSourceUrl = actualSourcePending || actualSourceNone ? null : card.actualSourceUrl;
   const fieldsInOrder = [
     { key: "speaker", label: "Speaker", value: formatSpeaker(card) },
     { key: "claimText", label: "Claim", value: card.claimText },
@@ -72,9 +104,15 @@ export function renderPublicClaimCard(card) {
     {
       key: "actualSource",
       label: "Actual source",
-      value: `${card.actualSourceName} ${card.actualSourceUrl}`.trim(),
+      value: actualSourcePending
+        ? "pending"
+        : actualSourceNone
+          ? card.actualSourceName
+          : `${card.actualSourceName} ${card.actualSourceUrl}`.trim(),
       name: card.actualSourceName,
-      url: card.actualSourceUrl,
+      url: actualSourceUrl,
+      pending: actualSourcePending,
+      none: actualSourceNone,
     },
     { key: "grade", label: "Grade", value: card.grade },
   ];
@@ -88,7 +126,9 @@ export function renderPublicClaimCard(card) {
     horizon: card.horizon,
     actual,
     actualSourceName: card.actualSourceName,
-    actualSourceUrl: card.actualSourceUrl,
+    actualSourceUrl,
+    actualSourcePending,
+    actualSourceNone,
     grade: card.grade,
     fieldsInOrder,
   };

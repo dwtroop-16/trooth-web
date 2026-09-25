@@ -6,6 +6,13 @@
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  missingSubjects,
+  appendReferencedActuals,
+  assertReferencedActuals,
+  findStaleScores,
+  staleSummary,
+} from "./bundleChecks.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -73,10 +80,14 @@ const ACTUAL_FILES = [
 ];
 const SCORES_FILE = "scorer/out/scores.jsonl";
 const SPEAKERS_REG = "speakers-v1.json";
+// subjects-v1.json "includes" lists all four game catalogs; load every one so each game
+// subject carries its catalog away/home slugs (used to label score actuals on cards).
 const SUBJECTS_FILES = [
   "subjects-v1.json",
   "games-2025-nfl.json",
   "games-2026-nfl.json",
+  "games-2025-fbs.json",
+  "games-2026-fbs.json",
 ];
 
 const AVATAR_PALETTE = [
@@ -198,16 +209,53 @@ function loadSubjectCatalog() {
   return byId;
 }
 
+/**
+ * Slim copy of the catalog's designated resolution (where the official actual will come from).
+ * Only fields the site needs to name/link the designated actual source; copied verbatim, never guessed.
+ */
+function siteResolution(res) {
+  if (!res || typeof res !== "object" || !res.kind) return null;
+  const out = { kind: res.kind };
+  for (const k of ["url", "reason", "series_id", "series_upper", "series_lower", "ticker", "listing_host", "station", "league", "value_format"]) {
+    if (typeof res[k] === "string" && res[k].trim() !== "") out[k] = res[k].trim();
+  }
+  if (!("url" in out)) out.url = null;
+  return out;
+}
+
 function siteSubject(s) {
-  return {
+  const out = {
     id: s.id,
     label: s.label || s.id,
     domain: s.domain,
     unit: s.unit == null ? "" : s.unit,
   };
+  // Game subjects: catalog away/home team slugs (score value format is "{away_pts}-{home_pts}").
+  if (typeof s.away === "string" && s.away) out.away = s.away;
+  if (typeof s.home === "string" && s.home) out.home = s.home;
+  // Enum subjects (e.g. title winners): which id file the value comes from (team vs player ids).
+  if (typeof s.enum_file === "string" && s.enum_file) out.enum_file = s.enum_file;
+  const resolution = siteResolution(s.resolution);
+  if (resolution) out.resolution = resolution;
+  return out;
 }
 
-function mapScore(row) {
+function buildSiteSubjects(usedSubjectIds, subjectsById, fallbackFor) {
+  const SUBJECTS = {};
+  for (const sid of usedSubjectIds) {
+    const cat = subjectsById[sid];
+    SUBJECTS[sid] = cat ? siteSubject(cat) : fallbackFor(sid);
+  }
+  return SUBJECTS;
+}
+
+function nonEmptyString(v) {
+  if (typeof v !== "string") return null;
+  const t = v.trim();
+  return t ? t : null;
+}
+
+export function mapScore(row) {
   return {
     schema_version: row.schema_version || "1.1.0",
     id: row.id,
@@ -221,6 +269,22 @@ function mapScore(row) {
     ape: row.ape == null ? null : Number(row.ape),
     brier: row.brier == null ? null : Number(row.brier),
     scored_at: row.scored_at,
+    // Scorer's own official-print permalink for hit/miss rows. Passed through verbatim; never guessed.
+    actual_source_url: nonEmptyString(row.actual_source_url),
+    ...(nonEmptyString(row.actual_source_name)
+      ? { actual_source_name: nonEmptyString(row.actual_source_name) }
+      : {}),
+    // Scorer review hold (scorer/holds.jsonl): grade withheld while a human/Legal check runs.
+    ...(reviewHold(row.review_hold) ? { review_hold: reviewHold(row.review_hold) } : {}),
+  };
+}
+
+function reviewHold(h) {
+  if (!h || typeof h !== "object" || !nonEmptyString(h.reason)) return null;
+  return {
+    reason: nonEmptyString(h.reason),
+    flag_target: nonEmptyString(h.flag_target),
+    opened_at: nonEmptyString(h.opened_at),
   };
 }
 
@@ -241,6 +305,44 @@ function mapActual(row) {
   };
 }
 
+function loadRawActuals() {
+  const rows = [];
+  for (const rel of ACTUAL_FILES) {
+    rows.push(...readJsonl(join(ROOT, rel)));
+  }
+  return rows;
+}
+
+/**
+ * Guards that run in every mode. Missing catalog subjects and stale Scorer rows are loud
+ * warnings (never a failure); a hit/miss score whose actual_id is not in ACTUALS throws.
+ */
+function runBundleGuards({ forecasts, scores, actuals, subjectsById, upstreamActuals = [], now = new Date() }) {
+  const miss = missingSubjects(forecasts, subjectsById);
+  if (miss.subjects) {
+    console.warn(
+      `WARNING catalog guard: ${miss.subjects} forecast subject(s) / ${miss.rows} row(s) are not in any subject catalog: ${miss.ids.slice(0, 20).join(", ")}${miss.subjects > 20 ? ", …" : ""}`
+    );
+  } else {
+    console.log("catalog guard: OK (every forecast subject is in a subject catalog)");
+  }
+  assertReferencedActuals(actuals, scores);
+  console.log("referenced-actuals guard: OK (every hit/miss actual_id is in ACTUALS)");
+  const stale = findStaleScores({
+    scores,
+    forecasts,
+    actuals: [...actuals, ...upstreamActuals],
+    subjectsById,
+    now,
+  });
+  for (const r of stale) {
+    console.warn(`  stale pending: ${r.forecast_id} (${r.match_key}) resolved by ${r.actual_id}; due ${r.due_at}`);
+  }
+  const line = staleSummary(stale);
+  (stale.length ? console.warn : console.log)(line);
+  return { missing_subjects: miss.subjects, missing_subject_rows: miss.rows, stale_pending: stale.map((r) => r.forecast_id), stale_summary: line };
+}
+
 function build() {
   const subjectsById = loadSubjectCatalog();
   const registry = readJson(join(ROOT, SPEAKERS_REG));
@@ -256,10 +358,7 @@ function build() {
   const scoresRaw = readJsonl(join(ROOT, SCORES_FILE));
   const scoreByForecast = Object.fromEntries(scoresRaw.map((s) => [s.forecast_id, s]));
 
-  const actualsRaw = [];
-  for (const rel of ACTUAL_FILES) {
-    actualsRaw.push(...readJsonl(join(ROOT, rel)));
-  }
+  const actualsRaw = loadRawActuals();
   // Prefer first resolved per match_key; keep all unique ids
   const actualByKey = new Map();
   for (const a of actualsRaw) {
@@ -371,24 +470,27 @@ function build() {
     });
   }
 
-  const SUBJECTS = {};
-  for (const sid of usedSubjectIds) {
-    const cat = subjectsById[sid];
-    if (cat) {
-      SUBJECTS[sid] = siteSubject(cat);
-    } else {
-      const fromF = forecasts.find((x) => x.subject.id === sid);
-      SUBJECTS[sid] = {
-        id: sid,
-        label: fromF?.subject?.label || sid,
-        domain: fromF?.domain || "sports",
-        unit: fromF?.claim?.unit ?? "",
-      };
-    }
-  }
+  const SUBJECTS = buildSiteSubjects(usedSubjectIds, subjectsById, (sid) => {
+    const fromF = forecasts.find((x) => x.subject.id === sid);
+    return {
+      id: sid,
+      label: fromF?.subject?.label || sid,
+      domain: fromF?.domain || "sports",
+      unit: fromF?.claim?.unit ?? "",
+    };
+  });
 
-  const ACTUALS = [...actualByKey.values()].map(mapActual);
   const SCORES = scoresRaw.map(mapScore);
+  // One actual per match_key, plus every actual a hit/miss score references by id (a score may
+  // cite a second print of the same game, e.g. "NFL.com Game Center" vs "NFL"). Exact ids only.
+  const rawActualById = new Map(actualsRaw.map((a) => [a.id, a]));
+  const { actuals: ACTUALS } = appendReferencedActuals(
+    [...actualByKey.values()].map(mapActual),
+    SCORES,
+    rawActualById,
+    mapActual
+  );
+  const guards = runBundleGuards({ forecasts, scores: SCORES, actuals: ACTUALS, subjectsById, upstreamActuals: actualsRaw });
 
   const statusCounts = {};
   for (const s of SCORES) {
@@ -439,6 +541,7 @@ export const FORECASTS = live.FORECASTS;
 export const ACTUALS = live.ACTUALS;
 export const SCORES = live.SCORES;
 export const DATA_SOURCE = live.source || "live";
+export const GENERATED_AT = live.generated_at || null;
 `;
   writeFileSync(join(SITE, "src/data.js"), dataJs);
 
@@ -483,9 +586,98 @@ export const DATA_SOURCE = live.source || "live";
     sas_speaker_id: sasForecast?.speaker_id || null,
     out: outPath,
     changelogs: days,
+    guards,
   };
   console.log(JSON.stringify(summary, null, 2));
   return summary;
 }
 
-build();
+/**
+ * --subjects-only: refresh SUBJECTS in the existing live bundle from the subject catalogs,
+ * leaving SPEAKERS / FORECASTS / ACTUALS / SCORES / generated_at byte-for-byte untouched.
+ * Used to add catalog metadata (away/home, designated resolution) without re-pulling scores.
+ */
+function refreshSubjectsOnly() {
+  const subjectsById = loadSubjectCatalog();
+  const outPath = join(SITE, "src/generated/liveBundle.json");
+  const bundle = readJson(outPath);
+  const prev = bundle.SUBJECTS || {};
+  const used = new Set([...Object.keys(prev), ...(bundle.FORECASTS || []).map((f) => f.subject?.id).filter(Boolean)]);
+  bundle.SUBJECTS = buildSiteSubjects([...used], subjectsById, (sid) => {
+    if (prev[sid]) return prev[sid];
+    const fromF = (bundle.FORECASTS || []).find((x) => x.subject?.id === sid);
+    return { id: sid, label: fromF?.subject?.label || sid, domain: fromF?.domain || "sports", unit: fromF?.claim?.unit ?? "" };
+  });
+  writeFileSync(outPath, JSON.stringify(bundle, null, 2) + "\n");
+  const guards = runBundleGuards({
+    forecasts: bundle.FORECASTS || [],
+    scores: bundle.SCORES || [],
+    actuals: bundle.ACTUALS || [],
+    subjectsById,
+    upstreamActuals: loadRawActuals(),
+  });
+  const subs = Object.values(bundle.SUBJECTS);
+  console.log(JSON.stringify({
+    subjects: subs.length,
+    with_resolution: subs.filter((s) => s.resolution).length,
+    with_away_home: subs.filter((s) => s.away && s.home).length,
+    forecasts: (bundle.FORECASTS || []).length,
+    scores: (bundle.SCORES || []).length,
+    actuals: (bundle.ACTUALS || []).length,
+    guards,
+  }, null, 2));
+}
+
+/**
+ * --referenced-actuals: append to the existing bundle's ACTUALS every upstream actual that a
+ * hit/miss score references by id but the bundle lacks. FORECASTS / SCORES / SUBJECTS /
+ * SPEAKERS / generated_at are left untouched; existing ACTUALS rows are kept as-is.
+ */
+function refreshReferencedActuals() {
+  const subjectsById = loadSubjectCatalog();
+  const outPath = join(SITE, "src/generated/liveBundle.json");
+  const bundle = readJson(outPath);
+  const raw = loadRawActuals();
+  const before = (bundle.ACTUALS || []).length;
+  const { actuals, added, unresolved } = appendReferencedActuals(
+    bundle.ACTUALS || [],
+    bundle.SCORES || [],
+    new Map(raw.map((a) => [a.id, a])),
+    mapActual
+  );
+  if (unresolved.length) {
+    throw new Error(`referenced actuals not found in ACTUAL_FILES: ${unresolved.join(", ")}`);
+  }
+  bundle.ACTUALS = actuals;
+  const guards = runBundleGuards({
+    forecasts: bundle.FORECASTS || [],
+    scores: bundle.SCORES || [],
+    actuals,
+    subjectsById,
+    upstreamActuals: raw,
+  });
+  writeFileSync(outPath, JSON.stringify(bundle, null, 2) + "\n");
+  console.log(JSON.stringify({ actuals_before: before, actuals_after: actuals.length, added: added.length, guards }, null, 2));
+}
+
+/** --check: run the guards against the existing bundle without writing anything. */
+function checkOnly() {
+  const bundle = readJson(join(SITE, "src/generated/liveBundle.json"));
+  const guards = runBundleGuards({
+    forecasts: bundle.FORECASTS || [],
+    scores: bundle.SCORES || [],
+    actuals: bundle.ACTUALS || [],
+    subjectsById: loadSubjectCatalog(),
+    upstreamActuals: loadRawActuals(),
+  });
+  console.log(JSON.stringify(guards, null, 2));
+}
+
+// Run only when executed directly (tests import mapScore without writing anything).
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isMain) {
+  if (process.argv.includes("--subjects-only")) refreshSubjectsOnly();
+  else if (process.argv.includes("--referenced-actuals")) refreshReferencedActuals();
+  else if (process.argv.includes("--check")) checkOnly();
+  else build();
+}

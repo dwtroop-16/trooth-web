@@ -2,6 +2,7 @@ import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
+import { reasonLabel, reasonCodeOf, reasonDisplay } from "./reasonLabels.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -31,6 +32,7 @@ export function claimSearchText(card) {
     card.sourceHost,
     card.sourceUrl,
     actual,
+    card.actualRaw != null && String(card.actualRaw) !== actual ? String(card.actualRaw) : "",
     card.actualSourceName,
     card.sportLabel,
     ...(card.teamLabels || []),
@@ -193,16 +195,71 @@ export function buildSpeakerScoreboards(speaker, forecasts, scores) {
   return { divisionBoards, teamBoards, hasSports };
 }
 
-function officialFor(forecast) {
+const LISTING_NAMES = { "nasdaq.com": "Nasdaq", "nyse.com": "NYSE" };
+
+/**
+ * The subject catalog's designated actual source for a forecast (Architect's resolution block),
+ * as { name, url }, or null when the catalog designates none (e.g. analyst ratings: no official print)
+ * or the subject is not in the catalog. Copied from the catalog; never guessed.
+ */
+export function designatedActualSource(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const res = subject?.resolution;
+  const url = presentString(res?.url);
+  if (!res || !url) return null;
+  switch (res.kind) {
+    case "exchange_close": {
+      const host = presentString(res.listing_host) || hostnameFromUrl(url);
+      const venue = LISTING_NAMES[host] || host;
+      const ticker = presentString(res.ticker);
+      return { name: `${venue} official close${ticker ? ` (${ticker})` : ""}`, url };
+    }
+    case "fred_series": {
+      const series = presentString(res.series_id);
+      return { name: series ? `FRED ${series}` : "FRED", url };
+    }
+    case "fed_target": {
+      const up = presentString(res.series_upper);
+      const lo = presentString(res.series_lower);
+      return { name: up && lo ? `FRED ${up}/${lo}` : "FRED", url };
+    }
+    case "nws_station":
+      return { name: "NWS", url };
+    default:
+      return null;
+  }
+}
+
+/** True only for subjects that really are the S&P 500 (the one claim type FRED SP500 resolves). */
+export function isSp500Subject(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const sid = forecast?.subject?.id || "";
+  const res = subject?.resolution;
+  if (res?.kind === "fred_series" && res.series_id === "SP500") return true;
+  return sid === "us-spx-close";
+}
+
+const SP500_SOURCE = { name: "FRED SP500", url: "https://fred.stlouisfed.org/series/SP500" };
+
+/**
+ * Pre-resolution actual source. Returns { name, url } or null when no source may be shown yet.
+ * Finance never falls back to a domain-level default: a single-stock price target is not resolved by
+ * FRED SP500. Only the catalog's designated source (e.g. Nasdaq official close) or, for real S&P 500
+ * subjects, FRED SP500 is shown; otherwise the card says "Actual source: pending".
+ */
+function officialFor(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
   const domain = forecast.domain;
   const sid = forecast.subject?.id || "";
-  const sub = SUBJECTS[sid];
+  const sub = subject;
   const allow = OFFICIAL_PRINT[domain] || { name: "Official print", url: "/method" };
   if (domain === "politics") {
     return { name: "Certified SOS / FEC / congress.gov", url: allow.url };
   }
   if (sub && domain === "weather") return { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" };
-  if (sub && domain === "finance") return { name: "FRED", url: "https://fred.stlouisfed.org/series/SP500" };
+  if (domain === "finance") {
+    const designated = designatedActualSource(forecast, sub);
+    if (designated) return designated;
+    if (isSp500Subject(forecast, sub)) return SP500_SOURCE;
+    return null;
+  }
   // Do not guess a game box URL. Pending sports link the league host; Scorer supplies the permalink when resolved.
   if (domain === "sports") {
     if (sid.startsWith("nfl-")) return { name: "NFL official box score", url: "https://www.nfl.com/" };
@@ -212,13 +269,156 @@ function officialFor(forecast) {
   return allow;
 }
 
+function presentString(v) {
+  return typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+}
+
+/** Name shown when no actual source can be shown yet (never a guessed or domain-default source). */
+export const PENDING_ACTUAL_SOURCE = "pending";
+
+function cardStatus(forecast, score) {
+  return score?.status || (forecast?.scorable ? "pending" : "unscorable");
+}
+
+function isGraded(status) {
+  return status === "hit" || status === "miss";
+}
+
+/**
+ * Reason code behind an unscorable card. A subject the catalog marks unscorable (e.g. analyst ratings:
+ * resolution.kind "unscorable", reason "no_official_print") governs; otherwise the forecast's own
+ * unscorable_reason. Returns the raw code or null.
+ */
+export function unscorableReasonCode(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const res = subject?.resolution;
+  if (res?.kind === "unscorable" && presentString(res.reason)) return reasonCodeOf(res.reason);
+  return reasonCodeOf(forecast?.unscorable_reason);
+}
+
+/** "None (no official print)" style text for a reason code; plain "None" when there is no code. */
+export function noneWithReason(code) {
+  return code ? `None (${reasonLabel(code)})` : "None";
+}
+
+/**
+ * Actual-source link for a card. Order:
+ *   1. Hit/Miss only: Scorer's own score.actual_source_url (name from score, else the joined actual).
+ *   2. Hit/Miss only: backup join, the resolved actual (by match_key) source.
+ *   3. Pre-resolution: the subject's designated source (catalog resolution), or the league/NWS/politics
+ *      official-print host. No per-claim URL is invented.
+ *   4. Unscorable with no designated source: "None (<reason label>)", url null.
+ *   5. Otherwise (e.g. single-stock claims with no designated print): "pending", url null.
+ * Returns { name, url, origin, reasonCode } where origin is "score" | "actuals" | "official" | "none" | "pending".
+ */
+export function resolveActualSource(forecast, score, actual, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const status = cardStatus(forecast, score);
+  const graded = isGraded(status);
+  const resolved = graded && actual && actual.status === "resolved" ? actual : null;
+  const src = officialFor(forecast, subject);
+  const scoreUrl = graded ? presentString(score?.actual_source_url) : null;
+  if (scoreUrl) {
+    const name =
+      presentString(score?.actual_source_name) ||
+      presentString(resolved?.source?.name) ||
+      src?.name ||
+      hostnameFromUrl(scoreUrl);
+    return { name, url: scoreUrl, origin: "score", reasonCode: null };
+  }
+  if (resolved) {
+    return { name: resolved.source.name, url: resolved.source.url, origin: "actuals", reasonCode: null };
+  }
+  if (src) return { name: src.name, url: src.url, origin: "official", reasonCode: null };
+  if (status === "unscorable") {
+    const code = unscorableReasonCode(forecast, subject);
+    return { name: noneWithReason(code), url: null, origin: "none", reasonCode: code };
+  }
+  return { name: PENDING_ACTUAL_SOURCE, url: null, origin: "pending", reasonCode: null };
+}
+
+/**
+ * Game subject teams as { away, home } display labels. Order: catalog away/home slugs on the subject,
+ * then the canonical {away}-{home} id pattern. Returns null when teams cannot be determined (never invented).
+ */
+export function gameTeamLabels(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const sid = forecast?.subject?.id || "";
+  const division = sportDivision(sid);
+  const known = (slug) => typeof slug === "string" && (NFL_TEAM_LABELS[slug] || FBS_TEAM_LABELS[slug]);
+  if (known(subject?.away) && known(subject?.home)) {
+    return { away: teamLabelFor(subject.away, division), home: teamLabelFor(subject.home, division) };
+  }
+  const game = parseGameTeams(sid);
+  if (game) return { away: teamLabelFor(game.away, division), home: teamLabelFor(game.home, division) };
+  return null;
+}
+
+/**
+ * Display name for a winner-only enum value (e.g. Super Bowl champion "seattle" -> "Seattle Seahawks").
+ * Uses the subject's catalog enum_file (team-id files only; player-id files are left raw), else the
+ * league from the subject id. Falls back to the raw id when there is no match.
+ */
+export function enumTeamLabel(forecast, value, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  if (typeof value !== "string" || !value) return value;
+  const ef = presentString(subject?.enum_file);
+  let labels = null;
+  if (ef) {
+    if (/^nfl-team-ids/.test(ef)) labels = NFL_TEAM_LABELS;
+    else if (/^ncaa-fbs-team-ids/.test(ef)) labels = FBS_TEAM_LABELS;
+  } else {
+    const division = sportDivision(forecast?.subject?.id || "");
+    if (division === "NFL") labels = NFL_TEAM_LABELS;
+    else if (division === "NCAA FBS") labels = FBS_TEAM_LABELS;
+  }
+  if (!labels || !Object.prototype.hasOwnProperty.call(labels, value)) return value;
+  return labels[value];
+}
+
+/**
+ * Sports score actuals are stored "{away_pts}-{home_pts}" (game-subjects-v1). Display in house style,
+ * away first, same order as the stored value: "Kansas City Chiefs 21, Los Angeles Chargers 27".
+ * Unknown teams keep the score with away/home labels only: "Away 21, Home 27".
+ * Winner-only enum actuals that are team ids show the team's display name. Anything else is unchanged.
+ */
+export function formatSportsActual(forecast, value, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  if (forecast?.domain !== "sports") return value;
+  const unit = forecast?.claim?.unit || subject?.unit;
+  if (unit === "enum") return enumTeamLabel(forecast, value, subject);
+  const m = typeof value === "string" ? value.trim().match(/^(\d+)-(\d+)$/) : null;
+  if (!m) return value;
+  if (unit !== "score") return value;
+  const teams = gameTeamLabels(forecast, subject);
+  if (teams) return `${teams.away} ${m[1]}, ${teams.home} ${m[2]}`;
+  return `Away ${m[1]}, Home ${m[2]}`;
+}
+
+/** Scorer review hold on a score row ({ reason, flag_target, opened_at }), or null. */
+export function reviewHoldOf(score) {
+  const h = score?.review_hold;
+  return h && typeof h === "object" && presentString(h.reason) ? h : null;
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
-  const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
+  const scoreStatus = cardStatus(forecast, score);
+  const hold = reviewHoldOf(score);
+  // Review hold: grade withheld. Public grade "In review" (same as void); never show an actual value.
+  const status = hold ? "void" : scoreStatus;
   const grade = publicGrade(status);
-  const src = officialFor(forecast);
-  const actualValue = actual && actual.status === "resolved" ? actual.value : "pending";
-  const actualSourceName = actual && actual.status === "resolved" ? actual.source.name : src.name;
-  const actualSourceUrl = actual && actual.status === "resolved" ? actual.source.url : src.url;
+  const reviewHoldReason = hold ? reasonDisplay(hold.reason) : null;
+  // An actual value is shown only on Hit/Miss cards. Pending (and In review) cards never show one,
+  // even if a resolved actual already exists in ACTUALS (the grade would contradict it).
+  const graded = !hold && isGraded(status);
+  const actualRaw = graded && actual && actual.status === "resolved" ? actual.value : "pending";
+  let actualValue = actualRaw === "pending" ? actualRaw : formatSportsActual(forecast, actualRaw);
+  let actualReasonCode = null;
+  if (status === "unscorable") {
+    // Unscorable: there will be no actual. Say why instead of "pending".
+    actualReasonCode = unscorableReasonCode(forecast);
+    actualValue = noneWithReason(actualReasonCode);
+  }
+  // Title attribute: raw reason code, or the raw stored value when the display differs (audit).
+  const actualTitle = actualReasonCode || (actualValue !== actualRaw ? String(actualRaw) : null);
+  const actualSource = resolveActualSource(forecast, hold ? { ...score, status: "pending" } : score, actual);
+  const actualSourceName = actualSource.name;
+  const actualSourceUrl = actualSource.url;
   const { division, teams } = forecastBoardAttribution(forecast);
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const card = {
@@ -232,10 +432,17 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     publishedAt: forecast.published_at,
     horizon: forecast.horizon_end,
     actual: actualValue,
+    actualRaw,
+    actualReasonCode,
+    actualTitle,
     actualSourceName,
     actualSourceUrl,
+    actualSourceOrigin: actualSource.origin,
+    actualSourceReasonCode: actualSource.reasonCode ?? null,
     grade,
     status,
+    scoreStatus,
+    reviewHoldReason,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
     domainKey: forecast.domain,
     unit: forecast.claim.unit,
@@ -310,6 +517,23 @@ function sortClaimList(list) {
   });
 }
 
+/**
+ * Join a forecast to its actual: the exact row the score cites (score.actual_id) first, then the
+ * first actual on the forecast's match_key. ACTUALS can carry more than one print per match_key
+ * (e.g. "NFL" and "NFL.com Game Center" for the same game); the score's own citation wins.
+ */
+export function actualLookup(actuals) {
+  const byId = new Map();
+  const byKey = new Map();
+  for (const a of actuals || []) {
+    if (!a) continue;
+    if (a.id && !byId.has(a.id)) byId.set(a.id, a);
+    if (a.match_key && !byKey.has(a.match_key)) byKey.set(a.match_key, a);
+  }
+  return (forecast, score) =>
+    (score && score.actual_id && byId.get(score.actual_id)) || byKey.get(forecast?.match_key);
+}
+
 export function buildVals(state, actions, data) {
 
   const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal } = actions;
@@ -324,11 +548,11 @@ export function buildVals(state, actions, data) {
   const cats = DOMAINS;
 
   const scoreBy = Object.fromEntries(scores.map((sc) => [sc.forecast_id, sc]));
-  const actualByKey = Object.fromEntries(actuals.map((a) => [a.match_key, a]));
+  const actualFor = actualLookup(actuals);
   const speakerBy = Object.fromEntries(speakers.map((sp) => [sp.id, sp]));
 
   const cards = forecasts.map((f) =>
-    toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key])
+    toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualFor(f, scoreBy[f.id]))
   );
   const cardById = Object.fromEntries(cards.map((c) => [c.id, c]));
 
