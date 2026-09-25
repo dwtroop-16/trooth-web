@@ -212,13 +212,39 @@ function officialFor(forecast) {
   return allow;
 }
 
+function presentString(v) {
+  return typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+}
+
+/**
+ * Actual-source link for a card. Order:
+ *   1. Scorer's own score.actual_source_url (authoritative; name from score, else the joined actual).
+ *   2. Backup join: resolved actual (by match_key) source.
+ *   3. Current behavior: official-print allowlist for the domain (no per-claim URL is invented).
+ * Returns { name, url, origin } where origin is "score" | "actuals" | "official".
+ */
+export function resolveActualSource(forecast, score, actual) {
+  const resolved = actual && actual.status === "resolved" ? actual : null;
+  const src = officialFor(forecast);
+  const scoreUrl = presentString(score?.actual_source_url);
+  if (scoreUrl) {
+    const name =
+      presentString(score?.actual_source_name) || presentString(resolved?.source?.name) || src.name;
+    return { name, url: scoreUrl, origin: "score" };
+  }
+  if (resolved) {
+    return { name: resolved.source.name, url: resolved.source.url, origin: "actuals" };
+  }
+  return { name: src.name, url: src.url, origin: "official" };
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
   const grade = publicGrade(status);
-  const src = officialFor(forecast);
   const actualValue = actual && actual.status === "resolved" ? actual.value : "pending";
-  const actualSourceName = actual && actual.status === "resolved" ? actual.source.name : src.name;
-  const actualSourceUrl = actual && actual.status === "resolved" ? actual.source.url : src.url;
+  const actualSource = resolveActualSource(forecast, score, actual);
+  const actualSourceName = actualSource.name;
+  const actualSourceUrl = actualSource.url;
   const { division, teams } = forecastBoardAttribution(forecast);
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const card = {
@@ -234,6 +260,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actual: actualValue,
     actualSourceName,
     actualSourceUrl,
+    actualSourceOrigin: actualSource.origin,
     grade,
     status,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
