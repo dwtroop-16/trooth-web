@@ -2,7 +2,15 @@
 /**
  * Build live site bundle from Trooth ingest + scorer + actuals (read-only sources).
  * Does not invent forecasts, actuals, or grades. Does not scrape.
+ * Blocked source domains (config/blocked-source-domains.json) are stripped from every output
+ * field; the build fails rather than write a blocked URL.
  */
+import {
+  parseBlockedDomainsConfig,
+  stripBlocked,
+  assertNoBlocked,
+  bundleFallback,
+} from "./blockedDomains.mjs";
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -241,7 +249,31 @@ function mapActual(row) {
   };
 }
 
+const BLOCKED_DOMAINS_CONFIG = join(SITE, "config/blocked-source-domains.json");
+
+/** Blocked source domains (Legal-Ops). A missing or malformed config fails the build (fail closed). */
+function loadBlockedDomains() {
+  return parseBlockedDomainsConfig(readJson(BLOCKED_DOMAINS_CONFIG));
+}
+
+/**
+ * Strip every blocked-domain URL from `value`, warn with a count, then assert none remain.
+ * Throws (so nothing is written) if a blocked URL would still reach `label`.
+ */
+function scrubBlocked(value, domains, label, fallback = () => null) {
+  const { value: clean, stripped } = stripBlocked(value, domains, { fallback });
+  if (stripped.length) {
+    console.warn(`WARNING blocked-source-domains: stripped ${stripped.length} blocked URL(s) from ${label}`);
+    for (const r of stripped.slice(0, 20)) console.warn(`  stripped ${r.path}: ${r.url}`);
+    if (stripped.length > 20) console.warn(`  … ${stripped.length - 20} more`);
+  }
+  assertNoBlocked(clean, domains, label);
+  return { clean, count: stripped.length };
+}
+
 function build() {
+  const blockedDomains = loadBlockedDomains();
+  let blockedStripped = 0;
   const subjectsById = loadSubjectCatalog();
   const registry = readJson(join(ROOT, SPEAKERS_REG));
   const regByName = Object.fromEntries(
@@ -396,7 +428,7 @@ function build() {
   }
   const resolvedActuals = ACTUALS.filter((a) => a.status === "resolved").length;
 
-  const bundle = {
+  const rawBundle = {
     generated_at: new Date().toISOString(),
     source: "live",
     SPEAKERS: speakers,
@@ -405,6 +437,9 @@ function build() {
     SCORES,
     SUBJECTS,
   };
+  const scrubbed = scrubBlocked(rawBundle, blockedDomains, "liveBundle.json", bundleFallback);
+  const bundle = scrubbed.clean;
+  blockedStripped += scrubbed.count;
 
   const genDir = join(SITE, "src/generated");
   mkdirSync(genDir, { recursive: true });
@@ -440,6 +475,7 @@ export const ACTUALS = live.ACTUALS;
 export const SCORES = live.SCORES;
 export const DATA_SOURCE = live.source || "live";
 `;
+  assertNoBlocked(dataJs, blockedDomains, "src/data.js");
   writeFileSync(join(SITE, "src/data.js"), dataJs);
 
   // Team labels for profile division/team boards (browser-safe; no /workspace/trooth fetch)
@@ -452,6 +488,7 @@ export const DATA_SOURCE = live.source || "live";
   for (const [slug, meta] of Object.entries(fbsTeams.teams || {})) {
     teamLabels.fbs[slug] = (meta && meta.label) || slug;
   }
+  assertNoBlocked(teamLabels, blockedDomains, "teamLabels.json");
   writeFileSync(join(SITE, "src/generated/teamLabels.json"), JSON.stringify(teamLabels, null, 2) + "\n");
 
   // Changelog days into site working copy
@@ -460,7 +497,12 @@ export const DATA_SOURCE = live.source || "live";
   mkdirSync(changelogDst, { recursive: true });
   const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24"];
   for (const d of days) {
-    copyFileSync(join(changelogSrc, d + ".json"), join(changelogDst, d + ".json"));
+    const src = join(changelogSrc, d + ".json");
+    const day = scrubBlocked(readJson(src), blockedDomains, `changelog/${d}.json`);
+    blockedStripped += day.count;
+    // Byte-for-byte copy when clean; rewrite only a day that had a blocked URL stripped.
+    if (day.count) writeFileSync(join(changelogDst, d + ".json"), JSON.stringify(day.clean, null, 2) + "\n");
+    else copyFileSync(src, join(changelogDst, d + ".json"));
   }
 
   const sas = SCORES.find(
@@ -471,6 +513,8 @@ export const DATA_SOURCE = live.source || "live";
   const sasForecast = sas && forecasts.find((f) => f.id === sas.forecast_id);
 
   const summary = {
+    blocked_domains: blockedDomains,
+    blocked_urls_stripped: blockedStripped,
     forecasts: forecasts.length,
     speakers: speakers.length,
     actuals: ACTUALS.length,

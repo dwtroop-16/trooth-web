@@ -1,0 +1,12 @@
+{
+  "description": "Source domains Trooth must never link to or cite. Every subdomain is blocked too (www.heisman.com, anything.heisman.com). scripts/build-live-data.mjs strips these URLs from every bundle field and fails the build if one would still be written.",
+  "domains": [
+    {
+      "domain": "heisman.com",
+      "reason": "Heisman Trust ToS s10(iii) bans manual copying and s10(ix) bans deep links without written consent; s5 limits use to personal, non-commercial.",
+      "legal_review": "rr_2026-09-25_actuals-hosts",
+      "legal_memo": "trooth-legal/05t-actuals-hosts-2026-09-25.md",
+      "blocked_on": "2026-09-25"
+    }
+  ]
+}
