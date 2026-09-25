@@ -5,7 +5,15 @@ import { dirname } from "node:path";
 import { join } from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, SUBJECTS, GENERATED_AT } from "./data.js";
-import { REASON_LABELS, reasonLabel, reasonCodeOf, reasonDisplay, hasReasonLabel } from "./reasonLabels.js";
+import {
+  REASON_LABELS,
+  REASON_LABELS_VERSION,
+  reasonLabel,
+  reasonCodeOf,
+  reasonDisplay,
+  hasReasonLabel,
+  canonicalReasonCode,
+} from "./reasonLabels.js";
 import { toPublicClaimCard, enumTeamLabel, formatSportsActual } from "./viewModel.js";
 import { renderPublicClaimCard, REQUIRED_CARD_FIELDS } from "./claimCard.js";
 import { publicChangelogEntries, lastUpdatedLine, shortClaim, stripInternalIds, KIND_LABELS } from "./changelogPublic.js";
@@ -47,6 +55,8 @@ test("label map covers schema, rubric, changelog and Ingest non-schema codes", (
     "horizon_end_session_roll", "horizon_end_corrected",
     // changelog corrections / retractions
     "legal_scope", "deadline_moved_to_trading_day", "rating_not_in_broker_wording", "retracted_u1_aggregator_rating",
+    // Architect v1.0.0 additions
+    "mapping_missing", "prints_disagree", "skipped_disagree", "unit_mismatch", "team_not_fbs_in_season",
   ];
   for (const code of required) {
     assert.ok(hasReasonLabel(code), `missing label for ${code}`);
@@ -72,11 +82,65 @@ test("every reason code present in the bundle and bundled changelogs has a label
 
 test("unknown codes render raw; 'code: free text' reasons use the code", () => {
   assert.equal(reasonLabel("brand_new_code"), "brand_new_code");
-  assert.deepEqual(reasonDisplay("brand_new_code"), { code: "brand_new_code", label: "brand_new_code", title: "brand_new_code" });
+  assert.deepEqual(reasonDisplay("brand_new_code"), {
+    code: "brand_new_code",
+    canonical: "brand_new_code",
+    label: "brand_new_code",
+    title: "brand_new_code",
+  });
   assert.equal(reasonCodeOf("duplicate_forecast_cross_outlet: same UBS call already emitted"), "duplicate_forecast_cross_outlet");
   assert.equal(reasonLabel("duplicate_forecast_cross_outlet: detail"), REASON_LABELS.duplicate_forecast_cross_outlet.label);
   assert.equal(reasonDisplay(null), null);
   assert.equal(reasonDisplay("no_official_print").title, "no_official_print");
+});
+
+test("Architect-approved v1.0.0 labels: new codes, reworded no_official_print, aliases render canonical", () => {
+  assert.equal(REASON_LABELS_VERSION, "1.0.0");
+  assert.equal(reasonLabel("no_official_print"), "no official result to grade against");
+  assert.equal(reasonLabel("mapping_missing"), "not matched to a tracked topic");
+  assert.equal(reasonLabel("prints_disagree"), "official sources disagree");
+  assert.equal(reasonLabel("unit_mismatch"), "forecast and result use different units");
+  assert.equal(reasonLabel("team_not_fbs_in_season"), "team was not in the top college division (FBS) that season");
+  const aliases = {
+    skipped_disagree: "prints_disagree",
+    deadline_moved_to_trading_day: "horizon_end_session_roll",
+    retracted_u1_aggregator_rating: "rating_not_in_broker_wording",
+    compact_section_hold: "legal_hold",
+  };
+  for (const [alias, canon] of Object.entries(aliases)) {
+    assert.equal(REASON_LABELS[alias].aliasOf, canon, alias);
+    assert.equal(canonicalReasonCode(alias), canon);
+    assert.equal(reasonLabel(alias), reasonLabel(canon), alias);
+    assert.ok(hasReasonLabel(alias));
+    // Raw (alias) code stays in the title attribute for audit.
+    assert.deepEqual(reasonDisplay(alias), { code: alias, canonical: canon, label: reasonLabel(canon), title: alias });
+  }
+  assert.equal(reasonLabel("horizon_end_session_roll"), "deadline moved to the next trading day");
+  assert.equal(reasonLabel("rating_not_in_broker_wording"), "removed: rating not in the broker's own wording");
+  assert.equal(reasonLabel("legal_hold"), "on hold pending legal review");
+  // Every alias points at a labelled canonical code; every non-alias has a label.
+  for (const [code, e] of Object.entries(REASON_LABELS)) {
+    if (e.aliasOf) assert.ok(REASON_LABELS[e.aliasOf]?.label, code);
+    else assert.ok(typeof e.label === "string" && e.label, code);
+  }
+});
+
+test("generator parses reason-labels-v1.md table shape (aliases, grades table ignored)", async () => {
+  const { parseReasonLabelTable } = await import("../scripts/gen-reason-labels.mjs");
+  const md = [
+    "Status: **approved v1.0.0 (Architect 2026-09-25)**",
+    "| code | plain label | where | shown | defined in |",
+    "|---|---|---|---|---|",
+    "| `a_code` | a label | skipped; notes | Yes | spec |",
+    "| `old_code` | alias of `a_code` (retired; do not emit) | changelog | renders as canonical label | Architect |",
+    "| `hit` | Hit |",
+  ].join("\n");
+  const { version, rows } = parseReasonLabelTable(md);
+  assert.equal(version, "1.0.0");
+  assert.equal(rows.length, 2);
+  assert.deepEqual(rows[0], { code: "a_code", label: "a label", where: ["skipped", "notes"], shown: "Yes", spec: "spec" });
+  assert.equal(rows[1].aliasOf, "a_code");
+  assert.equal("label" in rows[1], false);
 });
 
 // ---------------- 2. Unscorable cards ----------------
@@ -85,10 +149,10 @@ test("unscorable cards say 'None (<reason>)' for actual and actual source, never
   const unscorable = liveCards().filter(({ card }) => card.status === "unscorable");
   assert.equal(unscorable.length, 58);
   for (const { f, card } of unscorable) {
-    assert.equal(card.actual, "None (no official print)", f.id);
+    assert.equal(card.actual, "None (no official result to grade against)", f.id);
     assert.equal(card.actualReasonCode, "no_official_print", f.id);
     assert.equal(card.actualTitle, "no_official_print", f.id);
-    assert.equal(card.actualSourceName, "None (no official print)", f.id);
+    assert.equal(card.actualSourceName, "None (no official result to grade against)", f.id);
     assert.equal(card.actualSourceUrl, null, f.id);
     const r = renderPublicClaimCard(card);
     assert.equal(r.actualSourceNone, true);
@@ -238,7 +302,7 @@ test("rendered card: fields in contract order, grade last, actual source as 'nam
     }
     if (card.status === "unscorable") {
       assert.ok(html.includes('title="no_official_print"'), "raw code in title attribute");
-      assert.ok(text.includes("Actual · None (no official print)"));
+      assert.ok(text.includes("Actual · None (no official result to grade against)"));
     }
   }
   assert.equal(REQUIRED_CARD_FIELDS[REQUIRED_CARD_FIELDS.length - 1], "grade");
@@ -390,6 +454,7 @@ test("review hold: grade 'In review' with the reason's plain label; no actual va
     assert.notEqual(card.actualSourceOrigin, "actuals");
     assert.deepEqual(card.reviewHoldReason, {
       code: "attribution_under_review",
+      canonical: "attribution_under_review",
       label: "who said it is being re-checked",
       title: "attribution_under_review",
     });
