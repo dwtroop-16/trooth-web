@@ -193,16 +193,71 @@ export function buildSpeakerScoreboards(speaker, forecasts, scores) {
   return { divisionBoards, teamBoards, hasSports };
 }
 
-function officialFor(forecast) {
+const LISTING_NAMES = { "nasdaq.com": "Nasdaq", "nyse.com": "NYSE" };
+
+/**
+ * The subject catalog's designated actual source for a forecast (Architect's resolution block),
+ * as { name, url }, or null when the catalog designates none (e.g. analyst ratings: no official print)
+ * or the subject is not in the catalog. Copied from the catalog; never guessed.
+ */
+export function designatedActualSource(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const res = subject?.resolution;
+  const url = presentString(res?.url);
+  if (!res || !url) return null;
+  switch (res.kind) {
+    case "exchange_close": {
+      const host = presentString(res.listing_host) || hostnameFromUrl(url);
+      const venue = LISTING_NAMES[host] || host;
+      const ticker = presentString(res.ticker);
+      return { name: `${venue} official close${ticker ? ` (${ticker})` : ""}`, url };
+    }
+    case "fred_series": {
+      const series = presentString(res.series_id);
+      return { name: series ? `FRED ${series}` : "FRED", url };
+    }
+    case "fed_target": {
+      const up = presentString(res.series_upper);
+      const lo = presentString(res.series_lower);
+      return { name: up && lo ? `FRED ${up}/${lo}` : "FRED", url };
+    }
+    case "nws_station":
+      return { name: "NWS", url };
+    default:
+      return null;
+  }
+}
+
+/** True only for subjects that really are the S&P 500 (the one claim type FRED SP500 resolves). */
+export function isSp500Subject(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const sid = forecast?.subject?.id || "";
+  const res = subject?.resolution;
+  if (res?.kind === "fred_series" && res.series_id === "SP500") return true;
+  return sid === "us-spx-close";
+}
+
+const SP500_SOURCE = { name: "FRED SP500", url: "https://fred.stlouisfed.org/series/SP500" };
+
+/**
+ * Pre-resolution actual source. Returns { name, url } or null when no source may be shown yet.
+ * Finance never falls back to a domain-level default: a single-stock price target is not resolved by
+ * FRED SP500. Only the catalog's designated source (e.g. Nasdaq official close) or, for real S&P 500
+ * subjects, FRED SP500 is shown; otherwise the card says "Actual source: pending".
+ */
+function officialFor(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
   const domain = forecast.domain;
   const sid = forecast.subject?.id || "";
-  const sub = SUBJECTS[sid];
+  const sub = subject;
   const allow = OFFICIAL_PRINT[domain] || { name: "Official print", url: "/method" };
   if (domain === "politics") {
     return { name: "Certified SOS / FEC / congress.gov", url: allow.url };
   }
   if (sub && domain === "weather") return { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" };
-  if (sub && domain === "finance") return { name: "FRED", url: "https://fred.stlouisfed.org/series/SP500" };
+  if (domain === "finance") {
+    const designated = designatedActualSource(forecast, sub);
+    if (designated) return designated;
+    if (isSp500Subject(forecast, sub)) return SP500_SOURCE;
+    return null;
+  }
   // Do not guess a game box URL. Pending sports link the league host; Scorer supplies the permalink when resolved.
   if (domain === "sports") {
     if (sid.startsWith("nfl-")) return { name: "NFL official box score", url: "https://www.nfl.com/" };
@@ -212,13 +267,81 @@ function officialFor(forecast) {
   return allow;
 }
 
+function presentString(v) {
+  return typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+}
+
+/** Name shown when no actual source can be shown yet (never a guessed or domain-default source). */
+export const PENDING_ACTUAL_SOURCE = "pending";
+
+/**
+ * Actual-source link for a card. Order:
+ *   1. Scorer's own score.actual_source_url (authoritative; name from score, else the joined actual).
+ *   2. Backup join: resolved actual (by match_key) source.
+ *   3. Pre-resolution: the subject's designated source (catalog resolution), or the league/NWS/politics
+ *      official-print host. No per-claim URL is invented.
+ *   4. None of the above (e.g. single-stock claims with no designated print): "pending", url null.
+ * Returns { name, url, origin } where origin is "score" | "actuals" | "official" | "pending".
+ */
+export function resolveActualSource(forecast, score, actual, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const resolved = actual && actual.status === "resolved" ? actual : null;
+  const src = officialFor(forecast, subject);
+  const scoreUrl = presentString(score?.actual_source_url);
+  if (scoreUrl) {
+    const name =
+      presentString(score?.actual_source_name) ||
+      presentString(resolved?.source?.name) ||
+      src?.name ||
+      hostnameFromUrl(scoreUrl);
+    return { name, url: scoreUrl, origin: "score" };
+  }
+  if (resolved) {
+    return { name: resolved.source.name, url: resolved.source.url, origin: "actuals" };
+  }
+  if (src) return { name: src.name, url: src.url, origin: "official" };
+  return { name: PENDING_ACTUAL_SOURCE, url: null, origin: "pending" };
+}
+
+/**
+ * Game subject teams as { away, home } display labels. Order: catalog away/home slugs on the subject,
+ * then the canonical {away}-{home} id pattern. Returns null when teams cannot be determined (never invented).
+ */
+export function gameTeamLabels(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const sid = forecast?.subject?.id || "";
+  const division = sportDivision(sid);
+  const known = (slug) => typeof slug === "string" && (NFL_TEAM_LABELS[slug] || FBS_TEAM_LABELS[slug]);
+  if (known(subject?.away) && known(subject?.home)) {
+    return { away: teamLabelFor(subject.away, division), home: teamLabelFor(subject.home, division) };
+  }
+  const game = parseGameTeams(sid);
+  if (game) return { away: teamLabelFor(game.away, division), home: teamLabelFor(game.home, division) };
+  return null;
+}
+
+/**
+ * Sports score actuals are stored "{away_pts}-{home_pts}" (game-subjects-v1). Display in house style,
+ * away first, same order as the stored value: "Kansas City Chiefs 21, Los Angeles Chargers 27".
+ * Unknown teams keep the score with away/home labels only: "Away 21, Home 27". Anything else is unchanged.
+ */
+export function formatSportsActual(forecast, value, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  if (forecast?.domain !== "sports") return value;
+  const m = typeof value === "string" ? value.trim().match(/^(\d+)-(\d+)$/) : null;
+  if (!m) return value;
+  const unit = forecast?.claim?.unit || subject?.unit;
+  if (unit !== "score") return value;
+  const teams = gameTeamLabels(forecast, subject);
+  if (teams) return `${teams.away} ${m[1]}, ${teams.home} ${m[2]}`;
+  return `Away ${m[1]}, Home ${m[2]}`;
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
   const grade = publicGrade(status);
-  const src = officialFor(forecast);
-  const actualValue = actual && actual.status === "resolved" ? actual.value : "pending";
-  const actualSourceName = actual && actual.status === "resolved" ? actual.source.name : src.name;
-  const actualSourceUrl = actual && actual.status === "resolved" ? actual.source.url : src.url;
+  const actualRaw = actual && actual.status === "resolved" ? actual.value : "pending";
+  const actualValue = actualRaw === "pending" ? actualRaw : formatSportsActual(forecast, actualRaw);
+  const actualSource = resolveActualSource(forecast, score, actual);
+  const actualSourceName = actualSource.name;
+  const actualSourceUrl = actualSource.url;
   const { division, teams } = forecastBoardAttribution(forecast);
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const card = {
@@ -232,8 +355,10 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     publishedAt: forecast.published_at,
     horizon: forecast.horizon_end,
     actual: actualValue,
+    actualRaw,
     actualSourceName,
     actualSourceUrl,
+    actualSourceOrigin: actualSource.origin,
     grade,
     status,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),

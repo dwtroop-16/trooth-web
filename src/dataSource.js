@@ -64,6 +64,8 @@ function mapScoreRow(r) {
     ape: r.ape == null ? null : Number(r.ape),
     brier: r.brier == null ? null : Number(r.brier),
     scored_at: r.scored_at,
+    actual_source_url: r.actual_source_url ?? null,
+    ...(r.actual_source_name ? { actual_source_name: r.actual_source_name } : {}),
   };
 }
 
