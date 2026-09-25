@@ -2,6 +2,7 @@ import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
+import { reasonLabel, reasonCodeOf, reasonDisplay } from "./reasonLabels.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -31,6 +32,7 @@ export function claimSearchText(card) {
     card.sourceHost,
     card.sourceUrl,
     actual,
+    card.actualRaw != null && String(card.actualRaw) !== actual ? String(card.actualRaw) : "",
     card.actualSourceName,
     card.sportLabel,
     ...(card.teamLabels || []),
@@ -274,17 +276,44 @@ function presentString(v) {
 /** Name shown when no actual source can be shown yet (never a guessed or domain-default source). */
 export const PENDING_ACTUAL_SOURCE = "pending";
 
+function cardStatus(forecast, score) {
+  return score?.status || (forecast?.scorable ? "pending" : "unscorable");
+}
+
+function isGraded(status) {
+  return status === "hit" || status === "miss";
+}
+
+/**
+ * Reason code behind an unscorable card. A subject the catalog marks unscorable (e.g. analyst ratings:
+ * resolution.kind "unscorable", reason "no_official_print") governs; otherwise the forecast's own
+ * unscorable_reason. Returns the raw code or null.
+ */
+export function unscorableReasonCode(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const res = subject?.resolution;
+  if (res?.kind === "unscorable" && presentString(res.reason)) return reasonCodeOf(res.reason);
+  return reasonCodeOf(forecast?.unscorable_reason);
+}
+
+/** "None (no official print)" style text for a reason code; plain "None" when there is no code. */
+export function noneWithReason(code) {
+  return code ? `None (${reasonLabel(code)})` : "None";
+}
+
 /**
  * Actual-source link for a card. Order:
- *   1. Scorer's own score.actual_source_url (authoritative; name from score, else the joined actual).
- *   2. Backup join: resolved actual (by match_key) source.
+ *   1. Hit/Miss only: Scorer's own score.actual_source_url (name from score, else the joined actual).
+ *   2. Hit/Miss only: backup join, the resolved actual (by match_key) source.
  *   3. Pre-resolution: the subject's designated source (catalog resolution), or the league/NWS/politics
  *      official-print host. No per-claim URL is invented.
- *   4. None of the above (e.g. single-stock claims with no designated print): "pending", url null.
- * Returns { name, url, origin } where origin is "score" | "actuals" | "official" | "pending".
+ *   4. Unscorable with no designated source: "None (<reason label>)", url null.
+ *   5. Otherwise (e.g. single-stock claims with no designated print): "pending", url null.
+ * Returns { name, url, origin, reasonCode } where origin is "score" | "actuals" | "official" | "none" | "pending".
  */
 export function resolveActualSource(forecast, score, actual, subject = SUBJECTS[forecast?.subject?.id || ""]) {
-  const resolved = actual && actual.status === "resolved" ? actual : null;
+  const status = cardStatus(forecast, score);
+  const graded = isGraded(status);
+  const resolved = graded && actual && actual.status === "resolved" ? actual : null;
   const src = officialFor(forecast, subject);
   // Legal 05b Clarification 2026-10-02: an aged-out observation (actual carries retention_note)
   // links the actual's own endpoint URL; the timestamped observation_ref is plain text only.
@@ -292,20 +321,24 @@ export function resolveActualSource(forecast, score, actual, subject = SUBJECTS[
   if (resolved && presentString(resolved.source?.retention_note)) {
     return { name: resolved.source.name, url: resolved.source.url, origin: "actuals_retained" };
   }
-  const scoreUrl = presentString(score?.actual_source_url);
+  const scoreUrl = graded ? presentString(score?.actual_source_url) : null;
   if (scoreUrl) {
     const name =
       presentString(score?.actual_source_name) ||
       presentString(resolved?.source?.name) ||
       src?.name ||
       hostnameFromUrl(scoreUrl);
-    return { name, url: scoreUrl, origin: "score" };
+    return { name, url: scoreUrl, origin: "score", reasonCode: null };
   }
   if (resolved) {
-    return { name: resolved.source.name, url: resolved.source.url, origin: "actuals" };
+    return { name: resolved.source.name, url: resolved.source.url, origin: "actuals", reasonCode: null };
   }
-  if (src) return { name: src.name, url: src.url, origin: "official" };
-  return { name: PENDING_ACTUAL_SOURCE, url: null, origin: "pending" };
+  if (src) return { name: src.name, url: src.url, origin: "official", reasonCode: null };
+  if (status === "unscorable") {
+    const code = unscorableReasonCode(forecast, subject);
+    return { name: noneWithReason(code), url: null, origin: "none", reasonCode: code };
+  }
+  return { name: PENDING_ACTUAL_SOURCE, url: null, origin: "pending", reasonCode: null };
 }
 
 /**
@@ -325,34 +358,72 @@ export function gameTeamLabels(forecast, subject = SUBJECTS[forecast?.subject?.i
 }
 
 /**
+ * Display name for a winner-only enum value (e.g. Super Bowl champion "seattle" -> "Seattle Seahawks").
+ * Uses the subject's catalog enum_file (team-id files only; player-id files are left raw), else the
+ * league from the subject id. Falls back to the raw id when there is no match.
+ */
+export function enumTeamLabel(forecast, value, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  if (typeof value !== "string" || !value) return value;
+  const ef = presentString(subject?.enum_file);
+  let labels = null;
+  if (ef) {
+    if (/^nfl-team-ids/.test(ef)) labels = NFL_TEAM_LABELS;
+    else if (/^ncaa-fbs-team-ids/.test(ef)) labels = FBS_TEAM_LABELS;
+  } else {
+    const division = sportDivision(forecast?.subject?.id || "");
+    if (division === "NFL") labels = NFL_TEAM_LABELS;
+    else if (division === "NCAA FBS") labels = FBS_TEAM_LABELS;
+  }
+  if (!labels || !Object.prototype.hasOwnProperty.call(labels, value)) return value;
+  return labels[value];
+}
+
+/**
  * Sports score actuals are stored "{away_pts}-{home_pts}" (game-subjects-v1). Display in house style,
  * away first, same order as the stored value: "Kansas City Chiefs 21, Los Angeles Chargers 27".
- * Unknown teams keep the score with away/home labels only: "Away 21, Home 27". Anything else is unchanged.
+ * Unknown teams keep the score with away/home labels only: "Away 21, Home 27".
+ * Winner-only enum actuals that are team ids show the team's display name. Anything else is unchanged.
  */
 export function formatSportsActual(forecast, value, subject = SUBJECTS[forecast?.subject?.id || ""]) {
   if (forecast?.domain !== "sports") return value;
+  const unit = forecast?.claim?.unit || subject?.unit;
+  if (unit === "enum") return enumTeamLabel(forecast, value, subject);
   const m = typeof value === "string" ? value.trim().match(/^(\d+)-(\d+)$/) : null;
   if (!m) return value;
-  const unit = forecast?.claim?.unit || subject?.unit;
   if (unit !== "score") return value;
   const teams = gameTeamLabels(forecast, subject);
   if (teams) return `${teams.away} ${m[1]}, ${teams.home} ${m[2]}`;
   return `Away ${m[1]}, Home ${m[2]}`;
 }
 
+/** Scorer review hold on a score row ({ reason, flag_target, opened_at }), or null. */
+export function reviewHoldOf(score) {
+  const h = score?.review_hold;
+  return h && typeof h === "object" && presentString(h.reason) ? h : null;
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
-  const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
+  const scoreStatus = cardStatus(forecast, score);
+  const hold = reviewHoldOf(score);
+  // Review hold: grade withheld. Public grade "In review" (same as void); never show an actual value.
+  const status = hold ? "void" : scoreStatus;
   const grade = publicGrade(status);
-  // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
+  const reviewHoldReason = hold ? reasonDisplay(hold.reason) : null;
+  // Card contract (QA P0 2026-10-02, #51): an actual value and actual source come from the resolved
   // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards
-  // show "pending" even if an actual has already been observed for the match key.
-  const graded = status === "hit" || status === "miss";
+  // show "pending" in the data (the card hides the Actual lines except "Actual · pending" on Pending).
+  const graded = !hold && isGraded(status);
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
   const actualRaw = shown ? shown.value : "pending";
   const actualValue = shown ? formatSportsActual(forecast, actualRaw) : "pending";
-  // Graded cards: the Scorer's own actual_source_url wins, else the actuals join (#45).
-  // Ungraded cards: the subject's designated source (never FRED SP500 for non-S&P), else "pending".
-  const actualSource = resolveActualSource(forecast, graded ? score : null, shown);
+  const actualReasonCode = null;
+  // Unscorable: there will be no actual, and (#51) the card shows no Actual line. The plain reason
+  // label is shown beside the grade instead; the raw code stays in title / data-reason-code.
+  const unscorableReason = status === "unscorable" ? reasonDisplay(unscorableReasonCode(forecast)) : null;
+  // Title attribute: the raw stored value when the display differs (audit).
+  const actualTitle = actualValue !== actualRaw ? String(actualRaw) : null;
+  // Scorer's actual_source_url only for graded scores (#45); else the designated source / pending.
+  const actualSource = resolveActualSource(forecast, hold ? { ...score, status: "pending" } : score, shown);
   const actualSourceName = actualSource.name;
   const actualSourceUrl = actualSource.url;
   // Legal 05b Clarification 2026-10-02 (data-driven): an actual carrying retention_note has aged
@@ -372,14 +443,20 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     horizon: forecast.horizon_end,
     actual: actualValue,
     actualRaw,
+    actualReasonCode,
+    actualTitle,
     actualSourceName,
     actualSourceUrl,
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
     actualObservedAt: retained ? retained.observed_at ?? null : null,
     actualRetentionNote: retained ? retained.source.retention_note : null,
     actualSourceOrigin: actualSource.origin,
+    actualSourceReasonCode: actualSource.reasonCode ?? null,
     grade,
     status,
+    scoreStatus,
+    reviewHoldReason,
+    unscorableReason,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
     domainKey: forecast.domain,
     unit: forecast.claim.unit,
