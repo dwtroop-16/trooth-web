@@ -77,7 +77,10 @@ test("unknown teams keep the score with away/home labels; names are never invent
 
 test("non-score sports actuals and non-sports values are unchanged", () => {
   const enumF = sportsForecast("nfl-2025-super-bowl-champion", "seattle", "enum");
-  assert.equal(formatSportsActual(enumF, "seattle"), "seattle");
+  // Winner-only team ids are mapped to display names (see reasonLabelsDisplay.test.js); player ids stay raw.
+  assert.equal(formatSportsActual(enumF, "seattle"), "Seattle Seahawks");
+  const mvp = sportsForecast("nfl-2025-mvp", "matthew-stafford", "enum");
+  assert.equal(formatSportsActual(mvp, "matthew-stafford"), "matthew-stafford");
   const fin = financeForecast("us-equity-amd-price-target-12m");
   assert.equal(formatSportsActual(fin, "21-27"), "21-27");
   const f = sportsForecast("nfl-2025-kansas-city-la-chargers-20250905");

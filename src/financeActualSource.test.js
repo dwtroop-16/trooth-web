@@ -47,26 +47,37 @@ test("pending single-stock price target shows its designated exchange close, not
     name: "Nasdaq official close (AMD)",
     url: "https://www.nasdaq.com/market-activity/stocks/amd",
     origin: "official",
+    reasonCode: null,
   });
   const card = toPublicClaimCard(f, SPEAKER, { status: "pending" }, undefined);
   assert.notEqual(card.actualSourceUrl, SP500_URL);
   assert.equal(renderPublicClaimCard(card).actualSourcePending, false);
 });
 
-test("finance subject with no designated source shows 'Actual source: pending' (no URL)", () => {
-  for (const f of [
-    financeForecast("us-equity-amd-rating", "enum", false), // catalog: unscorable, no official print
-    financeForecast("us-equity-zzzz-price-target-12m"), // not in catalog
-  ]) {
-    const card = toPublicClaimCard(f, SPEAKER, undefined, undefined);
-    assert.equal(card.actualSourceName, "pending", f.subject.id);
-    assert.equal(card.actualSourceUrl, null, f.subject.id);
-    assert.equal(card.actualSourceOrigin, "pending", f.subject.id);
-    const rendered = renderPublicClaimCard(card);
-    assert.equal(rendered.actualSourcePending, true);
-    assert.equal(rendered.actualSourceUrl, null);
-    assert.equal(rendered.fieldsInOrder.find((x) => x.key === "actualSource").value, "pending");
-  }
+test("pending finance subject with no designated source shows 'Actual source: pending' (no URL)", () => {
+  const f = financeForecast("us-equity-zzzz-price-target-12m"); // not in catalog
+  const card = toPublicClaimCard(f, SPEAKER, undefined, undefined);
+  assert.equal(card.grade, "Pending");
+  assert.equal(card.actualSourceName, "pending");
+  assert.equal(card.actualSourceUrl, null);
+  assert.equal(card.actualSourceOrigin, "pending");
+  const rendered = renderPublicClaimCard(card);
+  assert.equal(rendered.actualSourcePending, true);
+  assert.equal(rendered.actualSourceUrl, null);
+  assert.equal(rendered.fieldsInOrder.find((x) => x.key === "actualSource").value, "pending");
+});
+
+test("unscorable finance subject with no official print shows 'None (no official print)', not pending", () => {
+  const f = financeForecast("us-equity-amd-rating", "enum", false); // catalog: unscorable, no_official_print
+  const card = toPublicClaimCard(f, SPEAKER, { status: "unscorable" }, undefined);
+  assert.equal(card.grade, "Unscorable");
+  assert.equal(card.actualSourceName, "None (no official print)");
+  assert.equal(card.actualSourceUrl, null);
+  assert.equal(card.actualSourceOrigin, "none");
+  assert.equal(card.actualSourceReasonCode, "no_official_print");
+  const rendered = renderPublicClaimCard(card);
+  assert.equal(rendered.actualSourcePending, false);
+  assert.equal(rendered.actualSourceNone, true);
 });
 
 test("FRED SP500 is kept only for subjects that really are the S&P 500", () => {
@@ -128,11 +139,14 @@ test("live bundle: no FRED SP500 on non-S&P cards; single-stock targets link the
     assert.equal(card.actualSourceName, `Nasdaq official close (${ticker})`, f.id);
     assert.equal(card.actualSourceUrl, `https://www.nasdaq.com/market-activity/stocks/${ticker.toLowerCase()}`, f.id);
   }
-  const noSource = cards.filter(({ card }) => card.actualSourceOrigin === "pending");
-  assert.equal(noSource.length, 58); // analyst ratings: catalog says no official print
+  // Analyst ratings (58, Unscorable): catalog says no official print. No card is left on "pending" source.
+  assert.equal(cards.filter(({ card }) => card.actualSourceOrigin === "pending").length, 0);
+  const noSource = cards.filter(({ card }) => card.actualSourceOrigin === "none");
+  assert.equal(noSource.length, 58);
   for (const { f, card } of noSource) {
     assert.equal(f.domain, "finance");
-    assert.equal(card.actual, "pending");
+    assert.equal(card.grade, "Unscorable");
+    assert.equal(card.actualSourceName, "None (no official print)");
   }
 });
 

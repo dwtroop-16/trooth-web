@@ -89,6 +89,7 @@ test("no per-claim URL when both score URL and actuals join are missing (current
     name: "NFL official box score",
     url: "https://www.nfl.com/",
     origin: "official",
+    reasonCode: null,
   });
 });
 
