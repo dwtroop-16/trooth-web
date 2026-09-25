@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
-import { toPublicClaimCard, resolveActualSource } from "./viewModel.js";
+import { toPublicClaimCard, resolveActualSource, actualLookup } from "./viewModel.js";
 import { renderPublicClaimCard } from "./claimCard.js";
 
 // Synthetic fixtures: one resolved NFL game forecast.
@@ -105,11 +105,11 @@ test("live bundle passes Scorer actual_source_url through on every hit/miss scor
 test("live hit/miss cards take their actual source URL from the score", () => {
   const speakerBy = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
   const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
-  const actualBy = Object.fromEntries(ACTUALS.map((a) => [a.match_key, a]));
+  const actualFor = actualLookup(ACTUALS);
   for (const f of FORECASTS) {
     const s = scoreBy[f.id];
     if (!s || (s.status !== "hit" && s.status !== "miss")) continue;
-    const card = toPublicClaimCard(f, speakerBy[f.speaker_id], s, actualBy[f.match_key]);
+    const card = toPublicClaimCard(f, speakerBy[f.speaker_id], s, actualFor(f, s));
     assert.equal(card.actualSourceOrigin, "score", f.id);
     assert.equal(card.actualSourceUrl, s.actual_source_url, f.id);
   }

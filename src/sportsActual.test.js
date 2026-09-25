@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
-import { toPublicClaimCard, formatSportsActual, gameTeamLabels } from "./viewModel.js";
+import { toPublicClaimCard, formatSportsActual, gameTeamLabels, actualLookup } from "./viewModel.js";
 import { renderPublicClaimCard } from "./claimCard.js";
 
 const SPEAKER = { id: "test-speaker", name: "Test Speaker", org: "Test Org", accounts: [] };
@@ -42,10 +42,10 @@ function financeForecast(subjectId, unit = "USD", scorable = true) {
 function liveCards() {
   const speakerBy = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
   const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
-  const actualBy = Object.fromEntries(ACTUALS.map((a) => [a.match_key, a]));
+  const actualFor = actualLookup(ACTUALS);
   return FORECASTS.map((f) => ({
     f,
-    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualBy[f.match_key]),
+    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualFor(f, scoreBy[f.id])),
   }));
 }
 

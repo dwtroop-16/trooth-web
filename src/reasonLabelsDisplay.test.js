@@ -14,7 +14,7 @@ import {
   hasReasonLabel,
   canonicalReasonCode,
 } from "./reasonLabels.js";
-import { toPublicClaimCard, enumTeamLabel, formatSportsActual } from "./viewModel.js";
+import { toPublicClaimCard, enumTeamLabel, formatSportsActual, actualLookup } from "./viewModel.js";
 import { renderPublicClaimCard, REQUIRED_CARD_FIELDS } from "./claimCard.js";
 import { publicChangelogEntries, lastUpdatedLine, shortClaim, stripInternalIds, KIND_LABELS } from "./changelogPublic.js";
 
@@ -25,10 +25,10 @@ const CTX = { forecasts: FORECASTS, scores: SCORES, speakers: SPEAKERS };
 function liveCards() {
   const speakerBy = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
   const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
-  const actualBy = Object.fromEntries(ACTUALS.map((a) => [a.match_key, a]));
+  const actualFor = actualLookup(ACTUALS);
   return FORECASTS.map((f) => ({
     f,
-    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualBy[f.match_key]),
+    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualFor(f, scoreBy[f.id])),
   }));
 }
 

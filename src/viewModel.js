@@ -517,6 +517,23 @@ function sortClaimList(list) {
   });
 }
 
+/**
+ * Join a forecast to its actual: the exact row the score cites (score.actual_id) first, then the
+ * first actual on the forecast's match_key. ACTUALS can carry more than one print per match_key
+ * (e.g. "NFL" and "NFL.com Game Center" for the same game); the score's own citation wins.
+ */
+export function actualLookup(actuals) {
+  const byId = new Map();
+  const byKey = new Map();
+  for (const a of actuals || []) {
+    if (!a) continue;
+    if (a.id && !byId.has(a.id)) byId.set(a.id, a);
+    if (a.match_key && !byKey.has(a.match_key)) byKey.set(a.match_key, a);
+  }
+  return (forecast, score) =>
+    (score && score.actual_id && byId.get(score.actual_id)) || byKey.get(forecast?.match_key);
+}
+
 export function buildVals(state, actions, data) {
 
   const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal } = actions;
@@ -531,11 +548,11 @@ export function buildVals(state, actions, data) {
   const cats = DOMAINS;
 
   const scoreBy = Object.fromEntries(scores.map((sc) => [sc.forecast_id, sc]));
-  const actualByKey = Object.fromEntries(actuals.map((a) => [a.match_key, a]));
+  const actualFor = actualLookup(actuals);
   const speakerBy = Object.fromEntries(speakers.map((sp) => [sp.id, sp]));
 
   const cards = forecasts.map((f) =>
-    toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key])
+    toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualFor(f, scoreBy[f.id]))
   );
   const cardById = Object.fromEntries(cards.map((c) => [c.id, c]));
 

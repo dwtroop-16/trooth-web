@@ -67460,6 +67460,1714 @@
         "url": "https://www.archives.gov/electoral-college/2024"
       },
       "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YWBSGPWBJQ71FMGPJN",
+      "match_key": "sports|nfl-2025-carolina-jacksonville-20250907|nfl-2025-carolina-jacksonville-20250907|score",
+      "domain": "sports",
+      "value": "10-26",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/panthers-at-jaguars-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YWCWFY3RY1KX2544NY",
+      "match_key": "sports|nfl-2025-kansas-city-la-chargers-20250905|nfl-2025-kansas-city-la-chargers-20250905|score",
+      "domain": "sports",
+      "value": "21-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/chiefs-at-chargers-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YWDEH90VHDNFDKWR8F",
+      "match_key": "sports|nfl-2025-miami-indianapolis-20250907|nfl-2025-miami-indianapolis-20250907|score",
+      "domain": "sports",
+      "value": "8-33",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/dolphins-at-colts-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YWRS5E510XSPE7PQP2",
+      "match_key": "sports|nfl-2025-cincinnati-cleveland-20250907|nfl-2025-cincinnati-cleveland-20250907|score",
+      "domain": "sports",
+      "value": "17-16",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bengals-at-browns-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YWVJFD2CQP6C070XW9",
+      "match_key": "sports|nfl-2025-tampa-bay-atlanta-20250907|nfl-2025-tampa-bay-atlanta-20250907|score",
+      "domain": "sports",
+      "value": "23-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/buccaneers-at-falcons-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YX00JAQGE8BQAE610W",
+      "match_key": "sports|nfl-2025-arizona-new-orleans-20250907|nfl-2025-arizona-new-orleans-20250907|score",
+      "domain": "sports",
+      "value": "20-13",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/cardinals-at-saints-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YX03M6WW1SZEEME2N7",
+      "match_key": "sports|nfl-2025-las-vegas-new-england-20250907|nfl-2025-las-vegas-new-england-20250907|score",
+      "domain": "sports",
+      "value": "20-13",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/raiders-at-patriots-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXDPGJ5FHWTHNF2QQF",
+      "match_key": "sports|nfl-2025-minnesota-chicago-20250908|nfl-2025-minnesota-chicago-20250908|score",
+      "domain": "sports",
+      "value": "27-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/vikings-at-bears-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXFE90747TX2EFMNVX",
+      "match_key": "sports|nfl-2025-baltimore-buffalo-20250907|nfl-2025-baltimore-buffalo-20250907|score",
+      "domain": "sports",
+      "value": "40-41",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/ravens-at-bills-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXGQT50M0JGC2YF69G",
+      "match_key": "sports|nfl-2025-detroit-green-bay-20250907|nfl-2025-detroit-green-bay-20250907|score",
+      "domain": "sports",
+      "value": "13-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/lions-at-packers-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXK9DKGZA9GM6K16VC",
+      "match_key": "sports|nfl-2025-houston-la-rams-20250907|nfl-2025-houston-la-rams-20250907|score",
+      "domain": "sports",
+      "value": "9-14",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/texans-at-rams-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXW7S36FKMVGEGH3HA",
+      "match_key": "sports|nfl-2025-san-francisco-seattle-20250907|nfl-2025-san-francisco-seattle-20250907|score",
+      "domain": "sports",
+      "value": "17-13",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/49ers-at-seahawks-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXX2XNWA4A613MKVR1",
+      "match_key": "sports|nfl-2025-ny-giants-washington-20250907|nfl-2025-ny-giants-washington-20250907|score",
+      "domain": "sports",
+      "value": "6-21",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/giants-at-commanders-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXXZY4JV1VW7937YM7",
+      "match_key": "sports|nfl-2025-pittsburgh-ny-jets-20250907|nfl-2025-pittsburgh-ny-jets-20250907|score",
+      "domain": "sports",
+      "value": "34-32",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/steelers-at-jets-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272K9YXYE8DQRAX1VWB6G10",
+      "match_key": "sports|nfl-2025-tennessee-denver-20250907|nfl-2025-tennessee-denver-20250907|score",
+      "domain": "sports",
+      "value": "12-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:51:29Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/titans-at-broncos-2025-reg-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZA389QT86C31A8F06M",
+      "match_key": "sports|nfl-2025-jacksonville-cincinnati-20250914|nfl-2025-jacksonville-cincinnati-20250914|score",
+      "domain": "sports",
+      "value": "27-31",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/jaguars-at-bengals-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZA38F4MNZGGX1F8S8C",
+      "match_key": "sports|nfl-2025-la-chargers-las-vegas-20250915|nfl-2025-la-chargers-las-vegas-20250915|score",
+      "domain": "sports",
+      "value": "20-9",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/chargers-at-raiders-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZA5PHP9KG6C3QP8Z1V",
+      "match_key": "sports|nfl-2025-philadelphia-kansas-city-20250914|nfl-2025-philadelphia-kansas-city-20250914|score",
+      "domain": "sports",
+      "value": "20-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/eagles-at-chiefs-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZA8A6RTRWQAW8VXS33",
+      "match_key": "sports|nfl-2025-denver-indianapolis-20250914|nfl-2025-denver-indianapolis-20250914|score",
+      "domain": "sports",
+      "value": "28-29",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/broncos-at-colts-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZA8RS9V2QDBTA71GVP",
+      "match_key": "sports|nfl-2025-buffalo-ny-jets-20250914|nfl-2025-buffalo-ny-jets-20250914|score",
+      "domain": "sports",
+      "value": "30-10",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bills-at-jets-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAB7X61D0998QGMWAY",
+      "match_key": "sports|nfl-2025-atlanta-minnesota-20250914|nfl-2025-atlanta-minnesota-20250914|score",
+      "domain": "sports",
+      "value": "22-6",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/falcons-at-vikings-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAE4SC073TAVEYQYGB",
+      "match_key": "sports|nfl-2025-san-francisco-new-orleans-20250914|nfl-2025-san-francisco-new-orleans-20250914|score",
+      "domain": "sports",
+      "value": "26-21",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/49ers-at-saints-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAEP8NDBP2YGBP2YGG",
+      "match_key": "sports|nfl-2025-tampa-bay-houston-20250915|nfl-2025-tampa-bay-houston-20250915|score",
+      "domain": "sports",
+      "value": "20-19",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/buccaneers-at-texans-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAKX6QVAFNPVZ0PHWK",
+      "match_key": "sports|nfl-2025-la-rams-tennessee-20250914|nfl-2025-la-rams-tennessee-20250914|score",
+      "domain": "sports",
+      "value": "33-19",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/rams-at-titans-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAPWM60WDYNKQQR0SV",
+      "match_key": "sports|nfl-2025-new-england-miami-20250914|nfl-2025-new-england-miami-20250914|score",
+      "domain": "sports",
+      "value": "33-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/patriots-at-dolphins-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZATG7RYHGJW3MPQ5CF",
+      "match_key": "sports|nfl-2025-cleveland-baltimore-20250914|nfl-2025-cleveland-baltimore-20250914|score",
+      "domain": "sports",
+      "value": "17-41",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/browns-at-ravens-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAWPKH2NC6TP6NTDRA",
+      "match_key": "sports|nfl-2025-chicago-detroit-20250914|nfl-2025-chicago-detroit-20250914|score",
+      "domain": "sports",
+      "value": "21-52",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bears-at-lions-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAXDY71ZPVRE9PN8MG",
+      "match_key": "sports|nfl-2025-ny-giants-dallas-20250914|nfl-2025-ny-giants-dallas-20250914|score",
+      "domain": "sports",
+      "value": "37-40",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/giants-at-cowboys-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAY26V2TRTFS0SCBER",
+      "match_key": "sports|nfl-2025-seattle-pittsburgh-20250914|nfl-2025-seattle-pittsburgh-20250914|score",
+      "domain": "sports",
+      "value": "31-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/seahawks-at-steelers-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZAYC33K1APRYPJH37Y",
+      "match_key": "sports|nfl-2025-carolina-arizona-20250914|nfl-2025-carolina-arizona-20250914|score",
+      "domain": "sports",
+      "value": "22-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/panthers-at-cardinals-2025-reg-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB0HTBFHE2SDCGJ0DV",
+      "match_key": "sports|nfl-2025-miami-carolina-20251005|nfl-2025-miami-carolina-20251005|score",
+      "domain": "sports",
+      "value": "24-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/dolphins-at-panthers-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB0K1QZR035WA5QVZT",
+      "match_key": "sports|nfl-2025-new-orleans-seattle-20250921|nfl-2025-new-orleans-seattle-20250921|score",
+      "domain": "sports",
+      "value": "13-44",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/saints-at-seahawks-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB0NPF011QH20ZGGMM",
+      "match_key": "sports|nfl-2025-green-bay-cleveland-20250921|nfl-2025-green-bay-cleveland-20250921|score",
+      "domain": "sports",
+      "value": "10-13",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/packers-at-browns-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB2X6CV9H9E4ZSYKSS",
+      "match_key": "sports|nfl-2025-pittsburgh-new-england-20250921|nfl-2025-pittsburgh-new-england-20250921|score",
+      "domain": "sports",
+      "value": "21-14",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/steelers-at-patriots-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB3MXV99K9GP1P23XN",
+      "match_key": "sports|nfl-2025-dallas-ny-jets-20251005|nfl-2025-dallas-ny-jets-20251005|score",
+      "domain": "sports",
+      "value": "37-22",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/cowboys-at-jets-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB54DSVPXTARF0C8FS",
+      "match_key": "sports|nfl-2025-kansas-city-jacksonville-20251006|nfl-2025-kansas-city-jacksonville-20251006|score",
+      "domain": "sports",
+      "value": "28-31",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/chiefs-at-jaguars-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB5B2Y0GPR9VFBE0Z7",
+      "match_key": "sports|nfl-2025-dallas-chicago-20250921|nfl-2025-dallas-chicago-20250921|score",
+      "domain": "sports",
+      "value": "14-31",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/cowboys-at-bears-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB5C6BS1A535Q046VA",
+      "match_key": "sports|nfl-2025-detroit-cincinnati-20251005|nfl-2025-detroit-cincinnati-20251005|score",
+      "domain": "sports",
+      "value": "37-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/lions-at-bengals-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB6EY0RX97FRQRT22Z",
+      "match_key": "sports|nfl-2025-new-england-buffalo-20251005|nfl-2025-new-england-buffalo-20251005|score",
+      "domain": "sports",
+      "value": "23-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/patriots-at-bills-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB6YG3539BPH2QH4NT",
+      "match_key": "sports|nfl-2025-las-vegas-indianapolis-20251005|nfl-2025-las-vegas-indianapolis-20251005|score",
+      "domain": "sports",
+      "value": "6-40",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/raiders-at-colts-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB77E64X718XCAENBB",
+      "match_key": "sports|nfl-2025-indianapolis-tennessee-20250921|nfl-2025-indianapolis-tennessee-20250921|score",
+      "domain": "sports",
+      "value": "41-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/colts-at-titans-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZB9A2HPY1HGQS8BPYC",
+      "match_key": "sports|nfl-2025-tennessee-arizona-20251005|nfl-2025-tennessee-arizona-20251005|score",
+      "domain": "sports",
+      "value": "22-21",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/titans-at-cardinals-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBBD9Z8BMDWB8YCMS6",
+      "match_key": "sports|nfl-2025-houston-baltimore-20251005|nfl-2025-houston-baltimore-20251005|score",
+      "domain": "sports",
+      "value": "44-10",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/texans-at-ravens-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBBHS33HNDK3KS6JNS",
+      "match_key": "sports|nfl-2025-green-bay-dallas-20250928|nfl-2025-green-bay-dallas-20250928|score",
+      "domain": "sports",
+      "value": "40-40",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/packers-at-cowboys-2025-reg-4"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBBT1SP6T9TEC800EM",
+      "match_key": "sports|nfl-2025-washington-la-chargers-20251005|nfl-2025-washington-la-chargers-20251005|score",
+      "domain": "sports",
+      "value": "27-10",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/commanders-at-chargers-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBC15TG25VV7F8BKGZ",
+      "match_key": "sports|nfl-2025-la-rams-philadelphia-20250921|nfl-2025-la-rams-philadelphia-20250921|score",
+      "domain": "sports",
+      "value": "26-33",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/rams-at-eagles-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBCKK5593BDHKXCE49",
+      "match_key": "sports|nfl-2025-philadelphia-tampa-bay-20250928|nfl-2025-philadelphia-tampa-bay-20250928|score",
+      "domain": "sports",
+      "value": "31-25",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/eagles-at-buccaneers-2025-reg-4"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBDA3K39VP855BSV17",
+      "match_key": "sports|nfl-2025-cleveland-detroit-20250928|nfl-2025-cleveland-detroit-20250928|score",
+      "domain": "sports",
+      "value": "10-34",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/browns-at-lions-2025-reg-4"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBF2NCNRGSQPYCP839",
+      "match_key": "sports|nfl-2025-kansas-city-ny-giants-20250921|nfl-2025-kansas-city-ny-giants-20250921|score",
+      "domain": "sports",
+      "value": "22-9",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/chiefs-at-giants-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBGPW1W8HBYDNVS1Y9",
+      "match_key": "sports|nfl-2025-minnesota-pittsburgh-20250928|nfl-2025-minnesota-pittsburgh-20250928|score",
+      "domain": "sports",
+      "value": "21-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/vikings-at-steelers-2025-reg-4"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBJFV0R03WXSKPJNM0",
+      "match_key": "sports|nfl-2025-cincinnati-minnesota-20250921|nfl-2025-cincinnati-minnesota-20250921|score",
+      "domain": "sports",
+      "value": "10-48",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bengals-at-vikings-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBJJJPSS9NK6GGCCS2",
+      "match_key": "sports|nfl-2025-detroit-baltimore-20250922|nfl-2025-detroit-baltimore-20250922|score",
+      "domain": "sports",
+      "value": "38-30",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/lions-at-ravens-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBKHY75TPGE2J787AZ",
+      "match_key": "sports|nfl-2025-arizona-san-francisco-20250921|nfl-2025-arizona-san-francisco-20250921|score",
+      "domain": "sports",
+      "value": "15-16",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/cardinals-at-49ers-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBM0K70FFYN4J0PZTQ",
+      "match_key": "sports|nfl-2025-ny-jets-tampa-bay-20250921|nfl-2025-ny-jets-tampa-bay-20250921|score",
+      "domain": "sports",
+      "value": "27-29",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/jets-at-buccaneers-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBNM4CBNYKRWDZQMY5",
+      "match_key": "sports|nfl-2025-atlanta-carolina-20250921|nfl-2025-atlanta-carolina-20250921|score",
+      "domain": "sports",
+      "value": "0-30",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/falcons-at-panthers-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBNP36JYWS2BS7HYH4",
+      "match_key": "sports|nfl-2025-tampa-bay-seattle-20251005|nfl-2025-tampa-bay-seattle-20251005|score",
+      "domain": "sports",
+      "value": "38-35",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/buccaneers-at-seahawks-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBPRF7DM6BD9DCHVP9",
+      "match_key": "sports|nfl-2025-houston-jacksonville-20250921|nfl-2025-houston-jacksonville-20250921|score",
+      "domain": "sports",
+      "value": "10-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/texans-at-jaguars-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBPYBD0MZA3ZC6B1N2",
+      "match_key": "sports|nfl-2025-denver-philadelphia-20251005|nfl-2025-denver-philadelphia-20251005|score",
+      "domain": "sports",
+      "value": "21-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/broncos-at-eagles-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBQ1N3KCZAE22PWR7M",
+      "match_key": "sports|nfl-2025-minnesota-cleveland-20251005|nfl-2025-minnesota-cleveland-20251005|score",
+      "domain": "sports",
+      "value": "21-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/vikings-at-browns-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBVBD8KP5CNEP1YN49",
+      "match_key": "sports|nfl-2025-indianapolis-la-rams-20250928|nfl-2025-indianapolis-la-rams-20250928|score",
+      "domain": "sports",
+      "value": "20-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/colts-at-rams-2025-reg-4"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBXQ5YTEAWRSKZPDAM",
+      "match_key": "sports|nfl-2025-ny-giants-new-orleans-20251005|nfl-2025-ny-giants-new-orleans-20251005|score",
+      "domain": "sports",
+      "value": "14-26",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/giants-at-saints-2025-reg-5"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBXTTAPHZTH3924CNT",
+      "match_key": "sports|nfl-2025-denver-la-chargers-20250921|nfl-2025-denver-la-chargers-20250921|score",
+      "domain": "sports",
+      "value": "20-23",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/broncos-at-chargers-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272R3ZBZ2F0GQ3PZV146JX2",
+      "match_key": "sports|nfl-2025-las-vegas-washington-20250921|nfl-2025-las-vegas-washington-20250921|score",
+      "domain": "sports",
+      "value": "24-41",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:54:07Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/raiders-at-commanders-2025-reg-3"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYW19RC788BMXA8ZHZW",
+      "match_key": "sports|nfl-2025-las-vegas-kansas-city-20251019|nfl-2025-las-vegas-kansas-city-20251019|score",
+      "domain": "sports",
+      "value": "0-31",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/raiders-at-chiefs-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWA2BJ562NJKPXZF3N",
+      "match_key": "sports|nfl-2025-new-orleans-chicago-20251019|nfl-2025-new-orleans-chicago-20251019|score",
+      "domain": "sports",
+      "value": "14-26",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/saints-at-bears-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWAE2DVGB8KM2R2DA4",
+      "match_key": "sports|nfl-2025-carolina-ny-jets-20251019|nfl-2025-carolina-ny-jets-20251019|score",
+      "domain": "sports",
+      "value": "13-6",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/panthers-at-jets-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWB2QZZTEK4GFV78VZ",
+      "match_key": "sports|nfl-2025-indianapolis-la-chargers-20251019|nfl-2025-indianapolis-la-chargers-20251019|score",
+      "domain": "sports",
+      "value": "38-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/colts-at-chargers-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWC6DT54837NZFEYQ9",
+      "match_key": "sports|nfl-2025-tampa-bay-detroit-20251020|nfl-2025-tampa-bay-detroit-20251020|score",
+      "domain": "sports",
+      "value": "9-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/buccaneers-at-lions-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWDHW2WSYWF9RASDQF",
+      "match_key": "sports|nfl-2025-ny-giants-denver-20251019|nfl-2025-ny-giants-denver-20251019|score",
+      "domain": "sports",
+      "value": "32-33",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/giants-at-broncos-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWHCX0RJ37G7M0G664",
+      "match_key": "sports|nfl-2025-philadelphia-minnesota-20251019|nfl-2025-philadelphia-minnesota-20251019|score",
+      "domain": "sports",
+      "value": "28-22",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/eagles-at-vikings-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWJ0DVZAEKG4SEFCNZ",
+      "match_key": "sports|nfl-2025-atlanta-san-francisco-20251019|nfl-2025-atlanta-san-francisco-20251019|score",
+      "domain": "sports",
+      "value": "10-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/falcons-at-49ers-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWM3S8AVA8E3W2NWHW",
+      "match_key": "sports|nfl-2025-new-england-tennessee-20251019|nfl-2025-new-england-tennessee-20251019|score",
+      "domain": "sports",
+      "value": "31-13",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/patriots-at-titans-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWR1G60T6AJBW6HN75",
+      "match_key": "sports|nfl-2025-la-rams-jacksonville-20251019|nfl-2025-la-rams-jacksonville-20251019|score",
+      "domain": "sports",
+      "value": "35-7",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/rams-at-jaguars-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWTJMQE3NPEP2B0Z75",
+      "match_key": "sports|nfl-2025-miami-cleveland-20251019|nfl-2025-miami-cleveland-20251019|score",
+      "domain": "sports",
+      "value": "6-31",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/dolphins-at-browns-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWV2XYHR4KADCCCPDV",
+      "match_key": "sports|nfl-2025-houston-seattle-20251020|nfl-2025-houston-seattle-20251020|score",
+      "domain": "sports",
+      "value": "19-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/texans-at-seahawks-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWWRGTEHDGE9CBP77S",
+      "match_key": "sports|nfl-2025-green-bay-arizona-20251019|nfl-2025-green-bay-arizona-20251019|score",
+      "domain": "sports",
+      "value": "27-23",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/packers-at-cardinals-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYWZ2AQ0HVF81EQJBSA",
+      "match_key": "sports|nfl-2025-washington-dallas-20251019|nfl-2025-washington-dallas-20251019|score",
+      "domain": "sports",
+      "value": "22-44",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/commanders-at-cowboys-2025-reg-7"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX0Z5A0801BJDFGC1B",
+      "match_key": "sports|nfl-2025-la-chargers-new-england-20260111|nfl-2025-la-chargers-new-england-20260111|score",
+      "domain": "sports",
+      "value": "3-16",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/chargers-at-patriots-2025-post-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX17D0FACMHP9EDTHX",
+      "match_key": "sports|nfl-2025-kansas-city-tennessee-20251221|nfl-2025-kansas-city-tennessee-20251221|score",
+      "domain": "sports",
+      "value": "9-26",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/chiefs-at-titans-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX3DJ3NCYHEPRV0PFT",
+      "match_key": "sports|nfl-2025-ny-jets-baltimore-20251123|nfl-2025-ny-jets-baltimore-20251123|score",
+      "domain": "sports",
+      "value": "10-23",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/jets-at-ravens-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX53B9NZ3ZA14KE4KY",
+      "match_key": "sports|nfl-2025-buffalo-jacksonville-20260111|nfl-2025-buffalo-jacksonville-20260111|score",
+      "domain": "sports",
+      "value": "27-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bills-at-jaguars-2025-post-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX5G4QGY3CFK9WHE01",
+      "match_key": "sports|nfl-2025-tampa-bay-la-rams-20251123|nfl-2025-tampa-bay-la-rams-20251123|score",
+      "domain": "sports",
+      "value": "7-34",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/buccaneers-at-rams-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX6VNPRN7AGEYN05BM",
+      "match_key": "sports|nfl-2025-cincinnati-miami-20251221|nfl-2025-cincinnati-miami-20251221|score",
+      "domain": "sports",
+      "value": "45-21",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bengals-at-dolphins-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX7JS5DCX1PN22TZKQ",
+      "match_key": "sports|nfl-2025-indianapolis-kansas-city-20251123|nfl-2025-indianapolis-kansas-city-20251123|score",
+      "domain": "sports",
+      "value": "20-23",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/colts-at-chiefs-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYX9VG7TS7AWN3BKCYC",
+      "match_key": "sports|nfl-2025-new-orleans-tampa-bay-20251207|nfl-2025-new-orleans-tampa-bay-20251207|score",
+      "domain": "sports",
+      "value": "24-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/saints-at-buccaneers-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXAHMC2MHSRDYJQ4WW",
+      "match_key": "sports|nfl-2025-tennessee-cleveland-20251207|nfl-2025-tennessee-cleveland-20251207|score",
+      "domain": "sports",
+      "value": "31-29",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/titans-at-browns-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXB72XG4QFG2JWH62Z",
+      "match_key": "sports|nfl-2025-seattle-tennessee-20251123|nfl-2025-seattle-tennessee-20251123|score",
+      "domain": "sports",
+      "value": "30-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/seahawks-at-titans-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXBN8G880CM057ET1G",
+      "match_key": "sports|nfl-2025-pittsburgh-baltimore-20251207|nfl-2025-pittsburgh-baltimore-20251207|score",
+      "domain": "sports",
+      "value": "27-22",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/steelers-at-ravens-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXC1MS883WVKVG3W89",
+      "match_key": "sports|nfl-2025-philadelphia-la-chargers-20251208|nfl-2025-philadelphia-la-chargers-20251208|score",
+      "domain": "sports",
+      "value": "19-22",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/eagles-at-chargers-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXCS1TQA3D59K40VR7",
+      "match_key": "sports|nfl-2025-houston-kansas-city-20251207|nfl-2025-houston-kansas-city-20251207|score",
+      "domain": "sports",
+      "value": "20-10",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/texans-at-chiefs-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXD3Y6CY49VPJEPD7P",
+      "match_key": "sports|nfl-2025-denver-las-vegas-20251207|nfl-2025-denver-las-vegas-20251207|score",
+      "domain": "sports",
+      "value": "24-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/broncos-at-raiders-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXDMR5TZSNWANR7DQ3",
+      "match_key": "sports|nfl-2025-pittsburgh-chicago-20251123|nfl-2025-pittsburgh-chicago-20251123|score",
+      "domain": "sports",
+      "value": "28-31",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/steelers-at-bears-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXE3N9168NM7QX5JCA",
+      "match_key": "sports|nfl-2025-pittsburgh-detroit-20251221|nfl-2025-pittsburgh-detroit-20251221|score",
+      "domain": "sports",
+      "value": "29-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/steelers-at-lions-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXED0MGXB4VBZDQ14G",
+      "match_key": "sports|nfl-2025-ny-giants-detroit-20251123|nfl-2025-ny-giants-detroit-20251123|score",
+      "domain": "sports",
+      "value": "27-34",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/giants-at-lions-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXFM2A5V0C32NKZYKW",
+      "match_key": "sports|nfl-2025-cincinnati-buffalo-20251207|nfl-2025-cincinnati-buffalo-20251207|score",
+      "domain": "sports",
+      "value": "34-39",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bengals-at-bills-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXGJVWZQ9NWWY29ET1",
+      "match_key": "sports|nfl-2025-jacksonville-arizona-20251123|nfl-2025-jacksonville-arizona-20251123|score",
+      "domain": "sports",
+      "value": "27-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/jaguars-at-cardinals-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXHA2WPN1KHJ6HJJAM",
+      "match_key": "sports|nfl-2025-miami-ny-jets-20251207|nfl-2025-miami-ny-jets-20251207|score",
+      "domain": "sports",
+      "value": "34-10",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/dolphins-at-jets-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXHQR9HG7DFTRYGXWJ",
+      "match_key": "sports|nfl-2025-minnesota-green-bay-20251123|nfl-2025-minnesota-green-bay-20251123|score",
+      "domain": "sports",
+      "value": "6-23",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/vikings-at-packers-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXHRPTJTE83FK7C7E6",
+      "match_key": "sports|nfl-2025-new-england-baltimore-20251221|nfl-2025-new-england-baltimore-20251221|score",
+      "domain": "sports",
+      "value": "28-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/patriots-at-ravens-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXJ1Z4J8GX7QQES190",
+      "match_key": "sports|nfl-2025-chicago-green-bay-20251207|nfl-2025-chicago-green-bay-20251207|score",
+      "domain": "sports",
+      "value": "21-28",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bears-at-packers-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXJ2C57K49TZNP09BX",
+      "match_key": "sports|nfl-2025-houston-pittsburgh-20260112|nfl-2025-houston-pittsburgh-20260112|score",
+      "domain": "sports",
+      "value": "30-6",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/texans-at-steelers-2025-post-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXJSZEKRN84BQ6ETM4",
+      "match_key": "sports|nfl-2025-san-francisco-philadelphia-20260111|nfl-2025-san-francisco-philadelphia-20260111|score",
+      "domain": "sports",
+      "value": "23-19",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/49ers-at-eagles-2025-post-1"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXK4W2DJQAB8V696JV",
+      "match_key": "sports|nfl-2025-la-rams-arizona-20251207|nfl-2025-la-rams-arizona-20251207|score",
+      "domain": "sports",
+      "value": "45-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/rams-at-cardinals-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXK6FYX30BM63YRRAK",
+      "match_key": "sports|nfl-2025-las-vegas-houston-20251221|nfl-2025-las-vegas-houston-20251221|score",
+      "domain": "sports",
+      "value": "21-23",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/raiders-at-texans-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXKJ7QG829QGY5FG53",
+      "match_key": "sports|nfl-2025-atlanta-arizona-20251221|nfl-2025-atlanta-arizona-20251221|score",
+      "domain": "sports",
+      "value": "26-19",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/falcons-at-cardinals-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXKRX77BB51HF0MXQ5",
+      "match_key": "sports|nfl-2025-tampa-bay-carolina-20251221|nfl-2025-tampa-bay-carolina-20251221|score",
+      "domain": "sports",
+      "value": "20-23",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/buccaneers-at-panthers-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXKY1W5RJHG6Z2V6XH",
+      "match_key": "sports|nfl-2025-cleveland-las-vegas-20251123|nfl-2025-cleveland-las-vegas-20251123|score",
+      "domain": "sports",
+      "value": "24-10",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/browns-at-raiders-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXM8RF3Q8CDJ79AT7R",
+      "match_key": "sports|nfl-2025-buffalo-cleveland-20251221|nfl-2025-buffalo-cleveland-20251221|score",
+      "domain": "sports",
+      "value": "23-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/bills-at-browns-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXMPT1EQE9WKDBFV5V",
+      "match_key": "sports|nfl-2025-jacksonville-denver-20251221|nfl-2025-jacksonville-denver-20251221|score",
+      "domain": "sports",
+      "value": "34-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/jaguars-at-broncos-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXP0M3BDFT4MKSHPM4",
+      "match_key": "sports|nfl-2025-new-england-cincinnati-20251123|nfl-2025-new-england-cincinnati-20251123|score",
+      "domain": "sports",
+      "value": "26-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/patriots-at-bengals-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXQXYC7B5AXEGCJQBZ",
+      "match_key": "sports|nfl-2025-philadelphia-dallas-20251123|nfl-2025-philadelphia-dallas-20251123|score",
+      "domain": "sports",
+      "value": "21-24",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/eagles-at-cowboys-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXW0NWRJTFHR1C3M6E",
+      "match_key": "sports|nfl-2025-indianapolis-jacksonville-20251207|nfl-2025-indianapolis-jacksonville-20251207|score",
+      "domain": "sports",
+      "value": "19-36",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/colts-at-jaguars-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXW3C69WM4QKMR1QJT",
+      "match_key": "sports|nfl-2025-san-francisco-indianapolis-20251222|nfl-2025-san-francisco-indianapolis-20251222|score",
+      "domain": "sports",
+      "value": "48-27",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/49ers-at-colts-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXWN19CWSRG2CD3WHD",
+      "match_key": "sports|nfl-2025-carolina-san-francisco-20251124|nfl-2025-carolina-san-francisco-20251124|score",
+      "domain": "sports",
+      "value": "9-20",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/panthers-at-49ers-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXXCR1AR0K4JWJ3KTB",
+      "match_key": "sports|nfl-2025-seattle-atlanta-20251207|nfl-2025-seattle-atlanta-20251207|score",
+      "domain": "sports",
+      "value": "37-9",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/seahawks-at-falcons-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXXDGSE94K55FKV94A",
+      "match_key": "sports|nfl-2025-minnesota-ny-giants-20251221|nfl-2025-minnesota-ny-giants-20251221|score",
+      "domain": "sports",
+      "value": "16-13",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/vikings-at-giants-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXYB275MAXVJJ30PBP",
+      "match_key": "sports|nfl-2025-la-chargers-dallas-20251221|nfl-2025-la-chargers-dallas-20251221|score",
+      "domain": "sports",
+      "value": "34-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/chargers-at-cowboys-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXZAPQH8HH355FP9BM",
+      "match_key": "sports|nfl-2025-ny-jets-new-orleans-20251221|nfl-2025-ny-jets-new-orleans-20251221|score",
+      "domain": "sports",
+      "value": "6-29",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/jets-at-saints-2025-reg-16"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXZDFF3G0VKQ2W5A28",
+      "match_key": "sports|nfl-2025-atlanta-new-orleans-20251123|nfl-2025-atlanta-new-orleans-20251123|score",
+      "domain": "sports",
+      "value": "24-10",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/falcons-at-saints-2025-reg-12"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYXZH8HYYX3C2BBFV2Z",
+      "match_key": "sports|nfl-2025-washington-minnesota-20251207|nfl-2025-washington-minnesota-20251207|score",
+      "domain": "sports",
+      "value": "0-31",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/commanders-at-vikings-2025-reg-14"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYYBAEK5YDRKNM18YMX",
+      "match_key": "sports|nfl-2025-houston-new-england-20260118|nfl-2025-houston-new-england-20260118|score",
+      "domain": "sports",
+      "value": "16-28",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/texans-at-patriots-2025-post-2"
+      },
+      "status": "resolved"
+    },
+    {
+      "schema_version": "1.1.0",
+      "id": "act_01M272XQYYS0M5QFPG51WNBWH0",
+      "match_key": "sports|nfl-2025-la-rams-chicago-20260118|nfl-2025-la-rams-chicago-20260118|score",
+      "domain": "sports",
+      "value": "20-17",
+      "unit": "score",
+      "observed_at": "2026-09-11T01:57:11Z",
+      "source": {
+        "name": "NFL.com Game Center",
+        "url": "https://www.nfl.com/games/rams-at-bears-2025-post-2"
+      },
+      "status": "resolved"
     }
   ],
   "SCORES": [

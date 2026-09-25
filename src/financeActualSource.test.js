@@ -6,6 +6,7 @@ import {
   resolveActualSource,
   designatedActualSource,
   isSp500Subject,
+  actualLookup,
 } from "./viewModel.js";
 import { renderPublicClaimCard, assertPublicClaimCard } from "./claimCard.js";
 
@@ -31,10 +32,10 @@ function financeForecast(subjectId, unit = "USD", scorable = true) {
 function liveCards() {
   const speakerBy = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
   const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
-  const actualBy = Object.fromEntries(ACTUALS.map((a) => [a.match_key, a]));
+  const actualFor = actualLookup(ACTUALS);
   return FORECASTS.map((f) => ({
     f,
-    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualBy[f.match_key]),
+    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualFor(f, scoreBy[f.id])),
   }));
 }
 
@@ -155,6 +156,7 @@ test("bundle counts unchanged: 1632 forecasts / 29 hit / 1268 miss / 277 pending
   for (const s of SCORES) by[s.status] = (by[s.status] || 0) + 1;
   assert.equal(FORECASTS.length, 1632);
   assert.equal(SCORES.length, 1632);
-  assert.equal(ACTUALS.length, 870);
+  // 870 one-per-match_key prints + 122 second prints cited by 240 NFL miss scores (PR3).
+  assert.equal(ACTUALS.length, 992);
   assert.deepEqual(by, { miss: 1268, hit: 29, pending: 277, unscorable: 58 });
 });
