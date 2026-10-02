@@ -30,8 +30,8 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
     <>
       <div style={css("display:flex;align-items:flex-start;justify-content:space-between;gap:12px;")}>
         <div style={css("min-width:0;")}>
-          <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "17px" : "20px") + ";font-weight:600;color:var(--ink);line-height:1.25;")}>{rendered.speakerName}</div>
-          {rendered.speakerOrg ? (
+          <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "17px" : "20px") + ";font-weight:600;color:var(--ink);line-height:1.25;")}>{rendered.speakerLine || rendered.speakerName}</div>
+          {rendered.speakerOrg && !rendered.speakerLine ? (
             <div style={css("font-size:12.5px;color:var(--muted);margin-top:2px;")}>{rendered.speakerOrg}</div>
           ) : null}
         </div>
