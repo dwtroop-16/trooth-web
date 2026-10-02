@@ -1,3 +1,5 @@
+import { sourceLinkParts } from "./linkPolicy.js";
+
 // Public claim card: the eight required fields, in order.
 // Renderer throws if any required field is missing. Grade is rubric-only.
 
@@ -67,6 +69,11 @@ function hostOf(url) {
   }
 }
 
+/** Claim-source line as ordered parts (link text is the source host), after the link rules. */
+export function claimSourceParts(card) {
+  return sourceLinkParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+}
+
 /**
  * Actual-source line as ordered parts. Only the first part is a link.
  * NWS (api.weather.gov) actuals show the source name "National Weather Service" as link text
@@ -77,9 +84,9 @@ function hostOf(url) {
 export function actualSourceParts(card) {
   const host = hostOf(card.actualSourceUrl);
   const isNws = /(^|\.)weather\.gov$/.test(host);
-  const parts = [
-    { kind: "link", href: card.actualSourceUrl, text: (isNws ? card.actualSourceName : host) || card.actualSourceName },
-  ];
+  // Legal-Ops link rules (linkPolicy.js): blocked domains render as plain-text credit;
+  // home-only domains (nfl.com) link the home page and show the specific URL as plain text.
+  const parts = sourceLinkParts(card.actualSourceUrl, (isNws ? card.actualSourceName : host) || card.actualSourceName);
   if (card.actualRetentionNote) {
     if (card.actualObservationRef) parts.push({ kind: "text", role: "observation_ref", text: card.actualObservationRef });
     if (card.actualObservedAt) parts.push({ kind: "text", role: "observed_at", text: `observed ${card.actualObservedAt}` });
@@ -121,6 +128,7 @@ export function renderPublicClaimCard(card) {
     actualObservationRef: card.actualObservationRef ?? null,
     actualObservedAt: card.actualObservedAt ?? null,
     actualRetentionNote: card.actualRetentionNote ?? null,
+    sourceParts: claimSourceParts(card),
     actualSourceParts: actualSourceParts(card),
     grade: card.grade,
     fieldsInOrder,

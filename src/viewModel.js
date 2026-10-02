@@ -216,12 +216,17 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
   const grade = publicGrade(status);
   const src = officialFor(forecast);
-  const actualValue = actual && actual.status === "resolved" ? actual.value : "pending";
-  const actualSourceName = actual && actual.status === "resolved" ? actual.source.name : src.name;
-  const actualSourceUrl = actual && actual.status === "resolved" ? actual.source.url : src.url;
+  // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
+  // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards
+  // show "pending" even if an actual has already been observed for the match key.
+  const graded = status === "hit" || status === "miss";
+  const shown = graded && actual && actual.status === "resolved" ? actual : null;
+  const actualValue = shown ? shown.value : "pending";
+  const actualSourceName = shown ? shown.source.name : src.name;
+  const actualSourceUrl = shown ? shown.source.url : src.url;
   // Legal 05b Clarification 2026-10-02 (data-driven): an actual carrying retention_note has aged
   // out of the API. Link stays the endpoint; observation_ref is shown as plain text with observed_at.
-  const retained = actual && actual.status === "resolved" && actual.source?.retention_note ? actual : null;
+  const retained = shown && shown.source?.retention_note ? shown : null;
   const { division, teams } = forecastBoardAttribution(forecast);
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const card = {
