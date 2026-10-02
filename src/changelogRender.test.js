@@ -37,7 +37,9 @@ export function loadPublicChangelog() {
   const src = readFileSync(join(HERE, "components/Changelog.jsx"), "utf8")
     .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
     .replace('"../loadChangelog.js"', JSON.stringify(pathToFileURL(loader).href))
-    .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
+    .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"))
+    // Any other relative import (changelogPublic.js, data.js, ...) resolves to the real module.
+    .replace(/from "\.\.\/([^"]+)"/g, (_, rel) => `from ${JSON.stringify(pathToFileURL(join(HERE, rel)).href)}`);
   const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
   const file = join(dir, "Changelog.mjs");
   writeFileSync(file, code.replace(/from "react\/jsx-runtime"/g, `from ${JSON.stringify(pathToFileURL(join(HERE, "../node_modules/react/jsx-runtime.js")).href)}`));

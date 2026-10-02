@@ -16,6 +16,7 @@ import {
 } from "./reasonLabels.js";
 import { toPublicClaimCard, enumTeamLabel, formatSportsActual } from "./viewModel.js";
 import { renderPublicClaimCard, REQUIRED_CARD_FIELDS } from "./claimCard.js";
+import { isAllowedHref } from "./linkPolicy.js";
 import { publicChangelogEntries, lastUpdatedLine, shortClaim, stripInternalIds, KIND_LABELS } from "./changelogPublic.js";
 
 const HERE = fileURLToPath(new URL(".", import.meta.url));
@@ -170,13 +171,19 @@ test("generator parses reason-labels-v1.md table shape (aliases, grades table ig
 
 // ---------------- 2. Unscorable cards ----------------
 
-test("unscorable cards say 'None (<reason>)' for actual and actual source, never 'pending'", () => {
+// Card contract (#51, QA P0 2026-10-02): Unscorable cards show no Actual / Actual source line, so the
+// plain reason label is shown beside the grade instead (raw code in title / data-reason-code).
+test("unscorable cards carry the plain reason (shown beside the grade), never an actual value", () => {
   const unscorable = liveCards().filter(({ card }) => card.status === "unscorable");
   assert.equal(unscorable.length, SCORES.filter((s) => s.status === "unscorable").length); // 48 on the Oct 2 board
   for (const { f, card } of unscorable) {
-    assert.equal(card.actual, "None (no official result to grade against)", f.id);
-    assert.equal(card.actualReasonCode, "no_official_print", f.id);
-    assert.equal(card.actualTitle, "no_official_print", f.id);
+    assert.equal(card.actual, "pending", f.id);
+    assert.deepEqual(card.unscorableReason, {
+      code: "no_official_print",
+      canonical: "no_official_print",
+      label: "no official result to grade against",
+      title: "no_official_print",
+    }, f.id);
     assert.equal(card.actualSourceName, "None (no official result to grade against)", f.id);
     assert.equal(card.actualSourceUrl, null, f.id);
     const r = renderPublicClaimCard(card);
@@ -201,14 +208,16 @@ test("unscorable reason falls back to the forecast's own unscorable_reason label
     match_key: "politics|us-not-a-subject|us-not-a-subject|enum",
   };
   const card = toPublicClaimCard(f, SPEAKER, { status: "unscorable" }, undefined);
-  assert.equal(card.actual, "None (hedged, no firm call)");
-  assert.equal(card.actualTitle, "hedged");
+  assert.equal(card.actual, "pending");
+  assert.equal(card.unscorableReason.label, "hedged, no firm call");
+  assert.equal(card.unscorableReason.title, "hedged");
 });
 
 test("'Actual source · pending' only appears on Pending cards", () => {
   for (const { f, card } of liveCards()) {
     if (card.actualSourceName === "pending") assert.ok(["Pending", "In review"].includes(card.grade), f.id);
-    if (card.actual === "pending") assert.ok(["Pending", "In review"].includes(card.grade), f.id);
+    if (card.actual === "pending") assert.ok(["Pending", "In review", "Unscorable"].includes(card.grade), f.id);
+    if (card.grade !== "Unscorable") assert.equal(card.unscorableReason, null, f.id);
   }
 });
 
@@ -304,30 +313,36 @@ test("rendered card: fields in contract order, grade last, actual source as 'nam
   for (const card of samples) {
     const html = renderToStaticMarkup(React.createElement(ClaimCard, { card }));
     const text = html.replace(/<[^>]+>/g, "");
+    const graded = card.status === "hit" || card.status === "miss";
     const markers = [
       card.speakerName,
       card.claimText.replace(/&/g, "&amp;").slice(0, 20),
       "Source · ",
       "Date said · ",
       "Horizon · ",
-      "Actual · ",
-      "Actual source · ",
+      ...(graded || card.status === "pending" ? ["Actual · "] : []),
+      ...(graded ? ["Actual source · "] : []),
       "Grade · ",
     ];
+    if (!graded) assert.equal(text.includes("Actual source · "), false, card.id);
+    if (!graded && card.status !== "pending") assert.equal(text.includes("Actual · "), false, card.id);
     let pos = -1;
     for (const m of markers) {
       const i = text.indexOf(m, pos + 1);
       assert.ok(i > pos, `${card.id}: "${m}" out of order`);
       pos = i;
     }
-    assert.ok(text.trim().endsWith(card.grade), `${card.id}: grade is not last`);
-    if (card.actualSourceUrl) {
+    const tail = card.unscorableReason ? `${card.grade}${card.unscorableReason.label}` : card.grade;
+    assert.ok(text.trim().endsWith(tail), `${card.id}: grade is not last`);
+    if (graded && card.actualSourceUrl) {
       assert.ok(text.includes(`Actual source · ${card.actualSourceName} · `), `${card.id}: source name missing`);
-      assert.ok(html.includes(`href="${card.actualSourceUrl}"`), card.id);
+      // Link rules (linkPolicy.js): allowed URLs link as-is; nfl.com links only the home page.
+      const href = isAllowedHref(card.actualSourceUrl) ? card.actualSourceUrl : "https://www.nfl.com/";
+      assert.ok(html.includes(`href="${href}"`), card.id);
     }
     if (card.status === "unscorable") {
       assert.ok(html.includes('title="no_official_print"'), "raw code in title attribute");
-      assert.ok(text.includes("Actual · None (no official result to grade against)"));
+      assert.ok(text.includes("Grade · Unscorableno official result to grade against"));
     }
   }
   assert.equal(REQUIRED_CARD_FIELDS[REQUIRED_CARD_FIELDS.length - 1], "grade");
@@ -529,7 +544,9 @@ test("rendered held card shows 'In review' + plain label with the raw code in ti
   assert.ok(text.includes("Grade · In review"));
   assert.ok(text.trim().endsWith("who said it is being re-checked"));
   assert.ok(html.includes('title="attribution_under_review"'));
-  assert.ok(text.includes("Actual · pending"));
+  // Card contract (#51): In review shows no actual and no actual source.
+  assert.equal(text.includes("Actual · "), false);
+  assert.equal(text.includes("Actual source · "), false);
 });
 
 // ---------------- Actual-level batch entries (reason-labels v1.1.0 actual_voided) ----------------
