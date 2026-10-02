@@ -1,6 +1,6 @@
 // The rendered /changelog shows only public corrections / voids / retractions. Internal arrays
-// (errors[], skipped[], still_pending, notes) are never rendered. The 9/23 and 9/24 errors[] carry
-// MarketScreener URLs (blocked by Legal-Ops); they must stay unrendered.
+// (errors[], skipped[], still_pending, notes) are never rendered, and are not even shipped (the 9/23
+// and 9/24 errors[] carried MarketScreener URLs, blocked by Legal-Ops).
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, readFileSync, readdirSync } from "node:fs";
@@ -14,9 +14,8 @@ const CHANGELOG_DIR = join(HERE, "changelog");
 test("rendered /changelog never contains marketscreener and never renders errors[]", async () => {
   const days = readdirSync(CHANGELOG_DIR).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f));
   const raw = Object.fromEntries(days.map((f) => [f, readFileSync(join(CHANGELOG_DIR, f), "utf8")]));
-  // fixture: the internal errors[] really do carry MarketScreener URLs
-  const errBlob = (f) => JSON.stringify(JSON.parse(raw[f]).errors || []);
-  assert.ok(/marketscreener/i.test(errBlob("2026-09-23.json")) && /marketscreener/i.test(errBlob("2026-09-24.json")));
+  // errors[] (9/23 and 9/24 carried MarketScreener URLs upstream) is stripped at build time.
+  for (const f of days) assert.equal("errors" in JSON.parse(raw[f]), false, `${f} ships errors[]`);
 
   // Node stand-in for loadChangelog.js (which uses Vite's import.meta.glob): same day records.
   const dir = mkdtempSync(join(tmpdir(), "changelog-render-"));
@@ -50,10 +49,6 @@ export function loadPublicChangelog() {
   assert.ok(html.includes("Morgan Stanley"), "public entries render (Moore retraction)");
   assert.equal(/marketscreener/i.test(html), false, "no marketscreener on /changelog");
   assert.equal(/<a\b/i.test(html), false, "changelog renders no links");
-  // no errors[] content leaks: none of the errors' URLs appear
-  for (const f of days) {
-    for (const e of JSON.parse(raw[f]).errors || []) {
-      for (const u of JSON.stringify(e).match(/https?:\/\/[^"\s\\]+/g) || []) assert.equal(html.includes(u), false, `${f} errors[] url rendered: ${u}`);
-    }
-  }
+  assert.equal(/on hold/i.test(html), false, "no legal_hold wording");
+  assert.equal(/legal_block|legal_hold|reason_original|note_/.test(html), false, "no raw codes / internal keys");
 });
