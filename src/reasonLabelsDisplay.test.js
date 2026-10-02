@@ -107,8 +107,8 @@ test("unknown codes render raw; 'code: free text' reasons use the code", () => {
   assert.equal(reasonDisplay("no_official_print").title, "no_official_print");
 });
 
-test("Architect-approved v1.1.0 labels: new codes, reworded no_official_print, aliases render canonical", () => {
-  assert.equal(REASON_LABELS_VERSION, "1.1.0");
+test("Architect-approved v1.1.x labels: new codes, reworded no_official_print, aliases render canonical", () => {
+  assert.equal(REASON_LABELS_VERSION, "1.1.2");
   // v1.1.0 (Architect 2026-10-02)
   assert.equal(reasonLabel("date_said_corrected"), "date said corrected (deadline moved with it)");
   assert.equal(reasonLabel("claim_text_edited"), "card wording corrected");
@@ -138,6 +138,11 @@ test("Architect-approved v1.1.0 labels: new codes, reworded no_official_print, a
   assert.equal(reasonLabel("horizon_end_session_roll"), "deadline moved to the next trading day");
   assert.equal(reasonLabel("rating_not_in_broker_wording"), "removed: rating not in the broker's own wording");
   assert.equal(reasonLabel("legal_hold"), "on hold pending legal review");
+  // v1.1.1: horizon_end_session_roll is public. v1.1.2: legal_block is a public retraction code.
+  assert.match(REASON_LABELS.horizon_end_session_roll.shown, /^Yes/);
+  assert.equal(reasonLabel("legal_block"), "removed because its source can't be used under our source rules");
+  assert.match(REASON_LABELS.legal_block.shown, /^Yes for retractions/);
+  assert.deepEqual(REASON_LABELS.legal_block.where, ["skipped", "retractions"]);
   // Every alias points at a labelled canonical code; every non-alias has a label.
   for (const [code, e] of Object.entries(REASON_LABELS)) {
     if (e.aliasOf) assert.ok(REASON_LABELS[e.aliasOf]?.label, code);
@@ -572,4 +577,43 @@ test("bundled 2026-09-25 and 2026-10-02 entries: plain labels, no fct_/rr_ ids i
     assert.equal(e.scope, "actuals");
     assert.equal(e.audit.forecastId, null);
   }
+});
+
+// ---------------- reason-labels v1.1.2: legal_block retractions, public horizon_end_session_roll ----------------
+test("v1.1.2 legal_block retraction renders the public label, never the host or its terms; skipped legal_block stays internal", () => {
+  const day = {
+    date: "2026-10-02",
+    retractions: [
+      {
+        id: "fct_01M3C51B7KRSA6YRY3M4KN6PDK",
+        at: "2026-10-02T12:34:00Z",
+        reason: "legal_block",
+        review_id: "rr_01M3Y9HHF5FG228H6QKDRK9TKN",
+        detail: "We removed a price-target card.",
+      },
+    ],
+    skipped: [{ reason: "legal_block", url: "https://www.marketscreener.com/x" }],
+  };
+  const entries = publicChangelogEntries([day], CTX);
+  assert.equal(entries.length, 1, "skipped[] legal_block is internal and never listed");
+  const [e] = entries;
+  assert.equal(e.kindLabel, "Retraction");
+  assert.equal(e.reason.code, "legal_block");
+  assert.equal(e.reason.label, "removed because its source can't be used under our source rules");
+  for (const t of [e.subject, e.detail, e.summary, e.reason.label]) {
+    assert.doesNotMatch(t || "", /\b(fct|rr)_/);
+    assert.doesNotMatch(t || "", /marketscreener|terms of (use|service)/i);
+  }
+  assert.ok(e.auditTitle.includes("legal_block"));
+});
+
+test("v1.1.2: bundled 9/25 horizon_end_session_roll correction shows its public label (no recode)", () => {
+  const entries = publicChangelogEntries(bundledChangelogDays(), CTX).filter((e) => e.reason && e.reason.code === "horizon_end_session_roll");
+  assert.ok(entries.length >= 1);
+  for (const e of entries) {
+    assert.equal(e.reason.label, "deadline moved to the next trading day");
+    assert.doesNotMatch(e.summary || "", /horizon_end_session_roll/);
+  }
+  // Every public retraction/correction code in the bundled changelogs has a label.
+  for (const e of publicChangelogEntries(bundledChangelogDays(), CTX)) if (e.reason) assert.ok(hasReasonLabel(e.reason.code), e.reason.code);
 });
