@@ -37,7 +37,7 @@ function asArray(v) {
 
 // Minimal public reason labels for the codes that can render on /changelog (corrections show
 // "label — detail"; retractions and voids fall back to the label only when there is no detail).
-// From Architect's reason-labels-v1.md v1.1.2; the full map (src/reasonLabels.js) arrives with #46.
+// From Architect's reason-labels-v1.md (v1.1.4); the full map (src/reasonLabels.js) arrives with #46.
 // legal_hold is deliberately absent: it is a temporary skip hold and never public wording.
 // reason_original is never shipped or rendered.
 export const PUBLIC_REASON_LABELS = {
@@ -56,11 +56,20 @@ export const PUBLIC_REASON_LABELS = {
   prints_disagree: "official sources disagree",
   skipped_disagree: "official sources disagree",
   team_not_fbs_in_season: "team was not in the top college division (FBS) that season",
+  // v1.1.3: internal alias of claim_text_edited (renders the canonical label).
+  claim_text_u1_rating_word_removed: "card wording corrected",
+  // v1.1.4 (Architect 2026-10-02): public batch corrections.
+  published_at_corrected: "corrected the time this forecast was published",
+  forecast_backfilled: "added a forecast our collector missed at the time",
 };
 
-/** Plain label for a public reason code; unknown codes stay raw (never guessed). */
+// Internal-history codes (v1.1.3): never rendered anywhere, not even as a raw code.
+export const HIDDEN_REASON_CODES = new Set(["retracted_legal_hold_misattribution"]);
+
+/** Plain label for a public reason code; hidden codes render nothing; other unknown codes stay raw (never guessed). */
 export function publicReasonLabel(code) {
   const c = String(code || "").trim();
+  if (HIDDEN_REASON_CODES.has(c)) return "";
   return PUBLIC_REASON_LABELS[c] || c;
 }
 

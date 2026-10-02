@@ -12,8 +12,9 @@
 // (3) PLAIN-TEXT domains (Legal + Architect, 2026-10-02): any URL on the domain is shown as plain
 //     text, never as a link. ncaa.com and every subdomain: "NCAA.com (<full URL> ; not linked)".
 //     Grades are unaffected.
+//     fred.stlouisfed.org (Architect 2026-10-02): "FRED (<full URL> ; not linked)", never an href.
 //
-// Every other host (FOX Sports, NWS, FRED, ...) is returned unchanged.
+// Every other host (FOX Sports, NWS, ...) is returned unchanged.
 
 export const BLOCKED_LINK_DOMAINS = {
   "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)" },
@@ -25,6 +26,7 @@ export const HOME_ONLY_LINK_DOMAINS = {
 
 export const PLAIN_TEXT_LINK_DOMAINS = {
   "ncaa.com": { name: "NCAA.com", note: "not linked" },
+  "fred.stlouisfed.org": { name: "FRED", note: "not linked" },
 };
 
 export function hostOf(url) {
