@@ -139,3 +139,27 @@ test("score actual_source_url never undoes the endpoint-plus-note form for aged-
   assert.equal(r.origin, "actuals_retained");
   assert.equal(r.name, "National Weather Service");
 });
+
+// Legal-Ops link rules (linkPolicy.js, PR #51) apply to the Scorer passthrough URL too.
+test("score actual_source_url passthrough keeps the link rules: nfl.com home only, marketscreener never linked", () => {
+  const nfl = renderPublicClaimCard(toPublicClaimCard(FORECAST, SPEAKER, { ...baseScore, actual_source_url: SCORE_URL }, ACTUAL));
+  const nflLinks = nfl.actualSourceParts.filter((p) => p.kind === "link");
+  assert.deepEqual(nflLinks.map((p) => p.href), ["https://www.nfl.com/"]);
+  assert.ok(nfl.actualSourceParts.some((p) => p.kind === "text" && p.text.includes(SCORE_URL)), "specific nfl.com URL shown as plain text");
+  const ms = "https://www.marketscreener.com/quote/stock/NVIDIA-57355629/news/x";
+  const msCard = renderPublicClaimCard(toPublicClaimCard(FORECAST, SPEAKER, { ...baseScore, actual_source_url: ms }, ACTUAL));
+  assert.equal(msCard.actualSourceParts.filter((p) => p.kind === "link").length, 0);
+  assert.deepEqual(msCard.actualSourceParts.map((p) => p.text), ["dpa-AFX Analyser via MarketScreener (not linked)"]);
+  // Every live card: no marketscreener link, nfl.com links only to the home page.
+  const look = new Map(ACTUALS.map((a) => [a.id, a]));
+  const fx = new Map(FORECASTS.map((f) => [f.id, f]));
+  for (const s of SCORES) {
+    const f = fx.get(s.forecast_id);
+    if (!f) continue;
+    const r = renderPublicClaimCard(toPublicClaimCard(f, SPEAKERS.find((p) => p.id === f.speaker_id), s, look.get(s.actual_id)));
+    for (const p of [...r.sourceParts, ...r.actualSourceParts].filter((p) => p.kind === "link")) {
+      assert.doesNotMatch(p.href, /marketscreener\.com/i, f.id);
+      if (/(^|\.)nfl\.com$/i.test(new URL(p.href).hostname)) assert.equal(p.href, "https://www.nfl.com/", f.id);
+    }
+  }
+});

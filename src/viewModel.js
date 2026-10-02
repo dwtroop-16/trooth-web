@@ -343,15 +343,16 @@ export function formatSportsActual(forecast, value, subject = SUBJECTS[forecast?
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
   const grade = publicGrade(status);
-  const src = officialFor(forecast);
   // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
   // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards
   // show "pending" even if an actual has already been observed for the match key.
   const graded = status === "hit" || status === "miss";
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
-  const actualValue = shown ? formatSportsActual(forecast, shown.value) : "pending";
+  const actualRaw = shown ? shown.value : "pending";
+  const actualValue = shown ? formatSportsActual(forecast, actualRaw) : "pending";
   // Graded cards: the Scorer's own actual_source_url wins, else the actuals join (#45).
-  const actualSource = graded ? resolveActualSource(forecast, score, shown) : { name: src.name, url: src.url };
+  // Ungraded cards: the subject's designated source (never FRED SP500 for non-S&P), else "pending".
+  const actualSource = resolveActualSource(forecast, graded ? score : null, shown);
   const actualSourceName = actualSource.name;
   const actualSourceUrl = actualSource.url;
   // Legal 05b Clarification 2026-10-02 (data-driven): an actual carrying retention_note has aged
