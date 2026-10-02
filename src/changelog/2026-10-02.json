@@ -54,6 +54,21 @@
       "at": "2026-10-02T13:23:26Z",
       "reason": "published_at_corrected",
       "detail": "On Oct. 2, 2026, we corrected the issue times on 49 National Weather Service forecasts for Central Park that we collected on Sept. 4 and Sept. 21–23, 2026. We had recorded the time the weather service's server prepared the copy we downloaded instead of the time the forecast itself was last updated. Each now shows the weather service's own update time, about 3½ to 5½ hours earlier. Forecast values, deadlines and grades are unchanged."
+    },
+    {
+      "at": "2026-10-02T20:08:01Z",
+      "reason": "actual_corrected",
+      "detail": "On Oct. 2, 2026, we corrected the official result for U.S. real GDP growth in 2025 from 2.0% to 2.2%. The 2.0% we had listed was not the official first-release figure. The corrected result is the U.S. Bureau of Economic Analysis's first published estimate (GDP Advance Estimate, 4th Quarter and Year 2025, released Feb. 20, 2026), measured from the fourth quarter of 2024 to the fourth quarter of 2025. This affects four Federal Reserve (FOMC) median projections for 2025 growth, made in March 2025 (1.7%), June 2025 (1.4%), September 2025 (1.6%) and December 2025 (1.7%). All four are still misses; only how far off each one was has changed. This affects only these four cards and the FOMC's profile."
+    },
+    {
+      "at": "2026-10-02T20:05:56Z",
+      "reason": "legal_scope",
+      "detail": "On Oct. 2, 2026, we changed the source link for the official result of U.S. PCE inflation in 2025 (fourth quarter of 2024 to fourth quarter of 2025) on 4 cards. To fit our rules on which sources we can use, the result now links to the U.S. Bureau of Economic Analysis's first published estimate (GDP Advance Estimate, 4th Quarter and Year 2025, released Feb. 20, 2026). The result itself is unchanged at 2.8%, so no grades changed. The 4 cards are Federal Reserve (FOMC) median projections made in March, June, September and December 2025, and all 4 are still graded Miss. This affects only these cards."
+    },
+    {
+      "at": "2026-10-02T18:48:17Z",
+      "reason": "legal_scope",
+      "detail": "On Oct. 2, 2026, we changed the source link for the official result of the federal funds rate at the end of 2025 on 4 cards. To fit our rules on which sources we can use, the result now links to the Federal Reserve Board's policy announcement of Dec. 10, 2025. The result itself is unchanged at 3.6% (the midpoint of the 3.50% to 3.75% target range), so no grades changed. The 4 cards are Federal Reserve (FOMC) median projections made in March, June, September and December 2025. The September and December projections are still graded Hit, and the March and June projections are still graded Miss. This affects only these cards."
     }
   ],
   "voids": [],
