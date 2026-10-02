@@ -1,4 +1,4 @@
-import { hasSupabase } from "./lib/flags.js";
+import { hasSupabase, useSupabaseData } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 
 const BUNDLED = {
@@ -64,6 +64,9 @@ function mapScoreRow(r) {
     ape: r.ape == null ? null : Number(r.ape),
     brier: r.brier == null ? null : Number(r.brier),
     scored_at: r.scored_at,
+    actual_source_url: r.actual_source_url ?? null,
+    ...(r.actual_source_name ? { actual_source_name: r.actual_source_name } : {}),
+    ...(r.review_hold && r.review_hold.reason ? { review_hold: r.review_hold } : {}),
   };
 }
 
@@ -82,8 +85,10 @@ export async function submitSourceTip({ sourceUrl, note, domain, userId }) {
   if (error) throw error;
 }
 
+// Page data: the bundled live data unless Supabase tables are explicitly opted in
+// (VITE_DATA_SOURCE=supabase with a real project). No network request otherwise.
 export async function loadData() {
-  if (!hasSupabase) return BUNDLED;
+  if (!useSupabaseData) return BUNDLED;
   const { supabase } = await import("./lib/supabase.js");
   const [spRes, fRes, aRes, sRes] = await Promise.all([
     supabase.from("speakers").select("*"),

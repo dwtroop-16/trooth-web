@@ -16,7 +16,7 @@
       "at": "2026-10-02T12:15:04Z",
       "forecast_id": "fct_01M39TF7XH5BT6GQBW90RF1PJD",
       "reason": "claim_text_edited",
-      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Stacy Rasgon (Bernstein) on Intel, dated Sept. 21, 2026, to remove the word \"Neutral\". Our rules require an analyst's rating to appear in the broker's own published wording. The word \"Neutral\" on this card came from a third-party summary rather than from Bernstein's own wording, so we removed it. The card changed from \"Rasgon (Bernstein): Neutral; Intel PT unchanged at USD 110.\" to \"Rasgon (Bernstein): Intel PT unchanged at USD 110.\" The price target ($110) and the deadline (Sept. 21, 2027) are unchanged, and no grade changed. The card was still Pending at the time. Later today we removed this card because its source's terms don't allow our use (see the separate entry). We also removed Stacy Rasgon's separate rating card on Intel today (see the separate entry). This affects only this card and Stacy Rasgon's profile."
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Stacy Rasgon (Bernstein) on Intel, dated Sept. 21, 2026, to remove the word \"Neutral\". Our rules require an analyst's rating to appear in the broker's own published wording. The word \"Neutral\" on this card came from a third-party summary rather than from Bernstein's own wording, so we removed it. The edit did not change the price target, the deadline (Sept. 21, 2027) or the grade, and the card was still Pending at the time. Later today we removed this card because its source can't be used under our source rules (see the separate entry). We also removed Stacy Rasgon's separate rating card on Intel today (see the separate entry). This affects only this card and Stacy Rasgon's profile."
     },
     {
       "at": "2026-10-02T12:15:04Z",
@@ -39,6 +39,120 @@
       "at": "2026-10-02T12:21:14Z",
       "reason": "legal_scope",
       "detail": "On Oct. 2, 2026, we changed the source link for the official result of the 2025 Heisman Trophy (won by Fernando Mendoza) on 9 cards. To fit our rules on which sources we can use, the result now links to Indiana University Athletics' report of the award. The result itself is unchanged, so no grades changed. All 9 cards are still graded Miss. This affects only these cards."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M36VSXRBG3J2M56D65VZTM93",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on Nvidia, dated May 14, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for Nvidia from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; raises Nvidia PT to $275 from $245.\" to \"Arcuri (UBS): raises Nvidia PT to $275 from $245.\" The price target ($275) and the deadline (May 14, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M36VSXRC9JJMT1VBVJGSPEJW",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on AMD, dated June 24, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for AMD from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; raises AMD PT to $670 from $470 on CPU demand.\" to \"Arcuri (UBS): raises AMD PT to $670 from $470 on CPU demand.\" The price target ($670) and the deadline (June 24, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M36VSXRC5WBF3525HAVV45AZ",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on Arm, dated June 24, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for Arm from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; raises Arm PT to $455 from $260.\" to \"Arcuri (UBS): raises Arm PT to $455 from $260.\" The price target ($455) and the deadline (June 24, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M36VSXRCPJDR5G2S5VRZ909T",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on Nvidia, dated March 10, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for Nvidia from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; $245 Nvidia price target ahead of GTC.\" to \"Arcuri (UBS): $245 Nvidia price target ahead of GTC.\" The price target ($245) and the deadline (March 10, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M36VSXRCQSDQS2HSQYEAMHPW",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on Broadcom, dated June 3, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for Broadcom from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; raises Broadcom PT to $490 from $475.\" to \"Arcuri (UBS): raises Broadcom PT to $490 from $475.\" The price target ($490) and the deadline (June 3, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M36VSXRCWVR2MYGKTF4HCKYG",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Toshiya Hari (Goldman Sachs) on AMD, dated Jan. 31, 2024, to remove the word \"Buy\". \"Buy\" is Goldman Sachs's own rating, but our price-target cards show only the price target; the rating is shown on Toshiya Hari's separate rating card for AMD from the same source, which is unchanged. The card changed from \"Hari (Goldman): Buy; raises AMD PT to $180 from $157.\" to \"Hari (Goldman): raises AMD PT to $180 from $157.\" The price target ($180) and the deadline (Jan. 31, 2025) are unchanged, and no grade changed. The deadline has passed and the card is still Pending. This affects only this card and Toshiya Hari's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DPP27FHQZHWNW5J3EZ",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Vivek Arya (Bank of America) on AMD, dated Oct. 17, 2025, to remove the word \"Buy\". \"Buy\" is Bank of America's own rating, but our price-target cards show only the price target; the rating is shown on Vivek Arya's separate rating card for AMD from the same source, which is unchanged. The card changed from \"Arya (BofA): Buy; raises AMD PT to $300 from $250 on Helios/OCP.\" to \"Arya (BofA): raises AMD PT to $300 from $250 on Helios/OCP.\" The price target ($300) and the deadline (Oct. 19, 2026) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Vivek Arya's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DP20P9Y7ZJS9V34NPM",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Vivek Arya (Bank of America) on Nvidia, dated July 8, 2026, to remove the word \"Buy\". \"Buy\" is Bank of America's own rating, but our price-target cards show only the price target; the rating is shown on Vivek Arya's separate rating card for Nvidia from the same source, which is unchanged. The card changed from \"Arya (BofA): Buy; $350 Nvidia price target (valuation/compelling value note).\" to \"Arya (BofA): $350 Nvidia price target (valuation/compelling value note).\" The price target ($350) and the deadline (July 8, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Vivek Arya's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DPRPT0KPB492S7D13A",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Vivek Arya (Bank of America) on Nvidia, dated June 5, 2026, to remove the word \"Buy\". \"Buy\" is Bank of America's own rating, but our price-target cards show only the price target; the rating is shown on Vivek Arya's separate rating card for Nvidia from the same source, which is unchanged. The card changed from \"Arya (BofA): Buy; maintains $350 Nvidia PT; top sector pick.\" to \"Arya (BofA): maintains $350 Nvidia PT; top sector pick.\" The price target ($350) and the deadline (June 7, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Vivek Arya's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DP7QXJRSC0W40J03GK",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Vivek Arya (Bank of America) on Applied Materials, dated June 30, 2026, to remove the word \"Buy\". \"Buy\" is Bank of America's own rating, but our price-target cards show only the price target; the rating is shown on Vivek Arya's separate rating card for Applied Materials from the same source, which is unchanged. The card changed from \"Arya (BofA): Buy; raises Applied Materials PT to $720 from $540.\" to \"Arya (BofA): raises Applied Materials PT to $720 from $540.\" The price target ($720) and the deadline (June 30, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Vivek Arya's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DPKNCXEWPXXEVASPG9",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Vivek Arya (Bank of America) on Micron, dated June 25, 2026, to remove the word \"Buy\". \"Buy\" is Bank of America's own rating, but our price-target cards show only the price target; the rating is shown on Vivek Arya's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Arya (BofA): Buy; raises Micron PT to $1,550 from $1,500.\" to \"Arya (BofA): raises Micron PT to $1,550 from $1,500.\" The price target ($1,550) and the deadline (June 25, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Vivek Arya's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DPNAMPMFADYFSGAN30",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on Micron, dated June 25, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; $1,625 Micron price target.\" to \"Arcuri (UBS): $1,625 Micron price target.\" The price target ($1,625) and the deadline (June 25, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DPH6EDD7M1WJHMWQHD",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Quinn Bolton (Needham) on Micron, dated June 25, 2026, to remove the word \"Buy\". \"Buy\" is Needham's own rating, but our price-target cards show only the price target; the rating is shown on Quinn Bolton's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Bolton (Needham): Buy; raises Micron PT to $1,650 from $1,550.\" to \"Bolton (Needham): raises Micron PT to $1,650 from $1,550.\" The price target ($1,650) and the deadline (June 25, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Quinn Bolton's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DPZPP9W6R9WGF73YZ7",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Krish Sankar (TD Cowen) on Micron, dated Sept. 24, 2025, to remove the word \"Buy\". \"Buy\" is TD Cowen's own rating, but our price-target cards show only the price target; the rating is shown on Krish Sankar's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Sankar (TD Cowen): Buy; raises Micron PT to $180 from $150.\" to \"Sankar (TD Cowen): raises Micron PT to $180 from $150.\" The price target ($180) and the deadline (Sept. 24, 2026) are unchanged, and no grade changed. The deadline has passed and the card is still Pending. This affects only this card and Krish Sankar's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M379C7DPVFG3S5D5HF4BNDFJ",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Quinn Bolton (Needham) on Micron, dated Feb. 22, 2026, to remove the word \"Buy\". \"Buy\" is Needham's own rating, but our price-target cards show only the price target; the rating is shown on Quinn Bolton's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Bolton (Needham): Buy; raises Micron PT to $450 from $380.\" to \"Bolton (Needham): raises Micron PT to $450 from $380.\" The price target ($450) and the deadline (Feb. 22, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Quinn Bolton's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M39TF7XHRHXFEB74K3QDC04V",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on Micron, dated May 26, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; raises Micron PT to $1,625 from $535.\" to \"Arcuri (UBS): raises Micron PT to $1,625 from $535.\" The price target ($1,625) and the deadline (May 26, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M39TF7XH2CZRGMNM2T6V5BE5",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Krish Sankar (TD Cowen) on Micron, dated Jan. 25, 2026, to remove the word \"Buy\". \"Buy\" is TD Cowen's own rating, but our price-target cards show only the price target; the rating is shown on Krish Sankar's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Sankar (TD Cowen): Buy; raises Micron PT to $450 from $300.\" to \"Sankar (TD Cowen): raises Micron PT to $450 from $300.\" The price target ($450) and the deadline (Jan. 25, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Krish Sankar's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M39TF7XHGYPAJ7S32EC12GDW",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Timothy Arcuri (UBS) on Lam Research, dated Jan. 1, 2026, to remove the word \"Buy\". \"Buy\" is UBS's own rating, but our price-target cards show only the price target; the rating is shown on Timothy Arcuri's separate rating card for Lam Research from the same source, which is unchanged. The card changed from \"Arcuri (UBS): Buy; raises Lam Research PT to $200 from $175.\" to \"Arcuri (UBS): raises Lam Research PT to $200 from $175.\" The price target ($200) and the deadline (Jan. 4, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Timothy Arcuri's profile."
+    },
+    {
+      "at": "2026-10-02T12:54:07Z",
+      "forecast_id": "fct_01M39TF7XHRXWDT7XBY3YPNKFH",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 2, 2026, we edited the wording on a price-target card for Krish Sankar (TD Cowen) on Micron, dated March 16, 2026, to remove the word \"Buy\". \"Buy\" is TD Cowen's own rating, but our price-target cards show only the price target; the rating is shown on Krish Sankar's separate rating card for Micron from the same source, which is unchanged. The card changed from \"Sankar (TD Cowen): Buy; raises Micron PT from $450 to $500.\" to \"Sankar (TD Cowen): raises Micron PT from $450 to $500.\" The price target ($500) and the deadline (March 16, 2027) are unchanged, and no grade changed. The card is still Pending. This affects only this card and Krish Sankar's profile."
     }
   ],
   "voids": [],
@@ -62,21 +176,21 @@
       "id": "fct_01M39TF7XHMXMY91NN78YSYYPJ",
       "forecast_id": "fct_01M39TF7XHMXMY91NN78YSYYPJ",
       "reason": "rating_not_in_broker_wording",
-      "detail": "We removed a rating card for Stacy Rasgon (Bernstein) on Intel: \"Rasgon (Bernstein): Neutral on Intel.\" (dated Sept. 21, 2026). Our rules require an analyst's rating to be recorded in the broker's own published wording. This card's \"Neutral\" came from a third-party summary rather than from Bernstein's own wording, so it does not meet that rule. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and his Unscorable count goes down by one. The card was Unscorable, so no grade or score changed. Today we also removed the word \"Neutral\" from his related price-target card on Intel, which then read \"Rasgon (Bernstein): Intel PT unchanged at USD 110.\" Later today we removed that price-target card as well, because its source's terms don't allow our use (see the separate entries)."
+      "detail": "We removed a rating card for Stacy Rasgon (Bernstein) on Intel: \"Rasgon (Bernstein): Neutral on Intel.\" (dated Sept. 21, 2026). Our rules require an analyst's rating to be recorded in the broker's own published wording. This card's \"Neutral\" came from a third-party summary rather than from Bernstein's own wording, so it does not meet that rule. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and his Unscorable count goes down by one. The card was Unscorable, so no grade or score changed. Today we also removed the word \"Neutral\" from his related price-target card on Intel. Later today we removed that price-target card as well, because its source can't be used under our source rules (see the separate entries)."
     },
     {
       "at": "2026-10-02T12:34:09Z",
       "id": "fct_01M36VSXRCT1AM98TZ41XYNEGB",
       "forecast_id": "fct_01M36VSXRCT1AM98TZ41XYNEGB",
       "reason": "legal_block",
-      "detail": "We removed a price-target card for Harlan Sur (JPMorgan) on Nvidia (NVDA), dated Aug. 28, 2025. We removed this card because its source can't be used under our source rules. Readers will no longer see this card on Harlan Sur's profile, on the Claims page or in search, and his Pending count goes down by one. The card's deadline (Aug. 28, 2026) had passed, but the card had not been graded yet and was still Pending, so no grade or score changed. His rating card on Nvidia from the same day, \"Sur (JPMorgan): Overweight on Nvidia.\", comes from a different source and stays on the site; it is Unscorable."
+      "detail": "We removed a price-target card for Harlan Sur (JPMorgan) on Nvidia (NVDA), dated Aug. 28, 2025. We removed this card because its source can't be used under our source rules. The same call stays on Harlan Sur's profile, on the Claims page and in search as a new card from a different source, also dated Aug. 28, 2025, with the same deadline (Aug. 28, 2026). That deadline has passed, so the new card will be graded once the official result is recorded. The removed card had not been graded yet and was still Pending, so no grade or score changed. His rating card on Nvidia from the same day, \"Sur (JPMorgan): Overweight on Nvidia.\", comes from a different source and stays on the site; it is Unscorable."
     },
     {
       "at": "2026-10-02T12:34:09Z",
       "id": "fct_01M36VSXRCKH7EJWETQ976FCPS",
       "forecast_id": "fct_01M36VSXRCKH7EJWETQ976FCPS",
       "reason": "legal_block",
-      "detail": "We removed a price-target card for Harlan Sur (JPMorgan) on Nvidia (NVDA), dated Aug. 27, 2026. We removed this card because its source can't be used under our source rules. Readers will no longer see this card on Harlan Sur's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. His rating card on Nvidia from the same day, \"Sur (JPMorgan): Overweight on Nvidia.\", comes from a different source and stays on the site; it is Unscorable."
+      "detail": "We removed a price-target card for Harlan Sur (JPMorgan) on Nvidia (NVDA), dated Aug. 27, 2026. We removed this card because its source can't be used under our source rules. The same call stays on Harlan Sur's profile, on the Claims page and in search as a new card from a different source, also dated Aug. 27, 2026, with the same deadline (Aug. 27, 2027). The new card is Pending, so his Pending count does not change. The removed card was still Pending, so no grade or score changed. His rating card on Nvidia from the same day, \"Sur (JPMorgan): Overweight on Nvidia.\", comes from a different source and stays on the site; it is Unscorable."
     },
     {
       "at": "2026-10-02T12:34:09Z",

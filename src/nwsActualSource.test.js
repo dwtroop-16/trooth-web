@@ -52,7 +52,8 @@ test("every graded api.weather.gov card credits National Weather Service", () =>
   assert.deepEqual(bad.map(({ card }) => `${card.id}:${card.actualSourceName}`), []);
   for (const { card } of weatherGraded) {
     const link = actualSourceParts(card).find((p) => p.kind === "link");
-    assert.equal(link.text, "National Weather Service", card.id);
+    assert.equal(link.name, "National Weather Service", card.id);
+    assert.equal(link.href, card.actualSourceUrl, card.id);
   }
 });
 
@@ -105,7 +106,7 @@ test("ClaimCard renders the retention note as plain text and never links observa
   const html = renderToStaticMarkup(React.createElement(ClaimCard, { card }));
   const ref = actual.source.observation_ref;
   const note = actual.source.retention_note.replace(/'/g, "&#x27;");
-  assert.ok(html.includes(">National Weather Service</a>"), "NWS name is the link text");
+  assert.ok(html.includes("National Weather Service"), "NWS credited by name on the card");
   assert.ok(html.includes(`href="${actual.source.url}"`), "link goes to the endpoint");
   assert.ok(!html.includes(`href="${ref}"`), "observation_ref is never an href");
   assert.ok(!/<a[^>]*>[^<]*observations\/\d{4}-/.test(html), "observation_ref is never link text");

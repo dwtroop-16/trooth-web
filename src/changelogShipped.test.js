@@ -75,5 +75,9 @@ test("publicChangelogDay drops errors[], skipped[], note_* and internal fields f
     retractions: [{ at: "t", id: "fct_r", forecast_id: "fct_r", reason: "legal_block", detail: "removed" }],
   });
   const [r] = publicChangelogEntries([{ date: "2026-10-02", retractions: [{ id: "fct_r", reason: "legal_block" }] }]);
-  assert.equal(r.summary, "Retraction · fct_r · removed because its source can't be used under our source rules");
+  // #46 reader text: plain label, never the card id (raw code stays in reason.code / title).
+  assert.equal(r.kindLabel, "Retraction");
+  assert.equal(r.reason.label, "removed because its source can't be used under our source rules");
+  assert.match(r.summary, /removed because its source can't be used under our source rules/);
+  assert.doesNotMatch(r.summary, /fct_/);
 });
