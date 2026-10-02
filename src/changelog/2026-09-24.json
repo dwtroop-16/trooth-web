@@ -1593,17 +1593,12 @@
     "fct_01M39S9KYNFEKEYRNY1CAC7QNE",
     "fct_01M39S9KYNEVECS013TMQBSR12",
     "fct_01M39TF7XG33HWKHV14VY45MVC",
-    "fct_01M39TF7XG18CGW2XFSPNRP48C",
     "fct_01M39TF7XGDRGD9KG5G4DF7JK0",
-    "fct_01M39TF7XG6G63EP0C7CZ7B2F0",
     "fct_01M39TF7XGJ6228BM5H88GFXS2",
-    "fct_01M39TF7XGDG40DBYDAR2VGY41",
     "fct_01M39TF7XH5BT6GQBW90RF1PJD",
     "fct_01M39TF7XHMXMY91NN78YSYYPJ",
     "fct_01M39TF7XH4H2SXG62ZBE9JTEP",
-    "fct_01M39TF7XHHZ33C8KHPNWTXB2D",
     "fct_01M39TF7XH3G1TNCQG4ZYM69QT",
-    "fct_01M39TF7XHA35H6AXNGCBJC8CV",
     "fct_01M39TF7XHM4ADQ9SDB1CEWXG3",
     "fct_01M39TF7XHMJTMM7Z10KY4FSD5",
     "fct_01M39TF7XHRHXFEB74K3QDC04V",
@@ -1750,5 +1745,117 @@
       "reason": "duplicate_forecast_cross_outlet: same UBS Arcuri AMD call of 2026-06-24 already emitted as fct_01M36VSXRC93ESW5D5QC4FDMFJ (CNBC); retracted fct_01M39TF7XHCYENXA1XR6XRZ9TX before publish"
     }
   ],
-  "errors": []
+  "errors": [
+    {
+      "forecast_id": "fct_01M39TF7XH4H2SXG62ZBE9JTEP",
+      "type": "horizon_end_session_roll",
+      "detail": "horizon_end set to 2027-09-20T23:59:59Z: publish NY date + 12 months rolled forward to next NYSE/Nasdaq session per equity-analyst-subjects-v1.md (supersedes any earlier horizon_end_corrected entry for this id).",
+      "corrected_at": "2026-09-25T11:20:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XHHZ33C8KHPNWTXB2D",
+      "type": "horizon_end_session_roll",
+      "detail": "horizon_end set to 2027-09-20T23:59:59Z: publish NY date + 12 months rolled forward to next NYSE/Nasdaq session per equity-analyst-subjects-v1.md (supersedes any earlier horizon_end_corrected entry for this id).",
+      "corrected_at": "2026-09-25T11:20:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XH3G1TNCQG4ZYM69QT",
+      "type": "horizon_end_session_roll",
+      "detail": "horizon_end set to 2027-09-20T23:59:59Z: publish NY date + 12 months rolled forward to next NYSE/Nasdaq session per equity-analyst-subjects-v1.md (supersedes any earlier horizon_end_corrected entry for this id).",
+      "corrected_at": "2026-09-25T11:20:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XHA35H6AXNGCBJC8CV",
+      "type": "horizon_end_session_roll",
+      "detail": "horizon_end set to 2027-09-20T23:59:59Z: publish NY date + 12 months rolled forward to next NYSE/Nasdaq session per equity-analyst-subjects-v1.md (supersedes any earlier horizon_end_corrected entry for this id).",
+      "corrected_at": "2026-09-25T11:20:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XHGYPAJ7S32EC12GDW",
+      "type": "horizon_end_session_roll",
+      "detail": "horizon_end set to 2027-01-04T23:59:59Z: publish NY date + 12 months rolled forward to next NYSE/Nasdaq session per equity-analyst-subjects-v1.md (supersedes any earlier horizon_end_corrected entry for this id).",
+      "corrected_at": "2026-09-25T11:20:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XHY1KPB6TDVE046FAE",
+      "type": "horizon_end_session_roll",
+      "detail": "horizon_end set to 2027-01-04T23:59:59Z: publish NY date + 12 months rolled forward to next NYSE/Nasdaq session per equity-analyst-subjects-v1.md (supersedes any earlier horizon_end_corrected entry for this id).",
+      "corrected_at": "2026-09-25T11:20:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XG18CGW2XFSPNRP48C",
+      "type": "retracted_u1_aggregator_rating",
+      "detail": "Retracted per Architect rule U1 (us-equity-analyst-rating-ids-v1.json v1.0.1): 'Rasgon (Bernstein): retains Buy on Nvidia.' from https://ca.marketscreener.com/news/nvidia-corporation-gets-a-buy-rating-from-bernstein-ce785adbdc8af024 restates the broker rating as generic Buy; not the broker's own published tier. Paired price-target row kept. Re-source pending Legal.",
+      "source_url": "https://ca.marketscreener.com/news/nvidia-corporation-gets-a-buy-rating-from-bernstein-ce785adbdc8af024",
+      "retracted_at": "2026-09-25T11:25:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XG6G63EP0C7CZ7B2F0",
+      "type": "retracted_u1_aggregator_rating",
+      "detail": "Retracted per Architect rule U1 (us-equity-analyst-rating-ids-v1.json v1.0.1): 'Rasgon (Bernstein): Buy on Broadcom (maintains).' from https://www.marketscreener.com/news/broadcom-inc-bernstein-maintains-a-buy-rating-ce785adbdc8df623 restates the broker rating as generic Buy; not the broker's own published tier. Paired price-target row kept. Re-source pending Legal.",
+      "source_url": "https://www.marketscreener.com/news/broadcom-inc-bernstein-maintains-a-buy-rating-ce785adbdc8df623",
+      "retracted_at": "2026-09-25T11:25:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XGDG40DBYDAR2VGY41",
+      "type": "retracted_u1_aggregator_rating",
+      "detail": "Retracted per Architect rule U1 (us-equity-analyst-rating-ids-v1.json v1.0.1): 'Rasgon (Bernstein): maintains Buy on Broadcom.' from https://www.marketscreener.com/news/broadcom-inc-bernstein-reiterates-its-buy-rating-ce785bdcdc80f621 restates the broker rating as generic Buy; not the broker's own published tier. Paired price-target row kept. Re-source pending Legal.",
+      "source_url": "https://www.marketscreener.com/news/broadcom-inc-bernstein-reiterates-its-buy-rating-ce785bdcdc80f621",
+      "retracted_at": "2026-09-25T11:25:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XHHZ33C8KHPNWTXB2D",
+      "type": "retracted_u1_aggregator_rating",
+      "detail": "Retracted per Architect rule U1 (us-equity-analyst-rating-ids-v1.json v1.0.1): 'Pajjuri (RBC): Buy on Micron (as stated on page).' from https://www.marketscreener.com/news/micron-technology-inc-rbc-keeps-its-buy-rating-ce785adadc8ef326 restates the broker rating as generic Buy; not the broker's own published tier. Paired price-target row kept. Re-source pending Legal.",
+      "source_url": "https://www.marketscreener.com/news/micron-technology-inc-rbc-keeps-its-buy-rating-ce785adadc8ef326",
+      "retracted_at": "2026-09-25T11:25:00Z"
+    },
+    {
+      "forecast_id": "fct_01M39TF7XHA35H6AXNGCBJC8CV",
+      "type": "retracted_u1_aggregator_rating",
+      "detail": "Retracted per Architect rule U1 (us-equity-analyst-rating-ids-v1.json v1.0.1): 'Rolland (Susquehanna): reiterated Buy on ON Semiconductor.' from https://247wallst.com/investing/2026/09/18/on-semiconductor-has-cratered-for-3-months-this-wall-street-pro-remains-bullish-citing-120-returns-for-buyers/ restates the broker rating as generic Buy; not the broker's own published tier. Paired price-target row kept. Re-source pending Legal.",
+      "source_url": "https://247wallst.com/investing/2026/09/18/on-semiconductor-has-cratered-for-3-months-this-wall-street-pro-remains-bullish-citing-120-returns-for-buyers/",
+      "retracted_at": "2026-09-25T11:25:00Z"
+    },
+    {
+      "type": "claim_text_u1_rating_word_removed",
+      "forecast_id": "fct_01M39TF7XG33HWKHV14VY45MVC",
+      "at": "2026-09-25T11:24:00Z",
+      "before": "Rasgon (Bernstein): Buy; Nvidia PT unchanged at USD 400.",
+      "after": "Rasgon (Bernstein): Nvidia PT unchanged at USD 400.",
+      "detail": "Aggregator's generic 'Buy' removed from price-target claim text under Architect rule U1 (broker's scale has no/unverified Buy tier). Value, horizon, and score unchanged."
+    },
+    {
+      "type": "claim_text_u1_rating_word_removed",
+      "forecast_id": "fct_01M39TF7XGDRGD9KG5G4DF7JK0",
+      "at": "2026-09-25T11:24:00Z",
+      "before": "Rasgon (Bernstein): Buy; Broadcom PT unchanged at USD 575.",
+      "after": "Rasgon (Bernstein): Broadcom PT unchanged at USD 575.",
+      "detail": "Aggregator's generic 'Buy' removed from price-target claim text under Architect rule U1 (broker's scale has no/unverified Buy tier). Value, horizon, and score unchanged."
+    },
+    {
+      "type": "claim_text_u1_rating_word_removed",
+      "forecast_id": "fct_01M39TF7XGJ6228BM5H88GFXS2",
+      "at": "2026-09-25T11:24:00Z",
+      "before": "Rasgon (Bernstein): Buy; Broadcom PT unchanged at USD 575.",
+      "after": "Rasgon (Bernstein): Broadcom PT unchanged at USD 575.",
+      "detail": "Aggregator's generic 'Buy' removed from price-target claim text under Architect rule U1 (broker's scale has no/unverified Buy tier). Value, horizon, and score unchanged."
+    },
+    {
+      "type": "claim_text_u1_rating_word_removed",
+      "forecast_id": "fct_01M39TF7XH4H2SXG62ZBE9JTEP",
+      "at": "2026-09-25T11:24:00Z",
+      "before": "Pajjuri (RBC): Buy; Micron PT unchanged at USD 1500.",
+      "after": "Pajjuri (RBC): Micron PT unchanged at USD 1500.",
+      "detail": "Aggregator's generic 'Buy' removed from price-target claim text under Architect rule U1 (broker's scale has no/unverified Buy tier). Value, horizon, and score unchanged."
+    },
+    {
+      "type": "claim_text_u1_rating_word_removed",
+      "forecast_id": "fct_01M39TF7XH3G1TNCQG4ZYM69QT",
+      "at": "2026-09-25T11:24:00Z",
+      "before": "Rolland (Susquehanna): Buy; Street-high $150 ON Semiconductor PT (~120% upside).",
+      "after": "Rolland (Susquehanna): Street-high $150 ON Semiconductor PT (~120% upside).",
+      "detail": "Aggregator's generic 'Buy' removed from price-target claim text under Architect rule U1 (broker's scale has no/unverified Buy tier). Value, horizon, and score unchanged."
+    }
+  ]
 }

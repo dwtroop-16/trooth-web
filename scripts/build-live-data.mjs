@@ -3,7 +3,7 @@
  * Build live site bundle from Trooth ingest + scorer + actuals (read-only sources).
  * Does not invent forecasts, actuals, or grades. Does not scrape.
  */
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,26 +11,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
 const ROOT = "/workspace/trooth";
 
-const FORECAST_FILES = [
-  "ingest/forecasts/2026-09-02.jsonl",
-  "ingest/forecasts/2026-09-03.jsonl",
-  "ingest/forecasts/2026-09-04.jsonl",
-  "ingest/forecasts/2026-09-05.jsonl",
-  "ingest/forecasts/2026-09-07.jsonl",
-  "ingest/forecasts/2026-09-08.jsonl",
-  "ingest/forecasts/2026-09-09.jsonl",
-  "ingest/forecasts/2026-09-10.jsonl",
-  "ingest/forecasts/2026-09-11.jsonl",
-  "ingest/forecasts/2026-09-14.jsonl",
-  "ingest/forecasts/2026-09-15.jsonl",
-  "ingest/forecasts/2026-09-16.jsonl",
-  "ingest/forecasts/2026-09-17.jsonl",
-  "ingest/forecasts/2026-09-18.jsonl",
-  "ingest/forecasts/2026-09-21.jsonl",
-  "ingest/forecasts/2026-09-22.jsonl",
-  "ingest/forecasts/2026-09-23.jsonl",
-  "ingest/forecasts/2026-09-24.jsonl",
-];
+// Every upstream day dump (YYYY-MM-DD.jsonl) is wired in automatically so a new
+// Ingest day cannot be silently dropped from the board. .bak / suffixed files are ignored.
+const DAY_JSONL = /^\d{4}-\d{2}-\d{2}\.jsonl$/;
+const FORECAST_FILES = readdirSync(join(ROOT, "ingest/forecasts"))
+  .filter((f) => DAY_JSONL.test(f))
+  .sort()
+  .map((f) => `ingest/forecasts/${f}`);
 const ACTUAL_FILES = [
   "data/actuals/nws-knyc.jsonl",
   "data/actuals/nfl-2025-week1.jsonl",
@@ -224,6 +211,24 @@ function mapScore(row) {
   };
 }
 
+// Legal 05b condition 5 / 09-attribution-footers: KNYC observation actuals (api.weather.gov)
+// must credit "National Weather Service" on the card, not the "NWS" abbreviation.
+function actualSourceName(row) {
+  const url = row.source?.url || "";
+  if (/^https:\/\/api\.weather\.gov\//.test(url)) return "National Weather Service";
+  return row.source?.name || "Official print";
+}
+
+function retentionFields(src) {
+  if (!src || !src.retention_note) return {};
+  return {
+    observation_ref: src.observation_ref ?? null,
+    observation_ref_display: src.observation_ref_display ?? "plain_text_no_link",
+    retrieved_at: src.retrieved_at ?? null,
+    retention_note: src.retention_note,
+  };
+}
+
 function mapActual(row) {
   return {
     schema_version: row.schema_version || "1.1.0",
@@ -234,8 +239,11 @@ function mapActual(row) {
     unit: row.unit,
     observed_at: row.observed_at,
     source: {
-      name: row.source?.name || "Official print",
+      name: actualSourceName(row),
       url: row.source?.url || "/method",
+      // Legal 05b Clarification 2026-10-02: aged-out KNYC observations keep the endpoint link
+      // and carry the stored timestamped URL (plain text, never linked) plus a retention note.
+      ...retentionFields(row.source),
     },
     status: row.status,
   };
@@ -458,7 +466,11 @@ export const DATA_SOURCE = live.source || "live";
   const changelogSrc = join(ROOT, "changelog");
   const changelogDst = join(SITE, "src/changelog");
   mkdirSync(changelogDst, { recursive: true });
-  const days = ["2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24"];
+  const days = readdirSync(changelogSrc)
+    .map((f) => f.match(/^(\d{4}-\d{2}-\d{2})\.json$/))
+    .filter(Boolean)
+    .map((m) => m[1])
+    .sort();
   for (const d of days) {
     copyFileSync(join(changelogSrc, d + ".json"), join(changelogDst, d + ".json"));
   }

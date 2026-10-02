@@ -219,6 +219,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const actualValue = actual && actual.status === "resolved" ? actual.value : "pending";
   const actualSourceName = actual && actual.status === "resolved" ? actual.source.name : src.name;
   const actualSourceUrl = actual && actual.status === "resolved" ? actual.source.url : src.url;
+  // Legal 05b Clarification 2026-10-02 (data-driven): an actual carrying retention_note has aged
+  // out of the API. Link stays the endpoint; observation_ref is shown as plain text with observed_at.
+  const retained = actual && actual.status === "resolved" && actual.source?.retention_note ? actual : null;
   const { division, teams } = forecastBoardAttribution(forecast);
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const card = {
@@ -234,6 +237,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actual: actualValue,
     actualSourceName,
     actualSourceUrl,
+    actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
+    actualObservedAt: retained ? retained.observed_at ?? null : null,
+    actualRetentionNote: retained ? retained.source.retention_note : null,
     grade,
     status,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
