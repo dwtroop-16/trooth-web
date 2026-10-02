@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { publicChangelogDay } from "../src/changelogPublic.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -471,8 +472,11 @@ export const DATA_SOURCE = live.source || "live";
     .filter(Boolean)
     .map((m) => m[1])
     .sort();
+  // Public sections only (corrections / voids / retractions, whitelisted fields). errors[],
+  // skipped[], note_* and other internal fields never reach the shipped bundle.
   for (const d of days) {
-    copyFileSync(join(changelogSrc, d + ".json"), join(changelogDst, d + ".json"));
+    const day = JSON.parse(readFileSync(join(changelogSrc, d + ".json"), "utf8"));
+    writeFileSync(join(changelogDst, d + ".json"), JSON.stringify(publicChangelogDay(day), null, 2) + "\n");
   }
 
   const sas = SCORES.find(
