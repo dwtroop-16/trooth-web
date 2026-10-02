@@ -22,9 +22,14 @@ export function parseReasonLabelTable(md) {
     if (cells.length < 4) continue; // grades table has 1 cell
     const [label, where, shown, spec] = cells;
     const alias = label.match(/^alias of `([^`]+)`/);
+    // "internal only ...; never rendered" rows (shown: No) get no label at all: never rendered,
+    // not even as a raw code or in a title attribute (v1.1.3: retracted_legal_hold_misattribution).
+    const hidden = !alias && /^no\b/i.test(shown) && /never rendered/i.test(label);
+    // Internal aliases render the canonical label AND expose only the canonical code (title/data attrs).
+    const internalAlias = !!alias && /\binternal\b/i.test(label);
     rows.push({
       code: m[1],
-      ...(alias ? { aliasOf: alias[1] } : { label }),
+      ...(alias ? { aliasOf: alias[1], ...(internalAlias ? { internal: true } : {}) } : hidden ? { hidden: true } : { label }),
       where: where.split(";").map((w) => w.trim()).filter(Boolean),
       shown,
       spec,
@@ -37,7 +42,11 @@ function render({ version, rows }) {
   const entries = rows
     .map((r) => {
       const fields = [
-        r.aliasOf ? `aliasOf: ${JSON.stringify(r.aliasOf)}` : `label: ${JSON.stringify(r.label)}`,
+        r.aliasOf
+          ? `aliasOf: ${JSON.stringify(r.aliasOf)}${r.internal ? ", internal: true" : ""}`
+          : r.hidden
+            ? "hidden: true"
+            : `label: ${JSON.stringify(r.label)}`,
         `where: ${JSON.stringify(r.where)}`,
         `shown: ${JSON.stringify(r.shown)}`,
         `spec: ${JSON.stringify(r.spec)}`,
@@ -51,6 +60,9 @@ function render({ version, rows }) {
 //
 // The raw code stays in the data and in the page source (title attribute) so it can be audited.
 // Aliases (retired codes) render the canonical code's label. A code with no entry renders raw (never guessed).
+// internal aliases (e.g. claim_text_u1_rating_word_removed) also expose only the canonical code.
+// hidden codes (internal history, e.g. retracted_legal_hold_misattribution) are never rendered anywhere,
+// title and data attributes included: reasonLabel() returns "" and reasonDisplay() returns null.
 
 export const REASON_LABELS_VERSION = ${JSON.stringify(version)};
 
@@ -84,10 +96,16 @@ export function canonicalReasonCode(raw) {
   return code;
 }
 
+/** True for internal-history codes that must never be rendered (no label, no raw code, no title). */
+export function isHiddenReason(raw) {
+  const code = reasonCodeOf(raw);
+  return code != null && has(code) && REASON_LABELS[code].hidden === true;
+}
+
 /** Plain label for a code (aliases render the canonical label), or the raw code when no label exists. */
 export function reasonLabel(raw) {
   const code = reasonCodeOf(raw);
-  if (code == null) return "";
+  if (code == null || isHiddenReason(code)) return "";
   const canon = canonicalReasonCode(code);
   return has(canon) && REASON_LABELS[canon].label ? REASON_LABELS[canon].label : code;
 }
@@ -105,8 +123,11 @@ export function hasReasonLabel(raw) {
  */
 export function reasonDisplay(raw) {
   const code = reasonCodeOf(raw);
-  if (code == null) return null;
-  return { code, canonical: canonicalReasonCode(code), label: reasonLabel(code), title: code };
+  if (code == null || isHiddenReason(code)) return null;
+  const canonical = canonicalReasonCode(code);
+  // Internal aliases never surface their own code: title / data-reason-code carry the canonical code.
+  const shownCode = has(code) && REASON_LABELS[code].internal ? canonical : code;
+  return { code: shownCode, canonical, label: reasonLabel(code), title: shownCode };
 }
 `;
 }

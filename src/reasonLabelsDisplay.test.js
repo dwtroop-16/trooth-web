@@ -109,7 +109,7 @@ test("unknown codes render raw; 'code: free text' reasons use the code", () => {
 });
 
 test("Architect-approved v1.1.x labels: new codes, reworded no_official_print, aliases render canonical", () => {
-  assert.equal(REASON_LABELS_VERSION, "1.1.2");
+  assert.equal(REASON_LABELS_VERSION, "1.1.3");
   // v1.1.0 (Architect 2026-10-02)
   assert.equal(reasonLabel("date_said_corrected"), "date said corrected (deadline moved with it)");
   assert.equal(reasonLabel("claim_text_edited"), "card wording corrected");
@@ -144,11 +144,14 @@ test("Architect-approved v1.1.x labels: new codes, reworded no_official_print, a
   assert.equal(reasonLabel("legal_block"), "removed because its source can't be used under our source rules");
   assert.match(REASON_LABELS.legal_block.shown, /^Yes for retractions/);
   assert.deepEqual(REASON_LABELS.legal_block.where, ["skipped", "retractions"]);
-  // Every alias points at a labelled canonical code; every non-alias has a label.
+  // Every alias points at a labelled canonical code; every non-alias has a label, except
+  // internal-history codes (v1.1.3), which are hidden and carry no label at all.
   for (const [code, e] of Object.entries(REASON_LABELS)) {
     if (e.aliasOf) assert.ok(REASON_LABELS[e.aliasOf]?.label, code);
+    else if (e.hidden) assert.equal(e.label, undefined, code);
     else assert.ok(typeof e.label === "string" && e.label, code);
   }
+  assert.deepEqual(Object.keys(REASON_LABELS).filter((c) => REASON_LABELS[c].hidden), ["retracted_legal_hold_misattribution"]);
 });
 
 test("generator parses reason-labels-v1.md table shape (aliases, grades table ignored)", async () => {

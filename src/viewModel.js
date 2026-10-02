@@ -297,7 +297,8 @@ export function unscorableReasonCode(forecast, subject = SUBJECTS[forecast?.subj
 
 /** "None (no official print)" style text for a reason code; plain "None" when there is no code. */
 export function noneWithReason(code) {
-  return code ? `None (${reasonLabel(code)})` : "None";
+  const label = code ? reasonLabel(code) : "";
+  return label ? `None (${label})` : "None";
 }
 
 /**
