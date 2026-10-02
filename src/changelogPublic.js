@@ -61,6 +61,8 @@ export const PUBLIC_REASON_LABELS = {
   // v1.1.4 (Architect 2026-10-02): public batch corrections.
   published_at_corrected: "corrected the time this forecast was published",
   forecast_backfilled: "added a forecast our collector missed at the time",
+  // v1.1.5 (Architect 2026-10-02 16:11 ET): a published actual whose value changed.
+  actual_corrected: "official result corrected",
 };
 
 // Internal-history codes (v1.1.3): never rendered anywhere, not even as a raw code.

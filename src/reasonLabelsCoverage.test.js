@@ -41,6 +41,10 @@ test("v1.1.4 public codes and the v1.1.3 alias have labels", () => {
   assert.equal(publicReasonLabel("claim_text_u1_rating_word_removed"), "card wording corrected");
 });
 
+test("v1.1.5 actual_corrected has its public label (never raw)", () => {
+  assert.equal(publicReasonLabel("actual_corrected"), "official result corrected");
+});
+
 test("every reason code in the current upstream changelog public sections has a label or is hidden", { skip: !existsSync(UPSTREAM) && "upstream changelog not present" }, () => {
   const codes = reasonCodes(UPSTREAM);
   assert.ok(codes.length > 0);
