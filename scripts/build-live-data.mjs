@@ -219,6 +219,16 @@ function actualSourceName(row) {
   return row.source?.name || "Official print";
 }
 
+function retentionFields(src) {
+  if (!src || !src.retention_note) return {};
+  return {
+    observation_ref: src.observation_ref ?? null,
+    observation_ref_display: src.observation_ref_display ?? "plain_text_no_link",
+    retrieved_at: src.retrieved_at ?? null,
+    retention_note: src.retention_note,
+  };
+}
+
 function mapActual(row) {
   return {
     schema_version: row.schema_version || "1.1.0",
@@ -231,6 +241,9 @@ function mapActual(row) {
     source: {
       name: actualSourceName(row),
       url: row.source?.url || "/method",
+      // Legal 05b Clarification 2026-10-02: aged-out KNYC observations keep the endpoint link
+      // and carry the stored timestamped URL (plain text, never linked) plus a retention note.
+      ...retentionFields(row.source),
     },
     status: row.status,
   };

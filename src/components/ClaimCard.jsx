@@ -38,8 +38,24 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
         <span style={metaItem}><span style={faint}>Actual · </span>{actualLabel}</span>
         <span style={metaItem}>
           <span style={faint}>Actual source · </span>
-          <a href={rendered.actualSourceUrl} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{actualHost}</a>
+          {rendered.actualSourceParts.map((part, i) =>
+            part.kind === "link" ? (
+              <a key={i} href={part.href} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{part.text || actualHost}</a>
+            ) : null
+          )}
         </span>
+        {rendered.actualSourceParts.some((p) => p.kind === "text") ? (
+          <span style={metaWrap} data-actual-retention="">
+            {rendered.actualSourceParts
+              .filter((p) => p.kind === "text")
+              .map((p, i) => (
+                <span key={i} data-role={p.role} style={css(p.role === "observation_ref" ? "font-family:ui-monospace,monospace;font-size:11.5px;" : "")}>
+                  {i > 0 ? " · " : ""}
+                  {p.text}
+                </span>
+              ))}
+          </span>
+        ) : null}
       </div>
     </>
   );

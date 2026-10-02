@@ -59,6 +59,35 @@ export function assertPublicClaimCard(card) {
   }
 }
 
+function hostOf(url) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Actual-source line as ordered parts. Only the first part is a link.
+ * NWS (api.weather.gov) actuals show the source name "National Weather Service" as link text
+ * (Legal 05b condition 5). When the actual carries a retention note (Legal 05b Clarification
+ * 2026-10-02), the stored observation_ref, observed_at and the note follow as PLAIN TEXT:
+ * observation_ref is never linked (observation_ref_display = plain_text_no_link).
+ */
+export function actualSourceParts(card) {
+  const host = hostOf(card.actualSourceUrl);
+  const isNws = /(^|\.)weather\.gov$/.test(host);
+  const parts = [
+    { kind: "link", href: card.actualSourceUrl, text: (isNws ? card.actualSourceName : host) || card.actualSourceName },
+  ];
+  if (card.actualRetentionNote) {
+    if (card.actualObservationRef) parts.push({ kind: "text", role: "observation_ref", text: card.actualObservationRef });
+    if (card.actualObservedAt) parts.push({ kind: "text", role: "observed_at", text: `observed ${card.actualObservedAt}` });
+    parts.push({ kind: "text", role: "retention_note", text: card.actualRetentionNote });
+  }
+  return parts;
+}
+
 export function renderPublicClaimCard(card) {
   assertPublicClaimCard(card);
   const actual = formatActual(card.actual);
@@ -89,6 +118,10 @@ export function renderPublicClaimCard(card) {
     actual,
     actualSourceName: card.actualSourceName,
     actualSourceUrl: card.actualSourceUrl,
+    actualObservationRef: card.actualObservationRef ?? null,
+    actualObservedAt: card.actualObservedAt ?? null,
+    actualRetentionNote: card.actualRetentionNote ?? null,
+    actualSourceParts: actualSourceParts(card),
     grade: card.grade,
     fieldsInOrder,
   };

@@ -1607,5 +1607,68 @@
     "fct_01M3C7N52FK3T5JF3AQH9NHRR9",
     "fct_01M3C7N52FTF9RX6T21JQ8EC3Z"
   ],
-  "voids": []
+  "voids": [],
+  "corrections": [
+    {
+      "forecast_id": "fct_01M36VSXRCVPRDHZE4NZMVC0F8",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "rating_not_in_broker_wording",
+      "review_id": "rr_01M3Y8M6HV3CA38P5QJ2Y30S04",
+      "detail": "On Oct. 2, 2026, we edited the claim text on a price-target card for Mark Lipacis (Evercore ISI) on Nvidia, dated Nov. 26, 2025, to remove the word \"Buy\". Our rules require an analyst's rating to appear in the broker's own published wording. The card carried a generic \"Buy\" taken from a third-party summary, so we removed that word. Changed from \"Lipacis (Evercore ISI): Buy; raises Nvidia PT to $352 from $261.\" to \"Lipacis (Evercore ISI): raises Nvidia PT to $352 from $261.\". This edit does not change the price target ($352), the deadline (Nov. 27, 2026) or the grade. The card's related rating card was removed today (see the separate entry)."
+    },
+    {
+      "forecast_id": "fct_01M379C7DPWYKN1TGHDHCFCKER",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "rating_not_in_broker_wording",
+      "review_id": "rr_01M3Y8M6HVCJNRWMK785MP4E7W",
+      "detail": "On Oct. 2, 2026, we edited the claim text on a price-target card for Joseph Quatrochi (Wells Fargo) on Applied Materials, dated May 27, 2025, to remove the word \"Buy\". Our rules require an analyst's rating to appear in the broker's own published wording. The card carried a generic \"Buy\" taken from a third-party summary, so we removed that word. Changed from \"Quatrochi (Wells Fargo): Buy; maintains Applied Materials PT at $200.\" to \"Quatrochi (Wells Fargo): maintains Applied Materials PT at $200.\". This edit does not change the price target ($200), the deadline (May 27, 2026) or the grade. The card's related rating card was removed today (see the separate entry)."
+    },
+    {
+      "forecast_id": "fct_01M39TF7XH5BT6GQBW90RF1PJD",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "rating_not_in_broker_wording",
+      "review_id": "rr_01M3Y8M6HV46CAAJD38VRYXFZE",
+      "detail": "On Oct. 2, 2026, we edited the claim text on a price-target card for Stacy Rasgon (Bernstein) on Intel, dated Sept. 21, 2026, to remove the word \"Neutral\". Our rules require an analyst's rating to appear in the broker's own published wording. The card carried a generic \"Neutral\" taken from a third-party summary, so we removed that word. Changed from \"Rasgon (Bernstein): Neutral; Intel PT unchanged at USD 110.\" to \"Rasgon (Bernstein): Intel PT unchanged at USD 110.\". This edit does not change the price target ($110), the deadline (Sept. 21, 2027) or the grade. The card's related rating card was removed today (see the separate entry)."
+    },
+    {
+      "forecast_id": "fct_01M36VSXRCAQXH4V58D66QRP07",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "horizon_end_corrected",
+      "review_id": "rr_01M3Y8M6HVKCRRMRZHWH0EZEN9",
+      "detail": "On Oct. 2, 2026, we corrected the date said and the deadline on a price-target card for Christopher Rolland (Susquehanna) on Broadcom: \"Rolland (Susquehanna): Positive; raises Broadcom PT to $450 from $400.\". The card was dated with the day the analyst acted (Dec. 4, 2025) instead of the date the source article was published (Dec. 8, 2025, 12:39 PM ET, per the article's own timestamp). A 12-month stock call is checked 12 months after the date it was published, New York time, moved to the next trading day if needed. published_at changed from 2025-12-04T12:00:00Z to 2025-12-08T17:39:00Z. horizon_end (deadline) changed from 2026-12-04T23:59:59Z (Dec. 4, 2026) to 2026-12-08T23:59:59Z (Dec. 8, 2026). It is still Pending. The claim text, value and source are unchanged."
+    },
+    {
+      "forecast_id": "fct_01M36VSXRCV6BPPJWB8S6SE2X2",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "horizon_end_corrected",
+      "review_id": "rr_01M3Y8M6HVRKASBJ401XSQ4TY8",
+      "detail": "On Oct. 2, 2026, we corrected the date said and the deadline on a rating card for Christopher Rolland (Susquehanna) on Broadcom: \"Rolland (Susquehanna): Positive on Broadcom.\". The card was dated with the day the analyst acted (Dec. 4, 2025) instead of the date the source article was published (Dec. 8, 2025, 12:39 PM ET, per the article's own timestamp). A 12-month stock call is checked 12 months after the date it was published, New York time, moved to the next trading day if needed. published_at changed from 2025-12-04T12:00:00Z to 2025-12-08T17:39:00Z. horizon_end (deadline) changed from 2026-12-04T23:59:59Z (Dec. 4, 2026) to 2026-12-08T23:59:59Z (Dec. 8, 2026). The card is Unscorable, so no grade changed. The claim text, value and source are unchanged."
+    }
+  ],
+  "retractions": [
+    {
+      "id": "fct_01M36VSXRC4EGW4KBD5EAYGZX6",
+      "forecast_id": "fct_01M36VSXRC4EGW4KBD5EAYGZX6",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "rating_not_in_broker_wording",
+      "review_id": "rr_01M3Y8M6HVNXJ7XK7CYS04GJ2V",
+      "detail": "We removed a rating card for Mark Lipacis (Evercore ISI) on Nvidia: \"Lipacis (Evercore ISI): Buy on Nvidia.\" (dated Nov. 26, 2025). Our rules require an analyst's rating to be recorded in the broker's own published wording. This card was based on a third-party summary that described the rating as a generic \"Buy\"; Evercore ISI's own scale is Outperform / In Line / Underperform, so it does not meet that rule. Readers will no longer see this card on Mark Lipacis's profile, on the Claims page or in search, and Mark Lipacis's Unscorable count goes down by one. The card was Unscorable, so no grade or score changed. Mark Lipacis's related price-target card stays on the site and is still Pending; its claim text was edited today from \"Lipacis (Evercore ISI): Buy; raises Nvidia PT to $352 from $261.\" to \"Lipacis (Evercore ISI): raises Nvidia PT to $352 from $261.\" (see the separate correction). Old: claim.value \"buy\", source https://finviz.com/news/239905/evercore-isi-raises-pt-on-nvidia-nvda-stock. New: card removed."
+    },
+    {
+      "id": "fct_01M379C7DPDE9K3EJ8C44CYQYC",
+      "forecast_id": "fct_01M379C7DPDE9K3EJ8C44CYQYC",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "rating_not_in_broker_wording",
+      "review_id": "rr_01M3Y8M6HV50T9AHEGJDBNN710",
+      "detail": "We removed a rating card for Joseph Quatrochi (Wells Fargo) on Applied Materials: \"Quatrochi (Wells Fargo): maintains Buy on Applied Materials.\" (dated May 27, 2025). Our rules require an analyst's rating to be recorded in the broker's own published wording. This card was based on a third-party summary that described the rating as a generic \"Buy\"; Wells Fargo's own scale is Overweight / Equal Weight / Underweight, so it does not meet that rule. Readers will no longer see this card on Joseph Quatrochi's profile, on the Claims page or in search, and Joseph Quatrochi's Unscorable count goes down by one. The card was Unscorable, so no grade or score changed. Joseph Quatrochi's related price-target card stays on the site and is still Pending; its claim text was edited today from \"Quatrochi (Wells Fargo): Buy; maintains Applied Materials PT at $200.\" to \"Quatrochi (Wells Fargo): maintains Applied Materials PT at $200.\" (see the separate correction). Old: claim.value \"buy\", source https://finviz.com/news/67081/wells-fargo-maintains-buy-rating-on-applied-materials-amat-keeps-pt-steady. New: card removed."
+    },
+    {
+      "id": "fct_01M39TF7XHMXMY91NN78YSYYPJ",
+      "forecast_id": "fct_01M39TF7XHMXMY91NN78YSYYPJ",
+      "at": "2026-10-02T12:15:04Z",
+      "reason": "rating_not_in_broker_wording",
+      "review_id": "rr_01M3Y8M6HVP7C5M5JHD7VBRD52",
+      "detail": "We removed a rating card for Stacy Rasgon (Bernstein) on Intel: \"Rasgon (Bernstein): Neutral on Intel.\" (dated Sept. 21, 2026). Our rules require an analyst's rating to be recorded in the broker's own published wording. This card was based on a third-party summary that described the rating as a generic \"Neutral\"; Bernstein's own scale is Outperform / Market-Perform / Underperform, so it does not meet that rule. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and Stacy Rasgon's Unscorable count goes down by one. The card was Unscorable, so no grade or score changed. Stacy Rasgon's related price-target card stays on the site and is still Pending; its claim text was edited today from \"Rasgon (Bernstein): Neutral; Intel PT unchanged at USD 110.\" to \"Rasgon (Bernstein): Intel PT unchanged at USD 110.\" (see the separate correction). Old: claim.value \"hold\", source https://www.marketscreener.com/news/intel-corporation-bernstein-sticks-neutral-ce785adbdc8afe21. New: card removed."
+    }
+  ]
 }
