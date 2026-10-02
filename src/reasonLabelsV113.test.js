@@ -45,8 +45,8 @@ export function loadPublicChangelog() { return publicChangelogEntries(JSON.parse
   return renderToStaticMarkup(React.createElement(Changelog, { goHome() {} }));
 }
 
-test("labels are generated from reason-labels-v1.md v1.1.3", () => {
-  assert.equal(REASON_LABELS_VERSION, "1.1.3");
+test("labels are generated from reason-labels-v1.md v1.1.5 (v1.1.3 rules still hold)", () => {
+  assert.equal(REASON_LABELS_VERSION, "1.1.5");
 });
 
 test("(b) claim_text_u1_rating_word_removed renders the claim_text_edited label and only the canonical code", () => {
@@ -110,4 +110,11 @@ test("(c) shipped data and every card are free of the hidden code; the 8 MarketS
   const cards = FORECASTS.map((f) => toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key]));
   assert.equal(JSON.stringify(cards).includes(HIDDEN), false);
   assert.equal(JSON.stringify(cards).includes(ALIAS), false);
+});
+
+// v1.1.4 / v1.1.5 (Architect 2026-10-02): public batch codes and actual_corrected have labels; never raw.
+test("v1.1.4 / v1.1.5 public codes carry their approved labels", () => {
+  assert.equal(reasonLabel("actual_corrected"), "official result corrected");
+  assert.equal(reasonLabel("published_at_corrected"), "corrected the time this forecast was published");
+  assert.equal(reasonLabel("forecast_backfilled"), "added a forecast our collector missed at the time");
 });

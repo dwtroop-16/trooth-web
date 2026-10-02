@@ -109,7 +109,7 @@ test("unknown codes render raw; 'code: free text' reasons use the code", () => {
 });
 
 test("Architect-approved v1.1.x labels: new codes, reworded no_official_print, aliases render canonical", () => {
-  assert.equal(REASON_LABELS_VERSION, "1.1.3");
+  assert.equal(REASON_LABELS_VERSION, "1.1.5");
   // v1.1.0 (Architect 2026-10-02)
   assert.equal(reasonLabel("date_said_corrected"), "date said corrected (deadline moved with it)");
   assert.equal(reasonLabel("claim_text_edited"), "card wording corrected");
