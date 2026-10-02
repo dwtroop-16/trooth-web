@@ -51,6 +51,11 @@ export function loadPublicChangelog() {
   assert.ok(html.includes("Morgan Stanley"), "public entries render (Moore retraction)");
   assert.equal(/marketscreener/i.test(html), false, "no marketscreener on /changelog");
   assert.equal(/<a\b/i.test(html), false, "changelog renders no links");
+  // Reader-visible text: plain labels only. Raw public codes (e.g. legal_block) may sit in the
+  // title / data-reason-code attributes for audit (reason-labels-v1.md); legal_hold and internal
+  // keys never appear anywhere in the markup.
+  const text = html.replace(/<[^>]+>/g, "");
   assert.equal(/on hold/i.test(html), false, "no legal_hold wording");
-  assert.equal(/legal_block|legal_hold|reason_original|note_/.test(html), false, "no raw codes / internal keys");
+  assert.equal(/legal_block|legal_hold|reason_original|note_/.test(text), false, "no raw codes / internal keys in text");
+  assert.equal(/legal_hold|reason_original|note_/.test(html), false, "no legal_hold / internal keys in markup");
 });
