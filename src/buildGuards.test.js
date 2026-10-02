@@ -87,7 +87,9 @@ test("cards join the exact actual the score cites; value equals the match_key pr
     assert.deepEqual(a.value, byKey.get(f.match_key).value, `second print disagrees on ${f.id}`);
     cited += 1;
   }
-  assert.equal(cited, 1297);
+  // Every graded score cites an actual (1352 at the Oct 2 publish; derived, the board moves).
+  assert.equal(cited, SCORES.filter((s) => (s.status === "hit" || s.status === "miss") && FORECASTS.some((f) => f.id === s.forecast_id)).length);
+  assert.ok(cited > 0);
 });
 
 test("second prints: 122 NFL.com Game Center rows cited by 240 miss scores", () => {
@@ -134,12 +136,10 @@ test("actualLookup: score citation first, else first actual on the match_key", (
   assert.equal(lookup({ match_key: "zz" }, undefined), undefined);
 });
 
-test("bundle counts unchanged by the actuals refresh", () => {
-  const by = {};
-  for (const s of SCORES) by[s.status] = (by[s.status] || 0) + 1;
-  assert.deepEqual(by, { miss: 1268, hit: 29, pending: 277, unscorable: 58 });
-  assert.equal(FORECASTS.length, 1632);
-  assert.equal(ACTUALS.length, 992);
+test("bundle counts are consistent with Scorer (one score per forecast; derived, not pinned)", () => {
+  const scoreIds = new Set(SCORES.map((s) => s.forecast_id));
+  for (const f of FORECASTS) assert.ok(scoreIds.has(f.id), f.id);
+  assert.equal(SCORES.length, FORECASTS.length, "Scorer has caught up with Ingest");
 });
 
 // ---------------- 3. Stale-Scorer guard ----------------
@@ -246,7 +246,7 @@ test("catalog lag: lagHoursFor reads subjects-v1.json per subject (ratings null,
   assert.equal(lagHoursFor(byId["us-president-2024-winner"], "politics"), 24);
 });
 
-test("stale guard on the live bundle + upstream NWS prints (catalog lag) finds QA F1's 9 weather rows", { skip: !safeExists(join(TROOTH, "data/actuals/nws-knyc.jsonl")) }, () => {
+test("stale guard on the live bundle + upstream NWS prints (catalog lag): QA F1's 9 weather rows are graded now, nothing stale", { skip: !safeExists(join(TROOTH, "data/actuals/nws-knyc.jsonl")) }, () => {
   const upstream = readFileSync(join(TROOTH, "data/actuals/nws-knyc.jsonl"), "utf8")
     .split("\n")
     .filter((l) => l.trim())
@@ -257,9 +257,11 @@ test("stale guard on the live bundle + upstream NWS prints (catalog lag) finds Q
     "fct_01M2TAF8DA405PG3JGNGMEEQQA", "fct_01M2TAF8DAFMHYBKM344ASD5H5", "fct_01M321WHMDXF7PJXAGBTYQHKT8",
     "fct_01M321WHMD81MP4CKT578HVT14", "fct_01M34MAHZ6TN7WA5NH8T2WHSAS", "fct_01M377XV8XCHCMSCNQ4VAJTS28",
   ];
-  assert.deepEqual(stale.map((r) => r.forecast_id).sort(), [...qa].sort());
-  assert.ok(stale.every((r) => r.lag_hours === 18));
-  assert.ok(stale.every((r) => !/-rating\|/.test(r.match_key)), "no unscorable rating rows");
+  // On 9/25 these 9 were pending past horizon + 18h with a print available (QA F1). Scorer graded
+  // them on 10/02, so the guard must find no stale rows now; the fixture tests above cover detection.
+  const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
+  for (const id of qa) assert.ok(["hit", "miss"].includes(scoreBy[id]?.status), `${id} now ${scoreBy[id]?.status}`);
+  assert.deepEqual(stale.map((r) => r.forecast_id), []);
 });
 
 test("build script: no hardcoded domain lag defaults", () => {
