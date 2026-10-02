@@ -19,6 +19,7 @@ const MS_CREDIT = "dpa-AFX Analyser via MarketScreener (not linked)";
 const isMs = (u) => /(^|\.)marketscreener\.com$/.test(hostOf(u));
 const isNfl = (u) => /(^|\.)nfl\.com$/.test(hostOf(u));
 const isNcaa = (u) => /(^|\.)ncaa\.com$/.test(hostOf(u));
+const isFred = (u) => /(^|\.)fred\.stlouisfed\.org$/.test(hostOf(u));
 
 const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
 const actualByKey = Object.fromEntries(ACTUALS.map((a) => [a.match_key, a]));
@@ -67,6 +68,14 @@ test("linkPolicy: ncaa.com (any subdomain, home page included) is plain text, ne
   assert.equal(isAllowedHref("https://www.ncaa.org/"), true);
 });
 
+test("linkPolicy: fred.stlouisfed.org is plain text, never a link (Architect 2026-10-02)", () => {
+  for (const u of ["https://fred.stlouisfed.org/series/SP500", "https://fred.stlouisfed.org/"]) {
+    assert.deepEqual(sourceLinkParts(u, "x"), [{ kind: "text", role: "plain_text_url", text: `FRED (${u} ; not linked)` }]);
+    assert.equal(isAllowedHref(u), false);
+  }
+  assert.equal(isAllowedHref("https://www.stlouisfed.org/"), true);
+});
+
 test("linkPolicy: other hosts (FOX Sports etc.) are unchanged", () => {
   const fox = "https://www.foxsports.com/stories/nfl/some-story";
   assert.deepEqual(sourceLinkParts(fox, "www.foxsports.com"), [{ kind: "link", href: fox, text: "www.foxsports.com" }]);
@@ -105,6 +114,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
   let anchors = 0;
   let foxLinks = 0;
   let ncaaRendered = 0;
+  let fredRendered = 0;
   const bad = [];
   for (const card of cards) {
     for (const compact of [false, true]) {
@@ -115,9 +125,14 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         if (/marketscreener/i.test(href)) bad.push(`${card.id} ms ${href}`);
         if (isNfl(href) && href !== NFL_HOME) bad.push(`${card.id} nfl ${href}`);
         if (/ncaa\.com/i.test(href)) bad.push(`${card.id} ncaa ${href}`);
+        if (/stlouisfed\.org/i.test(href)) bad.push(`${card.id} fred ${href}`);
         if (/(^|\.)foxsports\.com$/.test(hostOf(href))) foxLinks++;
       }
       if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_CREDIT), card.id);
+      if ((card.grade === "Hit" || card.grade === "Miss") && isFred(card.actualSourceUrl)) {
+        fredRendered++;
+        assert.ok(unescape(html).includes(`FRED (${card.actualSourceUrl} ; not linked)`), card.id);
+      }
       if ((card.grade === "Hit" || card.grade === "Miss") && isNcaa(card.actualSourceUrl)) {
         ncaaRendered++;
         assert.ok(unescape(html).includes(`NCAA.com (${card.actualSourceUrl} ; not linked)`), card.id);
@@ -131,6 +146,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
   assert.deepEqual(bad, []);
   assert.ok(anchors > 0, "cards render links");
   console.log(`# rendered ncaa.com actual sources as plain text (per card) = ${ncaaRendered / 2}`);
+  console.log(`# rendered fred.stlouisfed.org actual sources as plain text (per card) = ${fredRendered / 2}`);
   // FOX Sports links are untouched: every FOX source still renders as its own href.
   const foxCards = cards.filter((c) => /(^|\.)foxsports\.com$/.test(hostOf(c.sourceUrl)));
   assert.ok(foxLinks >= foxCards.length * 2);
