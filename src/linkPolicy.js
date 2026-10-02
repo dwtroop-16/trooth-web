@@ -9,6 +9,10 @@
 //     plain, unlinked text. nfl.com: link https://www.nfl.com/ with the name "NFL.com" (no logos),
 //     then "(<full URL> ; not linked per NFL terms)".
 //
+// (3) PLAIN-TEXT domains (Legal + Architect, 2026-10-02): any URL on the domain is shown as plain
+//     text, never as a link. ncaa.com and every subdomain: "NCAA.com (<full URL> ; not linked)".
+//     Grades are unaffected.
+//
 // Every other host (FOX Sports, NWS, FRED, ...) is returned unchanged.
 
 export const BLOCKED_LINK_DOMAINS = {
@@ -17,6 +21,10 @@ export const BLOCKED_LINK_DOMAINS = {
 
 export const HOME_ONLY_LINK_DOMAINS = {
   "nfl.com": { home: "https://www.nfl.com/", name: "NFL.com", note: "not linked per NFL terms" },
+};
+
+export const PLAIN_TEXT_LINK_DOMAINS = {
+  "ncaa.com": { name: "NCAA.com", note: "not linked" },
 };
 
 export function hostOf(url) {
@@ -43,9 +51,14 @@ export function homeOnlyRuleFor(url) {
   return ruleFor(HOME_ONLY_LINK_DOMAINS, hostOf(url));
 }
 
+export function plainTextRuleFor(url) {
+  return ruleFor(PLAIN_TEXT_LINK_DOMAINS, hostOf(url));
+}
+
 /** True when an <a href> to this URL is allowed by the link rules. */
 export function isAllowedHref(url) {
   if (blockedRuleFor(url)) return false;
+  if (plainTextRuleFor(url)) return false;
   const home = homeOnlyRuleFor(url);
   if (home) return String(url).trim() === home.home;
   return true;
@@ -58,6 +71,8 @@ export function isAllowedHref(url) {
 export function sourceLinkParts(url, text) {
   const blocked = blockedRuleFor(url);
   if (blocked) return [{ kind: "text", role: "blocked_credit", text: blocked.credit }];
+  const plain = plainTextRuleFor(url);
+  if (plain) return [{ kind: "text", role: "plain_text_url", text: `${plain.name} (${String(url).trim()} ; ${plain.note})` }];
   const home = homeOnlyRuleFor(url);
   if (home) {
     const parts = [{ kind: "link", href: home.home, text: home.name }];

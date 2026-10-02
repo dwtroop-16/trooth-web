@@ -3,7 +3,7 @@ import { formatWhen, statusMeta, css, hostnameFromUrl } from "../helpers.js";
 import Hover from "./Hover.jsx";
 
 // Plain-text parts produced by the Legal-Ops link rules (linkPolicy.js), shown inline beside the link.
-const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url"]);
+const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_url"]);
 
 export default function ClaimCard({ card, compact, quiet, onOpen }) {
   const rendered = renderPublicClaimCard(card);
