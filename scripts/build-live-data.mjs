@@ -209,6 +209,9 @@ function mapScore(row) {
     ape: row.ape == null ? null : Number(row.ape),
     brier: row.brier == null ? null : Number(row.brier),
     scored_at: row.scored_at,
+    // Scorer 2026-10-05: KNYC temperature days from 2026-10-01 on that would otherwise grade come out
+    // status "pending" with review_hold: true. Passed through so the card shows "In review".
+    ...(row.review_hold ? { review_hold: true } : {}),
   };
 }
 

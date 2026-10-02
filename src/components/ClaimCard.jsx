@@ -7,7 +7,7 @@ const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_u
 
 export default function ClaimCard({ card, compact, quiet, onOpen }) {
   const rendered = renderPublicClaimCard(card);
-  const sm = statusMeta(card.status);
+  const sm = statusMeta(card.reviewHold ? "void" : card.status);
   // Actual value and actual source show only on graded (Hit / Miss) cards; Pending shows "pending";
   // In review and Unscorable show no actual and no actual-source link.
   const graded = rendered.grade === "Hit" || rendered.grade === "Miss";
