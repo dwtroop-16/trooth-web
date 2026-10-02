@@ -159,8 +159,29 @@ export function stripInternalIds(text) {
     .trim();
 }
 
+const ACTUAL_LEVEL_CODES = new Set(["actual_voided"]);
+
+/** Correction about official results (actuals), not a card: e.g. actual_voided batches. */
+export function isActualLevelEntry(r) {
+  if (!r || typeof r !== "object") return false;
+  if (Array.isArray(r.actual_ids) || Array.isArray(r.actuals)) return true;
+  const code = typeof r.reason === "string" ? r.reason.split(":")[0].trim() : "";
+  return ACTUAL_LEVEL_CODES.has(code) && !r.forecast_id;
+}
+
+const DATE_ONLY = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", year: "numeric", month: "short", day: "numeric" });
+
+/** "Aug 27, 2026; Sep 1, 2026" from YYYY-MM-DD strings (calendar dates, no time zone shift). */
+export function formatDateList(dates) {
+  return (dates || [])
+    .filter((d) => typeof d === "string" && /^\d{4}-\d{2}-\d{2}/.test(d))
+    .map((d) => DATE_ONLY.format(new Date(d.slice(0, 10) + "T00:00:00Z")))
+    .join("; ");
+}
+
 function buildEntry(kind, date, r, ctx) {
   const obj = r && typeof r === "object" ? r : null;
+  if (kind === "correction" && isActualLevelEntry(obj)) return buildActualLevelEntry(date, obj);
   const id = kind === "correction" ? (obj ? obj.forecast_id || obj.id || null : null) : recordId(r);
   const subj = subjectFor(id, obj, ctx);
   const rawDetail = typeof r === "string" && kind === "correction" ? r : recordDetail(r);
@@ -184,6 +205,40 @@ function buildEntry(kind, date, r, ctx) {
   e.audit.reasonCode = e.reason ? e.reason.code : null;
   e.auditTitle = [e.audit.reasonCode, e.audit.forecastId, e.audit.reviewId].filter(Boolean).join(" · ");
   e.summary = summaryOf(e);
+  return e;
+}
+
+/**
+ * Actual-level batch (e.g. actual_voided): about official results, not one card. No card id and no
+ * speaker/claim; the affected dates are listed in plain text. Actual ids stay in audit only.
+ */
+function buildActualLevelEntry(date, obj) {
+  const dates = Array.isArray(obj.dates) ? obj.dates : [];
+  const datesText = formatDateList(dates);
+  const e = {
+    kind: "correction",
+    kindLabel: KIND_LABELS.correction || "correction",
+    scope: "actuals",
+    date,
+    at: obj.at || obj.corrected_at || null,
+    subject: obj.subject_label ? stripInternalIds(obj.subject_label) : "",
+    reason: recordReason("correction", obj),
+    detail: stripInternalIds(recordDetail(obj)),
+    dates,
+    datesText: datesText ? `Dates: ${datesText}` : "",
+    resolution: null,
+    audit: {
+      forecastId: null,
+      reviewId: obj.review_id || null,
+      reasonCode: null,
+      actualIds: [...(obj.actual_ids || []), ...(Array.isArray(obj.actuals) ? obj.actuals.map((a) => (a && a.id) || a) : [])].filter(Boolean),
+    },
+    record: obj,
+  };
+  e.audit.reasonCode = e.reason ? e.reason.code : null;
+  e.auditTitle = [e.audit.reasonCode, e.audit.reviewId].filter(Boolean).join(" · ");
+  const parts = [e.subject, e.reason && e.reason.label, e.detail, e.datesText].filter(Boolean);
+  e.summary = parts.join(" — ") || "Official results corrected";
   return e;
 }
 

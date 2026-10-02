@@ -44,6 +44,9 @@ export default function Changelog({ goHome }) {
               {e.detail ? (
                 <div style={css("font-size:14.5px;color:var(--body);line-height:1.5;margin-top:2px;")}>{e.detail}</div>
               ) : null}
+              {e.datesText ? (
+                <div data-entry-scope={e.scope || undefined} style={css("font-size:13px;color:var(--muted);margin-top:2px;")}>{e.datesText}</div>
+              ) : null}
               {e.resolution ? (
                 <div style={css("font-size:13px;color:var(--muted);margin-top:2px;")}>{e.resolution.label}</div>
               ) : null}

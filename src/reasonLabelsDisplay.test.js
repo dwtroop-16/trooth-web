@@ -70,7 +70,7 @@ test("every reason code present in the bundle and bundled changelogs has a label
   for (const f of FORECASTS) if (f.unscorable_reason) codes.add(reasonCodeOf(f.unscorable_reason));
   for (const s of Object.values(SUBJECTS)) if (s.resolution?.reason) codes.add(s.resolution.reason);
   for (const day of bundledChangelogDays()) {
-    for (const key of ["skipped", "corrections", "voids", "retractions", "notes", "errors"]) {
+    for (const key of ["skipped", "corrections", "voids", "retractions", "notes"]) {
       for (const e of day[key] || []) {
         if (e && typeof e === "object" && (e.reason || e.type)) codes.add(reasonCodeOf(e.reason || e.type));
       }
@@ -78,6 +78,19 @@ test("every reason code present in the bundle and bundled changelogs has a label
   }
   const missing = [...codes].filter((c) => !hasReasonLabel(c));
   assert.deepEqual(missing, []);
+});
+
+test("errors[] are internal logs: never rendered on /changelog (some types have no public label)", () => {
+  // e.g. claim_text_u1_rating_word_removed, retracted_legal_hold_misattribution (9/23, 9/24 errors[]).
+  const errorTypes = new Set();
+  for (const day of bundledChangelogDays())
+    for (const e of day.errors || []) if (e && typeof e === "object" && (e.reason || e.type)) errorTypes.add(reasonCodeOf(e.reason || e.type));
+  const entries = publicChangelogEntries(bundledChangelogDays(), CTX);
+  for (const e of entries) {
+    const code = e.reason?.code;
+    if (code && errorTypes.has(code)) assert.ok(hasReasonLabel(code), `public entry with unlabeled code ${code}`);
+    assert.doesNotMatch(e.summary, /claim_text_u1_rating_word_removed|retracted_legal_hold_misattribution/);
+  }
 });
 
 test("unknown codes render raw; 'code: free text' reasons use the code", () => {
@@ -94,8 +107,15 @@ test("unknown codes render raw; 'code: free text' reasons use the code", () => {
   assert.equal(reasonDisplay("no_official_print").title, "no_official_print");
 });
 
-test("Architect-approved v1.0.0 labels: new codes, reworded no_official_print, aliases render canonical", () => {
-  assert.equal(REASON_LABELS_VERSION, "1.0.0");
+test("Architect-approved v1.1.0 labels: new codes, reworded no_official_print, aliases render canonical", () => {
+  assert.equal(REASON_LABELS_VERSION, "1.1.0");
+  // v1.1.0 (Architect 2026-10-02)
+  assert.equal(reasonLabel("date_said_corrected"), "date said corrected (deadline moved with it)");
+  assert.equal(reasonLabel("claim_text_edited"), "card wording corrected");
+  assert.equal(reasonLabel("actual_voided"), "official result withdrawn (not an official print)");
+  assert.equal(reasonLabel("horizon_end_corrected"), "deadline corrected");
+  assert.match(REASON_LABELS.horizon_end_corrected.shown, /^Yes: \/changelog entry/);
+  assert.match(REASON_LABELS.rating_not_in_broker_wording.where.join(" "), /retractions/);
   assert.equal(reasonLabel("no_official_print"), "no official result to grade against");
   assert.equal(reasonLabel("mapping_missing"), "not matched to a tracked topic");
   assert.equal(reasonLabel("prints_disagree"), "official sources disagree");
@@ -147,7 +167,7 @@ test("generator parses reason-labels-v1.md table shape (aliases, grades table ig
 
 test("unscorable cards say 'None (<reason>)' for actual and actual source, never 'pending'", () => {
   const unscorable = liveCards().filter(({ card }) => card.status === "unscorable");
-  assert.equal(unscorable.length, 58);
+  assert.equal(unscorable.length, SCORES.filter((s) => s.status === "unscorable").length); // 48 on the Oct 2 board
   for (const { f, card } of unscorable) {
     assert.equal(card.actual, "None (no official result to grade against)", f.id);
     assert.equal(card.actualReasonCode, "no_official_print", f.id);
@@ -311,10 +331,14 @@ test("rendered card: fields in contract order, grade last, actual source as 'nam
 // ---------------- 4. /changelog ----------------
 
 test("Last updated line: bundle generated_at in New York time plus forecast and graded counts", () => {
-  const line = lastUpdatedLine({ generatedAt: GENERATED_AT, forecasts: FORECASTS, scores: SCORES });
-  assert.equal(line.forecasts, 1632);
-  assert.equal(line.graded, 29 + 1268);
-  assert.equal(line.text, "Last updated Sep 25, 2026, 7:08 AM ET · 1,632 forecasts · 1,297 graded");
+  const line = lastUpdatedLine({ generatedAt: "2026-10-02T12:25:00Z", forecasts: FORECASTS, scores: SCORES });
+  const graded = SCORES.filter((s) => s.status === "hit" || s.status === "miss").length;
+  assert.equal(line.forecasts, FORECASTS.length);
+  assert.equal(line.graded, graded);
+  assert.equal(line.text, `Last updated Oct 2, 2026, 8:25 AM ET · ${FORECASTS.length.toLocaleString("en-US")} forecasts · ${graded.toLocaleString("en-US")} graded`);
+  const fixed = lastUpdatedLine({ generatedAt: "2026-10-02T12:25:00Z", forecasts: new Array(1652), scores: [...new Array(38).fill({ status: "hit" }), ...new Array(1314).fill({ status: "miss" })] });
+  assert.equal(fixed.text, "Last updated Oct 2, 2026, 8:25 AM ET · 1,652 forecasts · 1,352 graded");
+  assert.ok(lastUpdatedLine({ generatedAt: GENERATED_AT, forecasts: FORECASTS, scores: SCORES }).text.startsWith("Last updated "));
   const summer = lastUpdatedLine({ generatedAt: "2026-01-15T17:30:00Z", forecasts: [], scores: [] });
   assert.match(summer.text, /Jan 15, 2026, 12:30 PM ET/); // EST in winter
   assert.equal(lastUpdatedLine({ generatedAt: null }), null);
@@ -359,11 +383,20 @@ const DAY_0925 = {
   ],
   retractions: [
     {
-      id: "fct_01M36VSXRC9GKVYG2DQDAF6JDN",
+      // Card still in the bundle (CNBC U1 rating row), so speaker and claim come from the bundle.
+      id: "fct_01M3C51B7KRSA6YRY3M4KN6PDK",
       at: "2026-09-25T11:19:27Z",
       reason: "rating_not_in_broker_wording",
       review_id: "rr_01M3C4V38FP92YRFBGW7JTCCGQ",
       detail: "We removed a rating card for Harlan Sur (JPMorgan) on Nvidia.",
+    },
+    {
+      // Real 9/25 shape: the retracted card is gone from the bundle and the row has only detail.
+      id: "fct_01M36VSXRC9GKVYG2DQDAF6JDN",
+      at: "2026-09-25T11:19:27Z",
+      reason: "rating_not_in_broker_wording",
+      review_id: "rr_01M3C4V38FP92YRFBGW7JTCCGQ",
+      detail: "We removed a rating card for Harlan Sur (JPMorgan) on Nvidia: \"Sur (JPMorgan): Buy on Nvidia.\"",
     },
     {
       id: "fct_NOT_IN_BUNDLE_0000000000",
@@ -380,18 +413,20 @@ const DAY_0925 = {
 
 test("retractions and corrections (2026-09-25 shapes): speaker/claim, labels, ids only in audit", () => {
   const entries = publicChangelogEntries([DAY_0925], CTX);
-  assert.equal(entries.length, 3);
+  assert.equal(entries.length, 4);
   const corr = entries.find((e) => e.kind === "correction");
   assert.equal(corr.reason.label, "deadline moved to the next trading day");
   assert.equal(corr.audit.reviewId, "rr_01M3C4R5W9TFBS13K6NNFF8TF4");
   assert.match(corr.detail, /moved the deadline/);
 
-  const [inBundle, gone] = ["fct_01M36VSXRC9GKVYG2DQDAF6JDN", "fct_NOT_IN_BUNDLE_0000000000"].map((id) =>
+  const [inBundle, gone, detailOnly] = ["fct_01M3C51B7KRSA6YRY3M4KN6PDK", "fct_NOT_IN_BUNDLE_0000000000", "fct_01M36VSXRC9GKVYG2DQDAF6JDN"].map((id) =>
     entries.find((e) => e.audit.forecastId === id)
   );
   assert.equal(inBundle.kindLabel, "Retraction");
   assert.equal(inBundle.reason.code, "rating_not_in_broker_wording");
-  assert.match(inBundle.subject, /^Harlan Sur: “Sur \(JPMorgan\): Buy on Nvidia\.”$/);
+  assert.match(inBundle.subject, /^Harlan Sur: “Sur \(JPMorgan\): Overweight on Nvidia\.”$/);
+  assert.equal(detailOnly.kindLabel, "Retraction");
+  assert.match(detailOnly.detail, /^We removed a rating card for Harlan Sur/);
   assert.equal(gone.subject.startsWith("Jane Analyst: “Analyst (Broker): maintains Buy on Example Corp"), true);
   assert.ok(gone.subject.endsWith("…”"));
   assert.equal(gone.detail, "We removed a rating card for Jane Analyst.");
@@ -490,4 +525,51 @@ test("rendered held card shows 'In review' + plain label with the raw code in ti
   assert.ok(text.trim().endsWith("who said it is being re-checked"));
   assert.ok(html.includes('title="attribution_under_review"'));
   assert.ok(text.includes("Actual · pending"));
+});
+
+// ---------------- Actual-level batch entries (reason-labels v1.1.0 actual_voided) ----------------
+
+test("actual-level batch (actual_voided): plain label, dates listed, no card id or speaker", async () => {
+  const { isActualLevelEntry, formatDateList } = await import("./changelogPublic.js");
+  const day = {
+    date: "2026-10-02",
+    corrections: [
+      {
+        at: "2026-10-02T12:19:17Z",
+        reason: "actual_voided",
+        review_id: "rr_01M3Y9HHEVMGSE1AGGWEM6B6AS",
+        actual_ids: ["act_01M1JXJPCJAAAAAAAAAAAAAAAA", "act_01M1JXJPCJBBBBBBBBBBBBBBBB"],
+        dates: ["2026-08-27", "2026-09-01"],
+        detail: "We withdrew 2 daily rainfall totals (act_01M1JXJPCJAAAAAAAAAAAAAAAA) that were not official prints.",
+      },
+    ],
+  };
+  assert.ok(isActualLevelEntry(day.corrections[0]));
+  assert.equal(formatDateList(["2026-08-27", "2026-09-01"]), "Aug 27, 2026; Sep 1, 2026");
+  const [e] = publicChangelogEntries([day], CTX);
+  assert.equal(e.kind, "correction");
+  assert.equal(e.scope, "actuals");
+  assert.equal(e.reason.code, "actual_voided");
+  assert.equal(e.reason.label, "official result withdrawn (not an official print)");
+  assert.equal(e.subject, "");
+  assert.equal(e.audit.forecastId, null);
+  assert.deepEqual(e.audit.actualIds, day.corrections[0].actual_ids);
+  assert.equal(e.datesText, "Dates: Aug 27, 2026; Sep 1, 2026");
+  for (const t of [e.subject, e.detail, e.summary, e.datesText]) assert.doesNotMatch(t, /\b(fct|rr|act|scr)_/);
+  assert.ok(!e.auditTitle.includes("act_"));
+});
+
+test("bundled 2026-09-25 and 2026-10-02 entries: plain labels, no fct_/rr_ ids in reader text", () => {
+  const entries = publicChangelogEntries(bundledChangelogDays(), CTX).filter((e) => e.date === "2026-09-25" || e.date === "2026-10-02");
+  assert.ok(entries.length > 0);
+  for (const e of entries) {
+    assert.ok(e.reason && hasReasonLabel(e.reason.code), `${e.date} ${e.reason?.code}`);
+    assert.notEqual(e.reason.label, e.reason.code, `raw code shown: ${e.reason.code}`);
+    for (const t of [e.subject, e.detail, e.summary, e.datesText || ""]) assert.doesNotMatch(t || "", /\b(fct|rr|act|scr)_/);
+  }
+  const voided = entries.filter((e) => e.reason.code === "actual_voided");
+  for (const e of voided) {
+    assert.equal(e.scope, "actuals");
+    assert.equal(e.audit.forecastId, null);
+  }
 });
