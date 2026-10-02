@@ -85,8 +85,32 @@ export default function Profile({ vals, openClaim }) {
       <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;")}>
         <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
           <span style={css("font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;line-height:1;color:var(--ink);")}>{p.hit_rate}</span>
-          <span style={css("font-size:13px;color:var(--muted);")}>hit rate · n_hit / n_resolved (pending excluded)</span>
+          <span style={css("font-size:13px;color:var(--muted);")}>
+            hit rate{p.interval ? " · 95% range " + p.interval : ""} · pending excluded
+          </span>
         </div>
+        {!p.ranked && p.n_resolved > 0 ? (
+          <div style={css("font-size:12.5px;color:var(--muted);margin-top:6px;")}>
+            Not ranked on the leaderboard until {p.minRanked} claims resolve ({p.n_resolved} so far). Small samples swing wildly.
+          </div>
+        ) : null}
+        {p.rescored ? (
+          <div style={css("font-size:12.5px;color:var(--muted);margin-top:6px;")}>
+            Under the old exact-match rule this record was {p.strictHitRate}. See Method for what changed.
+          </div>
+        ) : null}
+        {p.nBase > 0 ? (
+          <div style={css("margin-top:14px;padding:12px 14px;background:var(--paper);border:1px solid var(--hair);border-radius:var(--radius-sm);display:flex;flex-wrap:wrap;gap:12px 28px;align-items:baseline;")}>
+            <div>
+              <div style={css("font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--ink);")}>{p.skill}</div>
+              <div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>vs. naive baseline</div>
+            </div>
+            <div style={css("font-size:13px;color:var(--body);line-height:1.5;max-width:560px;")}>
+              On the same {p.nBase} claims, {p.name} hit {p.modelHitRateOnBase}. A naive forecaster hit {p.baselineHitRate}
+              {p.baselineMae !== "—" ? <> (avg error {p.modelMaeOnBase} vs. {p.baselineMae} for “same as the last reading”)</> : <> (always picking the home team)</>}.
+            </div>
+          </div>
+        ) : null}
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
           {counts.map(([label, n]) => (
             <div key={label} style={css("min-width:72px;")}>
@@ -99,7 +123,19 @@ export default function Profile({ vals, openClaim }) {
           <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.mae}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>MAE (where defined)</div></div>
           <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.ape}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>Mean APE (where defined)</div></div>
           <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.brier}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>Mean Brier (where defined)</div></div>
+          {p.marginError !== "—" ? (
+            <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.marginError}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>Avg margin miss (pts)</div></div>
+          ) : null}
         </div>
+      </div>
+
+      <div style={css("margin-top:14px;font-size:13px;color:var(--body);line-height:1.55;")}>
+        <span style={css("color:var(--faint);")}>Coverage · </span>
+        {p.coverage.n} claims captured, {p.coverage.span}, from{" "}
+        {p.coverage.hosts.map((h, i) => (
+          <span key={h.host}>{i ? ", " : ""}{h.host} ({h.n})</span>
+        ))}
+        . This is what Trooth has captured, not everything {p.name} has said.
       </div>
 
       {divisionRows.length > 0 ? (

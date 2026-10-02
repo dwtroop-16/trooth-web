@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { DOMAINS, SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 import { buildVals, speakerStats, claimMatchesQuery, claimSearchText, toPublicClaimCard } from "./viewModel.js";
 import { hostnameFromUrl } from "./helpers.js";
+import { applyRubric, MIN_RANKED, wilson } from "./rubric.js";
 
 const noop = () => {};
 const actions = {
@@ -19,23 +20,25 @@ const actions = {
   openModal: noop,
 };
 
-const data = { speakers: SPEAKERS, forecasts: FORECASTS, actuals: ACTUALS, scores: SCORES, CATCOLORS };
+const RUBRIC_SCORES = applyRubric({ forecasts: FORECASTS, actuals: ACTUALS, scores: SCORES });
+const data = { speakers: SPEAKERS, forecasts: FORECASTS, actuals: ACTUALS, scores: RUBRIC_SCORES, CATCOLORS };
 
-test("All tab uses one capped board sorted by n_resolved then hit_rate", () => {
+test("All tab ranks only speakers with enough resolved claims, by interval lower bound", () => {
   const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
   assert.equal(vals.boardShowDomain, true);
   assert.ok(vals.rows.length <= 12);
   assert.ok(!("categoryBoards" in vals));
   assert.ok(!("showAllBoards" in vals));
+  assert.ok(vals.rows.every((r) => r.ranked && r.nResolved >= MIN_RANKED));
+  assert.ok(vals.unrankedRows.every((r) => !r.ranked && r.nResolved < MIN_RANKED));
+  const low = (r) => {
+    const sp = SPEAKERS.find((s) => s.id === r.speakerId);
+    const st = speakerStats(sp, FORECASTS, RUBRIC_SCORES);
+    return wilson(st.n_hit, st.n_resolved).low;
+  };
   for (let i = 1; i < vals.rows.length; i++) {
-    const prev = vals.rows[i - 1];
-    const cur = vals.rows[i];
-    assert.ok(
-      prev.nResolved > cur.nResolved ||
-        (prev.nResolved === cur.nResolved &&
-          (Number.parseFloat(prev.hitRate) || -1) >= (Number.parseFloat(cur.hitRate) || -1)),
-      `row ${i} out of order: ${prev.nResolved}/${prev.hitRate} vs ${cur.nResolved}/${cur.hitRate}`
-    );
+    assert.ok(low(vals.rows[i - 1]) >= low(vals.rows[i]), `row ${i} out of order`);
+    assert.equal(vals.rows[i].rank, i + 1);
   }
 });
 
@@ -48,19 +51,28 @@ test("single domain tab scopes one board to that domain", () => {
   const domainForecasts = FORECASTS.filter((f) => f.domain === "sports");
   for (const row of vals.rows) {
     const sp = SPEAKERS.find((s) => s.id === row.speakerId);
-    const st = speakerStats(sp, domainForecasts, SCORES);
+    const st = speakerStats(sp, domainForecasts, RUBRIC_SCORES);
     assert.equal(row.nResolved, st.n_resolved);
     assert.equal(row.pending, st.n_pending);
   }
 });
 
-test("board cap is 12 when more speakers exist", () => {
+test("board cap is 12 when more ranked speakers exist", () => {
   const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
   assert.ok(vals.rows.length <= 12);
-  if (SPEAKERS.length > 12) {
-    assert.equal(vals.rows.length, 12);
-    assert.equal(vals.boardCapped, true);
-  }
+  const nRanked = SPEAKERS.filter((sp) => speakerStats(sp, FORECASTS, RUBRIC_SCORES).n_resolved >= MIN_RANKED).length;
+  assert.equal(vals.rows.length, Math.min(12, nRanked));
+  assert.equal(vals.boardCapped, nRanked > 12);
+});
+
+test("sports picks are graded on the winner under the public rubric", () => {
+  const breech = SPEAKERS.find((s) => s.id === "john-breech");
+  if (!breech) return;
+  const strict = speakerStats(breech, FORECASTS, SCORES);
+  const graded = speakerStats(breech, FORECASTS, RUBRIC_SCORES);
+  assert.equal(strict.n_resolved, graded.n_resolved, "rubric never changes what is resolved");
+  assert.ok(graded.n_hit > strict.n_hit);
+  assert.equal(graded.n_strict_hit, strict.n_hit);
 });
 
 test("home exposes featured claim and recent resolved list", () => {

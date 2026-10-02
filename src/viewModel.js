@@ -3,6 +3,7 @@ import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
+import { wilson, MIN_RANKED, RUBRIC_VERSION, TOLERANCE, REL_TOLERANCE, HOLD_BAND_PTS } from "./rubric.js";
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -259,6 +260,11 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     error: score?.abs_error ?? null,
     ape: score?.ape ?? null,
     brier: score?.brier ?? null,
+    marginError: score?.margin_error ?? null,
+    strictStatus: score?.strict_status ?? null,
+    rule: score?.rule ?? null,
+    ruleText: ruleLabel(score, forecast.claim.unit),
+    baseline: score?.baseline ?? null,
   };
   renderPublicClaimCard(card);
   return card;
@@ -274,24 +280,44 @@ export function speakerStats(speaker, forecasts, scores) {
   let n_unscorable = 0;
   let n_void = 0;
   let n_hit = 0;
+  let n_strict_hit = 0;
+  let n_base = 0;
+  let n_base_hit = 0;
+  let n_base_model_hit = 0;
   const abs = [];
   const apes = [];
   const briers = [];
+  const margins = [];
+  const baseAbs = [];
+  const modelAbsOnBase = [];
   for (const f of mine) {
     if (f.scorable) n_scorable += 1;
-    const st = byF[f.id]?.status || (f.scorable ? "pending" : "unscorable");
+    const s = byF[f.id];
+    const st = s?.status || (f.scorable ? "pending" : "unscorable");
     if (st === "hit" || st === "miss") n_resolved += 1;
     if (st === "hit") n_hit += 1;
     if (st === "pending") n_pending += 1;
     if (st === "unscorable") n_unscorable += 1;
     if (st === "void") n_void += 1;
-    const s = byF[f.id];
+    if (s && (s.strict_status || s.status) === "hit") n_strict_hit += 1;
     if (s && s.abs_error != null) abs.push(s.abs_error);
     if (s && s.ape != null) apes.push(s.ape);
     if (s && s.brier != null) briers.push(s.brier);
+    if (s && s.margin_error != null) margins.push(s.margin_error);
+    if (s && s.baseline && (st === "hit" || st === "miss")) {
+      n_base += 1;
+      if (s.baseline.status === "hit") n_base_hit += 1;
+      if (st === "hit") n_base_model_hit += 1;
+      if (s.baseline.abs_error != null && s.abs_error != null) {
+        baseAbs.push(s.baseline.abs_error);
+        modelAbsOnBase.push(s.abs_error);
+      }
+    }
   }
   const hit_rate = n_resolved ? n_hit / n_resolved : null;
   const mean = (arr) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null);
+  const baseline_hit_rate = n_base ? n_base_hit / n_base : null;
+  const model_hit_rate_on_base = n_base ? n_base_model_hit / n_base : null;
   return {
     n_captured,
     n_scorable,
@@ -300,10 +326,101 @@ export function speakerStats(speaker, forecasts, scores) {
     n_unscorable,
     n_void,
     n_hit,
+    n_strict_hit,
     hit_rate,
+    interval: wilson(n_hit, n_resolved),
     mean_abs_error: mean(abs),
     mean_ape: mean(apes),
     mean_brier: mean(briers),
+    mean_margin_error: mean(margins),
+    n_base,
+    baseline_hit_rate,
+    model_hit_rate_on_base,
+    // Percentage points better (+) or worse (−) than the naive baseline on the same claims.
+    skill_pts: n_base ? (model_hit_rate_on_base - baseline_hit_rate) * 100 : null,
+    baseline_mae: mean(baseAbs),
+    model_mae_on_base: mean(modelAbsOnBase),
+  };
+}
+
+export function formatInterval(iv) {
+  if (!iv) return "";
+  return Math.round(iv.low * 100) + "–" + Math.round(iv.high * 100) + "%";
+}
+
+export function formatSkill(pts) {
+  if (pts == null || Number.isNaN(pts)) return "—";
+  const r = Math.round(pts);
+  if (r === 0) return "±0 pts";
+  return (r > 0 ? "+" : "−") + Math.abs(r) + " pts";
+}
+
+/** What Trooth captured for one speaker: counts, source hosts, and the date span. */
+export function speakerCoverage(speaker, forecasts) {
+  const mine = forecasts.filter((f) => f.speaker_id === speaker.id);
+  const hosts = new Map();
+  let first = null;
+  let last = null;
+  for (const f of mine) {
+    const h = hostnameFromUrl(f.source?.url) || "unknown";
+    hosts.set(h, (hosts.get(h) || 0) + 1);
+    const t = f.published_at;
+    if (t && (!first || t < first)) first = t;
+    if (t && (!last || t > last)) last = t;
+  }
+  return {
+    n: mine.length,
+    hosts: [...hosts.entries()].sort((a, b) => b[1] - a[1]).map(([host, n]) => ({ host, n })),
+    first,
+    last,
+  };
+}
+
+/** Plain-English rule used to grade a claim under the public rubric. */
+export function ruleLabel(score, unit) {
+  if (!score || !score.rule) return null;
+  if (score.rule === "winner") return "Graded on the picked winner. The predicted score is shown as margin error, not graded.";
+  if (score.rule === "exact") return "Graded on an exact match with the official print.";
+  if (score.rule === "rating vs benchmark") return `Buy-type ratings hit if the stock’s 12-month total return beats its sector benchmark; Sell-type if it trails; Hold-type if within ±${HOLD_BAND_PTS} points.`;
+  if (unit === "USD") return `Hit if the official close on the horizon date is within ${Math.round(REL_TOLERANCE.USD * 100)}% of the target.`;
+  if (unit === "degF") return `Hit if within ±${TOLERANCE.degF} °F of the official reading.`;
+  if (unit === "pct") return `Hit if within ±${TOLERANCE.pct} percentage points of the official print.`;
+  return "Graded " + score.rule + ".";
+}
+
+const DAY = 24 * 60 * 60 * 1000;
+
+/**
+ * Weekly digest: claims whose horizon fell in the last 7 days, the biggest misses,
+ * what resolves next, and the current top of the leaderboard. If nothing resolved
+ * this week, the window slides back to the most recent week that has results.
+ */
+export function buildDigest(cards, boardRows, now) {
+  const t = (c) => new Date(c.horizon).getTime();
+  const resolved = cards.filter((c) => (c.status === "hit" || c.status === "miss") && !Number.isNaN(t(c)) && t(c) <= now);
+  let end = now;
+  let inWindow = resolved.filter((c) => t(c) > end - 7 * DAY);
+  if (inWindow.length === 0 && resolved.length) {
+    end = Math.max(...resolved.map(t));
+    inWindow = resolved.filter((c) => t(c) > end - 7 * DAY && t(c) <= end);
+  }
+  const size = (c) => (c.error != null ? c.error : c.marginError != null ? c.marginError : 0);
+  const hits = inWindow.filter((c) => c.status === "hit").sort((a, b) => t(b) - t(a));
+  const misses = inWindow.filter((c) => c.status === "miss").sort((a, b) => size(b) - size(a) || t(b) - t(a));
+  const upcoming = cards
+    .filter((c) => c.status === "pending" && t(c) > now && t(c) <= now + 7 * DAY)
+    .sort((a, b) => t(a) - t(b));
+  return {
+    from: formatWhen(new Date(end - 7 * DAY + DAY).toISOString()),
+    to: formatWhen(new Date(end).toISOString()),
+    isCurrentWeek: end === now,
+    nResolved: inWindow.length,
+    nHit: hits.length,
+    hits: hits.slice(0, 6),
+    misses: misses.slice(0, 6),
+    upcoming: upcoming.slice(0, 6),
+    nUpcoming: upcoming.length,
+    leaders: boardRows.filter((r) => r.ranked).slice(0, 5),
   };
 }
 
@@ -376,7 +493,16 @@ export function buildVals(state, actions, data) {
         return { speaker: sp, stats: st, domainLabel };
       })
       .filter((row) => matchesQuery(row.speaker))
+      .map((row) => ({ ...row, ranked: row.stats.n_resolved >= MIN_RANKED }))
       .sort((a, b) => {
+        // Ranked speakers first, ordered by the lower bound of their 95% interval,
+        // so a 3-for-3 streak cannot outrank a long, solid record.
+        if (a.ranked !== b.ranked) return a.ranked ? -1 : 1;
+        if (a.ranked) {
+          const al = a.stats.interval ? a.stats.interval.low : -1;
+          const bl = b.stats.interval ? b.stats.interval.low : -1;
+          if (bl !== al) return bl - al;
+        }
         if (b.stats.n_resolved !== a.stats.n_resolved) return b.stats.n_resolved - a.stats.n_resolved;
         const ar = a.stats.hit_rate == null ? -1 : a.stats.hit_rate;
         const br = b.stats.hit_rate == null ? -1 : b.stats.hit_rate;
@@ -384,10 +510,13 @@ export function buildVals(state, actions, data) {
         return a.speaker.name.localeCompare(b.speaker.name);
       });
 
-    return statsRows.map((row, i) => {
+    let rank = 0;
+    return statsRows.map((row) => {
       const cm = CATCOLORS[row.domainLabel] || CATCOLORS.Finance;
+      if (row.ranked) rank += 1;
       return {
-        rank: i + 1,
+        rank: row.ranked ? rank : null,
+        ranked: row.ranked,
         speakerId: row.speaker.id,
         name: row.speaker.name,
         org: row.speaker.org,
@@ -398,6 +527,11 @@ export function buildVals(state, actions, data) {
         catTint: cm.tint,
         nResolved: row.stats.n_resolved,
         hitRate: formatPct(row.stats.hit_rate),
+        interval: row.ranked ? formatInterval(row.stats.interval) : "",
+        skill: formatSkill(row.stats.skill_pts),
+        skillPositive: row.stats.skill_pts != null && row.stats.skill_pts > 0.5,
+        skillNegative: row.stats.skill_pts != null && row.stats.skill_pts < -0.5,
+        mae: row.stats.mean_abs_error == null ? null : formatMetric(row.stats.mean_abs_error, 1),
         pending: row.stats.n_pending,
         open: () => openSpeaker(row.speaker.id),
       };
@@ -406,7 +540,9 @@ export function buildVals(state, actions, data) {
 
   const BOARD_CAP = 12;
   const allRows = buildBoardRows(cat);
-  const rows = allRows.slice(0, BOARD_CAP);
+  const rankedRows = allRows.filter((r) => r.ranked);
+  const rows = rankedRows.slice(0, BOARD_CAP);
+  const unrankedRows = allRows.filter((r) => !r.ranked && r.nResolved + r.pending > 0);
 
   const scopedCards = cards.filter((c) => scope.includes(c.domain));
   const recentResolved = scopedCards
@@ -514,7 +650,25 @@ export function buildVals(state, actions, data) {
       const cm = CATCOLORS[domainLabel] || CATCOLORS.Finance;
       const track = cards.filter((c) => c.speakerId === sp.id);
       const boards = buildSpeakerScoreboards(sp, forecasts, scores);
+      const cov = speakerCoverage(sp, forecasts);
       p = {
+        interval: formatInterval(st.interval),
+        ranked: st.n_resolved >= MIN_RANKED,
+        minRanked: MIN_RANKED,
+        strictHitRate: formatPct(st.n_resolved ? st.n_strict_hit / st.n_resolved : null),
+        rescored: st.n_strict_hit !== st.n_hit,
+        skill: formatSkill(st.skill_pts),
+        nBase: st.n_base,
+        baselineHitRate: formatPct(st.baseline_hit_rate),
+        modelHitRateOnBase: formatPct(st.model_hit_rate_on_base),
+        baselineMae: formatMetric(st.baseline_mae, 1),
+        modelMaeOnBase: formatMetric(st.model_mae_on_base, 1),
+        marginError: formatMetric(st.mean_margin_error, 1),
+        coverage: {
+          n: cov.n,
+          hosts: cov.hosts,
+          span: cov.first ? formatWhen(cov.first) + (cov.last && cov.last !== cov.first ? " – " + formatWhen(cov.last) : "") : "—",
+        },
         id: sp.id,
         name: sp.name,
         org: sp.org,
@@ -627,12 +781,19 @@ export function buildVals(state, actions, data) {
       pending: nPending,
     },
     boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
-    resultCount: (allRows.length === 0 ? "0 speakers" : rows.length + (rows.length === 1 ? " speaker" : " speakers") + (allRows.length > BOARD_CAP ? " (top " + BOARD_CAP + ")" : "")),
-    rankNote: "resolved first, then hit rate — pending is not a miss",
+    resultCount: (rows.length === 0 ? "0 ranked" : rows.length + " ranked" + (rankedRows.length > BOARD_CAP ? " (top " + BOARD_CAP + " of " + rankedRows.length + ")" : "")),
+    rankNote: "ranked by the low end of the 95% range · min " + MIN_RANKED + " resolved · pending is not a miss",
     rows,
+    unrankedCount: unrankedRows.length,
+    unrankedRows,
+    minRanked: MIN_RANKED,
+    rubricVersion: RUBRIC_VERSION,
+    goDigest: actions.goDigest,
+    isDigest: s.view === "digest",
+    digest: s.view === "digest" ? buildDigest(cards, allRows, now) : null,
     boardShowDomain: cat === "All",
-    boardCapped: allRows.length > BOARD_CAP,
-    noResults: allRows.length === 0,
+    boardCapped: rankedRows.length > BOARD_CAP,
+    noResults: rows.length === 0,
     recentResolved,
     featuredClaim,
     p,

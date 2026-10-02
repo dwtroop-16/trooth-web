@@ -3,13 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Trooth — public forecasts scored against official prints.",
+  "description": "Trooth \u2014 public forecasts scored against official prints.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "test": "node --test src/*.test.js",
-    "build:live-data": "node scripts/build-live-data.mjs"
+    "build:live-data": "node scripts/build-live-data.mjs",
+    "build:spa": "vite build"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",
@@ -17,6 +18,9 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@expo-google-fonts/ibm-plex-mono": "^0.4.1",
+    "@expo-google-fonts/newsreader": "^0.4.1",
+    "@resvg/resvg-js": "^2.6.2",
     "@vitejs/plugin-react": "^4.3.4",
     "vite": "^5.4.11"
   }

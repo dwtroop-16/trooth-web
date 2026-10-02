@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { buildVals } from "./viewModel.js";
-import { loadData, submitSourceTip } from "./dataSource.js";
+import { loadData, submitSourceTip, BUNDLED } from "./dataSource.js";
 import { hasSupabase } from "./lib/flags.js";
-import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
@@ -16,6 +15,7 @@ const PredictionDetail = lazy(() => import("./components/PredictionDetail.jsx"))
 const Method = lazy(() => import("./components/Method.jsx"));
 const Changelog = lazy(() => import("./components/Changelog.jsx"));
 const Claims = lazy(() => import("./components/Claims.jsx"));
+const Digest = lazy(() => import("./components/Digest.jsx"));
 const LogModal = lazy(() => import("./components/LogModal.jsx"));
 const AccountModal = lazy(() => import("./components/AccountModal.jsx"));
 const Toast = lazy(() => import("./components/Toast.jsx"));
@@ -53,15 +53,6 @@ function initialFromLocation() {
     accountSubmitting: false,
   };
 }
-
-const BUNDLED = {
-  speakers: SPEAKERS,
-  forecasts: FORECASTS,
-  actuals: ACTUALS,
-  scores: SCORES,
-  CATCOLORS,
-  source: "live",
-};
 
 function SuspenseFallback() {
   return (
@@ -160,6 +151,7 @@ export default function App() {
   const goHome = () => navigate(pathFor("home"));
   const goMethod = () => navigate(pathFor("method"));
   const goChangelog = () => navigate(pathFor("changelog"));
+  const goDigest = () => navigate(pathFor("digest"));
   const setCat = (c) => {
     const cat = normalizeDomain(c);
     setStateRaw((prev) => {
@@ -369,6 +361,7 @@ export default function App() {
       goMethod,
       goChangelog,
       goClaims,
+      goDigest,
       submit,
       account,
       openModal: openTipModal,
@@ -382,13 +375,14 @@ export default function App() {
     else if (vals.isClaims) title = "Claims · Trooth";
     else if (vals.isMethod) title = "Method · Trooth";
     else if (vals.isChangelog) title = "Changelog · Trooth";
+    else if (vals.isDigest) title = "This week · Trooth";
     else if (vals.isProfile && vals.p) title = vals.p.name + " · Trooth";
     else if (vals.isPrediction && vals.d) {
       const claim = String(vals.d.claimText || "");
       title = (claim.length > 48 ? claim.slice(0, 48) : claim) + " · Trooth";
     }
     document.title = title;
-  }, [vals.isHome, vals.isClaims, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.p, vals.d]);
+  }, [vals.isHome, vals.isClaims, vals.isMethod, vals.isChangelog, vals.isDigest, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.p, vals.d]);
 
   return (
     <div style={css("min-height:100vh;background:var(--paper);font-family:Archivo,sans-serif;color:var(--ink);display:flex;flex-direction:column;")}>
@@ -403,6 +397,7 @@ export default function App() {
           {vals.isMethod && <Method goHome={goHome} goChangelog={goChangelog} />}
           {vals.isChangelog && <Changelog goHome={goHome} />}
           {vals.isClaims && <Claims vals={vals} openClaim={openClaim} />}
+          {vals.isDigest && vals.digest && <Digest vals={vals} openClaim={openClaim} />}
           {vals.modal && <LogModal vals={vals} />}
           {vals.accountModal && <AccountModal vals={vals} />}
           {vals.toast && <Toast text={vals.toast} />}
