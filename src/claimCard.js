@@ -1,4 +1,5 @@
 import { sourceLinkParts } from "./linkPolicy.js";
+import { sourceCreditFor, speakerCreditFor } from "./sourceCredits.js";
 
 // Public claim card: the eight required fields, in order.
 // Renderer throws if any required field is missing. Grade is rubric-only.
@@ -69,9 +70,13 @@ function hostOf(url) {
   }
 }
 
-/** Claim-source line as ordered parts (link text is the source host), after the link rules. */
+/**
+ * Claim-source line as ordered parts, after the link rules. Link text is the publisher credit
+ * (Legal 05u: "ESPN via TSN", "Insider Monkey via Finviz", ...) or, by default, the source host.
+ */
 export function claimSourceParts(card) {
-  return sourceLinkParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+  const credit = sourceCreditFor(card.sourceUrl);
+  return sourceLinkParts(card.sourceUrl, credit?.credit || hostOf(card.sourceUrl) || card.sourceUrl);
 }
 
 /**
@@ -129,6 +134,8 @@ export function renderPublicClaimCard(card) {
     actualObservedAt: card.actualObservedAt ?? null,
     actualRetentionNote: card.actualRetentionNote ?? null,
     sourceParts: claimSourceParts(card),
+    sourceCredit: sourceCreditFor(card.sourceUrl)?.credit ?? null,
+    speakerLine: speakerCreditFor(card),
     actualSourceParts: actualSourceParts(card),
     grade: card.grade,
     fieldsInOrder,
