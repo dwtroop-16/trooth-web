@@ -1530,8 +1530,6 @@
     "fct_01M36VSXRCXMP5QKNESN5YGMK9",
     "fct_01M36VSXRC7FP803R8G4XC97SE",
     "fct_01M36VSXRCW7N76CDWEW8VP71W",
-    "fct_01M36VSXRCT1AM98TZ41XYNEGB",
-    "fct_01M36VSXRCKH7EJWETQ976FCPS",
     "fct_01M36VSXRCVPRDHZE4NZMVC0F8",
     "fct_01M36VSXRCNKG1FSZ231G91Y56",
     "fct_01M36VSXRCFDRRDS4YE6X4HH83",
@@ -1548,7 +1546,6 @@
     "fct_01M36VSXRDWR1VQ2EHWGJKA4K8",
     "fct_01M377XV8XRSHSRTDWS1P3S8H9",
     "fct_01M377XV8XM6RQ0ZBHNATHVA28",
-    "fct_01M379C7DPMMBRWRSWKR771Y5V",
     "fct_01M379C7DPV0KWPNT8EXWYKRSG",
     "fct_01M379C7DPWYKN1TGHDHCFCKER",
     "fct_01M379C7DPP27FHQZHWNW5J3EZ",
@@ -1570,11 +1567,6 @@
     "fct_01M379C7DPVFG3S5D5HF4BNDFJ",
     "fct_01M39S9KYM0TDQHHX6BD48GSHR",
     "fct_01M39S9KYNEVECS013TMQBSR12",
-    "fct_01M39TF7XG33HWKHV14VY45MVC",
-    "fct_01M39TF7XGDRGD9KG5G4DF7JK0",
-    "fct_01M39TF7XGJ6228BM5H88GFXS2",
-    "fct_01M39TF7XH5BT6GQBW90RF1PJD",
-    "fct_01M39TF7XH4H2SXG62ZBE9JTEP",
     "fct_01M39TF7XH3G1TNCQG4ZYM69QT",
     "fct_01M39TF7XHM4ADQ9SDB1CEWXG3",
     "fct_01M39TF7XHRHXFEB74K3QDC04V",
@@ -1648,6 +1640,18 @@
       "review_id": "rr_01M3Y8M6HVRKASBJ401XSQ4TY8",
       "detail": "On Oct. 2, 2026, we corrected the date said on a rating card for Christopher Rolland (Susquehanna) on Broadcom: \"Rolland (Susquehanna): Positive on Broadcom.\" The card showed Dec. 4, 2025, the day the article says the analyst acted. Our rule is that the date said on an analyst card is the date the article we cite was published, New York time, which here is Dec. 8, 2025. A 12-month price-target deadline counts from that date and moves to the next trading day if needed, so the deadline moved from Dec. 4, 2026 to Dec. 8, 2026. The card is Unscorable, so no grade changed. Its wording and source are unchanged. This affects only this card and Christopher Rolland's profile.",
       "reason_original": "horizon_end_corrected"
+    },
+    {
+      "at": "2026-10-02T12:19:17Z",
+      "reason": "actual_voided",
+      "review_id": "rr_01M3Y9HHEVMGSE1AGGWEM6B6AS",
+      "detail": "On Oct. 2, 2026, we withdrew 15 daily rainfall totals for Central Park in New York City that we had listed as official results. Each total was a sum we worked out ourselves from the National Weather Service's individual readings during the day. It was not an official daily figure published by the weather service, so it does not meet our rule that results must be official. The withdrawn totals are for Aug. 27, 28, 30 and 31 and Sept. 1, 2, 3, 4, 10, 13, 16, 17, 20, 21 and 22, 2026. No card uses any of these results, so no cards were affected and no grades changed."
+    },
+    {
+      "at": "2026-10-02T12:21:14Z",
+      "reason": "legal_scope",
+      "review_id": "rr_01M3Y9HHF5FG228H6QKDRK9TKN",
+      "detail": "On Oct. 2, 2026, we changed the source link for the official result of the 2025 Heisman Trophy (won by Fernando Mendoza) on 9 cards. To fit our rules on which sources we can use, the result now links to Indiana University Athletics' report of the award. The result itself is unchanged, so no grades changed. All 9 cards are still graded Miss. This affects only these cards."
     }
   ],
   "retractions": [
@@ -1674,6 +1678,78 @@
       "reason": "rating_not_in_broker_wording",
       "review_id": "rr_01M3Y8M6HVP7C5M5JHD7VBRD52",
       "detail": "We removed a rating card for Stacy Rasgon (Bernstein) on Intel: \"Rasgon (Bernstein): Neutral on Intel.\" (dated Sept. 21, 2026). Our rules require an analyst's rating to be recorded in the broker's own published wording. This card's \"Neutral\" came from a third-party summary rather than from Bernstein's own wording, so it does not meet that rule. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and his Unscorable count goes down by one. The card was Unscorable, so no grade or score changed. His related price-target card on Intel stays on the site and is still Pending. Today we also removed the word \"Neutral\" from that card, which now reads \"Rasgon (Bernstein): Intel PT unchanged at USD 110.\" (see the separate entry)."
+    },
+    {
+      "id": "fct_01M36VSXRCT1AM98TZ41XYNEGB",
+      "forecast_id": "fct_01M36VSXRCT1AM98TZ41XYNEGB",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJHETB51R0N7NY700E",
+      "detail": "We removed a price-target card for Harlan Sur (JPMorgan) on Nvidia (NVDA): \"Sur (JPMorgan): raises Nvidia PT to $215 from $170.\" (dated Aug. 28, 2025). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Harlan Sur's profile, on the Claims page or in search, and his Pending count goes down by one. The card's deadline (Aug. 28, 2026) had passed, but the card had not been graded yet and was still Pending, so no grade or score changed. His rating card on Nvidia from the same day, \"Sur (JPMorgan): Overweight on Nvidia.\", comes from a different source and stays on the site; it is Unscorable."
+    },
+    {
+      "id": "fct_01M36VSXRCKH7EJWETQ976FCPS",
+      "forecast_id": "fct_01M36VSXRCKH7EJWETQ976FCPS",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJWV71Z2B76S8SV4BT",
+      "detail": "We removed a price-target card for Harlan Sur (JPMorgan) on Nvidia (NVDA): \"Sur (JPMorgan): raises Nvidia PT to $320 from $280.\" (dated Aug. 27, 2026). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Harlan Sur's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. His rating card on Nvidia from the same day, \"Sur (JPMorgan): Overweight on Nvidia.\", comes from a different source and stays on the site; it is Unscorable."
+    },
+    {
+      "id": "fct_01M379C7DPMMBRWRSWKR771Y5V",
+      "forecast_id": "fct_01M379C7DPMMBRWRSWKR771Y5V",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJ98BHEDJ1G75NRVMA",
+      "detail": "We removed a price-target card for Srini Pajjuri (RBC Capital Markets) on Nvidia (NVDA): \"Pajjuri (RBC): raises Nvidia PT to $330 from $300.\" (dated Aug. 27, 2026). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Srini Pajjuri's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. This affects only this card and Srini Pajjuri's profile."
+    },
+    {
+      "id": "fct_01M39TF7XG33HWKHV14VY45MVC",
+      "forecast_id": "fct_01M39TF7XG33HWKHV14VY45MVC",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJ178EHPCCJD9HZ0EV",
+      "detail": "We removed a price-target card for Stacy Rasgon (Bernstein) on Nvidia (NVDA): \"Rasgon (Bernstein): Nvidia PT unchanged at USD 400.\" (dated Sept. 21, 2026). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. His separate Nvidia price-target card ($400) and rating card (Outperform), both dated Sept. 22, 2026, come from a different source and stay on the site."
+    },
+    {
+      "id": "fct_01M39TF7XGDRGD9KG5G4DF7JK0",
+      "forecast_id": "fct_01M39TF7XGDRGD9KG5G4DF7JK0",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJJ0K79QYDS8KXWQ9Z",
+      "detail": "We removed a price-target card for Stacy Rasgon (Bernstein) on Broadcom (AVGO): \"Rasgon (Bernstein): Broadcom PT unchanged at USD 575.\" (dated Sept. 21, 2026). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. We also removed his Broadcom price-target card dated Sept. 14, 2026 today for the same reason (see the separate entry). His separate Broadcom price-target card ($575) and rating card (Outperform), both dated Sept. 22, 2026, come from a different source and stay on the site."
+    },
+    {
+      "id": "fct_01M39TF7XGJ6228BM5H88GFXS2",
+      "forecast_id": "fct_01M39TF7XGJ6228BM5H88GFXS2",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJ8CZYHRWYD654HRF4",
+      "detail": "We removed a price-target card for Stacy Rasgon (Bernstein) on Broadcom (AVGO): \"Rasgon (Bernstein): Broadcom PT unchanged at USD 575.\" (dated Sept. 14, 2026). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. We also removed his Broadcom price-target card dated Sept. 21, 2026 today for the same reason (see the separate entry). His separate Broadcom price-target card ($575) and rating card (Outperform), both dated Sept. 22, 2026, come from a different source and stay on the site."
+    },
+    {
+      "id": "fct_01M39TF7XH5BT6GQBW90RF1PJD",
+      "forecast_id": "fct_01M39TF7XH5BT6GQBW90RF1PJD",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJRR829Z6V4A6W7ER5",
+      "detail": "We removed a price-target card for Stacy Rasgon (Bernstein) on Intel (INTC): \"Rasgon (Bernstein): Intel PT unchanged at USD 110.\" (dated Sept. 21, 2026). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Stacy Rasgon's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. Earlier today we removed the word \"Neutral\" from this card and removed his separate rating card on Intel (see the separate entries). With this removal, none of his Intel cards from that day remain on the site."
+    },
+    {
+      "id": "fct_01M39TF7XH4H2SXG62ZBE9JTEP",
+      "forecast_id": "fct_01M39TF7XH4H2SXG62ZBE9JTEP",
+      "at": "2026-10-02T12:34:09Z",
+      "reason": "legal_hold",
+      "review_id": "rr_01M3Y9Q4YJRTW8MGKE8W79D95Q",
+      "detail": "We removed a price-target card for Srini Pajjuri (RBC Capital Markets) on Micron (MU): \"Pajjuri (RBC): Micron PT unchanged at USD 1500.\" (dated Sept. 18, 2026). We removed this card because its source's terms don't allow our use. Readers will no longer see this card on Srini Pajjuri's profile, on the Claims page or in search, and his Pending count goes down by one. The card was still Pending, so no grade or score changed. His other Micron cards, from other dates and other sources, stay on the site."
     }
-  ]
+  ],
+  "resource_pending": {
+    "count": 358,
+    "deadline": "2026-11-01",
+    "by_status": {
+      "hit": 4,
+      "miss": 354
+    }
+  }
 }
