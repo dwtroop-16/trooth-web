@@ -58,6 +58,14 @@ const ACTUAL_FILES = [
   "data/actuals/ncaa-fbs-2025-cfp1-cfp4.jsonl",
   "data/actuals/fred-macro-2025.jsonl",
   "data/actuals/politics-2024-president.jsonl",
+  "data/actuals/nfl-2025-w2.jsonl",
+  "data/actuals/fbs-2025-untyped-american.jsonl",
+  "data/actuals/fbs-2025-untyped-big-12.jsonl",
+  "data/actuals/fbs-2025-untyped-big-ten.jsonl",
+  "data/actuals/fbs-2025-untyped-conference-usa.jsonl",
+  "data/actuals/fbs-2025-untyped-independent.jsonl",
+  "data/actuals/fbs-2025-untyped-mac.jsonl",
+  "data/actuals/fbs-2025-untyped-sec.jsonl",
 ];
 const SCORES_FILE = "scorer/out/scores.jsonl";
 const SPEAKERS_REG = "speakers-v1.json";
@@ -269,13 +277,14 @@ function build() {
   for (const rel of ACTUAL_FILES) {
     actualsRaw.push(...readJsonl(join(ROOT, rel)));
   }
-  // Prefer first resolved per match_key; keep all unique ids
-  const actualByKey = new Map();
+  // Keep all unique actual ids (scores join by actual_id). Same match_key can
+  // appear in early week dumps and later typed 05o files with different ids.
+  const actualById = new Map();
   for (const a of actualsRaw) {
-    if (!a.match_key) continue;
-    const prev = actualByKey.get(a.match_key);
+    if (!a?.id) continue;
+    const prev = actualById.get(a.id);
     if (!prev || (a.status === "resolved" && prev.status !== "resolved")) {
-      actualByKey.set(a.match_key, a);
+      actualById.set(a.id, a);
     }
   }
 
@@ -396,7 +405,7 @@ function build() {
     }
   }
 
-  const ACTUALS = [...actualByKey.values()].map(mapActual);
+  const ACTUALS = [...actualById.values()].map(mapActual);
   const SCORES = scoresRaw.map(mapScore);
 
   const statusCounts = {};
