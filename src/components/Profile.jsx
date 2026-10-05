@@ -1,6 +1,7 @@
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import Pager, { PageStatus } from "./Pager.jsx";
 
 function ProfileStatTable({ title, columns, rows, emptyLabel }) {
   const rowClass =
@@ -102,47 +103,70 @@ export default function Profile({ vals, openClaim }) {
         </div>
       </div>
 
-      {divisionRows.length > 0 ? (
-        <div style={css("margin-top:28px;")}>
-          <ProfileStatTable
-            title="By sport / category"
-            columns={[
-              { key: "label", label: "Division" },
-              { key: "n_resolved", label: "Resolved" },
-              { key: "hit_rate", label: "Hit rate" },
-              { key: "n_pending", label: "Pending" },
-            ]}
-            rows={divisionRows}
-          />
-        </div>
+      {/* Summary and track record come first; the division / team breakdown is collapsed by default. */}
+      {divisionRows.length > 0 || showTeamSection ? (
+        <details className="trooth-breakdown" style={css("margin-top:18px;background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:0 16px;")}>
+          <summary style={css("cursor:pointer;padding:12px 0;font-size:14px;font-weight:600;color:var(--ink);")}>
+            Breakdown{divisionRows.length > 0 ? " · by " + (p.hasSports ? "sport / category" : "category") : ""}
+            {showTeamSection ? " and by team" : ""}
+          </summary>
+          <div style={css("padding:0 0 16px;")}>
+            {divisionRows.length > 0 ? (
+              <div style={css("margin-top:6px;")}>
+                <ProfileStatTable
+                  title="By sport / category"
+                  columns={[
+                    { key: "label", label: "Division" },
+                    { key: "n_resolved", label: "Resolved" },
+                    { key: "hit_rate", label: "Hit rate" },
+                    { key: "n_pending", label: "Pending" },
+                  ]}
+                  rows={divisionRows}
+                />
+              </div>
+            ) : null}
+
+            {showTeamSection ? (
+              <div style={css("margin-top:22px;")}>
+                <ProfileStatTable
+                  title="By team"
+                  columns={[
+                    { key: "label", label: "Team" },
+                    { key: "division", label: "Division" },
+                    { key: "n_resolved", label: "Resolved" },
+                    { key: "hit_rate", label: "Hit rate" },
+                    { key: "n_pending", label: "Pending" },
+                  ]}
+                  rows={teamRows}
+                  emptyLabel="No sports team breakdown yet."
+                />
+              </div>
+            ) : null}
+          </div>
+        </details>
       ) : null}
 
-      {showTeamSection ? (
-        <div style={css("margin-top:22px;")}>
-          <ProfileStatTable
-            title="By team"
-            columns={[
-              { key: "label", label: "Team" },
-              { key: "division", label: "Division" },
-              { key: "n_resolved", label: "Resolved" },
-              { key: "hit_rate", label: "Hit rate" },
-              { key: "n_pending", label: "Pending" },
-            ]}
-            rows={teamRows}
-            emptyLabel="No sports team breakdown yet."
-          />
-        </div>
-      ) : null}
-
-      <h3 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:28px 0 12px;color:var(--ink);")}>Track record</h3>
+      <h2 id="trooth-track-record" tabIndex={-1} style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:28px 0 6px;color:var(--ink);outline:none;")}>Track record</h2>
       {p.track.length === 0 ? (
         <div style={css("color:var(--muted);font-size:14px;")}>No captured forecasts for this speaker.</div>
       ) : (
-        <div style={css("display:flex;flex-direction:column;gap:10px;")}>
-          {p.track.map((card) => (
-            <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
-          ))}
-        </div>
+        <>
+          <div style={css("margin-bottom:12px;")}>
+            <PageStatus paging={p.trackPaging} noun="forecasts" live />
+          </div>
+          <div style={css("display:flex;flex-direction:column;gap:10px;")}>
+            {p.trackPaging.items.map((card) => (
+              <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
+            ))}
+          </div>
+          <Pager
+            paging={p.trackPaging}
+            hrefFor={p.trackPageHref}
+            onPage={vals.setPage}
+            label="Track record pages"
+            focusId="trooth-track-record"
+          />
+        </>
       )}
     </main>
   );

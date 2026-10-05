@@ -115,3 +115,40 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
     font-size: 12px;
   }
 }
+
+/* Phones (PR D): two-line leaderboard rows. Line 1 is the full name (never cut to one letter),
+   line 2 is "Resolved N · rate · N pending". The desktop number columns and header row hide. */
+.trooth-board-mobile-stats { display: none; }
+@media (max-width: 600px) {
+  .trooth-board-row,
+  .trooth-board-row--scoped {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .trooth-board-head,
+  .trooth-board-num,
+  .trooth-board-domain { display: none; }
+  .trooth-board-name {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    line-height: 1.25;
+  }
+  .trooth-board-org { display: none; }
+  .trooth-board-mobile-stats { display: block; }
+}
+
+/* Phones (PR D): "Suggest a source" leaves the header; it stays in the footer. */
+@media (max-width: 720px) {
+  .trooth-header-tip { display: none !important; }
+}
+
+/* Speaker page breakdown (collapsed by default). */
+.trooth-breakdown > summary { list-style: revert; }
+.trooth-breakdown[open] > summary { border-bottom: 1px solid var(--row); margin-bottom: 10px; }
+
+/* Pager: phones show "← Previous · Page 3 of 23 · Next →"; wider screens show the page numbers. */
+.trooth-pager-of { display: none; }
+@media (max-width: 420px) {
+  .trooth-pager-num { display: none; }
+  .trooth-pager-of { display: list-item; }
+}
