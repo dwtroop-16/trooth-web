@@ -1,7 +1,8 @@
 import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
-import { pathFor, normalizeDomain } from "./router.js";
+import { pathFor, pathForClaims, pathForProfile, normalizeDomain } from "./router.js";
+import { paginate, PAGE_SIZE } from "./paging.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -490,6 +491,7 @@ export function buildVals(state, actions, data) {
     });
   }
   claimList = sortClaimList(claimList);
+  const claimPaging = paginate(claimList, s.view === "claims" ? s.page : 1, PAGE_SIZE);
 
   const speakerOptions = [
     { id: "All", name: "All speakers" },
@@ -513,6 +515,7 @@ export function buildVals(state, actions, data) {
       const domainLabel = sp.domain === "finance" ? "Finance" : sp.domain[0].toUpperCase() + sp.domain.slice(1);
       const cm = CATCOLORS[domainLabel] || CATCOLORS.Finance;
       const track = cards.filter((c) => c.speakerId === sp.id);
+      const trackPaging = paginate(track, s.page, PAGE_SIZE);
       const boards = buildSpeakerScoreboards(sp, forecasts, scores);
       p = {
         id: sp.id,
@@ -536,6 +539,8 @@ export function buildVals(state, actions, data) {
         ape: formatMetric(st.mean_ape, 3),
         brier: formatMetric(st.mean_brier, 3),
         track,
+        trackPaging,
+        trackPageHref: (n) => pathForProfile(sp.id, n),
         divisionBoards: boards.divisionBoards,
         teamBoards: boards.teamBoards,
         hasSports: boards.hasSports,
@@ -603,6 +608,13 @@ export function buildVals(state, actions, data) {
     isNotFound: s.view === "notfound" || (s.view === "profile" && !p) || (s.view === "prediction" && !d),
     matchingClaims,
     claimList,
+    claimPaging,
+    claimPageHref: (n) =>
+      pathForClaims({ q: s.q, domain: cat, grade: claimStatus, speaker: claimSpeaker, horizon: claimHorizon, page: n }),
+    setPage: (n) => {
+      if (typeof actions.setPage === "function") actions.setPage(n);
+      else setState({ page: n });
+    },
     claimListCount: claimList.length + (claimList.length === 1 ? " claim" : " claims"),
     claimStatus,
     setClaimStatus: (v) => {
