@@ -214,11 +214,6 @@ function officialFor(forecast) {
   return allow;
 }
 
-/**
- * Scorer review hold on a score row. The Scorer emits a plain `review_hold: true` (KNYC source gate)
- * or an object { reason, flag_target, opened_at } (holds.jsonl). Returns { reason } (reason may be
- * null) or null when the row is not held.
- */
 /** Default reason for an In review card with no public reason (reason-labels status map). */
 export const DEFAULT_IN_REVIEW_REASON = "needs_review";
 
@@ -232,6 +227,11 @@ export function publicCardReason(raw) {
   return /^Yes\b/.test(String(REASON_LABELS[canon]?.shown || ""));
 }
 
+/**
+ * Scorer review hold on a score row. The Scorer emits a plain `review_hold: true` (KNYC source gate)
+ * or an object { reason, flag_target, opened_at } (holds.jsonl). Returns { reason } (reason may be
+ * null) or null when the row is not held.
+ */
 export function reviewHoldOf(score) {
   const h = score?.review_hold;
   if (h === true) return { reason: null };
