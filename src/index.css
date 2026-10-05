@@ -116,7 +116,7 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
   }
 }
 
-/* Home (PR B): five-grade key and the Just graded / Coming due lists. */
+/* Home (PR B): five-grade key and the Recently due / Coming due lists. */
 .trooth-grade-key {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

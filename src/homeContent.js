@@ -18,17 +18,15 @@ export const GRADE_KEY = [
 ].map((g) => ({ ...g, label: publicGrade(g.status) }));
 
 /**
- * One line per domain tab: what a Hit means there.
- * Sports is owner-specified (exact match on a score pick). Weather, Finance and Politics are derived
- * from method-copy-v1 ("What counts as the result", "Hit or miss") and rubric-v1 (canonical equality
- * at the print's precision; a stated range is a Hit when the print lands inside it).
+ * One line per domain tab: what a Hit means there. Architect-approved wording (2026-10-04); keep it
+ * character for character. Must never name a data vendor.
  */
 export const DOMAIN_HIT_LINES = {
-  All: "A Hit means the claim matched the official result exactly. Close does not count, and Pending is not a miss.",
+  All: "A Hit means the forecast matched the official result exactly, or landed inside a range the speaker stated. Close does not count, and Pending is not a miss.",
   Sports: "A score pick is a Hit only if the official box score matches it exactly. Most exact-score picks miss.",
-  Weather: "A temperature forecast is a Hit only if it matches the official NWS station reading to the whole degree.",
+  Weather: "A forecast is a Hit only if it matches the official NWS Central Park reading exactly as printed: whole degrees for temperature.",
   Finance:
-    "A number is a Hit only if it matches the official published figure exactly, or lands inside the range the speaker gave.",
+    "A number is a Hit only if it matches the official figure exactly as printed (for example 2.2%, or a closing price to the cent), or falls inside a range the speaker stated. Buy, Hold and Sell ratings can't be checked against an official result, so they show as Unscorable.",
   Politics:
     "A pick is a Hit only if it matches the certified result: a state or federal canvass, or an official roll call. A media call is not the result.",
 };
@@ -44,11 +42,17 @@ const time = (iso) => {
 };
 
 /**
- * "Just graded": Hit / Miss cards, newest official result first. One fixed rule for every speaker
- * and both grades: sort by the forecast's horizon (the date its official result came due), newest
- * first; ties by card id. Not curated, not filtered toward Hits.
+ * "Recently due": Hit / Miss cards, newest due date first. One fixed rule for every speaker and both
+ * grades: sort by the forecast's horizon (the date its official result came due), newest first; ties
+ * by card id. Not curated, not filtered toward Hits.
+ *
+ * TODO: switch this list (and its heading) back to "Just graded", sorted by grading time, once scores
+ * carry a real per-score grading timestamp. Today every score's scored_at is the same batch re-score
+ * time and sports observed_at is the ingest time, so neither says when a card was actually graded.
  */
-export function justGraded(cards, limit = 5) {
+export const RECENTLY_DUE_TITLE = "Recently due";
+
+export function recentlyDue(cards, limit = 5) {
   return (cards || [])
     .filter((c) => c.status === "hit" || c.status === "miss")
     .filter((c) => time(c.horizon) != null)
@@ -58,18 +62,43 @@ export function justGraded(cards, limit = 5) {
 
 /**
  * "Coming due": Pending cards whose horizon has not passed yet, nearest horizon first; ties by id.
- * Shows no countdown, odds or predicted grade.
+ * Shows no countdown, odds or predicted grade. "Not passed" matches the /claims "Pending horizon"
+ * facet (horizon later than now).
  */
 export function comingDue(cards, now = Date.now(), limit = 5) {
   return (cards || [])
     .filter((c) => c.status === "pending")
     .filter((c) => {
       const t = time(c.horizon);
-      return t != null && t >= now;
+      return t != null && t > now;
     })
     .sort((a, b) => time(a.horizon) - time(b.horizon) || String(a.id).localeCompare(String(b.id)))
     .slice(0, limit);
 }
+
+/**
+ * Pending cards whose horizon has passed (waiting on the official print). Same definition as the
+ * /claims facets grade=pending & horizon=past: status pending (not In review) and horizon <= now.
+ */
+export function overdueCount(cards, now = Date.now()) {
+  return (cards || []).filter((c) => {
+    if (c.status !== "pending") return false;
+    const t = time(c.horizon);
+    return t != null && t <= now;
+  }).length;
+}
+
+/** "1 forecast is waiting on an official result" / "12 forecasts are waiting on an official result"; "" for 0. */
+export function overdueLabel(n) {
+  const k = Number(n) || 0;
+  if (k <= 0) return "";
+  return k === 1
+    ? "1 forecast is waiting on an official result"
+    : `${k.toLocaleString("en-US")} forecasts are waiting on an official result`;
+}
+
+/** The /claims facets that list exactly the overdue Pending cards (existing params, no new filter). */
+export const OVERDUE_CLAIMS_FILTER = { grade: "Pending", horizon: "past" };
 
 /** "Last updated Oct 3, 2026, 10:26 AM ET · 1,680 forecasts tracked · 1,352 graded". */
 export function lastUpdatedLine({ generatedAt, tracked, graded }) {

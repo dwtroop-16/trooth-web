@@ -1,7 +1,7 @@
 import { css, statusMeta } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
-import { HOME_HEADLINE, HOME_INTRO, GRADE_KEY } from "../homeContent.js";
+import { HOME_HEADLINE, HOME_INTRO, GRADE_KEY, RECENTLY_DUE_TITLE } from "../homeContent.js";
 
 function GradeKey() {
   return (
@@ -27,7 +27,7 @@ function GradeKey() {
   );
 }
 
-function HomeList({ id, title, cards, empty, onAll, allLabel, openClaim }) {
+function HomeList({ id, title, cards, empty, onAll, allLabel, openClaim, footer }) {
   return (
     <section aria-labelledby={id} style={css("min-width:0;")}>
       <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;")}>
@@ -42,6 +42,7 @@ function HomeList({ id, title, cards, empty, onAll, allLabel, openClaim }) {
           <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{empty}</div>
         ) : null}
       </div>
+      {footer || null}
     </section>
   );
 }
@@ -201,9 +202,9 @@ export default function Home({ vals, openClaim }) {
       {!q && (
         <div className="trooth-home-lists" style={css("margin-top:36px;")}>
           <HomeList
-            id="trooth-just-graded"
-            title="Just graded"
-            cards={vals.justGraded}
+            id="trooth-recently-due"
+            title={RECENTLY_DUE_TITLE}
+            cards={vals.recentlyDue}
             empty="Nothing graded in this tab yet."
             allLabel="All claims →"
             onAll={() => vals.goClaims({ domain: tabDomain })}
@@ -217,6 +218,24 @@ export default function Home({ vals, openClaim }) {
             allLabel="All pending →"
             onAll={() => vals.goClaims({ domain: tabDomain, grade: "Pending" })}
             openClaim={openClaim}
+            footer={
+              vals.overdueCount > 0 ? (
+                <p style={css("margin:10px 0 0;font-size:13px;")}>
+                  <a
+                    href={vals.overdueHref}
+                    data-overdue-count={vals.overdueCount}
+                    onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+                      e.preventDefault();
+                      vals.goClaims(vals.overdueFilter);
+                    }}
+                    style={css("color:var(--forest);")}
+                  >
+                    {vals.overdueLabel}
+                  </a>
+                </p>
+              ) : null
+            }
           />
         </div>
       )}
