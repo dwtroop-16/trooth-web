@@ -25,9 +25,8 @@ export const HOME_ONLY_LINK_DOMAINS = {
 };
 
 export const PLAIN_TEXT_LINK_DOMAINS = {
-  "ncaa.com": { name: "NCAA.com", note: "not linked", display: "NCAA.com" },
-  // Card face never names the series database (owner 2026-10-04); the publisher is shown instead.
-  "fred.stlouisfed.org": { name: "FRED", note: "not linked", display: "Federal Reserve Bank of St. Louis" },
+  "ncaa.com": { name: "NCAA.com", note: "not linked" },
+  "fred.stlouisfed.org": { name: "FRED", note: "not linked" },
 };
 
 export function hostOf(url) {
@@ -87,45 +86,57 @@ export function sourceLinkParts(url, text) {
   return [{ kind: "link", href: url, text }];
 }
 
-// Card-face wording (owner 2026-10-04, PR C): the link rules above still decide href vs no href;
-// only the VISIBLE text changes. Internal notes ("; not linked per NFL terms", "(<URL> ; not linked)",
-// "(not linked)") never reach the card face. A non-linked source shows its name as plain text
-// ("NCAA.com game page"); nfl.com keeps its home-page link ("NFL.com") followed by plain " game page".
-// The specific URL is kept only in a data attribute (part.sourceUrl) for audit, never as text.
-function pageKind(url) {
-  let path = "";
-  try {
-    path = new URL(String(url).trim()).pathname;
-  } catch {
-    return "";
-  }
-  if (/^\/games?\//.test(path)) return "game page";
-  if (/^\/news\//.test(path)) return "article";
-  return "";
+// Card-face wording (owner 2026-10-04, PR C; Architect rulings 2 + 3, 2026-10-04). The link rules
+// above still decide href vs no href; only the VISIBLE text changes. Internal notes
+// ("; not linked per NFL terms", "(<URL> ; not linked)", "(not linked)") never reach the card face.
+//  - nfl.com (owner 2026-10-02): link "NFL.com" (home page only), then the specific nfl.com URL as
+//    plain, visible text. Only the internal "; not linked per NFL terms" wording is dropped.
+//  - MarketScreener: plain credit "dpa-AFX Analyser via MarketScreener"; no URL anywhere.
+//  - Hosts that are no longer a resolution source (ncaa.com: Legal 05v; the series database at
+//    fred.stlouisfed.org: Legal 05x/05ad) are never shown in any form: no link, no host, no URL, no
+//    name, no attribute. The card says the official page is being updated; the grade is unchanged.
+//    Scorer re-sources these actuals; the site does not guess a replacement host.
+export const SUPPRESSED_SOURCE_DOMAINS = {
+  "ncaa.com": { display: "official result page being updated" },
+  "fred.stlouisfed.org": { display: "official release page being updated" },
+};
+
+// Source names shown on the card face for official publishers (Architect ruling 3, 2026-10-04).
+// BEA's attribution wording is required verbatim; the Federal Reserve Board's pages (rate decisions,
+// SEP tables) show "Federal Reserve Board".
+export const SOURCE_DISPLAY_NAMES = {
+  "bea.gov": "Source: U.S. Bureau of Economic Analysis",
+  "federalreserve.gov": "Federal Reserve Board",
+};
+
+export function suppressedSourceRuleFor(url) {
+  return ruleFor(SUPPRESSED_SOURCE_DOMAINS, hostOf(url));
+}
+
+/** Card-face publisher name for a URL's host, or null. */
+export function sourceDisplayNameFor(url) {
+  const rule = ruleFor(Object.fromEntries(Object.entries(SOURCE_DISPLAY_NAMES).map(([d, name]) => [d, { name }])), hostOf(url));
+  return rule ? rule.name : null;
 }
 
 /**
- * Card-face source parts: { kind: "link", href, text } | { kind: "text", role, text, sourceUrl? }.
- * Same href decisions as sourceLinkParts (and isAllowedHref); clean visible text.
+ * Card-face source parts: { kind: "link", href, text } | { kind: "text", role, text }.
+ * Same href decisions as sourceLinkParts (and isAllowedHref); clean visible text. Parts never carry a
+ * URL that is not shown (no data attributes).
  */
 export function sourceDisplayParts(url, text) {
   const u = String(url ?? "").trim();
+  const suppressed = suppressedSourceRuleFor(u);
+  if (suppressed) return [{ kind: "text", role: "source_being_updated", text: suppressed.display }];
   const blocked = blockedRuleFor(u);
   // Blocked hosts: no URL anywhere in the page (not even a data attribute).
   if (blocked) return [{ kind: "text", role: "blocked_credit", text: blocked.display || blocked.credit }];
   const plain = plainTextRuleFor(u);
-  if (plain) {
-    const kind = pageKind(u);
-    return [{ kind: "text", role: "plain_text_source", text: [plain.display || plain.name, kind].filter(Boolean).join(" "), sourceUrl: u }];
-  }
+  if (plain) return [{ kind: "text", role: "plain_text_url", text: u }];
   const home = homeOnlyRuleFor(u);
   if (home) {
     const parts = [{ kind: "link", href: home.home, text: home.name }];
-    if (u !== home.home) {
-      const kind = pageKind(u);
-      if (kind) parts.push({ kind: "text", role: "page_kind", text: kind, sourceUrl: u });
-      else parts[0] = { ...parts[0], sourceUrl: u };
-    }
+    if (u !== home.home) parts.push({ kind: "text", role: "unlinked_url", text: u });
     return parts;
   }
   return [{ kind: "link", href: url, text }];

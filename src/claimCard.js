@@ -1,4 +1,4 @@
-import { sourceDisplayParts, blockedRuleFor, plainTextRuleFor, homeOnlyRuleFor } from "./linkPolicy.js";
+import { sourceDisplayParts, sourceDisplayNameFor, suppressedSourceRuleFor, blockedRuleFor, plainTextRuleFor, homeOnlyRuleFor } from "./linkPolicy.js";
 
 // Public claim card: the eight required fields, in order.
 // Renderer throws if any required field is missing. Grade is rubric-only.
@@ -69,9 +69,15 @@ function hostOf(url) {
   }
 }
 
-/** Claim-source line as ordered card-face parts (link text is the source host), after the link rules. */
+/**
+ * Claim-source line as ordered card-face parts (link text is the source host), after the link rules.
+ * Official publishers with a card-face name (Federal Reserve Board SEP pages) get the name first.
+ */
 export function claimSourceParts(card) {
-  return sourceDisplayParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+  const parts = sourceDisplayParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+  const name = sourceDisplayNameFor(card.sourceUrl);
+  if (name && !suppressedSourceRuleFor(card.sourceUrl)) parts.unshift({ kind: "text", role: "source_name", text: name });
+  return parts;
 }
 
 function normName(s) {
@@ -79,12 +85,16 @@ function normName(s) {
 }
 
 /**
- * Actual-source line as ordered card-face parts (Legal-Ops link rules decide href vs no href;
- * linkPolicy.sourceDisplayParts gives the clean visible text).
+ * Actual-source line as ordered card-face parts. The source is the one the Scorer recorded on the
+ * actual (Architect ruling 3); Legal-Ops link rules decide href vs no href and
+ * linkPolicy.sourceDisplayParts gives the visible text.
  *  - NWS (api.weather.gov): link text "National Weather Service" (Legal 05b condition 5).
- *  - Link-rule hosts (nfl.com, ncaa.com, fred, MarketScreener): the rule's display text only,
- *    e.g. "NFL.com game page" (NFL.com links the home page) or "NCAA.com game page" (plain text).
- *  - Other hosts: "<source name> · <host link>", so the card shows the source name and its URL.
+ *  - nfl.com: "NFL.com" (home-page link) + the specific nfl.com URL as plain text (owner 2026-10-02).
+ *  - Hosts no longer used for resolution (ncaa.com, fred.stlouisfed.org): never shown in any form;
+ *    "official result page being updated" (no host, no URL, no recorded name).
+ *  - MarketScreener: plain credit only.
+ *  - Other hosts: "<source name> · <host link>". The name is the card-face publisher name where one
+ *    is set (BEA, Federal Reserve Board), else the name the Scorer recorded.
  * When the actual carries a retention note (Legal 05b Clarification 2026-10-02), the stored
  * observation_ref, observed_at and the note follow as PLAIN TEXT (observation_ref is never linked).
  */
@@ -92,9 +102,10 @@ export function actualSourceParts(card) {
   const url = card.actualSourceUrl;
   const host = hostOf(url);
   const isNws = /(^|\.)weather\.gov$/.test(host);
-  const ruled = !!(blockedRuleFor(url) || plainTextRuleFor(url) || homeOnlyRuleFor(url));
+  const suppressed = !!suppressedSourceRuleFor(url);
+  const ruled = !!(suppressed || blockedRuleFor(url) || plainTextRuleFor(url) || homeOnlyRuleFor(url));
   const parts = sourceDisplayParts(url, (isNws ? card.actualSourceName : host) || card.actualSourceName);
-  const name = String(card.actualSourceName || "").trim();
+  const name = String(sourceDisplayNameFor(url) || card.actualSourceName || "").trim();
   if (!isNws && !ruled && name && normName(name) !== normName(host)) {
     parts.unshift({ kind: "text", role: "source_name", text: name });
   }

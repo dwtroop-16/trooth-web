@@ -452,7 +452,9 @@ export const CATCOLORS = {
 
 // Official-print allowlist (schema v1.1.0). Politics: SOS / FEC / congress.gov only.
 export const OFFICIAL_PRINT = {
-  finance: { name: "Federal Reserve Bank of St. Louis", url: "https://fred.stlouisfed.org/series/SP500" },
+  // Architect ruling 3 (2026-10-04): graded cards use the source recorded on the actual; this is the
+  // ungraded placeholder only (no host guessed).
+  finance: { name: "Official government release or listing exchange close", url: "/method" },
   weather: { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" },
   sports: { name: "NFL official box score", url: "https://www.nfl.com/scores/" },
   politics: { name: "FEC certified canvass", url: "https://www.fec.gov/" },

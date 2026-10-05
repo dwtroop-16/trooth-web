@@ -5,6 +5,7 @@ import { pathFor, normalizeDomain } from "./router.js";
 import { reasonDisplay, hasReasonLabel, isHiddenReason, canonicalReasonCode, REASON_LABELS } from "./reasonLabels.js";
 import { speakerInitials } from "./initials.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
+import enumLabels from "./generated/enumLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -204,65 +205,103 @@ function officialFor(forecast) {
     return { name: "Certified SOS / FEC / congress.gov", url: allow.url };
   }
   if (sub && domain === "weather") return { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" };
-  // The card face never names the series database (owner 2026-10-04); the URL is unchanged and,
-  // under the link rules, still never an href.
-  if (sub && domain === "finance") return { name: "Federal Reserve Bank of St. Louis", url: "https://fred.stlouisfed.org/series/SP500" };
+  // Finance (Architect ruling 3, 2026-10-04): a graded card shows the source the Scorer recorded on
+  // the actual (BEA, Federal Reserve Board, exchange close). Ungraded cards show no actual source on
+  // the card face; this placeholder names no host and guesses no URL.
+  if (domain === "finance") return { name: OFFICIAL_PRINT.finance.name, url: OFFICIAL_PRINT.finance.url };
   // Do not guess a game box URL. Pending sports link the league host; Scorer supplies the permalink when resolved.
   if (domain === "sports") {
     if (sid.startsWith("nfl-")) return { name: "NFL official box score", url: "https://www.nfl.com/" };
-    if (sid.startsWith("fbs-") || sid.startsWith("ncaa-")) return { name: "NCAA official box score", url: "https://www.ncaa.com/" };
+    // FBS (Legal 05v): ncaa.com no longer resolves FBS results; the Scorer records the official
+    // school, conference or CFP page per actual. No host is guessed for an ungraded card.
+    if (sid.startsWith("fbs-") || sid.startsWith("ncaa-")) return { name: "Official school, conference or CFP results page", url: "/method" };
     return { name: "League official box score", url: "/method" };
   }
   return allow;
 }
 
-function titleCaseSlug(v) {
-  return String(v)
-    .split("-")
-    .filter(Boolean)
-    .map((w) => w[0].toUpperCase() + w.slice(1))
-    .join(" ");
+// Enum display names (Architect ruling 5, 2026-10-04): copied verbatim from the enum files under the
+// trooth data root by scripts/gen-enum-labels.mjs. Never title-cased or guessed.
+const ENUM_TEAMS = enumLabels.teams || { nfl: {}, fbs: {} };
+const ENUM_BY_SUBJECT = enumLabels.bySubject || {};
+const ENUM_RATING = enumLabels.rating || {};
+
+/** Enum-file label for a claim / actual id, or null when no enum file names it. */
+export function enumLabelFor(forecast, value) {
+  if (typeof value !== "string" || !value) return null;
+  const sid = forecast?.subject?.id || "";
+  const bySubject = ENUM_BY_SUBJECT[sid];
+  if (bySubject && bySubject[value]) return bySubject[value];
+  if (/^us-equity-[a-z0-9-]+-rating$/.test(sid) && ENUM_RATING[value]) return ENUM_RATING[value];
+  if (forecast?.domain === "sports") {
+    const division = sportDivision(sid);
+    if (division === "NFL") return ENUM_TEAMS.nfl[value] || null;
+    if (division === "NCAA FBS") return ENUM_TEAMS.fbs[value] || null;
+    return ENUM_TEAMS.nfl[value] || ENUM_TEAMS.fbs[value] || null;
+  }
+  return null;
 }
 
-function trimNumber(n) {
-  return Number.isInteger(n) ? String(n) : String(Math.round(n * 1000) / 1000);
+function enumTeamLabel(slug, league) {
+  const table = league === "nfl" ? ENUM_TEAMS.nfl : ENUM_TEAMS.fbs;
+  return table[slug] || null;
+}
+
+// A number token as printed in text: "1,250", "3.0", "74".
+const NUMBER_TOKEN = /\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/g;
+
+/**
+ * The claim value exactly as printed in the claim text (keeps printed precision: "3.0" stays "3.0"),
+ * or null when the text has no token equal to the value.
+ */
+export function printedNumberIn(text, n) {
+  if (typeof n !== "number" || !Number.isFinite(n)) return null;
+  for (const tok of String(text || "").match(NUMBER_TOKEN) || []) {
+    if (Number(tok.replace(/,/g, "")) === n) return tok;
+  }
+  return null;
+}
+
+/** Stored number as text: never rounded, never padded (JS shortest form, e.g. 2.2 -> "2.2"). */
+function plainNumber(n) {
+  return String(n);
+}
+
+function groupThousands(numText) {
+  const [i, d] = numText.split(".");
+  return i.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (d !== undefined ? "." + d : "");
 }
 
 /**
  * Reader-facing form of a claim value or an official result (proposal V2: "They said / Official
  * result"). Formatting only; the stored value is unchanged (kept in card.actual / card.claimValue).
- *   degF 61 -> "61°F"; pct 2.2 -> "2.2%"; USD 400 -> "$400";
+ * Numbers keep their printed precision exactly (Architect ruling 5): `printed` (the token from the
+ * claim text) is used verbatim when given; otherwise the stored number as is. Never rounded/padded.
+ *   degF 61 -> "61°F"; pct 2.2 -> "2.2%" (printed "3.0" -> "3.0%"); USD 400 -> "$400";
  *   score "23-20" (stored away-home) -> "Kansas City Chiefs 23, Los Angeles Chargers 20"
- *     (unknown teams: "Away 23, Home 20");
- *   enum team ids -> team display name; other enum slugs -> Title Case ("donald-trump" -> "Donald Trump").
+ *     (teams not in the enum files: "Away 23, Home 20");
+ *   enum ids -> the enum file's label ("donald-trump" -> "Donald J. Trump"); ids no enum file names
+ *   are shown as stored.
  * null / "" -> null (the side is omitted).
  */
-export function formatClaimValue(forecast, value) {
+export function formatClaimValue(forecast, value, { printed = null } = {}) {
   if (value === null || value === undefined || value === "") return null;
   const unit = forecast?.claim?.unit;
   const n = typeof value === "number" ? value : Number(value);
-  if (unit === "degF" && Number.isFinite(n)) return `${trimNumber(n)}°F`;
-  if (unit === "pct" && Number.isFinite(n)) return `${trimNumber(n)}%`;
-  if (unit === "USD" && Number.isFinite(n)) return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const num = () => (printed && Number(String(printed).replace(/,/g, "")) === n ? String(printed) : plainNumber(n));
+  if (unit === "degF" && Number.isFinite(n)) return `${num()}°F`;
+  if (unit === "pct" && Number.isFinite(n)) return `${num()}%`;
+  if (unit === "USD" && Number.isFinite(n)) return "$" + (printed && Number(String(printed).replace(/,/g, "")) === n ? String(printed) : groupThousands(plainNumber(n)));
   if (unit === "score" && typeof value === "string") {
     const m = value.trim().match(/^(\d+)-(\d+)$/);
     if (!m) return value;
     const game = parseGameTeams(forecast?.subject?.id || "");
-    if (game) {
-      const division = game.league === "nfl" ? "NFL" : "NCAA FBS";
-      return `${teamLabelFor(game.away, division)} ${m[1]}, ${teamLabelFor(game.home, division)} ${m[2]}`;
-    }
+    const away = game && enumTeamLabel(game.away, game.league);
+    const home = game && enumTeamLabel(game.home, game.league);
+    if (away && home) return `${away} ${m[1]}, ${home} ${m[2]}`;
     return `Away ${m[1]}, Home ${m[2]}`;
   }
-  if (unit === "enum" && typeof value === "string") {
-    const division = sportDivision(forecast?.subject?.id || "");
-    if (forecast?.domain === "sports") {
-      if (division === "NFL" && NFL_TEAM_LABELS[value]) return NFL_TEAM_LABELS[value];
-      if (division === "NCAA FBS" && FBS_TEAM_LABELS[value]) return FBS_TEAM_LABELS[value];
-      if (NFL_TEAM_LABELS[value] || FBS_TEAM_LABELS[value]) return NFL_TEAM_LABELS[value] || FBS_TEAM_LABELS[value];
-    }
-    return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value) ? titleCaseSlug(value) : value;
-  }
+  if (unit === "enum" && typeof value === "string") return enumLabelFor(forecast, value) || value;
   return String(value);
 }
 
@@ -352,7 +391,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actual: actualValue,
     // "They said / Official result" display values (formatting only; stored values unchanged).
     claimValue: forecast.claim?.value ?? null,
-    claimValueLabel: formatClaimValue(forecast, forecast.claim?.value),
+    claimValueLabel: formatClaimValue(forecast, forecast.claim?.value, { printed: printedNumberIn(forecast.claim?.text, forecast.claim?.value) }),
     actualLabel: shown ? formatClaimValue(forecast, actualValue) : null,
     actualSourceName,
     actualSourceUrl,

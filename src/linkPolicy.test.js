@@ -89,19 +89,30 @@ test("every card's link parts obey the rules (view-model scan of all cards)", ()
         msConverted++;
         assert.ok(parts.some((p) => p.kind === "text" && p.text === MS_DISPLAY), card.id);
       }
-      if (isNcaa(url) && parts.some((p) => p.role === "plain_text_source")) ncaaConverted++;
-      if (isNcaa(url)) assert.ok(parts.every((p) => p.kind !== "link"), card.id);
+      if (isNcaa(url) || isFred(url)) {
+        // Architect ruling 2/3 (2026-10-04): never shown in any form; no link, text or URL.
+        if (isNcaa(url)) ncaaConverted++;
+        assert.deepEqual(parts.filter((p) => !["observation_ref", "observed_at", "retention_note"].includes(p.role)).map((p) => p.role), ["source_being_updated"], card.id);
+      }
       if (isNfl(url) && url !== NFL_HOME) {
         nflConverted++;
+        // Owner 2026-10-02 / Architect ruling 2: NFL.com home link + the specific URL as visible plain text.
         assert.ok(parts.some((p) => p.kind === "link" && p.href === NFL_HOME && p.text === "NFL.com"), card.id);
+        assert.ok(parts.some((p) => p.kind === "text" && p.role === "unlinked_url" && p.text === url.trim()), card.id);
       }
-      // No internal notes or raw URLs in any card-face text part.
-      for (const p of parts.filter((x) => x.kind === "text" && !["observation_ref", "observed_at", "retention_note"].includes(x.role))) {
-        assert.equal(/not linked|https?:\/\//.test(p.text), false, `${card.id}: ${p.text}`);
+      // No internal notes; no ncaa.com / FRED / St. Louis in any card-face part.
+      for (const p of parts) {
+        assert.equal(/not linked/.test(p.text || ""), false, `${card.id}: ${p.text}`);
+        assert.equal(/ncaa\.com|stlouisfed|\bFRED\b|St\. Louis/i.test(`${p.text || ""} ${p.href || ""}`), false, `${card.id}: ${p.text}`);
+        assert.equal("sourceUrl" in p, false, `${card.id}: no hidden URL attribute`);
+      }
+      // Raw URLs appear only as the nfl.com plain-text URL or the NWS observation_ref.
+      for (const p of parts.filter((x) => x.kind === "text" && !["observation_ref", "observed_at", "retention_note", "unlinked_url"].includes(x.role))) {
+        assert.equal(/https?:\/\//.test(p.text), false, `${card.id}: ${p.text}`);
       }
     }
   }
-  console.log(`# link rules: marketscreener links converted=${msConverted}, nfl.com deep links converted=${nflConverted}, ncaa.com links converted=${ncaaConverted}`);
+  console.log(`# link rules: marketscreener links converted=${msConverted}, nfl.com deep links (home link + plain URL)=${nflConverted}, ncaa.com sources suppressed=${ncaaConverted}`);
   // MarketScreener rows may be retracted upstream (legal_hold); the rule is still covered by the unit tests above.
   assert.ok(nflConverted > 0, "fixture: nfl.com deep-link rows exist");
 });
@@ -129,27 +140,27 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
       }
       const text = unescape(html.replace(/<[^>]+>/g, ""));
       if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_DISPLAY), card.id);
-      assert.equal(/not linked|\bFRED\b/.test(text), false, `${card.id}: internal note on card face`);
-      if ((card.grade === "Hit" || card.grade === "Miss") && isFred(card.actualSourceUrl)) {
-        fredRendered++;
-        assert.ok(text.includes("Actual source · Federal Reserve Bank of St. Louis"), card.id);
-      }
+      assert.equal(/not linked|\bFRED\b|St\. Louis/.test(text), false, `${card.id}: internal note / FRED on card face`);
+      // Architect ruling 2: ncaa.com in no form at all (href, text, attribute).
+      assert.equal(/ncaa\.com/i.test(html), false, `${card.id}: ncaa.com in rendered HTML`);
+      assert.equal(/stlouisfed/i.test(html), false, `${card.id}: stlouisfed in rendered HTML`);
+      if ((card.grade === "Hit" || card.grade === "Miss") && isFred(card.actualSourceUrl)) fredRendered++;
       if ((card.grade === "Hit" || card.grade === "Miss") && isNcaa(card.actualSourceUrl)) {
         ncaaRendered++;
-        assert.match(text, /Actual source · NCAA\.com( game page| article)?/, card.id);
-        assert.equal(text.includes(card.actualSourceUrl), false, `${card.id}: raw NCAA URL shown`);
+        assert.ok(text.includes("Actual source · official result page being updated"), card.id);
       }
       if ((card.grade === "Hit" || card.grade === "Miss") && isNfl(card.actualSourceUrl) && card.actualSourceUrl !== NFL_HOME) {
         assert.ok(html.includes(`>NFL.com</a>`), card.id);
-        if (/nfl\.com\/games\//.test(card.actualSourceUrl)) assert.ok(text.includes("Actual source · NFL.com game page"), card.id);
-        assert.equal(text.includes(card.actualSourceUrl), false, `${card.id}: raw NFL URL shown`);
+        // The specific nfl.com game URL is visible plain text right after the NFL.com link.
+        assert.ok(text.includes(`Actual source · NFL.com ${card.actualSourceUrl}`), `${card.id}: ${text.slice(0, 400)}`);
       }
     }
   }
   assert.deepEqual(bad, []);
   assert.ok(anchors > 0, "cards render links");
-  console.log(`# rendered ncaa.com actual sources as plain text (per card) = ${ncaaRendered / 2}`);
-  console.log(`# rendered fred.stlouisfed.org actual sources as plain text (per card) = ${fredRendered / 2}`);
+  console.log(`# graded cards whose recorded actual source is ncaa.com (shown as "being updated") = ${ncaaRendered / 2}`);
+  console.log(`# graded cards whose recorded actual source is fred.stlouisfed.org = ${fredRendered / 2}`);
+  assert.equal(fredRendered, 0, "no finance actual in the bundle records a FRED source");
   // FOX Sports links are untouched: every FOX source still renders as its own href.
   const foxCards = cards.filter((c) => /(^|\.)foxsports\.com$/.test(hostOf(c.sourceUrl)));
   assert.ok(foxLinks >= foxCards.length * 2);
@@ -166,14 +177,17 @@ test("sourceDisplayParts: same href decisions as sourceLinkParts; visible text h
     const legal = sourceLinkParts(u, "host").filter((p) => p.kind === "link").map((p) => p.href);
     const shown = sourceDisplayParts(u, "host");
     assert.deepEqual(shown.filter((p) => p.kind === "link").map((p) => p.href), legal, u);
-    for (const p of shown) assert.equal(/not linked|https?:\/\/|\bFRED\b/.test(p.text), false, `${u}: ${p.text}`);
+    for (const p of shown) {
+      assert.equal(/not linked|\bFRED\b|St\. Louis|ncaa\.com|stlouisfed/i.test(p.text), false, `${u}: ${p.text}`);
+      if (p.kind === "text" && /https?:\/\//.test(p.text)) assert.ok(p.role === "unlinked_url" && isNfl(u), `${u}: raw URL only for nfl.com`);
+    }
   }
-  assert.deepEqual(sourceDisplayParts("https://www.ncaa.com/game/6458431", "x"), [{ kind: "text", role: "plain_text_source", text: "NCAA.com game page", sourceUrl: "https://www.ncaa.com/game/6458431" }]);
+  assert.deepEqual(sourceDisplayParts("https://www.ncaa.com/game/6458431", "x"), [{ kind: "text", role: "source_being_updated", text: "official result page being updated" }]);
   assert.deepEqual(sourceDisplayParts("https://www.nfl.com/games/a-at-b-2025-reg-1", "x"), [
     { kind: "link", href: NFL_HOME, text: "NFL.com" },
-    { kind: "text", role: "page_kind", text: "game page", sourceUrl: "https://www.nfl.com/games/a-at-b-2025-reg-1" },
+    { kind: "text", role: "unlinked_url", text: "https://www.nfl.com/games/a-at-b-2025-reg-1" },
   ]);
-  assert.deepEqual(sourceDisplayParts("https://fred.stlouisfed.org/series/SP500", "x")[0].text, "Federal Reserve Bank of St. Louis");
+  assert.deepEqual(sourceDisplayParts("https://fred.stlouisfed.org/series/SP500", "x"), [{ kind: "text", role: "source_being_updated", text: "official release page being updated" }]);
   // Blocked hosts: no URL anywhere, not even a data attribute.
   assert.deepEqual(sourceDisplayParts("https://www.marketscreener.com/quote/x", "x"), [{ kind: "text", role: "blocked_credit", text: MS_DISPLAY }]);
 });

@@ -72,10 +72,14 @@ test("speaker name stays on every card, including the speaker's own page", async
   }
 });
 
-test("/method copy does not name FRED", async () => {
+test("/method copy: finance line verbatim from method-copy v1.0.1 line 15 (curly apostrophe); no FRED / St. Louis", async () => {
   const { readFileSync } = await import("node:fs");
   const md = readFileSync(new URL("./method-copy-v1.md", import.meta.url), "utf8");
-  assert.equal(/\bFRED\b/.test(md), false);
+  const lines = md.split("\n");
+  assert.equal(lines[14], "- Finance: official government releases (U.S. Bureau of Economic Analysis, Federal Reserve Board) or the listing exchange\u2019s official close");
+  // Only headings ("# ...") are not rendered on /method; nothing rendered names FRED or St. Louis.
+  const rendered = lines.filter((l) => !/^#\s/.test(l)).join("\n");
+  assert.equal(/\bFRED\b|St\. Louis|stlouisfed/.test(rendered), false);
 });
 
 test("formatClaimValue: units and casing for They said / Official result", () => {
@@ -84,7 +88,14 @@ test("formatClaimValue: units and casing for They said / Official result", () =>
   assert.equal(formatClaimValue(f("pct", "us-real-gdp-growth-2025", "finance"), 2.2), "2.2%");
   assert.equal(formatClaimValue(f("USD", "nvda", "finance"), 400), "$400");
   assert.equal(formatClaimValue(f("enum", "nfl-2025-super-bowl-champion"), "seattle"), "Seattle Seahawks");
-  assert.equal(formatClaimValue(f("enum", "us-president-2024", "politics"), "donald-trump"), "Donald Trump");
+  assert.equal(formatClaimValue(f("enum", "us-president-2024-winner", "politics"), "donald-trump"), "Donald J. Trump");
+  assert.equal(formatClaimValue(f("enum", "ncaa-fbs-2026-heisman"), "cj-carr"), "CJ Carr");
+  assert.equal(formatClaimValue(f("pct", "us-pce-inflation-2025-q4", "finance"), 3, { printed: "3.0" }), "3.0%");
+  assert.equal(formatClaimValue(f("pct", "us-pce-inflation-2025-q4", "finance"), 3), "3%");
+  assert.equal(formatClaimValue(f("pct", "x", "finance"), 2.2), "2.2%");
+  assert.equal(formatClaimValue(f("pct", "x", "finance"), 2.125), "2.125%", "never rounded");
+  assert.equal(formatClaimValue(f("USD", "x", "finance"), 1234.567), "$1,234.567", "never rounded");
+  assert.equal(formatClaimValue(f("enum", "nfl-2025-super-bowl-champion"), "not-a-team"), "not-a-team", "no enum label: shown as stored, not title-cased");
   assert.equal(formatClaimValue(f("score", "nfl-2025-kansas-city-la-chargers-20250905"), "23-20"), "Kansas City Chiefs 23, Los Angeles Chargers 20");
   assert.equal(formatClaimValue(f("score", "not-a-game"), "23-20"), "Away 23, Home 20");
   assert.equal(formatClaimValue(f("degF", "x", "weather"), null), null);

@@ -4,7 +4,7 @@ import Hover from "./Hover.jsx";
 import GradeBadge from "./GradeBadge.jsx";
 
 // Card-face parts produced by the link rules (linkPolicy.sourceDisplayParts): plain text, no notes.
-const LINK_RULE_ROLES = new Set(["blocked_credit", "plain_text_source", "page_kind", "source_name"]);
+const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "source_being_updated", "source_name"]);
 const RETENTION_ROLES = new Set(["observation_ref", "observed_at", "retention_note"]);
 
 function SourceParts({ parts, fallbackText }) {
@@ -14,16 +14,16 @@ function SourceParts({ parts, fallbackText }) {
       return (
         <span key={i}>
           {sep}
-          <a href={part.href} target="_blank" rel="noreferrer" data-source-url={part.sourceUrl || undefined} style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>
+          <a href={part.href} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>
             {part.text || fallbackText}
           </a>
         </span>
       );
     }
     return (
-      <span key={i} data-link-rule={part.role} data-source-url={part.sourceUrl || undefined}>
+      <span key={i} data-link-rule={part.role}>
         {sep}
-        {part.text}
+        {part.role === "unlinked_url" ? <span style={css("overflow-wrap:anywhere;")}>{part.text}</span> : part.text}
       </span>
     );
   });
