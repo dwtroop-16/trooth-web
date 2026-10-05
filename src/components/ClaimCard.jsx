@@ -108,7 +108,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
       {graded ? (
         <div style={css(`margin-top:8px;font-size:${metaSize};color:var(--body);line-height:1.65;`)}>
           <span data-field="actual-source" style={metaWrap}>
-            <span style={label}>Actual source · </span>
+            {rendered.actualSourceIsCredit ? null : <span style={label}>Actual source · </span>}
             <SourceParts parts={sourceParts} fallbackText={actualHost} />
           </span>
           {retentionParts.length ? (

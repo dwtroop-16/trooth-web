@@ -39,7 +39,8 @@ test("ClaimCard: actual + actual source only on Hit/Miss; Pending shows 'pending
     for (const compact of [false, true]) {
       const html = renderToStaticMarkup(React.createElement(ClaimCard, { card, compact }));
       // PR C card face: field 6 is the "Official result" side of the They said / Official result row.
-      const hasActualSource = html.includes("Actual source · ");
+      // The actual-source slot: "Actual source · …", or the BEA full-slot credit (Architect 2026-10-04).
+      const hasActualSource = html.includes('data-field="actual-source"') && (html.includes("Actual source · ") || html.includes(">Source: U.S. Bureau of Economic Analysis<"));
       const m = html.match(/data-field="actual"[^>]*><div[^>]*>Official result<\/div>(?:<div[^>]*><span[^>]*>|<div[^>]*>)([^<]*)</);
       if (isGraded(card)) {
         if (!hasActualSource || !m || m[1] === "pending") bad.push(`${card.id} ${card.grade} missing actual`);

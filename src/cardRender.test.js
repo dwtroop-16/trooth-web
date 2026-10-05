@@ -82,11 +82,17 @@ test("Actual line: Hit/Miss show 'Official result' + value; Pending shows 'Offic
     const text = visibleText(html);
     if (card.grade === "Hit" || card.grade === "Miss") {
       assert.ok(text.includes("Official result" + (card.actualLabel || String(card.actual))), card.id);
-      assert.ok(text.includes("Actual source · "), card.id);
+      // BEA's slot is the full credit with no prefix (Architect 2026-10-04); every other source keeps it.
+      if (/(^|\.)bea\.gov$/.test(new URL(card.actualSourceUrl).hostname)) {
+        assert.ok(text.includes("Source: U.S. Bureau of Economic Analysis"), card.id);
+        assert.equal(text.includes("Actual source"), false, card.id);
+      } else assert.ok(text.includes("Actual source · "), card.id);
+      assert.ok(html.includes('data-field="actual-source"'), card.id);
     } else if (card.grade === "Pending") {
       assert.ok(text.includes("Official resultpending"), card.id);
       assert.ok(text.includes("Pending is not a miss"), card.id);
       assert.equal(text.includes("Actual source"), false, card.id);
+      assert.equal(html.includes('data-field="actual-source"'), false, card.id);
     } else {
       assert.equal(/Actual|Official result|They said/.test(text), false, `${card.id} (${card.grade}) shows an Actual line`);
     }

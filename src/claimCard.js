@@ -1,4 +1,4 @@
-import { sourceDisplayParts, sourceDisplayNameFor, suppressedSourceRuleFor, blockedRuleFor, plainTextRuleFor, homeOnlyRuleFor } from "./linkPolicy.js";
+import { sourceDisplayParts, sourceDisplayNameFor, sourceCreditFor, isAllowedHref, suppressedSourceRuleFor, blockedRuleFor, plainTextRuleFor, homeOnlyRuleFor } from "./linkPolicy.js";
 
 // Public claim card: the eight required fields, in order.
 // Renderer throws if any required field is missing. Grade is rubric-only.
@@ -93,13 +93,23 @@ function normName(s) {
  *  - Hosts no longer used for resolution (ncaa.com, fred.stlouisfed.org): never shown in any form;
  *    "official result page being updated" (no host, no URL, no recorded name).
  *  - MarketScreener: plain credit only.
+ *  - BEA (bea.gov): the full credit "Source: U.S. Bureau of Economic Analysis", linking the recorded
+ *    URL; the card face shows it with no "Actual source ·" prefix (Architect 2026-10-04).
  *  - Other hosts: "<source name> · <host link>". The name is the card-face publisher name where one
- *    is set (BEA, Federal Reserve Board), else the name the Scorer recorded.
+ *    is set (Federal Reserve Board), else the name the Scorer recorded.
  * When the actual carries a retention note (Legal 05b Clarification 2026-10-02), the stored
  * observation_ref, observed_at and the note follow as PLAIN TEXT (observation_ref is never linked).
  */
 export function actualSourceParts(card) {
   const url = card.actualSourceUrl;
+  // Full-slot credit (BEA): the slot reads exactly the credit text; it links the recorded URL when
+  // the link rules allow it. The renderer drops the "Actual source ·" prefix for these parts.
+  const credit = sourceCreditFor(url);
+  if (credit) {
+    return isAllowedHref(url)
+      ? [{ kind: "link", href: String(url).trim(), text: credit, role: "source_credit" }]
+      : [{ kind: "text", role: "source_credit", text: credit }];
+  }
   const host = hostOf(url);
   const isNws = /(^|\.)weather\.gov$/.test(host);
   const suppressed = !!suppressedSourceRuleFor(url);
@@ -152,6 +162,8 @@ export function renderPublicClaimCard(card) {
     actualRetentionNote: card.actualRetentionNote ?? null,
     sourceParts: claimSourceParts(card),
     actualSourceParts: actualSourceParts(card),
+    // True when the actual-source slot is a full credit (no "Actual source ·" prefix on the card face).
+    actualSourceIsCredit: !!sourceCreditFor(card.actualSourceUrl),
     grade: card.grade,
     fieldsInOrder,
   };

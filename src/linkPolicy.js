@@ -101,13 +101,24 @@ export const SUPPRESSED_SOURCE_DOMAINS = {
   "fred.stlouisfed.org": { display: "official release page being updated" },
 };
 
-// Source names shown on the card face for official publishers (Architect ruling 3, 2026-10-04).
-// BEA's attribution wording is required verbatim; the Federal Reserve Board's pages (rate decisions,
-// SEP tables) show "Federal Reserve Board".
+// Source names shown on the card face for official publishers (Architect ruling 3, 2026-10-04):
+// the Federal Reserve Board's pages (rate decisions, SEP tables) show "Federal Reserve Board".
 export const SOURCE_DISPLAY_NAMES = {
-  "bea.gov": "Source: U.S. Bureau of Economic Analysis",
   "federalreserve.gov": "Federal Reserve Board",
 };
+
+// Full-slot credits (Architect 2026-10-04, #62): the actual-source slot reads exactly this text, with
+// no "Actual source ·" prefix. BEA's attribution wording is required verbatim. The credit links the
+// recorded URL when the link rules allow it.
+export const SOURCE_CREDITS = {
+  "bea.gov": "Source: U.S. Bureau of Economic Analysis",
+};
+
+/** Full-slot credit text for a URL's host, or null. */
+export function sourceCreditFor(url) {
+  const rule = ruleFor(Object.fromEntries(Object.entries(SOURCE_CREDITS).map(([d, credit]) => [d, { credit }])), hostOf(url));
+  return rule ? rule.credit : null;
+}
 
 export function suppressedSourceRuleFor(url) {
   return ruleFor(SUPPRESSED_SOURCE_DOMAINS, hostOf(url));
