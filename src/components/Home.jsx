@@ -1,6 +1,51 @@
-import { css } from "../helpers.js";
+import { css, statusMeta } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import { HOME_HEADLINE, HOME_INTRO, GRADE_KEY, RECENTLY_DUE_TITLE } from "../homeContent.js";
+
+function GradeKey() {
+  return (
+    <section aria-labelledby="trooth-grade-key-heading" style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:12px 14px;margin:0 0 26px;")}>
+      <h2 id="trooth-grade-key-heading" style={css("position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;")}>What the grades mean</h2>
+      <dl className="trooth-grade-key" style={css("margin:0;")}>
+        {GRADE_KEY.map((g) => {
+          const sm = statusMeta(g.status);
+          return (
+            <div key={g.status} style={css("min-width:0;")}>
+              <dt style={css("margin:0 0 4px;")}>
+                <span style={css(`display:inline-block;font-size:11.5px;font-weight:700;color:${sm.color};background:${sm.tint};border:1px solid ${sm.border};border-radius:999px;padding:2px 9px;`)}>{g.label}</span>
+              </dt>
+              <dd style={css("margin:0;font-size:12.5px;line-height:1.4;color:var(--body);")}>
+                {g.line}
+                {g.emphasis ? <> <strong style={css("color:var(--ink);")}>{g.emphasis}</strong></> : null}
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
+    </section>
+  );
+}
+
+function HomeList({ id, title, cards, empty, onAll, allLabel, openClaim, footer }) {
+  return (
+    <section aria-labelledby={id} style={css("min-width:0;")}>
+      <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;")}>
+        <h2 id={id} style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>{title}</h2>
+        <Hover as="button" onClick={onAll} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">{allLabel}</Hover>
+      </div>
+      <div style={css("display:flex;flex-direction:column;gap:10px;")}>
+        {cards.map((card) => (
+          <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
+        ))}
+        {cards.length === 0 ? (
+          <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{empty}</div>
+        ) : null}
+      </div>
+      {footer || null}
+    </section>
+  );
+}
 
 function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
@@ -56,18 +101,22 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
 export default function Home({ vals, openClaim }) {
   const q = (vals.q || "").trim();
   const showDomain = vals.boardShowDomain;
-  const recent = vals.recentResolved.slice(0, 6);
-  const featuredId = vals.featuredClaim?.id;
-  const recentOnly = featuredId ? recent.filter((c) => c.id !== featuredId) : recent;
   const matchCount = vals.matchCount || 0;
+  const tabDomain = (vals.categories.find((t) => t.active) || {}).label || "All";
 
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;")}>
-      <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 18px;")}>
-        Public forecasts vs official prints · pending is not a miss
-      </div>
+      <header style={css("margin:6px 0 18px;max-width:640px;")}>
+        <h1 style={css("font-family:Newsreader,serif;font-size:clamp(34px,6vw,46px);font-weight:600;line-height:1.08;letter-spacing:-0.02em;margin:0 0 10px;color:var(--ink);")}>{HOME_HEADLINE}</h1>
+        <p style={css("margin:0;font-size:16px;line-height:1.5;color:var(--body);")}>
+          {HOME_INTRO}{" "}
+          <Hover as="button" onClick={vals.goMethod} style="background:none;border:none;cursor:pointer;padding:0;font-size:16px;color:var(--forest);" hover="color:var(--forest-deep);">How grading works →</Hover>
+        </p>
+      </header>
 
-      <div style={css("display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;")}>
+      <GradeKey />
+
+      <div role="group" aria-label="Domain" style={css("display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;")}>
         {vals.categories.map((tab) => (
           <Hover
             key={tab.label}
@@ -85,6 +134,9 @@ export default function Home({ vals, openClaim }) {
           </Hover>
         ))}
       </div>
+      <p data-domain-note={tabDomain} style={css("margin:0 0 18px;font-size:13px;line-height:1.45;color:var(--body);background:var(--surface);border:1px solid var(--hair);border-left:3px solid var(--forest);border-radius:var(--radius-sm);padding:8px 12px;")}>
+        <strong style={css("color:var(--ink);")}>{tabDomain === "All" ? "How grading works" : tabDomain}:</strong> {vals.domainHitLine}
+      </p>
 
       {q ? (
         <div
@@ -148,26 +200,50 @@ export default function Home({ vals, openClaim }) {
       </div>
 
       {!q && (
-        <div style={css("margin-top:36px;")}>
-          <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;")}>
-            <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>Claims</h2>
-            <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
-          </div>
-          <div style={css("display:flex;flex-direction:column;gap:10px;")}>
-            {vals.featuredClaim ? (
-              <ClaimCard card={vals.featuredClaim} compact quiet onOpen={() => openClaim(vals.featuredClaim.id)} />
-            ) : null}
-            {recentOnly.map((card) => (
-              <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
-            ))}
-            {!vals.featuredClaim && recentOnly.length === 0 && (
-              <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>
-                No claims in this filter yet.
-              </div>
-            )}
-          </div>
+        <div className="trooth-home-lists" style={css("margin-top:36px;")}>
+          <HomeList
+            id="trooth-recently-due"
+            title={RECENTLY_DUE_TITLE}
+            cards={vals.recentlyDue}
+            empty="Nothing graded in this tab yet."
+            allLabel="All claims →"
+            onAll={() => vals.goClaims({ domain: tabDomain })}
+            openClaim={openClaim}
+          />
+          <HomeList
+            id="trooth-coming-due"
+            title="Coming due"
+            cards={vals.comingDue}
+            empty="No pending forecasts coming due in this tab."
+            allLabel="All pending →"
+            onAll={() => vals.goClaims({ domain: tabDomain, grade: "Pending" })}
+            openClaim={openClaim}
+            footer={
+              vals.overdueCount > 0 ? (
+                <p style={css("margin:10px 0 0;font-size:13px;")}>
+                  <a
+                    href={vals.overdueHref}
+                    data-overdue-count={vals.overdueCount}
+                    onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+                      e.preventDefault();
+                      vals.goClaims(vals.overdueFilter);
+                    }}
+                    style={css("color:var(--forest);")}
+                  >
+                    {vals.overdueLabel}
+                  </a>
+                </p>
+              ) : null
+            }
+          />
         </div>
       )}
+
+      <p className="trooth-last-updated" style={css("margin:36px 0 0;padding-top:14px;border-top:1px solid var(--hair);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;")}>
+        <span><strong style={css("color:var(--ink);font-weight:600;")}>Last updated</strong> {vals.lastUpdated}</span>
+        <Hover as="button" onClick={vals.goChangelog} style="background:none;border:none;cursor:pointer;padding:0;font-size:12.5px;color:var(--forest);margin-left:auto;" hover="color:var(--forest-deep);">Corrections</Hover>
+      </p>
     </main>
   );
 }
