@@ -2,7 +2,7 @@ import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
-import { reasonDisplay } from "./reasonLabels.js";
+import { reasonDisplay, hasReasonLabel, isHiddenReason, canonicalReasonCode, REASON_LABELS } from "./reasonLabels.js";
 import { speakerInitials } from "./initials.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
@@ -219,6 +219,19 @@ function officialFor(forecast) {
  * or an object { reason, flag_target, opened_at } (holds.jsonl). Returns { reason } (reason may be
  * null) or null when the row is not held.
  */
+/** Default reason for an In review card with no public reason (reason-labels status map). */
+export const DEFAULT_IN_REVIEW_REASON = "needs_review";
+
+/**
+ * True when a reason code has a label and the reason-labels table marks it as public ("Yes: ...").
+ * Internal-only codes (e.g. legal_hold, "Not today"), hidden history codes and unknown codes are not.
+ */
+export function publicCardReason(raw) {
+  if (raw == null || !hasReasonLabel(raw) || isHiddenReason(raw)) return false;
+  const canon = canonicalReasonCode(raw);
+  return /^Yes\b/.test(String(REASON_LABELS[canon]?.shown || ""));
+}
+
 export function reviewHoldOf(score) {
   const h = score?.review_hold;
   if (h === true) return { reason: null };
@@ -249,10 +262,17 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const grade = hold ? "In review" : publicGrade(status);
   // Reason label beside the grade (reason-labels v1.1.5): Unscorable -> unscorable reason;
   // In review -> the hold's reason, or needs_review for a Scorer void (changelog-v1 key table).
-  // A plain `review_hold: true` carries no reason code, so no label is guessed.
+  // Architect ruling 2026-10-04: an In review card is never blank. A hold with no reason code (the
+  // Scorer's plain `review_hold: true`), or one whose reason is not public, shows the status map's
+  // default needs_review label ("under review").
   const reasonCode =
     grade === "Unscorable" ? unscorableReasonCode(forecast) : hold ? hold.reason : status === "void" ? "needs_review" : null;
-  const gradeReason = reasonCode ? reasonDisplay(reasonCode) : null;
+  const gradeReason =
+    grade === "In review"
+      ? (publicCardReason(reasonCode) ? reasonDisplay(reasonCode) : null) || reasonDisplay(DEFAULT_IN_REVIEW_REASON)
+      : reasonCode
+        ? reasonDisplay(reasonCode)
+        : null;
   const src = officialFor(forecast);
   // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
   // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards
