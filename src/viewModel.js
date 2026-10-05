@@ -3,6 +3,7 @@ import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
+import { RANKING_MIN_GRADED, UNRANKED_HEADING, splitByRankingMinimum } from "./ranking.js";
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -384,10 +385,9 @@ export function buildVals(state, actions, data) {
         return a.speaker.name.localeCompare(b.speaker.name);
       });
 
-    return statsRows.map((row, i) => {
+    return statsRows.map((row) => {
       const cm = CATCOLORS[row.domainLabel] || CATCOLORS.Finance;
       return {
-        rank: i + 1,
         speakerId: row.speaker.id,
         name: row.speaker.name,
         org: row.speaker.org,
@@ -406,7 +406,12 @@ export function buildVals(state, actions, data) {
 
   const BOARD_CAP = 12;
   const allRows = buildBoardRows(cat);
-  const rows = allRows.slice(0, BOARD_CAP);
+  // Ranking minimum: only speakers with >= RANKING_MIN_GRADED Hit + Miss in this tab's scope
+  // (All = total across domains) are ranked. The rest are listed alphabetically, never hidden.
+  const split = splitByRankingMinimum(allRows, { min: RANKING_MIN_GRADED, gradedKey: "nResolved" });
+  const rankedRows = split.ranked.map((row, i) => ({ ...row, rank: i + 1, ranked: true }));
+  const unrankedRows = split.unranked.map((row) => ({ ...row, rank: null, ranked: false }));
+  const rows = rankedRows.slice(0, BOARD_CAP);
 
   const scopedCards = cards.filter((c) => scope.includes(c.domain));
   const recentResolved = scopedCards
@@ -627,12 +632,21 @@ export function buildVals(state, actions, data) {
       pending: nPending,
     },
     boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
-    resultCount: (allRows.length === 0 ? "0 speakers" : rows.length + (rows.length === 1 ? " speaker" : " speakers") + (allRows.length > BOARD_CAP ? " (top " + BOARD_CAP + ")" : "")),
-    rankNote: "resolved first, then hit rate — pending is not a miss",
+    resultCount:
+      (rankedRows.length === 0
+        ? "0 ranked"
+        : rows.length + " ranked" + (rankedRows.length > BOARD_CAP ? " (top " + BOARD_CAP + ")" : "")) +
+      (unrankedRows.length ? " · " + unrankedRows.length + " not ranked yet" : ""),
+    rankNote: "min. " + RANKING_MIN_GRADED + " graded (Hit or Miss) · resolved first, then hit rate — pending is not a miss",
     rows,
+    rankedRows,
+    unrankedRows,
+    unrankedHeading: UNRANKED_HEADING,
+    rankingMin: RANKING_MIN_GRADED,
     boardShowDomain: cat === "All",
-    boardCapped: allRows.length > BOARD_CAP,
+    boardCapped: rankedRows.length > BOARD_CAP,
     noResults: allRows.length === 0,
+    noRanked: rankedRows.length === 0,
     recentResolved,
     featuredClaim,
     p,

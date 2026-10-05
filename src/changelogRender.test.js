@@ -34,7 +34,20 @@ export function loadPublicChangelog() {
 `
   );
   const { transformSync } = await import("esbuild");
+  // "Method changes" section (src/methodChanges.json), rendered by Changelog.jsx.
+  const methodSrc = readFileSync(join(HERE, "components/MethodChanges.jsx"), "utf8")
+    .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
+    .replace('"../methodChanges.js"', JSON.stringify(pathToFileURL(join(HERE, "methodChanges.js")).href));
+  const methodFile = join(dir, "MethodChanges.mjs");
+  writeFileSync(
+    methodFile,
+    transformSync(methodSrc, { loader: "jsx", format: "esm", jsx: "automatic" }).code.replace(
+      /from "react\/jsx-runtime"/g,
+      `from ${JSON.stringify(pathToFileURL(join(HERE, "../node_modules/react/jsx-runtime.js")).href)}`
+    )
+  );
   const src = readFileSync(join(HERE, "components/Changelog.jsx"), "utf8")
+    .replace('"./MethodChanges.jsx"', JSON.stringify(pathToFileURL(methodFile).href))
     .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
     .replace('"../loadChangelog.js"', JSON.stringify(pathToFileURL(loader).href))
     .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
@@ -47,6 +60,8 @@ export function loadPublicChangelog() {
   const html = renderToStaticMarkup(React.createElement(Changelog, { goHome() {} }));
 
   assert.ok(html.includes("Morgan Stanley"), "public entries render (Moore retraction)");
+  assert.ok(html.includes("Method changes"), "site-level Method changes section renders");
+  assert.equal(html.split("Leaderboard ranking minimum").length - 1, 1, "ranking rule logged once");
   assert.equal(/marketscreener/i.test(html), false, "no marketscreener on /changelog");
   assert.equal(/<a\b/i.test(html), false, "changelog renders no links");
   assert.equal(/on hold/i.test(html), false, "no legal_hold wording");

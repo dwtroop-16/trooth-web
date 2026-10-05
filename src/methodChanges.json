@@ -1,0 +1,8 @@
+[
+  {
+    "id": "method-ranking-minimum",
+    "date": "__MERGE_DATE__",
+    "title": "Leaderboard ranking minimum",
+    "summary": "A speaker is ranked only after at least 10 of their forecasts in that category have been graded Hit or Miss. Pending forecasts don't count. Speakers with fewer are listed below the table as 'Not ranked yet', in alphabetical order."
+  }
+]
