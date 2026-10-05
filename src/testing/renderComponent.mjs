@@ -18,6 +18,9 @@ const stubs = {
       loader: "js",
       resolveDir: SRC,
     }));
+    // Vite "?raw" imports (e.g. the /method copy) load the file as a string, as on the site.
+    build.onResolve({ filter: /\?raw$/ }, (args) => ({ path: join(args.resolveDir, args.path.replace(/\?raw$/, "")), namespace: "raw" }));
+    build.onLoad({ filter: /.*/, namespace: "raw" }, (args) => ({ contents: `export default ${JSON.stringify(readFileSync(args.path, "utf8"))};`, loader: "js" }));
     build.onLoad({ filter: /loadChangelog\.js$/ }, (args) => {
       const dir = join(dirname(args.path), "changelog");
       const files = readdirSync(dir).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f));

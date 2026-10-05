@@ -80,6 +80,12 @@ test("/method copy: finance line verbatim from method-copy v1.0.1 line 15 (curly
   // Only headings ("# ...") are not rendered on /method; nothing rendered names FRED or St. Louis.
   const rendered = lines.filter((l) => !/^#\s/.test(l)).join("\n");
   assert.equal(/\bFRED\b|St\. Louis|stlouisfed/.test(rendered), false);
+  // The /method eyebrow shows the copy's own version (v1.0.1), not a hard-coded one.
+  const { default: Method } = await loadComponent("components/Method.jsx");
+  const html = await renderHtml(Method, { goHome: () => {}, goChangelog: () => {} });
+  assert.match(html, /PUBLIC COPY V1\.0\.1/);
+  assert.equal(/\bFRED\b|St\. Louis|stlouisfed/.test(visibleText(html)), false);
+  assert.ok(visibleText(html).includes("Finance: official government releases (U.S. Bureau of Economic Analysis, Federal Reserve Board) or the listing exchange\u2019s official close"));
 });
 
 test("formatClaimValue: units and casing for They said / Official result", () => {
