@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } fro
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { publicChangelogDay } from "../src/changelogPublic.js";
+import { speakerInitials } from "../src/initials.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -130,16 +131,8 @@ function kebabCase(name) {
 }
 
 function initialsFromName(name) {
-  const parts = String(name || "")
-    .replace(/\(.*?\)/g, " ")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  const first = parts[0][0] || "";
-  const last = parts[parts.length - 1][0] || "";
-  return (first + last).toUpperCase();
+  // Shared with the site (src/initials.js): quotes and punctuation never become initials.
+  return speakerInitials(name);
 }
 
 /** America/New_York calendar date from ISO horizon_end (UTC). */
@@ -203,7 +196,17 @@ function siteSubject(s) {
   };
 }
 
-function mapScore(row) {
+function reviewHoldOf(h) {
+  if (h === true) return true;
+  if (!h || typeof h !== "object") return null;
+  const reason = typeof h.reason === "string" && h.reason.trim() ? h.reason.trim() : null;
+  if (!reason) return true;
+  const out = { reason };
+  for (const k of ["flag_target", "opened_at"]) if (typeof h[k] === "string" && h[k].trim()) out[k] = h[k].trim();
+  return out;
+}
+
+export function mapScore(row) {
   return {
     schema_version: row.schema_version || "1.1.0",
     id: row.id,
@@ -217,6 +220,10 @@ function mapScore(row) {
     ape: row.ape == null ? null : Number(row.ape),
     brier: row.brier == null ? null : Number(row.brier),
     scored_at: row.scored_at,
+    // Scorer review hold. Plain `review_hold: true` (KNYC source gate, engine.py) or an object
+    // { reason, flag_target, opened_at } (holds.jsonl). Status stays "pending" (counted as pending);
+    // the site grades the card "In review" and shows no Actual line.
+    ...(reviewHoldOf(row.review_hold) ? { review_hold: reviewHoldOf(row.review_hold) } : {}),
   };
 }
 
@@ -457,6 +464,7 @@ export const FORECASTS = live.FORECASTS;
 export const ACTUALS = live.ACTUALS;
 export const SCORES = live.SCORES;
 export const DATA_SOURCE = live.source || "live";
+export const GENERATED_AT = live.generated_at || null;
 `;
   writeFileSync(join(SITE, "src/data.js"), dataJs);
 
@@ -513,4 +521,6 @@ export const DATA_SOURCE = live.source || "live";
   return summary;
 }
 
-build();
+// Run only when executed directly (tests import mapScore without writing anything).
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isMain) build();
