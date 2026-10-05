@@ -52,7 +52,10 @@ test("view model: held card is graded In review, keeps status pending, never sho
     assert.equal(card.actualObservationRef, null);
     assert.equal(renderPublicClaimCard(card).grade, "In review");
   }
-  assert.equal(toPublicClaimCard(knyc, speaker, raw, observed).gradeReason, null, "plain true: no reason guessed");
+  // Architect 2026-10-04: a plain `review_hold: true` shows the default needs_review label, never blank.
+  const plainHeld = toPublicClaimCard(knyc, speaker, raw, observed).gradeReason;
+  assert.equal(plainHeld?.code, "needs_review");
+  assert.equal(plainHeld?.label, "under review");
   assert.deepEqual(toPublicClaimCard(knyc, speaker, withReason, observed).gradeReason?.label, "who said it is being re-checked");
   assert.equal(toPublicClaimCard(knyc, speaker, plain, observed).grade, "Pending");
   // A held would-be Hit/Miss row (status kept) still never shows the actual.
@@ -90,7 +93,9 @@ test("ClaimCard: held card shows In review (+ reason label when the hold has one
         assert.match(html, /<span data-field="grade-reason" title="attribution_under_review" data-reason-code="attribution_under_review"[^>]*>who said it is being re-checked<\/span>/);
         assert.equal(text.includes("attribution_under_review"), false);
       } else {
-        assert.doesNotMatch(html, /grade-reason/);
+        // Architect 2026-10-04: no reason code -> default needs_review label, never blank.
+        assert.match(html, /<span data-field="grade-reason" title="needs_review" data-reason-code="needs_review"[^>]*>under review<\/span>/);
+        assert.equal(text.includes("needs_review"), false);
       }
     }
   }
@@ -101,4 +106,17 @@ test("Scorer void cards are In review with the needs_review label ('under review
   assert.equal(card.grade, "In review");
   assert.equal(card.gradeReason.code, "needs_review");
   assert.equal(card.gradeReason.label, "under review");
+});
+
+test("In review is never blank: holds with no, empty, unknown-to-public or hidden reasons fall back to needs_review", async () => {
+  const { default: ClaimCard } = await loadComponent("components/ClaimCard.jsx");
+  for (const hold of [true, {}, { reason: null }, { reason: "" }, { reason: "   " }, { reason: "legal_hold" }, { reason: "compact_section_hold" }, { reason: "retracted_legal_hold_misattribution" }, { reason: "not_a_known_code" }]) {
+    const card = toPublicClaimCard(knyc, speaker, mapScore({ ...plain, review_hold: hold }), observed);
+    assert.equal(card.grade, "In review", JSON.stringify(hold));
+    assert.equal(card.gradeReason?.code, "needs_review", JSON.stringify(hold));
+    assert.equal(card.gradeReason?.label, "under review", JSON.stringify(hold));
+    const html = await renderHtml(ClaimCard, { card });
+    assert.match(html, /under review/, JSON.stringify(hold));
+    assert.doesNotMatch(html, /legal_hold|compact_section_hold|not_a_known_code/);
+  }
 });
