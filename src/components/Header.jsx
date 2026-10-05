@@ -56,10 +56,11 @@ export default function Header({ vals }) {
           <span style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-0.01em;")}>Trooth</span>
         </button>
 
-        <nav className="trooth-header-nav" style={css("display:flex;align-items:center;gap:14px;flex-shrink:0;")}>
+        <nav className="trooth-header-nav" aria-label="Main" style={css("display:flex;align-items:center;gap:14px;flex-shrink:0;")}>
+          {navLink("Leaderboards", vals.goHome, vals.isHome)}
           {navLink("Claims", vals.goClaims, vals.isClaims)}
-          {navLink("Method", vals.goMethod, vals.isMethod)}
-          {navLink("Changelog", vals.goChangelog, vals.isChangelog)}
+          {navLink("How grading works", vals.goMethod, vals.isMethod)}
+          {navLink("Corrections", vals.goChangelog, vals.isChangelog)}
         </nav>
 
         <div className="trooth-header-spacer" style={css("flex:1;min-width:8px;")} />

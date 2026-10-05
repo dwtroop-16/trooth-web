@@ -2,6 +2,7 @@ import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
+import { justGraded, comingDue, domainHitLine, lastUpdatedLine } from "./homeContent.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -419,6 +420,10 @@ export function buildVals(state, actions, data) {
     scopedCards[0] ||
     null;
 
+  // Home lists (proposal P1): scoped to the active tab, one fixed recency rule each.
+  const homeJustGraded = justGraded(scopedCards, 5);
+  const homeComingDue = comingDue(scopedCards, Date.now(), 5);
+
   // Global search: all domains (not only active tab)
   const matchingClaims = q
     ? sortClaimList(cards.filter((c) => claimMatchesQuery(c, q)))
@@ -635,6 +640,14 @@ export function buildVals(state, actions, data) {
     noResults: allRows.length === 0,
     recentResolved,
     featuredClaim,
+    justGraded: homeJustGraded,
+    comingDue: homeComingDue,
+    domainHitLine: domainHitLine(cat),
+    lastUpdated: lastUpdatedLine({
+      generatedAt: data.generatedAt,
+      tracked: nCaptured,
+      graded: nResolved,
+    }),
     p,
     d,
     modal: s.modal,

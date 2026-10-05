@@ -8,11 +8,12 @@ export default function Footer({ vals }) {
         <span style={css("width:22px;height:22px;border-radius:var(--radius-sm);background:var(--forest);display:flex;align-items:center;justify-content:center;color:var(--paper);font-weight:700;font-size:13px;")}>T</span>
         <span style={css("font-family:Newsreader,serif;font-weight:600;color:var(--ink);")}>Trooth</span>
       </span>
-      <Hover as="button" onClick={vals.goMethod} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Method</Hover>
+      <Hover as="button" onClick={vals.goHome} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Leaderboards</Hover>
       <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Claims</Hover>
-      <Hover as="button" onClick={vals.goChangelog} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Changelog</Hover>
+      <Hover as="button" onClick={vals.goMethod} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">How grading works</Hover>
+      <Hover as="button" onClick={vals.goChangelog} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Corrections</Hover>
       <Hover as="button" onClick={vals.openModal} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Suggest a source</Hover>
-      <span style={css("margin-left:auto;")}>Hit / Miss / Pending · pending is not a miss</span>
+      <span style={css("margin-left:auto;")}>Hit · Miss · Pending · Unscorable · In review — pending is not a miss</span>
     </footer>
   );
 }
