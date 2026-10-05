@@ -7,7 +7,9 @@ const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_u
 
 export default function ClaimCard({ card, compact, quiet, onOpen }) {
   const rendered = renderPublicClaimCard(card);
-  const sm = statusMeta(card.status);
+  // Review-held cards keep status "pending" for counts but are graded and styled "In review".
+  const sm = statusMeta(card.reviewHold ? "void" : card.status);
+  const reason = rendered.grade === "Unscorable" || rendered.grade === "In review" ? card.gradeReason || null : null;
   // Actual value and actual source show only on graded (Hit / Miss) cards; Pending shows "pending";
   // In review and Unscorable show no actual and no actual-source link.
   const graded = rendered.grade === "Hit" || rendered.grade === "Miss";
@@ -28,20 +30,19 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
 
   const body = (
     <>
-      <div style={css("display:flex;align-items:flex-start;justify-content:space-between;gap:12px;")}>
-        <div style={css("min-width:0;")}>
-          <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "17px" : "20px") + ";font-weight:600;color:var(--ink);line-height:1.25;")}>{rendered.speakerName}</div>
-          {rendered.speakerOrg ? (
-            <div style={css("font-size:12.5px;color:var(--muted);margin-top:2px;")}>{rendered.speakerOrg}</div>
-          ) : null}
-        </div>
-        <span style={css(`font-size:11px;font-weight:700;color:${sm.color};background:${sm.tint};border-radius:999px;padding:3px 9px;white-space:nowrap;flex-shrink:0;`)}>{rendered.grade}</span>
+      {/* Card fields in contract order: speaker, exact claim, source URL, date said, horizon,
+          actual (Hit/Miss value, or "pending"), actual source, grade LAST. */}
+      <div data-field="speaker" style={css("min-width:0;")}>
+        <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "17px" : "20px") + ";font-weight:600;color:var(--ink);line-height:1.25;")}>{rendered.speakerName}</div>
+        {rendered.speakerOrg ? (
+          <div style={css("font-size:12.5px;color:var(--muted);margin-top:2px;")}>{rendered.speakerOrg}</div>
+        ) : null}
       </div>
 
-      <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "16px" : "19px") + ";font-weight:500;line-height:1.35;color:var(--ink);margin-top:8px;" + (compact ? "display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;" : ""))}>{rendered.claimText}</div>
+      <div data-field="claim" style={css("font-family:Newsreader,serif;font-size:" + (compact ? "16px" : "19px") + ";font-weight:500;line-height:1.35;color:var(--ink);margin-top:8px;" + (compact ? "display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;" : ""))}>{rendered.claimText}</div>
 
       <div style={css(`margin-top:8px;font-size:${metaSize};color:var(--body);line-height:1.65;display:flex;flex-wrap:wrap;gap:0 14px;`)}>
-        <span style={metaWrap}>
+        <span data-field="source" style={metaWrap}>
           <span style={faint}>Source · </span>
           {rendered.sourceParts.map((part, i) =>
             part.kind === "link" ? (
@@ -51,11 +52,11 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
             )
           )}
         </span>
-        <span style={metaItem}><span style={faint}>Date said · </span>{formatWhen(rendered.publishedAt)}</span>
-        <span style={metaItem}><span style={faint}>Horizon · </span>{formatWhen(rendered.horizon)}</span>
-        {showActual ? <span style={metaItem}><span style={faint}>Actual · </span>{actualLabel}</span> : null}
+        <span data-field="date-said" style={metaItem}><span style={faint}>Date said · </span>{formatWhen(rendered.publishedAt)}</span>
+        <span data-field="horizon" style={metaItem}><span style={faint}>Horizon · </span>{formatWhen(rendered.horizon)}</span>
+        {showActual ? <span data-field="actual" style={metaItem}><span style={faint}>Actual · </span>{actualLabel}</span> : null}
         {graded ? (
-        <span style={linkRuleParts.length ? metaWrap : metaItem}>
+        <span data-field="actual-source" style={linkRuleParts.length ? metaWrap : metaItem}>
           <span style={faint}>Actual source · </span>
           {rendered.actualSourceParts.map((part, i) =>
             part.kind === "link" ? (
@@ -75,6 +76,16 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
                   {p.text}
                 </span>
               ))}
+          </span>
+        ) : null}
+      </div>
+
+      <div data-field="grade-row" style={css("margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;")}>
+        <span style={css("font-size:" + metaSize + ";color:var(--faint);")}>Grade · </span>
+        <span data-field="grade" style={css(`font-size:11px;font-weight:700;color:${sm.color};background:${sm.tint};border-radius:999px;padding:3px 9px;white-space:nowrap;`)}>{rendered.grade}</span>
+        {reason ? (
+          <span data-field="grade-reason" title={reason.title} data-reason-code={reason.code} style={css("font-size:" + metaSize + ";color:var(--muted);")}>
+            {reason.label}
           </span>
         ) : null}
       </div>

@@ -1,4 +1,5 @@
-import { publicChangelogEntries } from "./changelogPublic.js";
+import { publicChangelogEntries, lastUpdatedLine } from "./changelogPublic.js";
+import { FORECASTS, SCORES, SPEAKERS, GENERATED_AT } from "./data.js";
 
 const files = import.meta.glob("./changelog/*.json", { eager: true });
 
@@ -14,6 +15,12 @@ export function loadChangelogDays() {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
+/** Public entries, with speaker / short claim / later grade looked up from the published bundle. */
 export function loadPublicChangelog() {
-  return publicChangelogEntries(loadChangelogDays());
+  return publicChangelogEntries(loadChangelogDays(), { forecasts: FORECASTS, scores: SCORES, speakers: SPEAKERS });
+}
+
+/** The /changelog "Last updated" line from the published bundle (generated_at, else newest scored_at). */
+export function loadLastUpdated() {
+  return lastUpdatedLine({ generatedAt: GENERATED_AT, forecasts: FORECASTS, scores: SCORES });
 }

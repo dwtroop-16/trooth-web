@@ -2,6 +2,8 @@ import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
+import { reasonDisplay } from "./reasonLabels.js";
+import { speakerInitials } from "./initials.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -212,14 +214,50 @@ function officialFor(forecast) {
   return allow;
 }
 
+/**
+ * Scorer review hold on a score row. The Scorer emits a plain `review_hold: true` (KNYC source gate)
+ * or an object { reason, flag_target, opened_at } (holds.jsonl). Returns { reason } (reason may be
+ * null) or null when the row is not held.
+ */
+export function reviewHoldOf(score) {
+  const h = score?.review_hold;
+  if (h === true) return { reason: null };
+  if (h && typeof h === "object") {
+    const reason = typeof h.reason === "string" && h.reason.trim() ? h.reason.trim() : null;
+    return { reason };
+  }
+  return null;
+}
+
+/**
+ * Reason code behind an Unscorable card. A subject the catalog marks unscorable (resolution.kind
+ * "unscorable", e.g. analyst ratings with reason no_official_print) governs; otherwise the forecast's
+ * own unscorable_reason. Raw code or null.
+ */
+export function unscorableReasonCode(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const res = subject?.resolution;
+  if (res && res.kind === "unscorable" && typeof res.reason === "string" && res.reason.trim()) return res.reason.trim();
+  const own = forecast?.unscorable_reason;
+  return typeof own === "string" && own.trim() ? own.trim() : null;
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
-  const grade = publicGrade(status);
+  // Scorer review hold (Architect 2026-10-02, #55): the card's public grade is "In review", but its
+  // status stays as scored ("pending"), so board / speaker counts keep counting it as pending.
+  const hold = reviewHoldOf(score);
+  const grade = hold ? "In review" : publicGrade(status);
+  // Reason label beside the grade (reason-labels v1.1.5): Unscorable -> unscorable reason;
+  // In review -> the hold's reason, or needs_review for a Scorer void (changelog-v1 key table).
+  // A plain `review_hold: true` carries no reason code, so no label is guessed.
+  const reasonCode =
+    grade === "Unscorable" ? unscorableReasonCode(forecast) : hold ? hold.reason : status === "void" ? "needs_review" : null;
+  const gradeReason = reasonCode ? reasonDisplay(reasonCode) : null;
   const src = officialFor(forecast);
   // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
   // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards
   // show "pending" even if an actual has already been observed for the match key.
-  const graded = status === "hit" || status === "miss";
+  const graded = !hold && (status === "hit" || status === "miss");
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
   const actualValue = shown ? shown.value : "pending";
   const actualSourceName = shown ? shown.source.name : src.name;
@@ -247,6 +285,8 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actualRetentionNote: retained ? retained.source.retention_note : null,
     grade,
     status,
+    reviewHold: !!hold,
+    gradeReason,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
     domainKey: forecast.domain,
     unit: forecast.claim.unit,
@@ -391,7 +431,7 @@ export function buildVals(state, actions, data) {
         speakerId: row.speaker.id,
         name: row.speaker.name,
         org: row.speaker.org,
-        initials: row.speaker.initials,
+        initials: speakerInitials(row.speaker.name),
         avatar: row.speaker.avatar,
         domain: row.domainLabel,
         catColor: cm.color,
@@ -519,7 +559,7 @@ export function buildVals(state, actions, data) {
         name: sp.name,
         org: sp.org,
         accounts: sp.accounts || [],
-        initials: sp.initials,
+        initials: speakerInitials(sp.name),
         avatar: sp.avatar,
         bio: sp.bio,
         domain: domainLabel,
@@ -547,7 +587,7 @@ export function buildVals(state, actions, data) {
   if (s.view === "prediction" && s.forecastId) {
     const card = cardById[s.forecastId];
     if (card) {
-      const sm = statusMeta(card.status);
+      const sm = statusMeta(card.reviewHold ? "void" : card.status);
       const cm = CATCOLORS[card.domain] || CATCOLORS.Finance;
       d = {
         ...card,
