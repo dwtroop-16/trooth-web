@@ -1,4 +1,4 @@
-import { sourceLinkParts } from "./linkPolicy.js";
+import { sourceDisplayParts, blockedRuleFor, plainTextRuleFor, homeOnlyRuleFor } from "./linkPolicy.js";
 
 // Public claim card: the eight required fields, in order.
 // Renderer throws if any required field is missing. Grade is rubric-only.
@@ -69,24 +69,35 @@ function hostOf(url) {
   }
 }
 
-/** Claim-source line as ordered parts (link text is the source host), after the link rules. */
+/** Claim-source line as ordered card-face parts (link text is the source host), after the link rules. */
 export function claimSourceParts(card) {
-  return sourceLinkParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+  return sourceDisplayParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+}
+
+function normName(s) {
+  return String(s || "").toLowerCase().replace(/^www\./, "").replace(/[^a-z0-9]/g, "");
 }
 
 /**
- * Actual-source line as ordered parts. Only the first part is a link.
- * NWS (api.weather.gov) actuals show the source name "National Weather Service" as link text
- * (Legal 05b condition 5). When the actual carries a retention note (Legal 05b Clarification
- * 2026-10-02), the stored observation_ref, observed_at and the note follow as PLAIN TEXT:
- * observation_ref is never linked (observation_ref_display = plain_text_no_link).
+ * Actual-source line as ordered card-face parts (Legal-Ops link rules decide href vs no href;
+ * linkPolicy.sourceDisplayParts gives the clean visible text).
+ *  - NWS (api.weather.gov): link text "National Weather Service" (Legal 05b condition 5).
+ *  - Link-rule hosts (nfl.com, ncaa.com, fred, MarketScreener): the rule's display text only,
+ *    e.g. "NFL.com game page" (NFL.com links the home page) or "NCAA.com game page" (plain text).
+ *  - Other hosts: "<source name> · <host link>", so the card shows the source name and its URL.
+ * When the actual carries a retention note (Legal 05b Clarification 2026-10-02), the stored
+ * observation_ref, observed_at and the note follow as PLAIN TEXT (observation_ref is never linked).
  */
 export function actualSourceParts(card) {
-  const host = hostOf(card.actualSourceUrl);
+  const url = card.actualSourceUrl;
+  const host = hostOf(url);
   const isNws = /(^|\.)weather\.gov$/.test(host);
-  // Legal-Ops link rules (linkPolicy.js): blocked domains render as plain-text credit;
-  // home-only domains (nfl.com) link the home page and show the specific URL as plain text.
-  const parts = sourceLinkParts(card.actualSourceUrl, (isNws ? card.actualSourceName : host) || card.actualSourceName);
+  const ruled = !!(blockedRuleFor(url) || plainTextRuleFor(url) || homeOnlyRuleFor(url));
+  const parts = sourceDisplayParts(url, (isNws ? card.actualSourceName : host) || card.actualSourceName);
+  const name = String(card.actualSourceName || "").trim();
+  if (!isNws && !ruled && name && normName(name) !== normName(host)) {
+    parts.unshift({ kind: "text", role: "source_name", text: name });
+  }
   if (card.actualRetentionNote) {
     if (card.actualObservationRef) parts.push({ kind: "text", role: "observation_ref", text: card.actualObservationRef });
     if (card.actualObservedAt) parts.push({ kind: "text", role: "observed_at", text: `observed ${card.actualObservedAt}` });

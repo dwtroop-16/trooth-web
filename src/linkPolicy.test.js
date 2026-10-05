@@ -11,11 +11,14 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
 import { toPublicClaimCard } from "./viewModel.js";
 import { renderPublicClaimCard } from "./claimCard.js";
-import { sourceLinkParts, isAllowedHref, hostOf } from "./linkPolicy.js";
+import { sourceLinkParts, sourceDisplayParts, isAllowedHref, hostOf } from "./linkPolicy.js";
+import { loadComponent } from "./testing/renderComponent.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const NFL_HOME = "https://www.nfl.com/";
 const MS_CREDIT = "dpa-AFX Analyser via MarketScreener (not linked)";
+// Card face (PR C): same href decisions, internal notes removed from the visible text.
+const MS_DISPLAY = "dpa-AFX Analyser via MarketScreener";
 const isMs = (u) => /(^|\.)marketscreener\.com$/.test(hostOf(u));
 const isNfl = (u) => /(^|\.)nfl\.com$/.test(hostOf(u));
 const isNcaa = (u) => /(^|\.)ncaa\.com$/.test(hostOf(u));
@@ -27,15 +30,7 @@ const speakerBy = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
 const cards = FORECASTS.map((f) => toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key]));
 
 async function loadClaimCard() {
-  const { transformSync } = await import("esbuild");
-  const src = readFileSync(join(HERE, "components/ClaimCard.jsx"), "utf8")
-    .replace('"../claimCard.js"', JSON.stringify(pathToFileURL(join(HERE, "claimCard.js")).href))
-    .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
-    .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
-  const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
-  const file = join(mkdtempSync(join(tmpdir(), "linkpolicy-")), "ClaimCard.mjs");
-  writeFileSync(file, code.replace(/from "react\/jsx-runtime"/g, `from ${JSON.stringify(pathToFileURL(join(HERE, "../node_modules/react/jsx-runtime.js")).href)}`));
-  return (await import(pathToFileURL(file).href)).default;
+  return (await loadComponent("components/ClaimCard.jsx")).default;
 }
 
 const unescape = (s) => s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -92,13 +87,17 @@ test("every card's link parts obey the rules (view-model scan of all cards)", ()
       for (const p of parts.filter((x) => x.kind === "link")) assert.ok(isAllowedHref(p.href), `${card.id} ${p.href}`);
       if (isMs(url)) {
         msConverted++;
-        assert.ok(parts.some((p) => p.kind === "text" && p.text === MS_CREDIT), card.id);
+        assert.ok(parts.some((p) => p.kind === "text" && p.text === MS_DISPLAY), card.id);
       }
-      if (isNcaa(url) && parts.some((p) => p.role === "plain_text_url")) ncaaConverted++;
+      if (isNcaa(url) && parts.some((p) => p.role === "plain_text_source")) ncaaConverted++;
       if (isNcaa(url)) assert.ok(parts.every((p) => p.kind !== "link"), card.id);
       if (isNfl(url) && url !== NFL_HOME) {
         nflConverted++;
-        assert.ok(parts.some((p) => p.kind === "text" && p.text.includes(url) && p.text.includes("not linked per NFL terms")), card.id);
+        assert.ok(parts.some((p) => p.kind === "link" && p.href === NFL_HOME && p.text === "NFL.com"), card.id);
+      }
+      // No internal notes or raw URLs in any card-face text part.
+      for (const p of parts.filter((x) => x.kind === "text" && !["observation_ref", "observed_at", "retention_note"].includes(x.role))) {
+        assert.equal(/not linked|https?:\/\//.test(p.text), false, `${card.id}: ${p.text}`);
       }
     }
   }
@@ -128,18 +127,22 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         if (/stlouisfed\.org/i.test(href)) bad.push(`${card.id} fred ${href}`);
         if (/(^|\.)foxsports\.com$/.test(hostOf(href))) foxLinks++;
       }
-      if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_CREDIT), card.id);
+      const text = unescape(html.replace(/<[^>]+>/g, ""));
+      if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_DISPLAY), card.id);
+      assert.equal(/not linked|\bFRED\b/.test(text), false, `${card.id}: internal note on card face`);
       if ((card.grade === "Hit" || card.grade === "Miss") && isFred(card.actualSourceUrl)) {
         fredRendered++;
-        assert.ok(unescape(html).includes(`FRED (${card.actualSourceUrl} ; not linked)`), card.id);
+        assert.ok(text.includes("Actual source · Federal Reserve Bank of St. Louis"), card.id);
       }
       if ((card.grade === "Hit" || card.grade === "Miss") && isNcaa(card.actualSourceUrl)) {
         ncaaRendered++;
-        assert.ok(unescape(html).includes(`NCAA.com (${card.actualSourceUrl} ; not linked)`), card.id);
+        assert.match(text, /Actual source · NCAA\.com( game page| article)?/, card.id);
+        assert.equal(text.includes(card.actualSourceUrl), false, `${card.id}: raw NCAA URL shown`);
       }
       if ((card.grade === "Hit" || card.grade === "Miss") && isNfl(card.actualSourceUrl) && card.actualSourceUrl !== NFL_HOME) {
         assert.ok(html.includes(`>NFL.com</a>`), card.id);
-        assert.ok(unescape(html).includes(`(${card.actualSourceUrl} ; not linked per NFL terms)`), card.id);
+        if (/nfl\.com\/games\//.test(card.actualSourceUrl)) assert.ok(text.includes("Actual source · NFL.com game page"), card.id);
+        assert.equal(text.includes(card.actualSourceUrl), false, `${card.id}: raw NFL URL shown`);
       }
     }
   }
@@ -150,4 +153,27 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
   // FOX Sports links are untouched: every FOX source still renders as its own href.
   const foxCards = cards.filter((c) => /(^|\.)foxsports\.com$/.test(hostOf(c.sourceUrl)));
   assert.ok(foxLinks >= foxCards.length * 2);
+});
+
+test("sourceDisplayParts: same href decisions as sourceLinkParts; visible text has no notes or raw URLs", () => {
+  const urls = [
+    "https://www.nfl.com/games/chiefs-at-chargers-2025-reg-1", "https://www.nfl.com/news/x", NFL_HOME,
+    "https://www.ncaa.com/game/6458431", "https://www.ncaa.com/news/football/a", "https://www.ncaa.com/",
+    "https://fred.stlouisfed.org/series/SP500", "https://www.marketscreener.com/quote/x", "https://ca.marketscreener.com/y",
+    "https://www.foxsports.com/a", "https://api.weather.gov/stations/KNYC/observations",
+  ];
+  for (const u of urls) {
+    const legal = sourceLinkParts(u, "host").filter((p) => p.kind === "link").map((p) => p.href);
+    const shown = sourceDisplayParts(u, "host");
+    assert.deepEqual(shown.filter((p) => p.kind === "link").map((p) => p.href), legal, u);
+    for (const p of shown) assert.equal(/not linked|https?:\/\/|\bFRED\b/.test(p.text), false, `${u}: ${p.text}`);
+  }
+  assert.deepEqual(sourceDisplayParts("https://www.ncaa.com/game/6458431", "x"), [{ kind: "text", role: "plain_text_source", text: "NCAA.com game page", sourceUrl: "https://www.ncaa.com/game/6458431" }]);
+  assert.deepEqual(sourceDisplayParts("https://www.nfl.com/games/a-at-b-2025-reg-1", "x"), [
+    { kind: "link", href: NFL_HOME, text: "NFL.com" },
+    { kind: "text", role: "page_kind", text: "game page", sourceUrl: "https://www.nfl.com/games/a-at-b-2025-reg-1" },
+  ]);
+  assert.deepEqual(sourceDisplayParts("https://fred.stlouisfed.org/series/SP500", "x")[0].text, "Federal Reserve Bank of St. Louis");
+  // Blocked hosts: no URL anywhere, not even a data attribute.
+  assert.deepEqual(sourceDisplayParts("https://www.marketscreener.com/quote/x", "x"), [{ kind: "text", role: "blocked_credit", text: MS_DISPLAY }]);
 });

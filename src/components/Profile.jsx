@@ -85,7 +85,7 @@ export default function Profile({ vals, openClaim }) {
       <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;")}>
         <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
           <span style={css("font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;line-height:1;color:var(--ink);")}>{p.hit_rate}</span>
-          <span style={css("font-size:13px;color:var(--muted);")}>hit rate · n_hit / n_resolved (pending excluded)</span>
+          <span style={css("font-size:13px;color:var(--muted);")}>Hit rate · Hits out of resolved forecasts (Pending not counted)</span>
         </div>
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
           {counts.map(([label, n]) => (

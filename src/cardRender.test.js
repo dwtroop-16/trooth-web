@@ -70,24 +70,25 @@ test("every card renders: required fields in order, grade last, visible grade is
       if (card.gradeReason) expected.push("grade-reason");
     }
     assert.deepEqual(order, expected, `${card.id} (${card.grade})`);
-    const g = html.match(/data-field="grade"[^>]*>([^<]+)</);
+    const g = html.match(/data-field="grade"[^>]*>(?:<svg[\s\S]*?<\/svg>)?([^<]+)</);
     assert.equal(g && g[1], card.grade, card.id);
     assert.ok(visibleText(html).includes(card.speakerName), `${card.id}: speaker name shown`);
     assert.ok(visibleText(html).includes(card.claimText.slice(0, 40)), `${card.id}: exact claim shown`);
   }
 });
 
-test("Actual line: Hit/Miss show it; Pending shows 'Actual · pending'; Unscorable / In review show none", async () => {
+test("Actual line: Hit/Miss show 'Official result' + value; Pending shows 'Official result · pending'; Unscorable / In review show none", async () => {
   for (const { card, html } of await renderAll()) {
     const text = visibleText(html);
     if (card.grade === "Hit" || card.grade === "Miss") {
-      assert.ok(text.includes("Actual · " + String(card.actual)), card.id);
+      assert.ok(text.includes("Official result" + (card.actualLabel || String(card.actual))), card.id);
       assert.ok(text.includes("Actual source · "), card.id);
     } else if (card.grade === "Pending") {
-      assert.ok(text.includes("Actual · pending"), card.id);
+      assert.ok(text.includes("Official resultpending"), card.id);
+      assert.ok(text.includes("Pending is not a miss"), card.id);
       assert.equal(text.includes("Actual source"), false, card.id);
     } else {
-      assert.equal(/Actual\b/.test(text), false, `${card.id} (${card.grade}) shows an Actual line`);
+      assert.equal(/Actual|Official result|They said/.test(text), false, `${card.id} (${card.grade}) shows an Actual line`);
     }
   }
 });

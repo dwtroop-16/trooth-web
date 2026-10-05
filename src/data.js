@@ -14,7 +14,7 @@ export const CATCOLORS = {
 
 // Official-print allowlist (schema v1.1.0). Politics: SOS / FEC / congress.gov only.
 export const OFFICIAL_PRINT = {
-  finance: { name: "FRED", url: "https://fred.stlouisfed.org/series/SP500" },
+  finance: { name: "Federal Reserve Bank of St. Louis", url: "https://fred.stlouisfed.org/series/SP500" },
   weather: { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" },
   sports: { name: "NFL official box score", url: "https://www.nfl.com/scores/" },
   politics: { name: "FEC certified canvass", url: "https://www.fec.gov/" },

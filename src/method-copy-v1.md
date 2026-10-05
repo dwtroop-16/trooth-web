@@ -12,7 +12,7 @@ One forecast, one official actual. We match on the thing predicted (place, ticke
 
 ## What counts as the result
 - Weather: NWS / NOAA station observations
-- Finance: FRED or the listing exchange’s official close
+- Finance: the official statistical release from the agency that publishes it, or the listing exchange’s official close
 - Sports: the league’s official box score
 - Politics: the certified canvass (state Secretary of State or FEC) or an official roll call on congress.gov
 

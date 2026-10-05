@@ -10,6 +10,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
 import { toPublicClaimCard } from "./viewModel.js";
+import { loadComponent } from "./testing/renderComponent.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
@@ -19,15 +20,7 @@ const cards = FORECASTS.map((f) => toPublicClaimCard(f, speakerBy[f.speaker_id],
 const isGraded = (c) => c.grade === "Hit" || c.grade === "Miss";
 
 async function loadClaimCard() {
-  const { transformSync } = await import("esbuild");
-  const src = readFileSync(join(HERE, "components/ClaimCard.jsx"), "utf8")
-    .replace('"../claimCard.js"', JSON.stringify(pathToFileURL(join(HERE, "claimCard.js")).href))
-    .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
-    .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
-  const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
-  const file = join(mkdtempSync(join(tmpdir(), "actualcontract-")), "ClaimCard.mjs");
-  writeFileSync(file, code.replace(/from "react\/jsx-runtime"/g, `from ${JSON.stringify(pathToFileURL(join(HERE, "../node_modules/react/jsx-runtime.js")).href)}`));
-  return (await import(pathToFileURL(file).href)).default;
+  return (await loadComponent("components/ClaimCard.jsx")).default;
 }
 
 test("view model: non-graded cards never carry an observed actual value", () => {
@@ -45,13 +38,14 @@ test("ClaimCard: actual + actual source only on Hit/Miss; Pending shows 'pending
   for (const card of cards) {
     for (const compact of [false, true]) {
       const html = renderToStaticMarkup(React.createElement(ClaimCard, { card, compact }));
+      // PR C card face: field 6 is the "Official result" side of the They said / Official result row.
       const hasActualSource = html.includes("Actual source · ");
-      const m = html.match(/Actual · <\/span>([^<]*)</);
+      const m = html.match(/data-field="actual"[^>]*><div[^>]*>Official result<\/div>(?:<div[^>]*><span[^>]*>|<div[^>]*>)([^<]*)</);
       if (isGraded(card)) {
         if (!hasActualSource || !m || m[1] === "pending") bad.push(`${card.id} ${card.grade} missing actual`);
       } else if (card.grade === "Pending") {
         if (hasActualSource || !m || m[1] !== "pending") bad.push(`${card.id} Pending shows ${m && m[1]} source=${hasActualSource}`);
-      } else if (hasActualSource || m || html.includes("data-actual-retention")) {
+      } else if (hasActualSource || m || html.includes("Official result") || html.includes("data-actual-retention")) {
         bad.push(`${card.id} ${card.grade} shows actual`);
       }
     }

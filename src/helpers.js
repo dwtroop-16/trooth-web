@@ -6,12 +6,34 @@ export function hexA(hex, a) {
   return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
 }
 
+// One grade token set (proposal V1), used by cards, the claim page and the footer legend.
+// Each grade differs in colour, icon AND shape, so colour is never the only cue:
+//   Hit        solid green fill, check        (white on #1B7A4B: 5.3:1)
+//   Miss       brick outline, cross           (#9C3B2F on surface: 6.5:1)
+//   Pending    slate-blue tint, clock         (#35577D on #E6ECF3: 6.3:1) -- no longer Unscorable's gray
+//   Unscorable dashed gray outline, dash      (#6E685C on surface: 5.3:1)
+//   In review  amber tint, magnifier          (#7A5A12 on #F6EDD7: 5.5:1)
+// Text contrast is >= 4.5:1 (WCAG AA) and the 4px card edge is >= 3:1 against the card surface
+// (tested in gradeTokens.test.js). Calm palette: no neon, no odds, no "lock"/flame icons.
+export const GRADE_TOKENS = {
+  Hit: { key: "hit", color: "#FFFFFF", tint: "#1B7A4B", border: "#1B7A4B", borderStyle: "solid", edge: "#1B7A4B", shape: "solid", icon: "M20 6L9 17l-5-5" },
+  Miss: { key: "miss", color: "#9C3B2F", tint: "transparent", border: "#C9897D", borderStyle: "solid", edge: "#9C3B2F", shape: "outline", icon: "M18 6L6 18M6 6l12 12" },
+  Pending: { key: "pending", color: "#35577D", tint: "#E6ECF3", border: "#C3D0E0", borderStyle: "solid", edge: "#35577D", shape: "tint", icon: "M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 7v5l3 2" },
+  Unscorable: { key: "unscorable", color: "#6E685C", tint: "transparent", border: "#9F978A", borderStyle: "dashed", edge: "#8F887A", shape: "dashed", icon: "M6 12h12" },
+  "In review": { key: "in-review", color: "#7A5A12", tint: "#F6EDD7", border: "#E2CD98", borderStyle: "solid", edge: "#9A7418", shape: "tint", icon: "M10.5 3.5a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM20.5 20.5l-5-5" },
+};
+
+const STATUS_GRADE = { hit: "Hit", miss: "Miss", pending: "Pending", unscorable: "Unscorable", void: "In review" };
+
+/** Grade tokens for a public grade label (Hit / Miss / Pending / Unscorable / In review). */
+export function gradeMeta(grade) {
+  const t = GRADE_TOKENS[grade] || GRADE_TOKENS.Pending;
+  return { label: GRADE_TOKENS[grade] ? grade : "Pending", ...t };
+}
+
+/** Grade tokens for a score status (void = In review). */
 export function statusMeta(status) {
-  if (status === "hit") return { label: "Hit", color: "#1B7A4B", tint: "#E6F1EA", border: "#BEDDCB", icon: "M20 6L9 17l-5-5" };
-  if (status === "miss") return { label: "Miss", color: "#BC2E29", tint: "#F6E4E2", border: "#E6C3BF", icon: "M18 6L6 18M6 6l12 12" };
-  if (status === "unscorable") return { label: "Unscorable", color: "#8A8375", tint: "#F0ECE1", border: "#DED6C6", icon: "M12 7v5l3 2" };
-  if (status === "void") return { label: "In review", color: "#6B4E9E", tint: "#EFE8F6", border: "#D4C6E4", icon: "M12 8v4m0 4h.01" };
-  return { label: "Pending", color: "#8A8375", tint: "#F0ECE1", border: "#DED6C6", icon: "M12 7v5l3 2" };
+  return gradeMeta(STATUS_GRADE[status] || "Pending");
 }
 
 export function formatWhen(iso) {

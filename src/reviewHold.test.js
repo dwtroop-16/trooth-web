@@ -82,9 +82,9 @@ test("ClaimCard: held card shows In review (+ reason label when the hold has one
     for (const compact of [false, true]) {
       const html = await renderHtml(ClaimCard, { card, compact });
       const text = visibleText(html);
-      assert.match(html, /data-field="grade"[^>]*>In review</);
+      assert.match(html, /data-field="grade"[^>]*>(?:<svg[\s\S]*?<\/svg>)?In review</);
       assert.doesNotMatch(text, /Pending/);
-      assert.doesNotMatch(text, /Actual/);
+      assert.doesNotMatch(text, /Actual|Official result|They said/);
       assert.doesNotMatch(html, /stations\/KNYC\/observations/, "no actual-source link");
       if (score === withReason) {
         assert.match(html, /<span data-field="grade-reason" title="attribution_under_review" data-reason-code="attribution_under_review"[^>]*>who said it is being re-checked<\/span>/);

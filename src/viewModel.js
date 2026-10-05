@@ -204,7 +204,9 @@ function officialFor(forecast) {
     return { name: "Certified SOS / FEC / congress.gov", url: allow.url };
   }
   if (sub && domain === "weather") return { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" };
-  if (sub && domain === "finance") return { name: "FRED", url: "https://fred.stlouisfed.org/series/SP500" };
+  // The card face never names the series database (owner 2026-10-04); the URL is unchanged and,
+  // under the link rules, still never an href.
+  if (sub && domain === "finance") return { name: "Federal Reserve Bank of St. Louis", url: "https://fred.stlouisfed.org/series/SP500" };
   // Do not guess a game box URL. Pending sports link the league host; Scorer supplies the permalink when resolved.
   if (domain === "sports") {
     if (sid.startsWith("nfl-")) return { name: "NFL official box score", url: "https://www.nfl.com/" };
@@ -212,6 +214,56 @@ function officialFor(forecast) {
     return { name: "League official box score", url: "/method" };
   }
   return allow;
+}
+
+function titleCaseSlug(v) {
+  return String(v)
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+function trimNumber(n) {
+  return Number.isInteger(n) ? String(n) : String(Math.round(n * 1000) / 1000);
+}
+
+/**
+ * Reader-facing form of a claim value or an official result (proposal V2: "They said / Official
+ * result"). Formatting only; the stored value is unchanged (kept in card.actual / card.claimValue).
+ *   degF 61 -> "61°F"; pct 2.2 -> "2.2%"; USD 400 -> "$400";
+ *   score "23-20" (stored away-home) -> "Kansas City Chiefs 23, Los Angeles Chargers 20"
+ *     (unknown teams: "Away 23, Home 20");
+ *   enum team ids -> team display name; other enum slugs -> Title Case ("donald-trump" -> "Donald Trump").
+ * null / "" -> null (the side is omitted).
+ */
+export function formatClaimValue(forecast, value) {
+  if (value === null || value === undefined || value === "") return null;
+  const unit = forecast?.claim?.unit;
+  const n = typeof value === "number" ? value : Number(value);
+  if (unit === "degF" && Number.isFinite(n)) return `${trimNumber(n)}°F`;
+  if (unit === "pct" && Number.isFinite(n)) return `${trimNumber(n)}%`;
+  if (unit === "USD" && Number.isFinite(n)) return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  if (unit === "score" && typeof value === "string") {
+    const m = value.trim().match(/^(\d+)-(\d+)$/);
+    if (!m) return value;
+    const game = parseGameTeams(forecast?.subject?.id || "");
+    if (game) {
+      const division = game.league === "nfl" ? "NFL" : "NCAA FBS";
+      return `${teamLabelFor(game.away, division)} ${m[1]}, ${teamLabelFor(game.home, division)} ${m[2]}`;
+    }
+    return `Away ${m[1]}, Home ${m[2]}`;
+  }
+  if (unit === "enum" && typeof value === "string") {
+    const division = sportDivision(forecast?.subject?.id || "");
+    if (forecast?.domain === "sports") {
+      if (division === "NFL" && NFL_TEAM_LABELS[value]) return NFL_TEAM_LABELS[value];
+      if (division === "NCAA FBS" && FBS_TEAM_LABELS[value]) return FBS_TEAM_LABELS[value];
+      if (NFL_TEAM_LABELS[value] || FBS_TEAM_LABELS[value]) return NFL_TEAM_LABELS[value] || FBS_TEAM_LABELS[value];
+    }
+    return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value) ? titleCaseSlug(value) : value;
+  }
+  return String(value);
 }
 
 /**
@@ -278,6 +330,10 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     publishedAt: forecast.published_at,
     horizon: forecast.horizon_end,
     actual: actualValue,
+    // "They said / Official result" display values (formatting only; stored values unchanged).
+    claimValue: forecast.claim?.value ?? null,
+    claimValueLabel: formatClaimValue(forecast, forecast.claim?.value),
+    actualLabel: shown ? formatClaimValue(forecast, actualValue) : null,
     actualSourceName,
     actualSourceUrl,
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,

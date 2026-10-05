@@ -17,7 +17,7 @@
 // Every other host (FOX Sports, NWS, ...) is returned unchanged.
 
 export const BLOCKED_LINK_DOMAINS = {
-  "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)" },
+  "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)", display: "dpa-AFX Analyser via MarketScreener" },
 };
 
 export const HOME_ONLY_LINK_DOMAINS = {
@@ -25,8 +25,9 @@ export const HOME_ONLY_LINK_DOMAINS = {
 };
 
 export const PLAIN_TEXT_LINK_DOMAINS = {
-  "ncaa.com": { name: "NCAA.com", note: "not linked" },
-  "fred.stlouisfed.org": { name: "FRED", note: "not linked" },
+  "ncaa.com": { name: "NCAA.com", note: "not linked", display: "NCAA.com" },
+  // Card face never names the series database (owner 2026-10-04); the publisher is shown instead.
+  "fred.stlouisfed.org": { name: "FRED", note: "not linked", display: "Federal Reserve Bank of St. Louis" },
 };
 
 export function hostOf(url) {
@@ -80,6 +81,50 @@ export function sourceLinkParts(url, text) {
     const parts = [{ kind: "link", href: home.home, text: home.name }];
     if (String(url).trim() !== home.home) {
       parts.push({ kind: "text", role: "unlinked_url", text: `(${String(url).trim()} ; ${home.note})` });
+    }
+    return parts;
+  }
+  return [{ kind: "link", href: url, text }];
+}
+
+// Card-face wording (owner 2026-10-04, PR C): the link rules above still decide href vs no href;
+// only the VISIBLE text changes. Internal notes ("; not linked per NFL terms", "(<URL> ; not linked)",
+// "(not linked)") never reach the card face. A non-linked source shows its name as plain text
+// ("NCAA.com game page"); nfl.com keeps its home-page link ("NFL.com") followed by plain " game page".
+// The specific URL is kept only in a data attribute (part.sourceUrl) for audit, never as text.
+function pageKind(url) {
+  let path = "";
+  try {
+    path = new URL(String(url).trim()).pathname;
+  } catch {
+    return "";
+  }
+  if (/^\/games?\//.test(path)) return "game page";
+  if (/^\/news\//.test(path)) return "article";
+  return "";
+}
+
+/**
+ * Card-face source parts: { kind: "link", href, text } | { kind: "text", role, text, sourceUrl? }.
+ * Same href decisions as sourceLinkParts (and isAllowedHref); clean visible text.
+ */
+export function sourceDisplayParts(url, text) {
+  const u = String(url ?? "").trim();
+  const blocked = blockedRuleFor(u);
+  // Blocked hosts: no URL anywhere in the page (not even a data attribute).
+  if (blocked) return [{ kind: "text", role: "blocked_credit", text: blocked.display || blocked.credit }];
+  const plain = plainTextRuleFor(u);
+  if (plain) {
+    const kind = pageKind(u);
+    return [{ kind: "text", role: "plain_text_source", text: [plain.display || plain.name, kind].filter(Boolean).join(" "), sourceUrl: u }];
+  }
+  const home = homeOnlyRuleFor(u);
+  if (home) {
+    const parts = [{ kind: "link", href: home.home, text: home.name }];
+    if (u !== home.home) {
+      const kind = pageKind(u);
+      if (kind) parts.push({ kind: "text", role: "page_kind", text: kind, sourceUrl: u });
+      else parts[0] = { ...parts[0], sourceUrl: u };
     }
     return parts;
   }

@@ -17,6 +17,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { loadComponent } from "./testing/renderComponent.mjs";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
 import { toPublicClaimCard } from "./viewModel.js";
 import { renderPublicClaimCard, actualSourceParts } from "./claimCard.js";
@@ -86,18 +87,7 @@ test("aged-out cards link the endpoint and carry observation_ref, observed_at an
 
 test("ClaimCard renders the retention note as plain text and never links observation_ref", async () => {
   assert.ok(retained.length > 0, "fixture: at least one aged-out weather card");
-  const { transformSync } = await import("esbuild");
-  const { readFileSync } = await import("node:fs");
-  const src = readFileSync(join(HERE, "components/ClaimCard.jsx"), "utf8")
-    .replace('"../claimCard.js"', JSON.stringify(pathToFileURL(join(HERE, "claimCard.js")).href))
-    .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
-    .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
-  const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
-  const dir = mkdtempSync(join(tmpdir(), "claimcard-"));
-  const file = join(dir, "ClaimCard.mjs");
-  // resolve react from the site's node_modules
-  writeFileSync(file, code.replace(/from "react\/jsx-runtime"/g, `from ${JSON.stringify(pathToFileURL(join(HERE, "../node_modules/react/jsx-runtime.js")).href)}`));
-  const { default: ClaimCard } = await import(pathToFileURL(file).href);
+  const { default: ClaimCard } = await loadComponent("components/ClaimCard.jsx");
   const React = (await import("react")).default;
   const { renderToStaticMarkup } = await import("react-dom/server");
 
