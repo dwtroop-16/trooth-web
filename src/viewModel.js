@@ -2,7 +2,10 @@ import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
+import { reasonDisplay, hasReasonLabel, isHiddenReason, canonicalReasonCode, REASON_LABELS } from "./reasonLabels.js";
+import { speakerInitials } from "./initials.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
+import enumLabels from "./generated/enumLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -202,24 +205,170 @@ function officialFor(forecast) {
     return { name: "Certified SOS / FEC / congress.gov", url: allow.url };
   }
   if (sub && domain === "weather") return { name: "NWS", url: "https://api.weather.gov/stations/KNYC/observations" };
-  if (sub && domain === "finance") return { name: "FRED", url: "https://fred.stlouisfed.org/series/SP500" };
+  // Finance (Architect ruling 3, 2026-10-04): a graded card shows the source the Scorer recorded on
+  // the actual (BEA, Federal Reserve Board, exchange close). Ungraded cards show no actual source on
+  // the card face; this placeholder names no host and guesses no URL.
+  if (domain === "finance") return { name: OFFICIAL_PRINT.finance.name, url: OFFICIAL_PRINT.finance.url };
   // Do not guess a game box URL. Pending sports link the league host; Scorer supplies the permalink when resolved.
   if (domain === "sports") {
     if (sid.startsWith("nfl-")) return { name: "NFL official box score", url: "https://www.nfl.com/" };
-    if (sid.startsWith("fbs-") || sid.startsWith("ncaa-")) return { name: "NCAA official box score", url: "https://www.ncaa.com/" };
+    // FBS (Legal 05v): ncaa.com no longer resolves FBS results; the Scorer records the official
+    // school, conference or CFP page per actual. No host is guessed for an ungraded card.
+    if (sid.startsWith("fbs-") || sid.startsWith("ncaa-")) return { name: "Official school, conference or CFP results page", url: "/method" };
     return { name: "League official box score", url: "/method" };
   }
   return allow;
 }
 
+// Enum display names (Architect ruling 5, 2026-10-04): copied verbatim from the enum files under the
+// trooth data root by scripts/gen-enum-labels.mjs. Never title-cased or guessed.
+const ENUM_TEAMS = enumLabels.teams || { nfl: {}, fbs: {} };
+const ENUM_BY_SUBJECT = enumLabels.bySubject || {};
+const ENUM_RATING = enumLabels.rating || {};
+
+/** Enum-file label for a claim / actual id, or null when no enum file names it. */
+export function enumLabelFor(forecast, value) {
+  if (typeof value !== "string" || !value) return null;
+  const sid = forecast?.subject?.id || "";
+  const bySubject = ENUM_BY_SUBJECT[sid];
+  if (bySubject && bySubject[value]) return bySubject[value];
+  if (/^us-equity-[a-z0-9-]+-rating$/.test(sid) && ENUM_RATING[value]) return ENUM_RATING[value];
+  if (forecast?.domain === "sports") {
+    const division = sportDivision(sid);
+    if (division === "NFL") return ENUM_TEAMS.nfl[value] || null;
+    if (division === "NCAA FBS") return ENUM_TEAMS.fbs[value] || null;
+    return ENUM_TEAMS.nfl[value] || ENUM_TEAMS.fbs[value] || null;
+  }
+  return null;
+}
+
+function enumTeamLabel(slug, league) {
+  const table = league === "nfl" ? ENUM_TEAMS.nfl : ENUM_TEAMS.fbs;
+  return table[slug] || null;
+}
+
+// A number token as printed in text: "1,250", "3.0", "74".
+const NUMBER_TOKEN = /\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/g;
+
+/**
+ * The claim value exactly as printed in the claim text (keeps printed precision: "3.0" stays "3.0"),
+ * or null when the text has no token equal to the value.
+ */
+export function printedNumberIn(text, n) {
+  if (typeof n !== "number" || !Number.isFinite(n)) return null;
+  for (const tok of String(text || "").match(NUMBER_TOKEN) || []) {
+    if (Number(tok.replace(/,/g, "")) === n) return tok;
+  }
+  return null;
+}
+
+/** Stored number as text: never rounded, never padded (JS shortest form, e.g. 2.2 -> "2.2"). */
+function plainNumber(n) {
+  return String(n);
+}
+
+function groupThousands(numText) {
+  const [i, d] = numText.split(".");
+  return i.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (d !== undefined ? "." + d : "");
+}
+
+/**
+ * Reader-facing form of a claim value or an official result (proposal V2: "They said / Official
+ * result"). Formatting only; the stored value is unchanged (kept in card.actual / card.claimValue).
+ * Numbers keep their printed precision exactly (Architect ruling 5): `printed` (the token from the
+ * claim text) is used verbatim when given; otherwise the stored number as is. Never rounded/padded.
+ *   degF 61 -> "61°F"; pct 2.2 -> "2.2%" (printed "3.0" -> "3.0%"); USD 400 -> "$400";
+ *   score "23-20" (stored away-home) -> "Kansas City Chiefs 23, Los Angeles Chargers 20"
+ *     (teams not in the enum files: "Away 23, Home 20");
+ *   enum ids -> the enum file's label ("donald-trump" -> "Donald J. Trump"); ids no enum file names
+ *   are shown as stored.
+ * null / "" -> null (the side is omitted).
+ */
+export function formatClaimValue(forecast, value, { printed = null } = {}) {
+  if (value === null || value === undefined || value === "") return null;
+  const unit = forecast?.claim?.unit;
+  const n = typeof value === "number" ? value : Number(value);
+  const num = () => (printed && Number(String(printed).replace(/,/g, "")) === n ? String(printed) : plainNumber(n));
+  if (unit === "degF" && Number.isFinite(n)) return `${num()}°F`;
+  if (unit === "pct" && Number.isFinite(n)) return `${num()}%`;
+  if (unit === "USD" && Number.isFinite(n)) return "$" + (printed && Number(String(printed).replace(/,/g, "")) === n ? String(printed) : groupThousands(plainNumber(n)));
+  if (unit === "score" && typeof value === "string") {
+    const m = value.trim().match(/^(\d+)-(\d+)$/);
+    if (!m) return value;
+    const game = parseGameTeams(forecast?.subject?.id || "");
+    const away = game && enumTeamLabel(game.away, game.league);
+    const home = game && enumTeamLabel(game.home, game.league);
+    if (away && home) return `${away} ${m[1]}, ${home} ${m[2]}`;
+    return `Away ${m[1]}, Home ${m[2]}`;
+  }
+  if (unit === "enum" && typeof value === "string") return enumLabelFor(forecast, value) || value;
+  return String(value);
+}
+
+/** Default reason for an In review card with no public reason (reason-labels status map). */
+export const DEFAULT_IN_REVIEW_REASON = "needs_review";
+
+/**
+ * True when a reason code has a label and the reason-labels table marks it as public ("Yes: ...").
+ * Internal-only codes (e.g. legal_hold, "Not today"), hidden history codes and unknown codes are not.
+ */
+export function publicCardReason(raw) {
+  if (raw == null || !hasReasonLabel(raw) || isHiddenReason(raw)) return false;
+  const canon = canonicalReasonCode(raw);
+  return /^Yes\b/.test(String(REASON_LABELS[canon]?.shown || ""));
+}
+
+/**
+ * Scorer review hold on a score row. The Scorer emits a plain `review_hold: true` (KNYC source gate)
+ * or an object { reason, flag_target, opened_at } (holds.jsonl). Returns { reason } (reason may be
+ * null) or null when the row is not held.
+ */
+export function reviewHoldOf(score) {
+  const h = score?.review_hold;
+  if (h === true) return { reason: null };
+  if (h && typeof h === "object") {
+    const reason = typeof h.reason === "string" && h.reason.trim() ? h.reason.trim() : null;
+    return { reason };
+  }
+  return null;
+}
+
+/**
+ * Reason code behind an Unscorable card. A subject the catalog marks unscorable (resolution.kind
+ * "unscorable", e.g. analyst ratings with reason no_official_print) governs; otherwise the forecast's
+ * own unscorable_reason. Raw code or null.
+ */
+export function unscorableReasonCode(forecast, subject = SUBJECTS[forecast?.subject?.id || ""]) {
+  const res = subject?.resolution;
+  if (res && res.kind === "unscorable" && typeof res.reason === "string" && res.reason.trim()) return res.reason.trim();
+  const own = forecast?.unscorable_reason;
+  return typeof own === "string" && own.trim() ? own.trim() : null;
+}
+
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
-  const grade = publicGrade(status);
+  // Scorer review hold (Architect 2026-10-02, #55): the card's public grade is "In review", but its
+  // status stays as scored ("pending"), so board / speaker counts keep counting it as pending.
+  const hold = reviewHoldOf(score);
+  const grade = hold ? "In review" : publicGrade(status);
+  // Reason label beside the grade (reason-labels v1.1.5): Unscorable -> unscorable reason;
+  // In review -> the hold's reason, or needs_review for a Scorer void (changelog-v1 key table).
+  // Architect ruling 2026-10-04: an In review card is never blank. A hold with no reason code (the
+  // Scorer's plain `review_hold: true`), or one whose reason is not public, shows the status map's
+  // default needs_review label ("under review").
+  const reasonCode =
+    grade === "Unscorable" ? unscorableReasonCode(forecast) : hold ? hold.reason : status === "void" ? "needs_review" : null;
+  const gradeReason =
+    grade === "In review"
+      ? (publicCardReason(reasonCode) ? reasonDisplay(reasonCode) : null) || reasonDisplay(DEFAULT_IN_REVIEW_REASON)
+      : reasonCode
+        ? reasonDisplay(reasonCode)
+        : null;
   const src = officialFor(forecast);
   // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
   // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards
   // show "pending" even if an actual has already been observed for the match key.
-  const graded = status === "hit" || status === "miss";
+  const graded = !hold && (status === "hit" || status === "miss");
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
   const actualValue = shown ? shown.value : "pending";
   const actualSourceName = shown ? shown.source.name : src.name;
@@ -240,6 +389,10 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     publishedAt: forecast.published_at,
     horizon: forecast.horizon_end,
     actual: actualValue,
+    // "They said / Official result" display values (formatting only; stored values unchanged).
+    claimValue: forecast.claim?.value ?? null,
+    claimValueLabel: formatClaimValue(forecast, forecast.claim?.value, { printed: printedNumberIn(forecast.claim?.text, forecast.claim?.value) }),
+    actualLabel: shown ? formatClaimValue(forecast, actualValue) : null,
     actualSourceName,
     actualSourceUrl,
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
@@ -247,6 +400,8 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actualRetentionNote: retained ? retained.source.retention_note : null,
     grade,
     status,
+    reviewHold: !!hold,
+    gradeReason,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
     domainKey: forecast.domain,
     unit: forecast.claim.unit,
@@ -391,7 +546,7 @@ export function buildVals(state, actions, data) {
         speakerId: row.speaker.id,
         name: row.speaker.name,
         org: row.speaker.org,
-        initials: row.speaker.initials,
+        initials: speakerInitials(row.speaker.name),
         avatar: row.speaker.avatar,
         domain: row.domainLabel,
         catColor: cm.color,
@@ -519,7 +674,7 @@ export function buildVals(state, actions, data) {
         name: sp.name,
         org: sp.org,
         accounts: sp.accounts || [],
-        initials: sp.initials,
+        initials: speakerInitials(sp.name),
         avatar: sp.avatar,
         bio: sp.bio,
         domain: domainLabel,
@@ -547,7 +702,7 @@ export function buildVals(state, actions, data) {
   if (s.view === "prediction" && s.forecastId) {
     const card = cardById[s.forecastId];
     if (card) {
-      const sm = statusMeta(card.status);
+      const sm = statusMeta(card.reviewHold ? "void" : card.status);
       const cm = CATCOLORS[card.domain] || CATCOLORS.Finance;
       d = {
         ...card,

@@ -17,7 +17,7 @@
 // Every other host (FOX Sports, NWS, ...) is returned unchanged.
 
 export const BLOCKED_LINK_DOMAINS = {
-  "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)" },
+  "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)", display: "dpa-AFX Analyser via MarketScreener" },
 };
 
 export const HOME_ONLY_LINK_DOMAINS = {
@@ -81,6 +81,73 @@ export function sourceLinkParts(url, text) {
     if (String(url).trim() !== home.home) {
       parts.push({ kind: "text", role: "unlinked_url", text: `(${String(url).trim()} ; ${home.note})` });
     }
+    return parts;
+  }
+  return [{ kind: "link", href: url, text }];
+}
+
+// Card-face wording (owner 2026-10-04, PR C; Architect rulings 2 + 3, 2026-10-04). The link rules
+// above still decide href vs no href; only the VISIBLE text changes. Internal notes
+// ("; not linked per NFL terms", "(<URL> ; not linked)", "(not linked)") never reach the card face.
+//  - nfl.com (owner 2026-10-02): link "NFL.com" (home page only), then the specific nfl.com URL as
+//    plain, visible text. Only the internal "; not linked per NFL terms" wording is dropped.
+//  - MarketScreener: plain credit "dpa-AFX Analyser via MarketScreener"; no URL anywhere.
+//  - Hosts that are no longer a resolution source (ncaa.com: Legal 05v; the series database at
+//    fred.stlouisfed.org: Legal 05x/05ad) are never shown in any form: no link, no host, no URL, no
+//    name, no attribute. The card says the official page is being updated; the grade is unchanged.
+//    Scorer re-sources these actuals; the site does not guess a replacement host.
+export const SUPPRESSED_SOURCE_DOMAINS = {
+  "ncaa.com": { display: "official result page being updated" },
+  "fred.stlouisfed.org": { display: "official release page being updated" },
+};
+
+// Source names shown on the card face for official publishers (Architect ruling 3, 2026-10-04):
+// the Federal Reserve Board's pages (rate decisions, SEP tables) show "Federal Reserve Board".
+export const SOURCE_DISPLAY_NAMES = {
+  "federalreserve.gov": "Federal Reserve Board",
+};
+
+// Full-slot credits (Architect 2026-10-04, #62): the actual-source slot reads exactly this text, with
+// no "Actual source ·" prefix. BEA's attribution wording is required verbatim. The credit links the
+// recorded URL when the link rules allow it.
+export const SOURCE_CREDITS = {
+  "bea.gov": "Source: U.S. Bureau of Economic Analysis",
+};
+
+/** Full-slot credit text for a URL's host, or null. */
+export function sourceCreditFor(url) {
+  const rule = ruleFor(Object.fromEntries(Object.entries(SOURCE_CREDITS).map(([d, credit]) => [d, { credit }])), hostOf(url));
+  return rule ? rule.credit : null;
+}
+
+export function suppressedSourceRuleFor(url) {
+  return ruleFor(SUPPRESSED_SOURCE_DOMAINS, hostOf(url));
+}
+
+/** Card-face publisher name for a URL's host, or null. */
+export function sourceDisplayNameFor(url) {
+  const rule = ruleFor(Object.fromEntries(Object.entries(SOURCE_DISPLAY_NAMES).map(([d, name]) => [d, { name }])), hostOf(url));
+  return rule ? rule.name : null;
+}
+
+/**
+ * Card-face source parts: { kind: "link", href, text } | { kind: "text", role, text }.
+ * Same href decisions as sourceLinkParts (and isAllowedHref); clean visible text. Parts never carry a
+ * URL that is not shown (no data attributes).
+ */
+export function sourceDisplayParts(url, text) {
+  const u = String(url ?? "").trim();
+  const suppressed = suppressedSourceRuleFor(u);
+  if (suppressed) return [{ kind: "text", role: "source_being_updated", text: suppressed.display }];
+  const blocked = blockedRuleFor(u);
+  // Blocked hosts: no URL anywhere in the page (not even a data attribute).
+  if (blocked) return [{ kind: "text", role: "blocked_credit", text: blocked.display || blocked.credit }];
+  const plain = plainTextRuleFor(u);
+  if (plain) return [{ kind: "text", role: "plain_text_url", text: u }];
+  const home = homeOnlyRuleFor(u);
+  if (home) {
+    const parts = [{ kind: "link", href: home.home, text: home.name }];
+    if (u !== home.home) parts.push({ kind: "text", role: "unlinked_url", text: u });
     return parts;
   }
   return [{ kind: "link", href: url, text }];

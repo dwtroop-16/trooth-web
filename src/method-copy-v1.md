@@ -1,4 +1,4 @@
-# Trooth methodology (public copy v1.0.0)
+# Trooth methodology (public copy v1.0.1 (2026-10-04: finance sources BEA and Federal Reserve Board; FRED removed))
 
 Site `/method` should use this language. Do not paraphrase back in windows, partials, or community grades.
 
@@ -12,7 +12,7 @@ One forecast, one official actual. We match on the thing predicted (place, ticke
 
 ## What counts as the result
 - Weather: NWS / NOAA station observations
-- Finance: FRED or the listing exchange’s official close
+- Finance: official government releases (U.S. Bureau of Economic Analysis, Federal Reserve Board) or the listing exchange’s official close
 - Sports: the league’s official box score
 - Politics: the certified canvass (state Secretary of State or FEC) or an official roll call on congress.gov
 

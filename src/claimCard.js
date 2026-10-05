@@ -1,4 +1,4 @@
-import { sourceLinkParts } from "./linkPolicy.js";
+import { sourceDisplayParts, sourceDisplayNameFor, sourceCreditFor, isAllowedHref, suppressedSourceRuleFor, blockedRuleFor, plainTextRuleFor, homeOnlyRuleFor } from "./linkPolicy.js";
 
 // Public claim card: the eight required fields, in order.
 // Renderer throws if any required field is missing. Grade is rubric-only.
@@ -69,24 +69,56 @@ function hostOf(url) {
   }
 }
 
-/** Claim-source line as ordered parts (link text is the source host), after the link rules. */
+/**
+ * Claim-source line as ordered card-face parts (link text is the source host), after the link rules.
+ * Official publishers with a card-face name (Federal Reserve Board SEP pages) get the name first.
+ */
 export function claimSourceParts(card) {
-  return sourceLinkParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+  const parts = sourceDisplayParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+  const name = sourceDisplayNameFor(card.sourceUrl);
+  if (name && !suppressedSourceRuleFor(card.sourceUrl)) parts.unshift({ kind: "text", role: "source_name", text: name });
+  return parts;
+}
+
+function normName(s) {
+  return String(s || "").toLowerCase().replace(/^www\./, "").replace(/[^a-z0-9]/g, "");
 }
 
 /**
- * Actual-source line as ordered parts. Only the first part is a link.
- * NWS (api.weather.gov) actuals show the source name "National Weather Service" as link text
- * (Legal 05b condition 5). When the actual carries a retention note (Legal 05b Clarification
- * 2026-10-02), the stored observation_ref, observed_at and the note follow as PLAIN TEXT:
- * observation_ref is never linked (observation_ref_display = plain_text_no_link).
+ * Actual-source line as ordered card-face parts. The source is the one the Scorer recorded on the
+ * actual (Architect ruling 3); Legal-Ops link rules decide href vs no href and
+ * linkPolicy.sourceDisplayParts gives the visible text.
+ *  - NWS (api.weather.gov): link text "National Weather Service" (Legal 05b condition 5).
+ *  - nfl.com: "NFL.com" (home-page link) + the specific nfl.com URL as plain text (owner 2026-10-02).
+ *  - Hosts no longer used for resolution (ncaa.com, fred.stlouisfed.org): never shown in any form;
+ *    "official result page being updated" (no host, no URL, no recorded name).
+ *  - MarketScreener: plain credit only.
+ *  - BEA (bea.gov): the full credit "Source: U.S. Bureau of Economic Analysis", linking the recorded
+ *    URL; the card face shows it with no "Actual source ·" prefix (Architect 2026-10-04).
+ *  - Other hosts: "<source name> · <host link>". The name is the card-face publisher name where one
+ *    is set (Federal Reserve Board), else the name the Scorer recorded.
+ * When the actual carries a retention note (Legal 05b Clarification 2026-10-02), the stored
+ * observation_ref, observed_at and the note follow as PLAIN TEXT (observation_ref is never linked).
  */
 export function actualSourceParts(card) {
-  const host = hostOf(card.actualSourceUrl);
+  const url = card.actualSourceUrl;
+  // Full-slot credit (BEA): the slot reads exactly the credit text; it links the recorded URL when
+  // the link rules allow it. The renderer drops the "Actual source ·" prefix for these parts.
+  const credit = sourceCreditFor(url);
+  if (credit) {
+    return isAllowedHref(url)
+      ? [{ kind: "link", href: String(url).trim(), text: credit, role: "source_credit" }]
+      : [{ kind: "text", role: "source_credit", text: credit }];
+  }
+  const host = hostOf(url);
   const isNws = /(^|\.)weather\.gov$/.test(host);
-  // Legal-Ops link rules (linkPolicy.js): blocked domains render as plain-text credit;
-  // home-only domains (nfl.com) link the home page and show the specific URL as plain text.
-  const parts = sourceLinkParts(card.actualSourceUrl, (isNws ? card.actualSourceName : host) || card.actualSourceName);
+  const suppressed = !!suppressedSourceRuleFor(url);
+  const ruled = !!(suppressed || blockedRuleFor(url) || plainTextRuleFor(url) || homeOnlyRuleFor(url));
+  const parts = sourceDisplayParts(url, (isNws ? card.actualSourceName : host) || card.actualSourceName);
+  const name = String(sourceDisplayNameFor(url) || card.actualSourceName || "").trim();
+  if (!isNws && !ruled && name && normName(name) !== normName(host)) {
+    parts.unshift({ kind: "text", role: "source_name", text: name });
+  }
   if (card.actualRetentionNote) {
     if (card.actualObservationRef) parts.push({ kind: "text", role: "observation_ref", text: card.actualObservationRef });
     if (card.actualObservedAt) parts.push({ kind: "text", role: "observed_at", text: `observed ${card.actualObservedAt}` });
@@ -130,6 +162,8 @@ export function renderPublicClaimCard(card) {
     actualRetentionNote: card.actualRetentionNote ?? null,
     sourceParts: claimSourceParts(card),
     actualSourceParts: actualSourceParts(card),
+    // True when the actual-source slot is a full credit (no "Actual source ·" prefix on the card face).
+    actualSourceIsCredit: !!sourceCreditFor(card.actualSourceUrl),
     grade: card.grade,
     fieldsInOrder,
   };
