@@ -56,6 +56,7 @@ const ACTUAL_FILES = [
   "data/actuals/ncaa-fbs-2025-reg10.jsonl",
   "data/actuals/ncaa-fbs-2025-reg13.jsonl",
   "data/actuals/ncaa-fbs-2025-cfp1-cfp4.jsonl",
+  "data/actuals/fbs-2026-typed.jsonl",
   "data/actuals/fred-macro-2025.jsonl",
   "data/actuals/politics-2024-president.jsonl",
   "data/actuals/nfl-2025-w2.jsonl",
