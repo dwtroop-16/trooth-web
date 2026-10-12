@@ -48,7 +48,7 @@ export default function Profile({ vals, openClaim }) {
     ["Resolved", p.n_resolved],
     ["Pending", p.n_pending],
     ["Unscorable", p.n_unscorable],
-    ["Void", p.n_void],
+    ["In review", p.n_void],
   ];
   const divisionRows = (p.divisionBoards || []).map((row) => ({
     key: row.division,
