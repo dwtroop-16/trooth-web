@@ -64,6 +64,8 @@ function mapScoreRow(r) {
     ape: r.ape == null ? null : Number(r.ape),
     brier: r.brier == null ? null : Number(r.brier),
     scored_at: r.scored_at,
+    // Scorer review hold: plain true or { reason, ... }; grade In review, still counted as pending.
+    ...(r.review_hold === true || (r.review_hold && typeof r.review_hold === "object") ? { review_hold: r.review_hold } : {}),
   };
 }
 

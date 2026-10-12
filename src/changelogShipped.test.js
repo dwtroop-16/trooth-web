@@ -75,5 +75,7 @@ test("publicChangelogDay drops errors[], skipped[], note_* and internal fields f
     retractions: [{ at: "t", id: "fct_r", forecast_id: "fct_r", reason: "legal_block", detail: "removed" }],
   });
   const [r] = publicChangelogEntries([{ date: "2026-10-02", retractions: [{ id: "fct_r", reason: "legal_block" }] }]);
-  assert.equal(r.summary, "Retraction · fct_r · removed because its source can't be used under our source rules");
+  // Reader text never carries the card id (it is not in the bundle, so there is no speaker line).
+  assert.equal(r.summary, "removed because its source can't be used under our source rules");
+  assert.equal(r.summary.includes("fct_"), false);
 });

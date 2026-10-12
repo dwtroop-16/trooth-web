@@ -11,7 +11,8 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), "..");
-const RULE_LITERALS = ['"marketscreener.com"', '"dpa-AFX Analyser via MarketScreener (not linked)"'];
+// The card-face display credit (PR C) is part of the same rule table.
+const RULE_LITERALS = ['"marketscreener.com"', '"dpa-AFX Analyser via MarketScreener (not linked)"', '"dpa-AFX Analyser via MarketScreener"'];
 
 test("built dist/ JS chunks contain no marketscreener or heisman.com (beyond the link-rule table)", { timeout: 120000 }, async () => {
   const { build } = await import("vite");
