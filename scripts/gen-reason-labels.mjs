@@ -12,6 +12,23 @@ import { fileURLToPath } from "node:url";
 const SITE = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = process.argv[2] || "/workspace/trooth/reason-labels-v1.md";
 
+/** Split a "where" cell on ";" that is not inside parentheses (v1.1.6: "skipped (…; …)"). */
+export function splitTopLevel(cell) {
+  const out = [];
+  let depth = 0;
+  let cur = "";
+  for (const ch of cell) {
+    if (ch === "(") depth++;
+    if (ch === ")") depth = Math.max(0, depth - 1);
+    if (ch === ";" && depth === 0) {
+      out.push(cur);
+      cur = "";
+    } else cur += ch;
+  }
+  out.push(cur);
+  return out.map((w) => w.trim()).filter(Boolean);
+}
+
 export function parseReasonLabelTable(md) {
   const version = (md.match(/approved v(\d+\.\d+\.\d+)/) || [])[1] || null;
   const rows = [];
@@ -30,7 +47,7 @@ export function parseReasonLabelTable(md) {
     rows.push({
       code: m[1],
       ...(alias ? { aliasOf: alias[1], ...(internalAlias ? { internal: true } : {}) } : hidden ? { hidden: true } : { label }),
-      where: where.split(";").map((w) => w.trim()).filter(Boolean),
+      where: splitTopLevel(where),
       shown,
       spec,
     });
