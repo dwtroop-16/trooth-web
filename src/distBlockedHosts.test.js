@@ -32,3 +32,35 @@ test("built dist/ JS chunks contain no marketscreener or heisman.com (beyond the
   }
   assert.deepEqual(bad, []);
 });
+
+// Legal 05ak: 247wallst.com is a site-wide BLOCK. Bundle data may still carry 247wallst source URLs as
+// plain strings (rendered as a plain-text credit), so this checks hrefs only: any href attribute or
+// JSX href prop in the emitted HTML/JS that points at 247wallst fails the build check.
+export const HREF_247 = /href\s*[=:]\s*["'`]?\s*(https?:)?\/\/([a-z0-9-]+\.)*247wallst\.com/i;
+
+test("HREF_247 matches hrefs, not plain-text mentions", () => {
+  assert.ok(HREF_247.test('<a href="https://247wallst.com/x">'));
+  assert.ok(HREF_247.test('{href:"https://www.247wallst.com/x"}'));
+  assert.ok(!HREF_247.test('{source_url:"https://247wallst.com/x"}'));
+  assert.ok(!HREF_247.test("24/7 Wall St. (not linked)"));
+});
+
+test("sourceLinkParts never links 247wallst", async () => {
+  const { sourceLinkParts, isAllowedHref } = await import("./linkPolicy.js");
+  for (const u of ["https://247wallst.com/investing/2026/x/", "https://www.247wallst.com/a"]) {
+    assert.equal(isAllowedHref(u), false);
+    assert.deepEqual(sourceLinkParts(u, "x"), [{ kind: "text", role: "blocked_credit", text: "24/7 Wall St. (not linked)" }]);
+  }
+});
+
+test("built dist/ has no href to 247wallst", { timeout: 120000 }, async () => {
+  const { build } = await import("vite");
+  const outDir = mkdtempSync(join(tmpdir(), "trooth-dist-"));
+  await build({ root: SITE, logLevel: "silent", build: { outDir, emptyOutDir: true } });
+  const files = [];
+  const walk = (d) => { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.(html|js)$/.test(e.name)) files.push(p); } };
+  walk(outDir);
+  assert.ok(files.length > 0);
+  const bad = files.filter((p) => HREF_247.test(readFileSync(p, "utf8")));
+  assert.deepEqual(bad, []);
+});
