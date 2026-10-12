@@ -361,9 +361,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const gradeReason =
     grade === "In review"
       ? (publicCardReason(reasonCode) ? reasonDisplay(reasonCode) : null) || reasonDisplay(DEFAULT_IN_REVIEW_REASON)
-      : reasonCode
+      : publicCardReason(reasonCode)
         ? reasonDisplay(reasonCode)
-        : null;
+        : null; // reason-labels v1.1.6: codes not shown to readers (e.g. no_explicit_value, a skip only) get no label
   const src = officialFor(forecast);
   // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
   // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards

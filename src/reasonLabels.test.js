@@ -1,4 +1,4 @@
-// One generated reason-label table (src/reasonLabels.js, v1.1.5, generated from reason-labels-v1.md).
+// One generated reason-label table (src/reasonLabels.js, v1.1.6, generated from reason-labels-v1.md).
 // /changelog's PUBLIC_REASON_LABELS is derived from it, not a second hand-kept copy.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -12,8 +12,9 @@ import { PUBLIC_REASON_LABELS, PUBLIC_REASON_CODES, HIDDEN_REASON_CODES, changel
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MD = "/workspace/trooth/reason-labels-v1.md";
 
-test("generated table is v1.1.5 and includes actual_corrected", () => {
-  assert.equal(REASON_LABELS_VERSION, "1.1.5");
+test("generated table is v1.1.6 and includes actual_corrected", () => {
+  assert.equal(REASON_LABELS_VERSION, "1.1.6");
+  assert.match(readFileSync(join(HERE, "reasonLabels.js"), "utf8"), /Architect-approved v1\.1\.6/);
   assert.equal(reasonLabel("actual_corrected"), "official result corrected");
   assert.equal(reasonLabel("no_official_print"), "no official result to grade against");
 });
@@ -27,6 +28,9 @@ test("src/reasonLabels.js is exactly what the generator produces from reason-lab
     const t = REASON_LABELS[r.code];
     assert.equal(t.label, r.label, r.code);
     assert.equal(t.aliasOf, r.aliasOf, r.code);
+    assert.deepEqual(t.where, r.where, r.code);
+    assert.equal(t.shown, r.shown, r.code);
+    assert.equal(t.spec, r.spec, r.code);
   }
 });
 
@@ -91,4 +95,36 @@ test("every reason in the shipped changelog renders a plain label", () => {
       }
     }
   }
+});
+
+// reason-labels v1.1.6 (Architect 2026-10-12; rubric-v1 v1.3.0 R7): no_explicit_value is a skip only and
+// never a stored unscorable reason. It is not public on cards or on /changelog.
+test("v1.1.6: no_explicit_value is a skip, not shown to readers anywhere", async () => {
+  const row = REASON_LABELS.no_explicit_value;
+  assert.deepEqual(row.where, ["skipped (changelog `skipped[]` only; legacy unscorable_reason enum value, no stored rows)"]);
+  assert.equal(/^Yes\b/.test(row.shown), false);
+  assert.equal(PUBLIC_REASON_CODES.has ? PUBLIC_REASON_CODES.has("no_explicit_value") : [...PUBLIC_REASON_CODES].includes("no_explicit_value"), false);
+  assert.equal("no_explicit_value" in PUBLIC_REASON_LABELS, false);
+  assert.equal(changelogReason("no_explicit_value"), null);
+  // Cards: a (legacy) row storing it gets no label beside the grade, and no raw code anywhere.
+  const { toPublicClaimCard } = await import("./viewModel.js");
+  const { FORECASTS, SPEAKERS } = await import("./data.js");
+  const f = { ...FORECASTS.find((x) => x.unscorable_reason === "no_official_print" && x.subject.id === "us-equity-nvda-rating"), subject: { id: "x-legacy", label: "x" }, unscorable_reason: "no_explicit_value", scorable: false };
+  const card = toPublicClaimCard(f, SPEAKERS.find((s) => s.id === f.speaker_id), undefined, undefined);
+  assert.equal(card.grade, "Unscorable");
+  assert.equal(card.gradeReason, null);
+  const { loadComponent, renderHtml } = await import("./testing/renderComponent.mjs");
+  const { default: ClaimCard } = await loadComponent("components/ClaimCard.jsx");
+  const html = await renderHtml(ClaimCard, { card });
+  assert.equal(/no_explicit_value|no specific number or pick/.test(html), false);
+});
+
+test("v1.1.6: no row in the shipped bundle or /changelog stores or renders no_explicit_value", async () => {
+  const { FORECASTS, SCORES, SUBJECTS } = await import("./data.js");
+  assert.deepEqual(FORECASTS.filter((f) => f.unscorable_reason === "no_explicit_value").map((f) => f.id), []);
+  assert.equal(JSON.stringify([SCORES, SUBJECTS]).includes("no_explicit_value"), false);
+  const { loadComponent, renderHtml } = await import("./testing/renderComponent.mjs");
+  const { default: Changelog } = await loadComponent("components/Changelog.jsx");
+  const html = await renderHtml(Changelog, { goHome() {} });
+  assert.equal(/no_explicit_value|no specific number or pick/.test(html), false);
 });
