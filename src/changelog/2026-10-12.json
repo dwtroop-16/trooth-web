@@ -1,0 +1,47 @@
+{
+  "corrections": [
+    {
+      "at": "2026-10-12T13:55:41Z",
+      "forecast_id": "fct_01M39TF7XHRHXFEB74K3QDC04V",
+      "reason": "legal_scope",
+      "detail": "Source updated to a Benzinga article reporting the same call; the original source is no longer used."
+    },
+    {
+      "at": "2026-10-12T13:55:41Z",
+      "forecast_id": "fct_01M39TF7XHRHXFEB74K3QDC04V",
+      "reason": "published_at_corrected",
+      "detail": "Publish time corrected to when the cited article was published (May 26, 2026); deadline unchanged."
+    },
+    {
+      "at": "2026-10-12T13:55:41Z",
+      "forecast_id": "fct_01M39TF7XHBH8N1YNZNYS8C3XV",
+      "reason": "legal_scope",
+      "detail": "Source updated to a Benzinga article reporting the same call; the original source is no longer used."
+    },
+    {
+      "at": "2026-10-12T13:55:41Z",
+      "forecast_id": "fct_01M39TF7XHBH8N1YNZNYS8C3XV",
+      "reason": "published_at_corrected",
+      "detail": "Publish time corrected to when the cited article was published (May 26, 2026); deadline unchanged."
+    },
+    {
+      "at": "2026-10-12T13:55:41Z",
+      "forecast_id": "fct_01M39TF7XH6HMA9VP51THC02WE",
+      "reason": "legal_scope",
+      "detail": "Source updated to a Benzinga article reporting the same call; the original source is no longer used."
+    },
+    {
+      "at": "2026-10-12T13:55:41Z",
+      "forecast_id": "fct_01M39TF7XH6HMA9VP51THC02WE",
+      "reason": "date_said_corrected",
+      "detail": "Date corrected to when the cited article was published (May 21, 2026); deadline moves to May 21, 2027."
+    },
+    {
+      "at": "2026-10-12T13:55:41Z",
+      "forecast_id": "fct_01M39TF7XH6HMA9VP51THC02WE",
+      "reason": "claim_text_edited",
+      "detail": "Card wording updated to match the cited article."
+    }
+  ],
+  "voids": []
+}
