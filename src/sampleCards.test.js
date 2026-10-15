@@ -15,7 +15,10 @@ test("every live forecast renders a complete public card", () => {
     assert.ok(f.match_key, `missing match_key on ${f.id}`);
     const card = toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualBy[f.match_key]);
     const rendered = renderPublicClaimCard(card);
-    assert.equal(rendered.fieldsInOrder.length, 8);
+    // Eight fields, except a graded (Hit / Miss) card whose kickoff is pending: the owner's rule hides
+    // its horizon line (kickoff_status pending, schema-v1.md v1.3.2), leaving the other seven.
+    const horizonHidden = f.kickoff_status === "pending" && (rendered.grade === "Hit" || rendered.grade === "Miss");
+    assert.equal(rendered.fieldsInOrder.length, horizonHidden ? 7 : 8);
     assert.ok(PUBLIC_GRADES.includes(rendered.grade));
     assert.notEqual(rendered.grade, "Partial");
     assert.ok(!/community/i.test(rendered.grade));
