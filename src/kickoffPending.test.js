@@ -195,9 +195,12 @@ test("bundle: pending-kickoff cards render with no time; hit/miss cards have no 
 const CATALOG_DIR = "/workspace/trooth";
 const haveCatalogs = existsSync(join(CATALOG_DIR, "games-2026-fbs.json")) && existsSync(join(CATALOG_DIR, "games-2026-nfl.json"));
 
-test("catalogs are v1.1.0 with kickoff_status on every game; pending games are not 'verified'", { skip: !haveCatalogs }, () => {
-  for (const file of ["games-2026-fbs.json", "games-2026-nfl.json"]) {
-    const cat = JSON.parse(readFileSync(join(CATALOG_DIR, file), "utf8"));
+const CATALOG_FILES = ["games-2026-fbs.json", "games-2026-nfl.json", "games-2025-fbs.json", "games-2025-nfl.json"];
+const readCatalogs = () => CATALOG_FILES.map((f) => JSON.parse(readFileSync(join(CATALOG_DIR, f), "utf8")));
+
+test("all four catalogs (2026 + 2025) are v1.1.0 with kickoff_status on every game", { skip: !haveCatalogs }, () => {
+  for (const [i, cat] of readCatalogs().entries()) {
+    const file = CATALOG_FILES[i];
     assert.equal(cat.schema_version, "1.1.0", file);
     for (const g of cat.subjects) {
       assert.ok(["verified", "pending"].includes(g.kickoff_status), `${file} ${g.id}: ${g.kickoff_status}`);
@@ -206,10 +209,89 @@ test("catalogs are v1.1.0 with kickoff_status on every game; pending games are n
   }
 });
 
+test("the 16 pending 2026 NFL REG18 games are pending in the index (old tbd is pending)", { skip: !haveCatalogs }, () => {
+  const [, nfl26] = readCatalogs();
+  const index = buildKickoffStatusIndex(readCatalogs());
+  const reg18 = nfl26.subjects.filter((g) => g.week === "REG18");
+  assert.equal(reg18.length, 16);
+  for (const g of reg18) {
+    assert.equal(index.get(g.id), g.kickoff_status, g.id);
+  }
+  const pending = reg18.filter((g) => g.kickoff_status === "pending");
+  assert.equal(pending.length, 16, "REG18 games are all pending until nfl.com posts clock times");
+  assert.equal(nfl26.subjects.filter((g) => g.kickoff_status === "pending").length, 16);
+});
+
+test("synthetic: 'tbd' (the old NFL REG18 value) and a missing status are pending, with a warning each", () => {
+  const warnings = [];
+  const index = buildKickoffStatusIndex(
+    [{ league: "nfl", subjects: [{ id: "nfl-2026-a-b-20270103", kickoff_status: "tbd" }, { id: "nfl-2026-c-d-20270103" }] }],
+    (m) => warnings.push(m)
+  );
+  assert.equal(index.get("nfl-2026-a-b-20270103"), "pending");
+  assert.equal(index.get("nfl-2026-c-d-20270103"), "pending");
+  assert.equal(warnings.length, 2);
+});
+
+test("2025 games: pending FBS drops horizon_end, verified NFL keeps it (synthetic)", () => {
+  const index = buildKickoffStatusIndex([
+    { league: "ncaa-fbs", subjects: [{ id: "fbs-2025-a-b-20250906", kickoff_status: "pending", kickoff: "2025-09-06T16:00:00Z", horizon_end: "2025-09-07T08:00:00Z" }] },
+    { league: "nfl", subjects: [{ id: "nfl-2025-c-d-20251019", kickoff_status: "verified", kickoff: "2025-10-19T17:00:00Z", horizon_end: "2025-10-20T09:00:00Z" }] },
+  ]);
+  const fbs = withKickoffStatus({ id: "1", subject: { id: "fbs-2025-a-b-20250906" }, horizon_end: "2025-09-07T08:00:00Z" }, index);
+  assert.equal(fbs.kickoff_status, "pending");
+  assert.equal(fbs.horizon_end, null);
+  const nfl = withKickoffStatus({ id: "2", subject: { id: "nfl-2025-c-d-20251019" }, horizon_end: "2025-10-20T09:00:00Z" }, index);
+  assert.equal(nfl.kickoff_status, "verified");
+  assert.equal(nfl.horizon_end, "2025-10-20T09:00:00Z");
+});
+
+test("bundle vs catalogs: every forecast on a catalog game carries that game's status; pending ones have no horizon_end", { skip: !haveCatalogs }, () => {
+  const index = buildKickoffStatusIndex(readCatalogs());
+  let pending = 0;
+  let verified = 0;
+  let fbs2025 = 0;
+  for (const f of FORECASTS) {
+    const st = index.get(f.subject?.id);
+    if (!st) {
+      assert.equal(f.kickoff_status, undefined, f.id);
+      continue;
+    }
+    assert.equal(f.kickoff_status, st, f.id);
+    if (st === "pending") {
+      pending += 1;
+      assert.equal(f.horizon_end, null, f.id);
+      if (f.subject.id.startsWith("fbs-2025-")) fbs2025 += 1;
+    } else {
+      verified += 1;
+      assert.ok(f.horizon_end, f.id);
+    }
+  }
+  assert.ok(pending > 0 && verified > 0);
+  assert.ok(fbs2025 > 0, "2025 FBS forecasts are covered by the kickoff logic");
+  // Every game-id (dated) forecast on the board is on a catalog; none slips through without a status.
+  for (const f of FORECASTS) if (/-\d{8}$/.test(f.subject?.id || "")) assert.ok(f.kickoff_status, f.id);
+});
+
+test("2025 FBS noon-ET placeholders (16:00Z kickoff) never reach a card", () => {
+  for (const f of FORECASTS.filter((x) => x.kickoff_status === "pending")) {
+    const c = toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualBy[f.match_key]);
+    const r = renderPublicClaimCard(c);
+    assert.equal(r.horizon, null, f.id);
+    assert.ok(!/\d{4}-\d{2}-\d{2}T/.test(JSON.stringify(r.fieldsInOrder.filter((x) => x.key === "horizon"))), f.id);
+  }
+});
+
 test("built dist has no placeholder kickoff or horizon_end for a pending game", { skip: !haveCatalogs, timeout: 120000 }, async () => {
-  const cats = ["games-2026-fbs.json", "games-2026-nfl.json"].map((f) => JSON.parse(readFileSync(join(CATALOG_DIR, f), "utf8")));
-  const games = cats.flatMap((c) => c.subjects);
+  const games = readCatalogs().flatMap((c) => c.subjects);
+  // A placeholder string may legitimately equal another row's real value (another game's verified time, a
+  // non-game horizon such as the Heisman ceremony, or a published_at). Those can't be told apart by string
+  // search, so they are skipped here and covered by the per-forecast horizon_end:null check below.
   const verifiedStrings = new Set(games.filter((g) => g.kickoff_status === "verified").flatMap((g) => [g.kickoff, g.horizon_end]));
+  for (const f of FORECASTS) {
+    if (f.kickoff_status === "pending") continue;
+    for (const v of [f.horizon_end, f.published_at, f.captured_at]) if (v) verifiedStrings.add(v);
+  }
   // Every pending game that has a forecast on the board, plus every pending game's placeholder strings.
   const onBoard = new Set(FORECASTS.map((f) => f.subject?.id));
   const pendingGames = games.filter((g) => g.kickoff_status === "pending");

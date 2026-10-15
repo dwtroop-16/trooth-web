@@ -73,8 +73,13 @@ const ACTUAL_FILES = [
 const SCORES_FILE = "scorer/out/scores.jsonl";
 const SPEAKERS_REG = "speakers-v1.json";
 // Game catalogs (v1.1.0) carry kickoff_status verified|pending (schema-v1.md v1.3.2). Read for
-// kickoff status only; a pending game's horizon_end placeholder never reaches the bundle.
-const KICKOFF_CATALOG_FILES = ["games-2026-fbs.json", "games-2026-nfl.json"];
+// kickoff status only (2026 and 2025 catalogs); a pending game's horizon_end placeholder never reaches the bundle.
+const KICKOFF_CATALOG_FILES = [
+  "games-2026-fbs.json",
+  "games-2026-nfl.json",
+  "games-2025-fbs.json",
+  "games-2025-nfl.json",
+];
 const SUBJECTS_FILES = [
   "subjects-v1.json",
   "games-2025-nfl.json",
