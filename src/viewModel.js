@@ -1,5 +1,6 @@
 import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
+import { horizonDisplay } from "./kickoffStatus.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
@@ -238,7 +239,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     sourceUrl: forecast.source.url,
     sourceHost: hostnameFromUrl(forecast.source.url),
     publishedAt: forecast.published_at,
-    horizon: forecast.horizon_end,
+    // kickoff_status pending: the horizon is a placeholder; keep it off the card entirely.
+    kickoffStatus: forecast.kickoff_status ?? null,
+    horizon: forecast.kickoff_status === "pending" ? null : forecast.horizon_end,
     actual: actualValue,
     actualSourceName,
     actualSourceUrl,
@@ -305,6 +308,16 @@ export function speakerStats(speaker, forecasts, scores) {
     mean_ape: mean(apes),
     mean_brier: mean(briers),
   };
+}
+
+/**
+ * Whether a card's horizon has passed. A pending kickoff has no usable time (never read the
+ * placeholder): a graded card is past by definition, an ungraded one is still open.
+ */
+export function horizonIsPast(card, now = Date.now()) {
+  if (card.kickoffStatus === "pending") return card.status === "hit" || card.status === "miss";
+  const t = new Date(card.horizon).getTime();
+  return !Number.isNaN(t) && t <= now;
 }
 
 function sortClaimList(list) {
@@ -479,15 +492,9 @@ export function buildVals(state, actions, data) {
     claimList = claimList.filter((c) => c.speakerId === claimSpeaker);
   }
   if (claimHorizon === "pending") {
-    claimList = claimList.filter((c) => {
-      const t = new Date(c.horizon).getTime();
-      return Number.isNaN(t) || t > now;
-    });
+    claimList = claimList.filter((c) => horizonIsPast(c, now) === false);
   } else if (claimHorizon === "past") {
-    claimList = claimList.filter((c) => {
-      const t = new Date(c.horizon).getTime();
-      return !Number.isNaN(t) && t <= now;
-    });
+    claimList = claimList.filter((c) => horizonIsPast(c, now) === true);
   }
   claimList = sortClaimList(claimList);
 
@@ -552,7 +559,10 @@ export function buildVals(state, actions, data) {
       d = {
         ...card,
         publishedLabel: formatWhen(card.publishedAt),
-        horizonLabel: formatWhen(card.horizon),
+        horizonLabel: (() => {
+          const h = horizonDisplay(card);
+          return h.kind === "time" ? formatWhen(h.value) : h.kind === "pending" ? h.text : "";
+        })(),
         statusLabel: sm.label,
         statusColor: sm.color,
         statusTint: sm.tint,

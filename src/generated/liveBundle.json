@@ -56081,7 +56081,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-ohio-state-iowa-20261003|fbs-2026-ohio-state-iowa-20261003|score"
+      "match_key": "sports|fbs-2026-ohio-state-iowa-20261003|fbs-2026-ohio-state-iowa-20261003|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -56114,7 +56115,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-alabama-mississippi-state-20261003|fbs-2026-alabama-mississippi-state-20261003|score"
+      "match_key": "sports|fbs-2026-alabama-mississippi-state-20261003|fbs-2026-alabama-mississippi-state-20261003|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -56147,7 +56149,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-florida-missouri-20261003|fbs-2026-florida-missouri-20261003|score"
+      "match_key": "sports|fbs-2026-florida-missouri-20261003|fbs-2026-florida-missouri-20261003|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -56180,7 +56183,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-miami-fl-clemson-20261003|fbs-2026-miami-fl-clemson-20261003|score"
+      "match_key": "sports|fbs-2026-miami-fl-clemson-20261003|fbs-2026-miami-fl-clemson-20261003|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -56213,7 +56217,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-washington-usc-20261003|fbs-2026-washington-usc-20261003|score"
+      "match_key": "sports|fbs-2026-washington-usc-20261003|fbs-2026-washington-usc-20261003|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.0.0",
@@ -58424,7 +58429,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-tampa-bay-dallas-20261008|nfl-2026-tampa-bay-dallas-20261008|score"
+      "match_key": "sports|nfl-2026-tampa-bay-dallas-20261008|nfl-2026-tampa-bay-dallas-20261008|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58457,7 +58463,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-philadelphia-jacksonville-20261011|nfl-2026-philadelphia-jacksonville-20261011|score"
+      "match_key": "sports|nfl-2026-philadelphia-jacksonville-20261011|nfl-2026-philadelphia-jacksonville-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58490,7 +58497,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-chicago-green-bay-20261011|nfl-2026-chicago-green-bay-20261011|score"
+      "match_key": "sports|nfl-2026-chicago-green-bay-20261011|nfl-2026-chicago-green-bay-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58523,7 +58531,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-houston-tennessee-20261011|nfl-2026-houston-tennessee-20261011|score"
+      "match_key": "sports|nfl-2026-houston-tennessee-20261011|nfl-2026-houston-tennessee-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58556,7 +58565,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-cincinnati-miami-20261011|nfl-2026-cincinnati-miami-20261011|score"
+      "match_key": "sports|nfl-2026-cincinnati-miami-20261011|nfl-2026-cincinnati-miami-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58589,7 +58599,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-las-vegas-new-england-20261011|nfl-2026-las-vegas-new-england-20261011|score"
+      "match_key": "sports|nfl-2026-las-vegas-new-england-20261011|nfl-2026-las-vegas-new-england-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58622,7 +58633,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-minnesota-new-orleans-20261011|nfl-2026-minnesota-new-orleans-20261011|score"
+      "match_key": "sports|nfl-2026-minnesota-new-orleans-20261011|nfl-2026-minnesota-new-orleans-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58655,7 +58667,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-cleveland-ny-jets-20261011|nfl-2026-cleveland-ny-jets-20261011|score"
+      "match_key": "sports|nfl-2026-cleveland-ny-jets-20261011|nfl-2026-cleveland-ny-jets-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58688,7 +58701,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-indianapolis-pittsburgh-20261011|nfl-2026-indianapolis-pittsburgh-20261011|score"
+      "match_key": "sports|nfl-2026-indianapolis-pittsburgh-20261011|nfl-2026-indianapolis-pittsburgh-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58721,7 +58735,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-ny-giants-washington-20261011|nfl-2026-ny-giants-washington-20261011|score"
+      "match_key": "sports|nfl-2026-ny-giants-washington-20261011|nfl-2026-ny-giants-washington-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58754,7 +58769,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-denver-la-chargers-20261011|nfl-2026-denver-la-chargers-20261011|score"
+      "match_key": "sports|nfl-2026-denver-la-chargers-20261011|nfl-2026-denver-la-chargers-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58787,7 +58803,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-detroit-arizona-20261011|nfl-2026-detroit-arizona-20261011|score"
+      "match_key": "sports|nfl-2026-detroit-arizona-20261011|nfl-2026-detroit-arizona-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58820,7 +58837,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-san-francisco-seattle-20261011|nfl-2026-san-francisco-seattle-20261011|score"
+      "match_key": "sports|nfl-2026-san-francisco-seattle-20261011|nfl-2026-san-francisco-seattle-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58853,7 +58871,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-baltimore-atlanta-20261011|nfl-2026-baltimore-atlanta-20261011|score"
+      "match_key": "sports|nfl-2026-baltimore-atlanta-20261011|nfl-2026-baltimore-atlanta-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58886,7 +58905,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-buffalo-la-rams-20261012|nfl-2026-buffalo-la-rams-20261012|score"
+      "match_key": "sports|nfl-2026-buffalo-la-rams-20261012|nfl-2026-buffalo-la-rams-20261012|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58919,7 +58939,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-las-vegas-new-england-20261011|nfl-2026-las-vegas-new-england-20261011|score"
+      "match_key": "sports|nfl-2026-las-vegas-new-england-20261011|nfl-2026-las-vegas-new-england-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58952,7 +58973,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-chicago-green-bay-20261011|nfl-2026-chicago-green-bay-20261011|score"
+      "match_key": "sports|nfl-2026-chicago-green-bay-20261011|nfl-2026-chicago-green-bay-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -58985,7 +59007,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-san-francisco-seattle-20261011|nfl-2026-san-francisco-seattle-20261011|score"
+      "match_key": "sports|nfl-2026-san-francisco-seattle-20261011|nfl-2026-san-francisco-seattle-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59018,7 +59041,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-baltimore-atlanta-20261011|nfl-2026-baltimore-atlanta-20261011|score"
+      "match_key": "sports|nfl-2026-baltimore-atlanta-20261011|nfl-2026-baltimore-atlanta-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59051,7 +59075,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-buffalo-la-rams-20261012|nfl-2026-buffalo-la-rams-20261012|score"
+      "match_key": "sports|nfl-2026-buffalo-la-rams-20261012|nfl-2026-buffalo-la-rams-20261012|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59084,7 +59109,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-tampa-bay-dallas-20261008|nfl-2026-tampa-bay-dallas-20261008|score"
+      "match_key": "sports|nfl-2026-tampa-bay-dallas-20261008|nfl-2026-tampa-bay-dallas-20261008|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59117,7 +59143,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-philadelphia-jacksonville-20261011|nfl-2026-philadelphia-jacksonville-20261011|score"
+      "match_key": "sports|nfl-2026-philadelphia-jacksonville-20261011|nfl-2026-philadelphia-jacksonville-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59150,7 +59177,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-houston-tennessee-20261011|nfl-2026-houston-tennessee-20261011|score"
+      "match_key": "sports|nfl-2026-houston-tennessee-20261011|nfl-2026-houston-tennessee-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59183,7 +59211,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-cincinnati-miami-20261011|nfl-2026-cincinnati-miami-20261011|score"
+      "match_key": "sports|nfl-2026-cincinnati-miami-20261011|nfl-2026-cincinnati-miami-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59216,7 +59245,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-minnesota-new-orleans-20261011|nfl-2026-minnesota-new-orleans-20261011|score"
+      "match_key": "sports|nfl-2026-minnesota-new-orleans-20261011|nfl-2026-minnesota-new-orleans-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59249,7 +59279,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-cleveland-ny-jets-20261011|nfl-2026-cleveland-ny-jets-20261011|score"
+      "match_key": "sports|nfl-2026-cleveland-ny-jets-20261011|nfl-2026-cleveland-ny-jets-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59282,7 +59313,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-indianapolis-pittsburgh-20261011|nfl-2026-indianapolis-pittsburgh-20261011|score"
+      "match_key": "sports|nfl-2026-indianapolis-pittsburgh-20261011|nfl-2026-indianapolis-pittsburgh-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59315,7 +59347,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-ny-giants-washington-20261011|nfl-2026-ny-giants-washington-20261011|score"
+      "match_key": "sports|nfl-2026-ny-giants-washington-20261011|nfl-2026-ny-giants-washington-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59348,7 +59381,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-denver-la-chargers-20261011|nfl-2026-denver-la-chargers-20261011|score"
+      "match_key": "sports|nfl-2026-denver-la-chargers-20261011|nfl-2026-denver-la-chargers-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59381,7 +59415,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|nfl-2026-detroit-arizona-20261011|nfl-2026-detroit-arizona-20261011|score"
+      "match_key": "sports|nfl-2026-detroit-arizona-20261011|nfl-2026-detroit-arizona-20261011|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59403,7 +59438,7 @@
         "id": "fbs-2026-iowa-washington-20261009",
         "label": "2026 FBS: Iowa at Washington (2026-10-09)"
       },
-      "horizon_end": "2026-10-10T17:00:00Z",
+      "horizon_end": null,
       "claim": {
         "text": "Crawford: Washington 23, Iowa 20.",
         "type": "categorical",
@@ -59414,7 +59449,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-iowa-washington-20261009|fbs-2026-iowa-washington-20261009|score"
+      "match_key": "sports|fbs-2026-iowa-washington-20261009|fbs-2026-iowa-washington-20261009|score",
+      "kickoff_status": "pending"
     },
     {
       "schema_version": "1.3.0",
@@ -59447,7 +59483,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-indiana-nebraska-20261010|fbs-2026-indiana-nebraska-20261010|score"
+      "match_key": "sports|fbs-2026-indiana-nebraska-20261010|fbs-2026-indiana-nebraska-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59480,7 +59517,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-indiana-nebraska-20261010|fbs-2026-indiana-nebraska-20261010|score"
+      "match_key": "sports|fbs-2026-indiana-nebraska-20261010|fbs-2026-indiana-nebraska-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59502,7 +59540,7 @@
         "id": "fbs-2026-texas-oklahoma-20261010",
         "label": "2026 FBS: Texas at Oklahoma (2026-10-10)"
       },
-      "horizon_end": "2026-10-11T11:30:00Z",
+      "horizon_end": null,
       "claim": {
         "text": "Hummer: Texas 20, Oklahoma 17.",
         "type": "categorical",
@@ -59513,7 +59551,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-texas-oklahoma-20261010|fbs-2026-texas-oklahoma-20261010|score"
+      "match_key": "sports|fbs-2026-texas-oklahoma-20261010|fbs-2026-texas-oklahoma-20261010|score",
+      "kickoff_status": "pending"
     },
     {
       "schema_version": "1.3.0",
@@ -59535,7 +59574,7 @@
         "id": "fbs-2026-texas-oklahoma-20261010",
         "label": "2026 FBS: Texas at Oklahoma (2026-10-10)"
       },
-      "horizon_end": "2026-10-11T11:30:00Z",
+      "horizon_end": null,
       "claim": {
         "text": "Crawford: Texas 24, Oklahoma 14.",
         "type": "categorical",
@@ -59546,7 +59585,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-texas-oklahoma-20261010|fbs-2026-texas-oklahoma-20261010|score"
+      "match_key": "sports|fbs-2026-texas-oklahoma-20261010|fbs-2026-texas-oklahoma-20261010|score",
+      "kickoff_status": "pending"
     },
     {
       "schema_version": "1.3.0",
@@ -59579,7 +59619,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-usc-penn-state-20261010|fbs-2026-usc-penn-state-20261010|score"
+      "match_key": "sports|fbs-2026-usc-penn-state-20261010|fbs-2026-usc-penn-state-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59612,7 +59653,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-usc-penn-state-20261010|fbs-2026-usc-penn-state-20261010|score"
+      "match_key": "sports|fbs-2026-usc-penn-state-20261010|fbs-2026-usc-penn-state-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59645,7 +59687,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-georgia-alabama-20261010|fbs-2026-georgia-alabama-20261010|score"
+      "match_key": "sports|fbs-2026-georgia-alabama-20261010|fbs-2026-georgia-alabama-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -59678,7 +59721,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-georgia-alabama-20261010|fbs-2026-georgia-alabama-20261010|score"
+      "match_key": "sports|fbs-2026-georgia-alabama-20261010|fbs-2026-georgia-alabama-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.0.0",
@@ -60371,7 +60415,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-ucla-oregon-20261010|fbs-2026-ucla-oregon-20261010|score"
+      "match_key": "sports|fbs-2026-ucla-oregon-20261010|fbs-2026-ucla-oregon-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.3.0",
@@ -60404,7 +60449,8 @@
       },
       "scorable": true,
       "unscorable_reason": null,
-      "match_key": "sports|fbs-2026-ucla-oregon-20261010|fbs-2026-ucla-oregon-20261010|score"
+      "match_key": "sports|fbs-2026-ucla-oregon-20261010|fbs-2026-ucla-oregon-20261010|score",
+      "kickoff_status": "verified"
     },
     {
       "schema_version": "1.0.0",

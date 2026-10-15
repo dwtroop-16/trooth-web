@@ -14,6 +14,8 @@ Vite + React 18 SPA. Politics is in. Partial and community-vote grades are out.
 
 Claim cards always show, in this order: speaker (name; org), exact claim text, source URL, date said, horizon, actual or pending, actual source (name + URL), grade.
 
+Kickoff status (schema-v1.md v1.3.2): a game whose `kickoff_status` is `pending` in `games-2026-fbs.json` / `games-2026-nfl.json` shows the text "kickoff pending" in the horizon slot, never a time. Hit and Miss cards hide the horizon line in that case. The build drops `horizon_end` for pending games, so no placeholder time reaches the bundle.
+
 Public grades: Hit / Miss / Pending / Unscorable / In review. No Partial. No community verified. Pending is not a miss and is not folded into hit rate.
 
 Politics actuals: certified SOS / FEC / congress.gov only. Never AP called, 538, Wikipedia, betting, polls, or community votes.

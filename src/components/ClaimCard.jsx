@@ -52,7 +52,11 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
           )}
         </span>
         <span style={metaItem}><span style={faint}>Date said · </span>{formatWhen(rendered.publishedAt)}</span>
-        <span style={metaItem}><span style={faint}>Horizon · </span>{formatWhen(rendered.horizon)}</span>
+        {rendered.horizonDisplay.kind === "time" ? (
+          <span style={metaItem}><span style={faint}>Horizon · </span>{formatWhen(rendered.horizonDisplay.value)}</span>
+        ) : rendered.horizonDisplay.kind === "pending" ? (
+          <span style={metaItem} data-kickoff-pending=""><span style={faint}>Horizon · </span>{rendered.horizonDisplay.text}</span>
+        ) : null}
         {showActual ? <span style={metaItem}><span style={faint}>Actual · </span>{actualLabel}</span> : null}
         {graded ? (
         <span style={linkRuleParts.length ? metaWrap : metaItem}>
