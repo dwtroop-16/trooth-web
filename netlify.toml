@@ -3,6 +3,63 @@
   command = "npm run build"
   publish = "dist"
 
+# Legacy person URLs: speaker ids moved to registry ids (speakers-v1.json v1.2.0, 2026-10-15).
+# Keep old /person links working. Must stay above the SPA fallback.
+[[redirects]]
+  from = "/person/brad-crawford"
+  to = "/person/cbs-brad-crawford"
+  status = 301
+
+[[redirects]]
+  from = "/person/brandon-marcello"
+  to = "/person/cbs-brandon-marcello"
+  status = 301
+
+[[redirects]]
+  from = "/person/chip-patterson"
+  to = "/person/cbs-chip-patterson"
+  status = 301
+
+[[redirects]]
+  from = "/person/chris-hummer"
+  to = "/person/cbs-chris-hummer"
+  status = 301
+
+[[redirects]]
+  from = "/person/david-cobb"
+  to = "/person/cbs-david-cobb"
+  status = 301
+
+[[redirects]]
+  from = "/person/john-breech"
+  to = "/person/cbs-john-breech"
+  status = 301
+
+[[redirects]]
+  from = "/person/john-talty"
+  to = "/person/cbs-john-talty"
+  status = 301
+
+[[redirects]]
+  from = "/person/pete-prisco"
+  to = "/person/cbs-pete-prisco"
+  status = 301
+
+[[redirects]]
+  from = "/person/richard-johnson"
+  to = "/person/cbs-richard-johnson"
+  status = 301
+
+[[redirects]]
+  from = "/person/shehan-jeyarajah"
+  to = "/person/cbs-shehan-jeyarajah"
+  status = 301
+
+[[redirects]]
+  from = "/person/tom-fornelli"
+  to = "/person/cbs-tom-fornelli"
+  status = 301
+
 # SPA fallback — every path serves index.html.
 [[redirects]]
   from = "/*"
