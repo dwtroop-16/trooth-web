@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } fro
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { publicChangelogDay } from "../src/changelogPublic.js";
+import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -71,6 +72,14 @@ const ACTUAL_FILES = [
 ];
 const SCORES_FILE = "scorer/out/scores.jsonl";
 const SPEAKERS_REG = "speakers-v1.json";
+// Game catalogs (v1.1.0) carry kickoff_status verified|pending (schema-v1.md v1.3.2). Read for
+// kickoff status only (2026 and 2025 catalogs); a pending game's horizon_end placeholder never reaches the bundle.
+const KICKOFF_CATALOG_FILES = [
+  "games-2026-fbs.json",
+  "games-2026-nfl.json",
+  "games-2025-fbs.json",
+  "games-2025-nfl.json",
+];
 const SUBJECTS_FILES = [
   "subjects-v1.json",
   "games-2025-nfl.json",
@@ -347,6 +356,11 @@ function build() {
     speakerIdByName.set(name, id);
   }
 
+  const kickoffIndex = buildKickoffStatusIndex(
+    KICKOFF_CATALOG_FILES.map((rel) => readJson(join(ROOT, rel))),
+    (msg) => console.warn(`kickoff status: ${msg}`)
+  );
+
   const forecasts = [];
   const usedSubjectIds = new Set();
   for (const f of forecastsRaw) {
@@ -359,7 +373,7 @@ function build() {
       label: f.subject?.label || f.subject?.id,
     };
     if (subject.id) usedSubjectIds.add(subject.id);
-    forecasts.push({
+    forecasts.push(withKickoffStatus({
       schema_version: f.schema_version || "1.1.0",
       id: f.id,
       speaker_id,
@@ -388,7 +402,7 @@ function build() {
       scorable: !!f.scorable,
       unscorable_reason: f.unscorable_reason ?? null,
       match_key,
-    });
+    }, kickoffIndex));
   }
 
   const SUBJECTS = {};

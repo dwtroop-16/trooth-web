@@ -1,4 +1,5 @@
 import { sourceLinkParts } from "./linkPolicy.js";
+import { horizonDisplay, isKickoffPending } from "./kickoffStatus.js";
 
 // Public claim card: the eight required fields, in order.
 // Renderer throws if any required field is missing. Grade is rubric-only.
@@ -45,7 +46,9 @@ export function assertPublicClaimCard(card) {
   if (missing(card.claimText)) fail("claim text");
   if (missing(card.sourceUrl)) fail("source URL");
   if (missing(card.publishedAt)) fail("date said");
-  if (missing(card.horizon)) fail("horizon");
+  // A pending kickoff carries no horizon time on purpose (kickoff_status pending): the card shows
+  // "kickoff pending", or no horizon line when graded.
+  if (!isKickoffPending(card) && missing(card.horizon)) fail("horizon");
   // actual may be 0 or falsey numeric, but not null/undefined/""
   if (card.actual === undefined || card.actual === null || card.actual === "") fail("actual");
   if (missing(card.actualSourceName)) fail("actual source");
@@ -98,12 +101,19 @@ export function actualSourceParts(card) {
 export function renderPublicClaimCard(card) {
   assertPublicClaimCard(card);
   const actual = formatActual(card.actual);
+  const horizonShown = horizonDisplay(card);
+  const horizonField =
+    horizonShown.kind === "time"
+      ? [{ key: "horizon", label: "Horizon", value: horizonShown.value }]
+      : horizonShown.kind === "pending"
+        ? [{ key: "horizon", label: "Horizon", value: horizonShown.text }]
+        : [];
   const fieldsInOrder = [
     { key: "speaker", label: "Speaker", value: formatSpeaker(card) },
     { key: "claimText", label: "Claim", value: card.claimText },
     { key: "sourceUrl", label: "Source", value: card.sourceUrl },
     { key: "publishedAt", label: "Date said", value: card.publishedAt },
-    { key: "horizon", label: "Horizon", value: card.horizon },
+    ...horizonField,
     { key: "actual", label: "Actual", value: actual },
     {
       key: "actualSource",
@@ -121,7 +131,9 @@ export function renderPublicClaimCard(card) {
     claimText: card.claimText,
     sourceUrl: card.sourceUrl,
     publishedAt: card.publishedAt,
-    horizon: card.horizon,
+    // Never copy card.horizon for a pending kickoff: nothing derived from the placeholder leaves here.
+    horizon: horizonShown.kind === "time" ? horizonShown.value : null,
+    horizonDisplay: horizonShown,
     actual,
     actualSourceName: card.actualSourceName,
     actualSourceUrl: card.actualSourceUrl,

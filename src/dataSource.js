@@ -22,6 +22,7 @@ function mapForecastRow(r) {
     domain: r.domain,
     subject: { id: r.subject_id, label: r.subject_label },
     horizon_end: r.horizon_end,
+    kickoff_status: r.kickoff_status ?? null,
     claim: {
       text: r.claim_text,
       type: r.claim_type,
