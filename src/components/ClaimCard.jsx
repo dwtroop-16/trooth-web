@@ -50,6 +50,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
               <span key={i} data-link-rule={part.role}>{i > 0 ? " " : ""}{part.text}</span>
             )
           )}
+          {rendered.sourceCaptureNote ? <span data-source-capture-note="">{" ("}{rendered.sourceCaptureNote}{")"}</span> : null}
         </span>
         <span style={metaItem}><span style={faint}>Date said · </span>{formatWhen(rendered.publishedAt)}</span>
         {rendered.horizonDisplay.kind === "time" ? (

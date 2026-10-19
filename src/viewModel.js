@@ -4,6 +4,13 @@ import { horizonDisplay } from "./kickoffStatus.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
+import sourceCaptureNotes from "./sourceCaptureNotes.json" with { type: "json" };
+
+// Plain-text capture note for rolling source pages; applies only while the card still cites that URL.
+export function sourceCaptureNoteFor(id, url) {
+  const n = sourceCaptureNotes.notes[id];
+  return n && n.source_url === url ? n.note : null;
+}
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -238,6 +245,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     claimText: forecast.claim.text,
     sourceUrl: forecast.source.url,
     sourceHost: hostnameFromUrl(forecast.source.url),
+    sourceCaptureNote: sourceCaptureNoteFor(forecast.id, forecast.source.url),
     publishedAt: forecast.published_at,
     // kickoff_status pending: the horizon is a placeholder; keep it off the card entirely.
     kickoffStatus: forecast.kickoff_status ?? null,

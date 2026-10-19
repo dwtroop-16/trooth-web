@@ -141,6 +141,7 @@ export function renderPublicClaimCard(card) {
     actualObservedAt: card.actualObservedAt ?? null,
     actualRetentionNote: card.actualRetentionNote ?? null,
     sourceParts: claimSourceParts(card),
+    sourceCaptureNote: card.sourceCaptureNote ?? null,
     actualSourceParts: actualSourceParts(card),
     grade: card.grade,
     fieldsInOrder,
