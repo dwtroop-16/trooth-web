@@ -29,3 +29,16 @@ describe('legacy /person redirects', () => {
     assert.equal(fb, all.length - 1);
   });
 });
+
+describe('published speaker ids never disappear without a redirect', () => {
+  const known = JSON.parse(readFileSync(fileURLToPath(new URL('./knownSpeakerIds.json', import.meta.url)), 'utf8')).ids;
+  const sources = new Set(person.map((r) => r.from.replace('/person/', '')));
+  it('every known id is a current speaker or a redirect source', () => {
+    const missing = known.filter((id) => !ids.has(id) && !sources.has(id));
+    assert.deepEqual(missing, []);
+  });
+  it('every current speaker id is in the committed known list', () => {
+    const k = new Set(known);
+    assert.deepEqual([...ids].filter((id) => !k.has(id)), []);
+  });
+});
