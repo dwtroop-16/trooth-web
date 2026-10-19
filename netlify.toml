@@ -60,6 +60,97 @@
   to = "/person/cbs-tom-fornelli"
   status = 301
 
+# Finance speaker ids moved to registry ids (speakers-v1.json v1.3.0, PR #81, 2026-10-19).
+[[redirects]]
+  from = "/person/c-j-muse"
+  to = "/person/cantor-cj-muse"
+  status = 301
+
+[[redirects]]
+  from = "/person/chris-caso"
+  to = "/person/wolfe-chris-caso"
+  status = 301
+
+[[redirects]]
+  from = "/person/christopher-rolland"
+  to = "/person/susquehanna-christopher-rolland"
+  status = 301
+
+[[redirects]]
+  from = "/person/fomc"
+  to = "/person/fed-fomc"
+  status = 301
+
+[[redirects]]
+  from = "/person/harlan-sur"
+  to = "/person/jpmorgan-harlan-sur"
+  status = 301
+
+[[redirects]]
+  from = "/person/john-vinh"
+  to = "/person/keybanc-john-vinh"
+  status = 301
+
+[[redirects]]
+  from = "/person/joseph-moore"
+  to = "/person/morgan-stanley-joseph-moore"
+  status = 301
+
+[[redirects]]
+  from = "/person/joseph-quatrochi"
+  to = "/person/wells-fargo-joseph-quatrochi"
+  status = 301
+
+[[redirects]]
+  from = "/person/krish-sankar"
+  to = "/person/td-cowen-krish-sankar"
+  status = 301
+
+[[redirects]]
+  from = "/person/mark-lipacis"
+  to = "/person/evercore-mark-lipacis"
+  status = 301
+
+[[redirects]]
+  from = "/person/mehdi-hosseini"
+  to = "/person/susquehanna-mehdi-hosseini"
+  status = 301
+
+[[redirects]]
+  from = "/person/quinn-bolton"
+  to = "/person/needham-quinn-bolton"
+  status = 301
+
+[[redirects]]
+  from = "/person/srini-pajjuri"
+  to = "/person/rbc-srini-pajjuri"
+  status = 301
+
+[[redirects]]
+  from = "/person/stacy-rasgon"
+  to = "/person/bernstein-stacy-rasgon"
+  status = 301
+
+[[redirects]]
+  from = "/person/timothy-arcuri"
+  to = "/person/ubs-timothy-arcuri"
+  status = 301
+
+[[redirects]]
+  from = "/person/tom-o-malley"
+  to = "/person/barclays-tom-omalley"
+  status = 301
+
+[[redirects]]
+  from = "/person/toshiya-hari"
+  to = "/person/goldman-toshiya-hari"
+  status = 301
+
+[[redirects]]
+  from = "/person/vivek-arya"
+  to = "/person/bofa-vivek-arya"
+  status = 301
+
 # SPA fallback — every path serves index.html.
 [[redirects]]
   from = "/*"
