@@ -1,0 +1,14 @@
+{
+  "_note": "Forecast ids known to lack a SCORES row. The scoresCoverage test tolerates ONLY these (any other gap fails). Remove entries once Scorer writes their rows; empty this list to make the test fully strict. npm run check:scores ignores this list.",
+  "ids": [
+    "fct_01M5CPTZ6N2NM8Q9RQ0DWRB96E",
+    "fct_01M5CPTZ6N3XCNWHDCH524S1P4",
+    "fct_01M5CPTZ6N4VQKYB3TD6ACNJSQ",
+    "fct_01M5CPTZ6N54E3AGXPH52C9S0S",
+    "fct_01M5CPTZ6N984K3H1YQ2MBH30D",
+    "fct_01M5CPTZ6NDHRN2CADAXDTCSNS",
+    "fct_01M5CPTZ6NHESEGBEBWG17KP3Q",
+    "fct_01M5CPTZ6NMZJKZS46EW23N0CD",
+    "fct_01M5CPTZ6NV9BXEN07M2NRZ59S"
+  ]
+}
