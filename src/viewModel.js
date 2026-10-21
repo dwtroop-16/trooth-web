@@ -2,7 +2,16 @@ import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { horizonDisplay } from "./kickoffStatus.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
-import { pathFor, normalizeDomain } from "./router.js";
+import { pathFor, pathForClaims, normalizeDomain } from "./router.js";
+import {
+  recentlyDue,
+  comingDue,
+  overdueCount,
+  overdueLabel,
+  OVERDUE_CLAIMS_FILTER,
+  domainHitLine,
+  lastUpdatedLine,
+} from "./homeContent.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -432,6 +441,12 @@ export function buildVals(state, actions, data) {
     scopedCards[0] ||
     null;
 
+  // Home lists (proposal P1): scoped to the active tab, one fixed recency rule each.
+  const homeNow = Date.now();
+  const homeRecentlyDue = recentlyDue(scopedCards, 5);
+  const homeComingDue = comingDue(scopedCards, homeNow, 5);
+  const homeOverdue = overdueCount(scopedCards, homeNow);
+
   // Global search: all domains (not only active tab)
   const matchingClaims = q
     ? sortClaimList(cards.filter((c) => claimMatchesQuery(c, q)))
@@ -645,6 +660,18 @@ export function buildVals(state, actions, data) {
     noResults: allRows.length === 0,
     recentResolved,
     featuredClaim,
+    recentlyDue: homeRecentlyDue,
+    comingDue: homeComingDue,
+    overdueCount: homeOverdue,
+    overdueLabel: overdueLabel(homeOverdue),
+    overdueFilter: { domain: cat, ...OVERDUE_CLAIMS_FILTER },
+    overdueHref: pathForClaims({ domain: cat, ...OVERDUE_CLAIMS_FILTER }),
+    domainHitLine: domainHitLine(cat),
+    lastUpdated: lastUpdatedLine({
+      generatedAt: data.generatedAt,
+      tracked: nCaptured,
+      graded: nResolved,
+    }),
     p,
     d,
     modal: s.modal,

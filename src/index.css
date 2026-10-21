@@ -115,3 +115,27 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
     font-size: 12px;
   }
 }
+
+/* Home (PR B): five-grade key and the Recently due / Coming due lists. */
+.trooth-grade-key {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+.trooth-home-lists {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 22px;
+}
+@media (max-width: 860px) {
+  .trooth-grade-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trooth-home-lists { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 420px) {
+  .trooth-grade-key { grid-template-columns: minmax(0, 1fr); }
+  .trooth-grade-key > div { display: flex; gap: 10px; align-items: baseline; }
+  .trooth-grade-key dt { flex: 0 0 92px; }
+}
+/* Header nav (PR B): four plain-language links; scrolls sideways instead of wrapping on small phones. */
+.trooth-header-nav { overflow-x: auto; scrollbar-width: none; }
+.trooth-header-nav::-webkit-scrollbar { display: none; }

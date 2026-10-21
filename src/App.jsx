@@ -10,6 +10,7 @@ import Footer from "./components/Footer.jsx";
 import NotFound from "./components/NotFound.jsx";
 import SampleBanner from "./components/SampleBanner.jsx";
 import { css } from "./helpers.js";
+import { BUNDLE_GENERATED_AT } from "./bundleMeta.js";
 
 const Profile = lazy(() => import("./components/Profile.jsx"));
 const PredictionDetail = lazy(() => import("./components/PredictionDetail.jsx"));
@@ -61,6 +62,7 @@ const BUNDLED = {
   scores: SCORES,
   CATCOLORS,
   source: "live",
+  generatedAt: BUNDLE_GENERATED_AT,
 };
 
 function SuspenseFallback() {
@@ -380,8 +382,8 @@ export default function App() {
     let title = "Trooth";
     if (vals.isNotFound) title = "Not found · Trooth";
     else if (vals.isClaims) title = "Claims · Trooth";
-    else if (vals.isMethod) title = "Method · Trooth";
-    else if (vals.isChangelog) title = "Changelog · Trooth";
+    else if (vals.isMethod) title = "How grading works · Trooth";
+    else if (vals.isChangelog) title = "Corrections · Trooth";
     else if (vals.isProfile && vals.p) title = vals.p.name + " · Trooth";
     else if (vals.isPrediction && vals.d) {
       const claim = String(vals.d.claimText || "");
