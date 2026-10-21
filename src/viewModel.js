@@ -215,12 +215,15 @@ function officialFor(forecast) {
 
 export function toPublicClaimCard(forecast, speaker, score, actual) {
   const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
-  const grade = publicGrade(status);
+  // Architect 2026-10-02: a Scorer review_hold card is labelled "In review" but keeps status
+  // "pending", so board / speaker counts still count it as pending. It shows no Actual line.
+  const reviewHold = Boolean(score?.review_hold);
+  const grade = reviewHold ? "In review" : publicGrade(status);
   const src = officialFor(forecast);
   // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
   // actual only when the Scorer graded the card Hit or Miss. Pending / In review / Unscorable cards
   // show "pending" even if an actual has already been observed for the match key.
-  const graded = status === "hit" || status === "miss";
+  const graded = !reviewHold && (status === "hit" || status === "miss");
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
   const actualValue = shown ? shown.value : "pending";
   const actualSourceName = shown ? shown.source.name : src.name;
@@ -250,6 +253,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actualRetentionNote: retained ? retained.source.retention_note : null,
     grade,
     status,
+    reviewHold,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
     domainKey: forecast.domain,
     unit: forecast.claim.unit,
@@ -554,7 +558,7 @@ export function buildVals(state, actions, data) {
   if (s.view === "prediction" && s.forecastId) {
     const card = cardById[s.forecastId];
     if (card) {
-      const sm = statusMeta(card.status);
+      const sm = statusMeta(card.reviewHold ? "void" : card.status);
       const cm = CATCOLORS[card.domain] || CATCOLORS.Finance;
       d = {
         ...card,
