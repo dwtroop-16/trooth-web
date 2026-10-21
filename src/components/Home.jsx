@@ -2,52 +2,78 @@ import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
-function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
+function BoardRow({ r, rowClass, showDomain, muted }) {
+  const skillColor = r.skillPositive ? "var(--forest)" : r.skillNegative ? "#BC2E29" : "var(--body)";
+  return (
+    <Hover
+      onClick={r.open}
+      style={"padding:10px 16px;border-bottom:1px solid var(--row);cursor:pointer;" + (muted ? "opacity:0.8;" : "")}
+      hover="background:#FFFFFF;"
+      className={rowClass}
+    >
+      <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
+        <span className="trooth-board-rank" style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);width:18px;text-align:right;flex-shrink:0;")}>{r.rank || ""}</span>
+        <span className="trooth-board-avatar" style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
+        <div style={css("min-width:0;")}>
+          <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.name}</div>
+          <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
+        </div>
+      </div>
+      {showDomain ? (
+        <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
+      ) : null}
+      <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
+      <span style={css("display:flex;flex-direction:column;line-height:1.2;")}>
+        <span style={css("font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
+        {r.interval ? <span style={css("font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--faint);")}>{r.interval}</span> : null}
+      </span>
+      <span className="trooth-board-skill" style={css(`font-family:'IBM Plex Mono',monospace;font-size:13px;color:${skillColor};`)} title="Hit rate minus a naive baseline on the same claims">{r.skill}</span>
+      <span className="trooth-board-mae" style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.mae ?? "—"}</span>
+      <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
+    </Hover>
+  );
+}
+
+function Scoreboard({ title, resultCount, rankNote, rows, unrankedRows, minRanked, empty, emptyLabel, showDomain, goMethod }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
+  const head = css("padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;");
+  const unranked = unrankedRows || [];
   return (
     <div>
       <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;")}>
         <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>{title}</h2>
-        {rankNote ? (
-          <span style={css("font-size:12.5px;color:var(--muted);")}>{resultCount} · {rankNote}</span>
-        ) : (
-          <span style={css("font-size:12.5px;color:var(--muted);")}>{resultCount}</span>
-        )}
+        <span style={css("font-size:12.5px;color:var(--muted);")}>{resultCount}{rankNote ? " · " + rankNote : ""}</span>
       </div>
       <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);overflow:hidden;")}>
-        <div className={rowClass} style={css("padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;")}>
-          <span>Speaker</span>
+        <div className={rowClass} style={head}>
+          <span className="trooth-board-speaker-head">Speaker</span>
           {showDomain ? <span className="trooth-board-domain">Domain</span> : null}
-          <span>Resolved</span>
-          <span>Hit rate</span>
-          <span>Pending</span>
+          <span><span className="trooth-long">Resolved</span><span className="trooth-short">n</span></span>
+          <span><span className="trooth-long">Hit rate</span><span className="trooth-short">Hit</span></span>
+          <span className="trooth-board-skill" title="Hit rate minus a naive baseline on the same claims">vs baseline</span>
+          <span className="trooth-board-mae" title="Mean absolute error, numeric forecasts only">Avg error</span>
+          <span><span className="trooth-long">Pending</span><span className="trooth-short">Pend.</span></span>
         </div>
         {rows.map((r) => (
-          <Hover
-            key={r.speakerId}
-            onClick={r.open}
-            style="padding:10px 16px;border-bottom:1px solid var(--row);cursor:pointer;"
-            hover="background:#FFFFFF;"
-            className={rowClass}
-          >
-            <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
-              <span style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
-              <div style={css("min-width:0;")}>
-                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.name}</div>
-                <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
-              </div>
-            </div>
-            {showDomain ? (
-              <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
-            ) : null}
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
-          </Hover>
+          <BoardRow key={r.speakerId} r={r} rowClass={rowClass} showDomain={showDomain} />
         ))}
         {empty && (
           <div style={css("padding:28px 20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{emptyLabel}</div>
         )}
+        {unranked.length > 0 ? (
+          <details className="trooth-unranked">
+            <summary style={css("padding:11px 16px;font-size:13px;color:var(--muted);cursor:pointer;list-style:none;")}>
+              Not ranked yet · {unranked.length} speakers with fewer than {minRanked} resolved claims
+            </summary>
+            {unranked.map((r) => (
+              <BoardRow key={r.speakerId} r={r} rowClass={rowClass} showDomain={showDomain} muted />
+            ))}
+          </details>
+        ) : null}
+      </div>
+      <div style={css("margin-top:8px;font-size:12px;color:var(--muted);line-height:1.5;")}>
+        Baselines: games vs. always picking the home team; temperatures vs. the last official reading before the forecast.{" "}
+        <Hover as="button" onClick={goMethod} style="background:none;border:none;cursor:pointer;padding:0;font:inherit;color:var(--forest);" hover="color:var(--forest-deep);">How grading works</Hover>
       </div>
     </div>
   );
@@ -135,15 +161,19 @@ export default function Home({ vals, openClaim }) {
         resultCount={vals.resultCount}
         rankNote={vals.rankNote}
         rows={vals.rows}
+        unrankedRows={vals.unrankedRows}
+        minRanked={vals.minRanked}
+        goMethod={vals.goMethod}
         empty={vals.noResults}
         emptyLabel={
           q
-            ? `No speakers match “${q}” in this tab. Claim matches above still search all domains.`
-            : "No speakers yet"
+            ? `No ranked speakers match “${q}” in this tab. Claim matches above still search all domains.`
+            : `No speaker in this tab has ${vals.minRanked} resolved claims yet.`
         }
         showDomain={showDomain}
       />
-      <div style={css("margin-top:10px;")}>
+      <div style={css("margin-top:10px;display:flex;gap:18px;flex-wrap:wrap;")}>
+        <Hover as="button" onClick={() => vals.goDigest && vals.goDigest()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--forest);font-weight:600;" hover="color:var(--forest-deep);">This week’s hits and misses →</Hover>
         <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>
       </div>
 

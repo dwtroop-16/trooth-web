@@ -47,25 +47,45 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
 
 .trooth-board-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(72px, 0.55fr) 72px 92px 72px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(72px, 0.5fr) 72px 88px 88px 72px 64px;
   align-items: center;
   gap: 12px;
 }
 @media (max-width: 700px) {
   .trooth-board-row {
-    grid-template-columns: minmax(0, 1fr) 72px 92px 72px;
+    grid-template-columns: minmax(0, 1fr) 60px 76px 64px 56px;
   }
   .trooth-board-domain { display: none; }
+  .trooth-board-mae { display: none; }
 }
 
 .trooth-board-row--scoped {
-  grid-template-columns: minmax(0, 1.4fr) 72px 92px 72px;
+  grid-template-columns: minmax(0, 1.4fr) 72px 88px 88px 72px 64px;
 }
 @media (max-width: 700px) {
   .trooth-board-row--scoped {
-    grid-template-columns: minmax(0, 1fr) 72px 92px 72px;
+    grid-template-columns: minmax(0, 1fr) 60px 76px 64px 56px;
   }
 }
+.trooth-board-speaker-head { padding-left: 28px; }
+.trooth-short { display: none; }
+@media (max-width: 440px) {
+  .trooth-board-row,
+  .trooth-board-row--scoped {
+    grid-template-columns: minmax(0, 1fr) 34px 60px 38px;
+    gap: 8px;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .trooth-board-skill,
+  .trooth-board-avatar { display: none !important; }
+  .trooth-board-rank { width: 14px !important; }
+  .trooth-board-speaker-head { padding-left: 24px; }
+  .trooth-long { display: none; }
+  .trooth-short { display: inline; }
+}
+.trooth-unranked summary::-webkit-details-marker { display: none; }
+.trooth-unranked[open] summary { border-bottom: 1px solid var(--hair); }
 
 /* Profile division / team tables — prevent DIVISIONRESOLVED run-on */
 .trooth-profile-board-row {

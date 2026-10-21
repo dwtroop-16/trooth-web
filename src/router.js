@@ -6,6 +6,7 @@ export function parsePath(pathname) {
   if (path === "/method") return { view: "method" };
   if (path === "/changelog") return { view: "changelog" };
   if (path === "/claims") return { view: "claims" };
+  if (path === "/digest") return { view: "digest" };
   let m = path.match(/^\/person\/([^/]+)$/);
   if (m) return { view: "profile", speakerId: decodeURIComponent(m[1]) };
   m = path.match(/^\/claim\/([^/]+)$/);
@@ -17,6 +18,7 @@ export function pathFor(view, id) {
   if (view === "method") return "/method";
   if (view === "changelog") return "/changelog";
   if (view === "claims") return "/claims";
+  if (view === "digest") return "/digest";
   if (view === "notfound") return "/notfound";
   if (view === "profile") return `/person/${encodeURIComponent(id)}`;
   if (view === "prediction") return `/claim/${encodeURIComponent(id)}`;
