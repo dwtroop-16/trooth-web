@@ -3,7 +3,8 @@ import { buildVals } from "./viewModel.js";
 import { loadData, submitSourceTip } from "./dataSource.js";
 import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
-import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
+import { parsePath, pathFor, pathForClaims, pathForProfile, parseClaimsQuery, normalizeDomain } from "./router.js";
+import { parsePageQuery } from "./paging.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import Footer from "./components/Footer.jsx";
@@ -26,13 +27,16 @@ function filtersFromLocation() {
     parsed.view === "claims"
       ? parseClaimsQuery(window.location.search)
       : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All" };
-  return { parsed, filters };
+  // ?page= is read on the paged views only (/claims and /person/:id).
+  const page = parsed.view === "claims" || parsed.view === "profile" ? parsePageQuery(window.location.search) : 1;
+  return { parsed, filters, page };
 }
 
 function initialFromLocation() {
-  const { parsed, filters } = filtersFromLocation();
+  const { parsed, filters, page } = filtersFromLocation();
   return {
     view: parsed.view,
+    page,
     speakerId: parsed.speakerId || null,
     forecastId: parsed.forecastId || null,
     cat: filters.domain || "All",
@@ -86,10 +90,11 @@ export default function App() {
 
   useEffect(() => {
     const onPop = () => {
-      const { parsed, filters } = filtersFromLocation();
+      const { parsed, filters, page } = filtersFromLocation();
       setStateRaw((prev) => ({
         ...prev,
         view: parsed.view,
+        page,
         speakerId: parsed.speakerId || null,
         forecastId: parsed.forecastId || null,
         cat: parsed.view === "claims" ? filters.domain : prev.cat,
@@ -113,8 +118,10 @@ export default function App() {
     if (current !== full) window.history.pushState({}, "", full);
     const parsed = parsePath(pathname);
     const claimsFilters = parsed.view === "claims" ? parseClaimsQuery(search ? `?${search}` : "") : null;
+    const page = parsed.view === "claims" || parsed.view === "profile" ? parsePageQuery(search ? `?${search}` : "") : 1;
     setState({
       view: parsed.view,
+      page,
       speakerId: parsed.speakerId || null,
       forecastId: parsed.forecastId || null,
       ...(claimsFilters
@@ -138,11 +145,13 @@ export default function App() {
       grade: s.claimStatus,
       speaker: s.claimSpeaker,
       horizon: s.claimHorizon,
+      page: s.page,
     });
 
   const setClaimsFilter = (patch, { push = false, replace = false } = {}) => {
     setStateRaw((prev) => {
-      const next = { ...prev, ...patch };
+      // Any filter or search change goes back to page 1; only an explicit page patch keeps a page.
+      const next = { ...prev, page: 1, ...patch };
       if (next.view === "claims") {
         const full = claimsPathFromState(next);
         const current = window.location.pathname + window.location.search;
@@ -164,7 +173,7 @@ export default function App() {
     const cat = normalizeDomain(c);
     setStateRaw((prev) => {
       if (prev.view === "claims") {
-        const next = { ...prev, cat };
+        const next = { ...prev, cat, page: 1 };
         const full = claimsPathFromState(next);
         const current = window.location.pathname + window.location.search;
         if (full !== current) window.history.pushState({}, "", full);
@@ -193,6 +202,21 @@ export default function App() {
         claimHorizon: horizon || "All",
       }
     );
+  };
+
+  // Paging (?page=) on /claims and on speaker track records. Pushes a history entry so Back works.
+  const setPage = (n) => {
+    setStateRaw((prev) => {
+      const page = Math.max(1, Number(n) || 1);
+      let full = null;
+      if (prev.view === "claims") full = claimsPathFromState({ ...prev, page });
+      else if (prev.view === "profile" && prev.speakerId) full = pathForProfile(prev.speakerId, page);
+      if (full) {
+        const current = window.location.pathname + window.location.search;
+        if (full !== current) window.history.pushState({}, "", full);
+      }
+      return { ...prev, page };
+    });
   };
 
   const flashToast = (text) => {
@@ -369,6 +393,7 @@ export default function App() {
       goMethod,
       goChangelog,
       goClaims,
+      setPage,
       submit,
       account,
       openModal: openTipModal,

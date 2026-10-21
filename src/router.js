@@ -1,4 +1,5 @@
 // History-path routing for the Vite SPA. Netlify already falls back to index.html.
+import { withPage } from "./paging.js";
 
 export function parsePath(pathname) {
   const path = (pathname || "/").replace(/\/+$/, "") || "/";
@@ -95,7 +96,13 @@ export function pathForClaims(filters = {}) {
   const horizon = normalizeHorizon(filters.horizon || "All");
   if (horizon && horizon !== "All") params.set("horizon", horizon);
   const qs = params.toString();
-  return qs ? `/claims?${qs}` : "/claims";
+  // ?page= (paging) is appended last and omitted on page 1; see paging.js.
+  return withPage(qs ? `/claims?${qs}` : "/claims", filters.page);
+}
+
+/** Speaker page path, with ?page= for the paged track record (omitted on page 1). */
+export function pathForProfile(id, page) {
+  return withPage(pathFor("profile", id), page);
 }
 
 /** Round-trip helper for tests: parse claims location filters. */

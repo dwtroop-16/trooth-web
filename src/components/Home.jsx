@@ -15,7 +15,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
         )}
       </div>
       <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);overflow:hidden;")}>
-        <div className={rowClass} style={css("padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;")}>
+        <div className={rowClass + " trooth-board-head"} style={css("padding:9px 16px;border-bottom:1px solid var(--hair);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.09em;color:var(--faint);text-transform:uppercase;")}>
           <span>Speaker</span>
           {showDomain ? <span className="trooth-board-domain">Domain</span> : null}
           <span>Resolved</span>
@@ -33,16 +33,22 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
             <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
               <span style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
               <div style={css("min-width:0;")}>
-                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.name}</div>
-                <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
+                <div className="trooth-board-name" style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.name}</div>
+                <div className="trooth-board-org" style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
+                {/* Phones: second line carries the numbers so the full name fits on the first. */}
+                <div className="trooth-board-mobile-stats" style={css("font-size:12.5px;color:var(--body);margin-top:2px;")}>
+                  {showDomain ? r.domain + " · " : ""}Resolved <span style={css("font-family:'IBM Plex Mono',monospace;")}>{r.nResolved}</span>
+                  {" · "}<span style={css("font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
+                  {" · "}<span style={css("font-family:'IBM Plex Mono',monospace;")}>{r.pending}</span> pending
+                </div>
               </div>
             </div>
             {showDomain ? (
               <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
             ) : null}
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
+            <span className="trooth-board-num" style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
+            <span className="trooth-board-num" style={css("font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
+            <span className="trooth-board-num" style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
           </Hover>
         ))}
         {empty && (

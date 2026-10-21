@@ -1,6 +1,7 @@
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import Pager, { PageStatus } from "./Pager.jsx";
 
 const STATUS_TABS = ["All", "Hit", "Miss", "Pending", "Unscorable", "In review"];
 const HORIZON_TABS = [
@@ -102,10 +103,19 @@ export default function Claims({ vals, openClaim }) {
         </div>
       </section>
 
-      <div style={css("font-size:12.5px;color:var(--muted);margin-bottom:12px;")}>{vals.claimListCount}</div>
+      <h2 id="trooth-claims-results" tabIndex={-1} style={css("position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;")}>
+        Results
+      </h2>
+      <div style={css("margin-bottom:12px;")}>
+        {vals.claimPaging.pageCount > 1 ? (
+          <PageStatus paging={vals.claimPaging} noun="claims" live />
+        ) : (
+          <div style={css("font-size:12.5px;color:var(--muted);")}>{vals.claimListCount}</div>
+        )}
+      </div>
 
       <div style={css("display:flex;flex-direction:column;gap:10px;")}>
-        {vals.claimList.map((card) => (
+        {vals.claimPaging.items.map((card) => (
           <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
         ))}
         {vals.claimList.length === 0 && (
@@ -116,6 +126,14 @@ export default function Claims({ vals, openClaim }) {
           </div>
         )}
       </div>
+
+      <Pager
+        paging={vals.claimPaging}
+        hrefFor={vals.claimPageHref}
+        onPage={vals.setPage}
+        label="Claims pages"
+        focusId="trooth-claims-results"
+      />
     </main>
   );
 }
