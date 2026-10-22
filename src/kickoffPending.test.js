@@ -198,10 +198,11 @@ const haveCatalogs = existsSync(join(CATALOG_DIR, "games-2026-fbs.json")) && exi
 const CATALOG_FILES = ["games-2026-fbs.json", "games-2026-nfl.json", "games-2025-fbs.json", "games-2025-nfl.json"];
 const readCatalogs = () => CATALOG_FILES.map((f) => JSON.parse(readFileSync(join(CATALOG_DIR, f), "utf8")));
 
-test("all four catalogs (2026 + 2025) are v1.1.0 with kickoff_status on every game", { skip: !haveCatalogs }, () => {
+test("all four catalogs (2026 + 2025) are v1.1.x with kickoff_status on every game", { skip: !haveCatalogs }, () => {
   for (const [i, cat] of readCatalogs().entries()) {
     const file = CATALOG_FILES[i];
-    assert.equal(cat.schema_version, "1.1.0", file);
+    // Patch bumps (e.g. games-2026-fbs 1.1.2 kickoff verifications) keep the same shape.
+    assert.match(cat.schema_version, /^1\.1\.\d+$/, file);
     for (const g of cat.subjects) {
       assert.ok(["verified", "pending"].includes(g.kickoff_status), `${file} ${g.id}: ${g.kickoff_status}`);
       if (/fbs/.test(file) && g.kickoff_status === "verified") assert.equal(g.kickoff_verified, true, g.id);
