@@ -1,3 +1,10 @@
 {
+  "corrections": [
+    {
+      "at": "2026-10-03T01:24:52Z",
+      "reason": "legal_scope",
+      "detail": "On Oct. 2, 2026, we changed the source link for 45 official college football results from the 2025 season, on 78 cards: 43 Big Ten game results, the 2025 Big Ten championship (won by Indiana) and the 2025 SEC championship. To fit our rules on which sources we can use, each game result now links to the official athletics site of one of the schools that played in it, the Big Ten championship links to the Big Ten Conference's own site, and the SEC championship links to the University of Georgia's athletics site. The results themselves are unchanged, so no grades changed. All 78 cards are still graded Miss: 60 game score cards, 9 Big Ten champion cards and 9 SEC champion cards. This affects only these cards."
+    }
+  ],
   "voids": []
 }
