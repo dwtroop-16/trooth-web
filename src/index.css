@@ -115,3 +115,9 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
     font-size: 12px;
   }
 }
+
+/* Ranking minimum: speakers below the minimum, listed alphabetically under the leaderboard. */
+.trooth-unranked-list {
+  columns: 4 200px;
+  column-gap: 24px;
+}

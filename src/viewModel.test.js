@@ -54,12 +54,16 @@ test("single domain tab scopes one board to that domain", () => {
   }
 });
 
-test("board cap is 12 when more speakers exist", () => {
+test("board cap is 12 when more ranked speakers exist", () => {
+  // Cap applies to ranked rows only; speakers below the ranking minimum are listed separately.
   const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
   assert.ok(vals.rows.length <= 12);
-  if (SPEAKERS.length > 12) {
+  if (vals.rankedRows.length > 12) {
     assert.equal(vals.rows.length, 12);
     assert.equal(vals.boardCapped, true);
+  } else {
+    assert.equal(vals.rows.length, vals.rankedRows.length);
+    assert.equal(vals.boardCapped, false);
   }
 });
 

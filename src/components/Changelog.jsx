@@ -1,6 +1,7 @@
 import { css, formatWhen } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import { loadPublicChangelog } from "../loadChangelog.js";
+import MethodChanges from "./MethodChanges.jsx";
 
 const KIND_LABEL = {
   correction: "Correction",
@@ -15,6 +16,7 @@ export default function Changelog({ goHome }) {
       <Hover as="button" onClick={goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;" hover="color:var(--forest);">← Home</Hover>
       <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--forest);margin-bottom:10px;")}>CORRECTIONS</div>
       <h1 style={css("font-family:Newsreader,serif;font-size:30px;font-weight:600;margin:0 0 16px;color:var(--ink);")}>Changelog</h1>
+      <MethodChanges />
       {entries.length === 0 ? (
         <p style={css("font-size:15.5px;color:var(--body);")}>No corrections yet</p>
       ) : (

@@ -2,7 +2,28 @@ import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
-function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
+function UnrankedList({ heading, rows, min, onMethod }) {
+  if (!rows || rows.length === 0) return null;
+  return (
+    <section aria-labelledby="trooth-unranked-heading" className="trooth-unranked" style={css("margin-top:14px;")}>
+      <h3 id="trooth-unranked-heading" style={css("font-family:Newsreader,serif;font-size:17px;font-weight:600;margin:0 0 4px;color:var(--ink);")}>{heading}</h3>
+      <p style={css("margin:0 0 10px;font-size:12.5px;color:var(--muted);line-height:1.5;")}>
+        Listed alphabetically. A speaker is ranked once {min} forecasts in this tab are graded Hit or Miss; pending doesn’t count.{" "}
+        <Hover as="button" onClick={onMethod} style="background:none;border:none;cursor:pointer;padding:0;font-size:12.5px;color:var(--forest);" hover="color:var(--forest-deep);">How ranking works</Hover>
+      </p>
+      <ul className="trooth-unranked-list" style={css("list-style:none;margin:0;padding:0;")}>
+        {rows.map((r) => (
+          <li key={r.speakerId} style={css("break-inside:avoid;padding:3px 0;font-size:13.5px;line-height:1.35;")}>
+            <Hover as="button" onClick={r.open} style="background:none;border:none;cursor:pointer;padding:0;font-size:13.5px;text-align:left;color:var(--ink);" hover="color:var(--forest);">{r.name}</Hover>
+            <span style={css("color:var(--muted);font-size:12px;")}> · {r.nResolved} graded{r.pending ? " · " + r.pending + " pending" : ""}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain, noRanked, noRankedLabel, unranked, unrankedHeading, rankingMin, onMethod }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
   return (
     <div>
@@ -48,7 +69,11 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
         {empty && (
           <div style={css("padding:28px 20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{emptyLabel}</div>
         )}
+        {!empty && noRanked && (
+          <div style={css("padding:22px 20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{noRankedLabel}</div>
+        )}
       </div>
+      <UnrankedList heading={unrankedHeading} rows={unranked} min={rankingMin} onMethod={onMethod} />
     </div>
   );
 }
@@ -142,6 +167,16 @@ export default function Home({ vals, openClaim }) {
             : "No speakers yet"
         }
         showDomain={showDomain}
+        noRanked={vals.noRanked}
+        noRankedLabel={
+          q
+            ? `No ranked speaker matches “${q}” in this tab.`
+            : `No speaker has ${vals.rankingMin} graded forecasts ${vals.boardShowDomain ? "" : "in this tab "}yet.`
+        }
+        unranked={vals.unrankedRows}
+        unrankedHeading={vals.unrankedHeading}
+        rankingMin={vals.rankingMin}
+        onMethod={vals.goMethod}
       />
       <div style={css("margin-top:10px;")}>
         <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>
