@@ -1,3 +1,10 @@
 {
+  "corrections": [
+    {
+      "at": "2026-10-09T16:18:56Z",
+      "reason": "legal_scope",
+      "detail": "On Oct. 9, 2026, we changed the source link for 110 official college football game results, on 234 cards. To fit our rules on which sources we can use, each result now links to the official athletics site of one of the schools that played in the game. The results themselves are unchanged, so no grades changed. Of the 234 cards, 230 are still graded Miss and 4 are still graded Hit. This affects only these cards."
+    }
+  ],
   "voids": []
 }

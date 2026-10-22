@@ -1,3 +1,10 @@
 {
+  "corrections": [
+    {
+      "at": "2026-10-22T14:27:17Z",
+      "reason": "claim_text_edited",
+      "detail": "On Oct. 22, 2026, we reworded 44 college football score prediction cards from David Kenyon of Bleacher Report into our standard scoreline format, with the winning team first (for example, Memphis 34, East Carolina 20). The predicted scores, deadlines, sources and grades are unchanged. This affects only these cards and David Kenyon's profile."
+    }
+  ],
   "voids": []
 }
