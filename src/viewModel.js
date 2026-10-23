@@ -1,3 +1,4 @@
+import { missRateStats, gameStats } from "./missRate.js";
 import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { horizonDisplay } from "./kickoffStatus.js";
@@ -539,6 +540,7 @@ export function buildVals(state, actions, data) {
         n_unscorable: st.n_unscorable,
         n_void: st.n_void,
         hit_rate: formatPct(st.hit_rate),
+        missStats: missRateStats(track.map((c) => c.status)),
         mae: formatMetric(st.mean_abs_error, 2),
         ape: formatMetric(st.mean_ape, 3),
         brier: formatMetric(st.mean_brier, 3),
@@ -570,6 +572,7 @@ export function buildVals(state, actions, data) {
         statusIcon: sm.icon,
         catColor: cm.color,
         catTint: cm.tint,
+        gameStats: gameStats(cards, card.subjectId),
         backToProfile: () => openSpeaker(card.speakerId),
         openSpeaker: () => openSpeaker(card.speakerId),
       };
