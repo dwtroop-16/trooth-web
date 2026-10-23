@@ -1,4 +1,5 @@
 import { css, formatMetric } from "../helpers.js";
+import MissRateLine from "./MissRateLine.jsx";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
@@ -10,6 +11,13 @@ export default function PredictionDetail({ vals }) {
       <Hover as="button" onClick={d.backToProfile} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;" hover="color:var(--forest);">← Back to {d.speakerName}</Hover>
 
       <div style={css("font-size:13px;color:var(--muted);margin-bottom:14px;")}>{d.subjectLabel}</div>
+
+      {d.gameStats && (
+        <div data-testid="game-stats" style={css("margin-bottom:12px;padding:10px 12px;border:1px solid var(--hair);border-radius:var(--radius);background:var(--surface);")}>
+          <div style={css("font-size:12px;color:var(--muted);margin-bottom:4px;")}>This game · all speakers · {d.gameStats.n_cards} {d.gameStats.n_cards === 1 ? "pick" : "picks"}</div>
+          <MissRateLine stats={d.gameStats} showHit onMethod={vals.goMethod} />
+        </div>
+      )}
 
       <ClaimCard card={d} />
 

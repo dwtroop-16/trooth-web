@@ -1,3 +1,4 @@
+import MissRateLine from "./MissRateLine.jsx";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
@@ -87,6 +88,7 @@ export default function Profile({ vals, openClaim }) {
           <span style={css("font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;line-height:1;color:var(--ink);")}>{p.hit_rate}</span>
           <span style={css("font-size:13px;color:var(--muted);")}>hit rate · n_hit / n_resolved (pending excluded)</span>
         </div>
+        <MissRateLine stats={p.missStats} onMethod={vals.goMethod} />
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
           {counts.map(([label, n]) => (
             <div key={label} style={css("min-width:72px;")}>
