@@ -45,6 +45,7 @@ test("gameStats pools all speakers on one game, ignores others", () => {
   const g = gameStats(cards, "nfl-2026-was-sf-20261020");
   assert.deepEqual([g.n_cards, g.n_resolved, g.n_miss], [3, 2, 1]);
   assert.equal(gameStats(cards, "knyc-high-20261020"), null);
+  assert.equal(gameStats([{ subjectId: "nfl-2025-super-bowl-champion", status: "hit" }], "nfl-2025-super-bowl-champion"), null);
 });
 
 test("gameStats applies R5 dedupe (same speaker, value, NY date counts once)", () => {

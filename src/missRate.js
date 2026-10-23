@@ -38,7 +38,7 @@ export function hitRateLabel(stats) {
 
 /** Per-game stats across all speakers' cards sharing a sports game subject id. */
 export function gameStats(cards, subjectId) {
-  if (!subjectId || !/^(nfl|fbs|ncaa)-/.test(subjectId)) return null;
+  if (!subjectId || !/^(nfl|fbs)-\d{4}-.+-\d{8}$/.test(subjectId)) return null; // single games only (not season/champion subjects)
   // Rubric v1.3.2 Game scorecard: each pick counts once per speaker after R5 dedupe
   // (same speaker + subject + value + NY calendar date of published_at). Ingest already drops R5
   // duplicates; this guard keeps the display honest if a copy ever slips through.
