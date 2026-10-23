@@ -3,6 +3,7 @@
  * Build live site bundle from Trooth ingest + scorer + actuals (read-only sources).
  * Does not invent forecasts, actuals, or grades. Does not scrape.
  */
+import { scoresCoverage, formatCoverage, isClean } from "../src/scoresCoverage.js";
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -439,6 +440,10 @@ function build() {
     SCORES,
     SUBJECTS,
   };
+
+  // Warn (do not fail the publish) when SCORES and FORECASTS ids diverge.
+  const coverage = scoresCoverage(bundle);
+  if (!isClean(coverage)) console.warn(`WARNING scores coverage: ${formatCoverage(coverage)}`);
 
   const genDir = join(SITE, "src/generated");
   mkdirSync(genDir, { recursive: true });

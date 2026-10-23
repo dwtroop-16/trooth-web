@@ -1,0 +1,4 @@
+{
+  "_note": "Forecast ids known to lack a SCORES row. The scoresCoverage test tolerates ONLY these (any other gap fails). Remove entries once Scorer writes their rows; empty this list to make the test fully strict. npm run check:scores ignores this list.",
+  "ids": []
+}
