@@ -5,6 +5,9 @@
 //     marketscreener.com and every subdomain (www., ca., ...):
 //       "dpa-AFX Analyser via MarketScreener (not linked)"
 //     247wallst.com and every subdomain (Legal 05ak, site-wide BLOCK): "24/7 Wall St. (not linked)"
+//     chicagobears.com and 49ers.com and every subdomain (Legal 05ay, club terms ban links, even to
+//     the home page): "Chicago Bears (chicagobears.com, not linked)",
+//     "San Francisco 49ers (49ers.com, not linked)"
 // (2) HOME-ONLY domains: the only clickable URL allowed is the domain's home page. Any other page
 //     on the domain links the home page instead, and the full specific URL is shown beside it as
 //     plain, unlinked text. nfl.com: link https://www.nfl.com/ with the name "NFL.com" (no logos),
@@ -20,6 +23,8 @@
 export const BLOCKED_LINK_DOMAINS = {
   "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)" },
   "247wallst.com": { credit: "24/7 Wall St. (not linked)" },
+  "chicagobears.com": { credit: "Chicago Bears (chicagobears.com, not linked)" },
+  "49ers.com": { credit: "San Francisco 49ers (49ers.com, not linked)" },
 };
 
 export const HOME_ONLY_LINK_DOMAINS = {

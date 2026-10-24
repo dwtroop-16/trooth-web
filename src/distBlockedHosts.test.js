@@ -64,3 +64,44 @@ test("built dist/ has no href to 247wallst", { timeout: 120000 }, async () => {
   const bad = files.filter((p) => HREF_247.test(readFileSync(p, "utf8")));
   assert.deepEqual(bad, []);
 });
+
+// Legal 05ay: chicagobears.com and 49ers.com (and every subdomain) are BLOCK. Plain-text credit only,
+// no href at all, not even to the home page.
+export const HREF_NFL_CLUBS = /href\s*[=:]\s*["'`]?\s*(https?:)?\/\/([a-z0-9-]+\.)*(chicagobears|49ers)\.com/i;
+
+test("HREF_NFL_CLUBS matches hrefs, not plain-text mentions", () => {
+  assert.ok(HREF_NFL_CLUBS.test('<a href="https://www.chicagobears.com/">'));
+  assert.ok(HREF_NFL_CLUBS.test('{href:"https://www.49ers.com/news/x"}'));
+  assert.ok(HREF_NFL_CLUBS.test('<a href="https://media.49ers.com/x">'));
+  assert.ok(!HREF_NFL_CLUBS.test('{source_url:"https://www.49ers.com/x"}'));
+  assert.ok(!HREF_NFL_CLUBS.test("San Francisco 49ers (49ers.com, not linked)"));
+  assert.ok(!HREF_NFL_CLUBS.test('<a href="https://www.sf49ers.org/">'));
+});
+
+test("sourceLinkParts never links chicagobears.com or 49ers.com", async () => {
+  const { sourceLinkParts, isAllowedHref } = await import("./linkPolicy.js");
+  const cases = [
+    ["https://chicagobears.com/", "Chicago Bears (chicagobears.com, not linked)"],
+    ["https://www.chicagobears.com/news/game-recap", "Chicago Bears (chicagobears.com, not linked)"],
+    ["https://shop.chicagobears.com/x", "Chicago Bears (chicagobears.com, not linked)"],
+    ["https://49ers.com/", "San Francisco 49ers (49ers.com, not linked)"],
+    ["https://www.49ers.com/news/recap-49ers-commanders", "San Francisco 49ers (49ers.com, not linked)"],
+    ["https://media.49ers.com/x", "San Francisco 49ers (49ers.com, not linked)"],
+  ];
+  for (const [u, credit] of cases) {
+    assert.equal(isAllowedHref(u), false, u);
+    assert.deepEqual(sourceLinkParts(u, "x"), [{ kind: "text", role: "blocked_credit", text: credit }]);
+  }
+});
+
+test("built dist/ has no href to chicagobears.com or 49ers.com", { timeout: 120000 }, async () => {
+  const { build } = await import("vite");
+  const outDir = mkdtempSync(join(tmpdir(), "trooth-dist-"));
+  await build({ root: SITE, logLevel: "silent", build: { outDir, emptyOutDir: true } });
+  const files = [];
+  const walk = (d) => { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.(html|js)$/.test(e.name)) files.push(p); } };
+  walk(outDir);
+  assert.ok(files.length > 0);
+  const bad = files.filter((p) => HREF_NFL_CLUBS.test(readFileSync(p, "utf8")));
+  assert.deepEqual(bad, []);
+});
