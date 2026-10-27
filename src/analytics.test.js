@@ -183,3 +183,19 @@ test("named helpers export the growth-capture stubs", async () => {
     assert.equal(typeof mod[name], "function", name);
   }
 });
+
+test("flush on client inject: earlier queued tracks appear after _setAnalyticsClientForTests", () => {
+  // With analytics disabled in node tests, track() no-ops and does not queue.
+  // With an injected client (forceCapture), tracks capture immediately.
+  const events = [];
+  _setAnalyticsClientForTests({
+    capture: (name, props) => events.push({ name, props }),
+  });
+  track("page_view", { path: "/", view: "home" });
+  track("filter_used", { filter_type: "domain", filter_value: "Sports", view: "home", previous_value: "All" });
+  assert.deepEqual(
+    events.map((e) => e.name),
+    ["page_view", "filter_used"]
+  );
+});
+

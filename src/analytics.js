@@ -23,6 +23,9 @@ const VIEW_LABEL = {
 /** @type {null | { capture: Function, opt_out_capturing?: Function }} */
 let client = null;
 let initStarted = false;
+let initPromise = null;
+/** @type {Array<[string, object]>} */
+const pending = [];
 let returnVisitFired = false;
 /** @type {Set<string>} */
 const scrollDepthFired = new Set();
@@ -103,53 +106,83 @@ function scrubProps(props) {
  * Deploy-preview builds set VITE_ANALYTICS_ENABLED in netlify.toml and send.
  */
 export async function initAnalytics() {
-  if (initStarted) return client;
+  if (initPromise) return initPromise;
   initStarted = true;
-  if (!isAnalyticsEnabled()) return null;
-  if (respectDnt()) return null;
-  const allowLocal = String(env().VITE_ANALYTICS_PREVIEW || "").toLowerCase() === "true";
-  if (isLocalDevHost() && !allowLocal) return null;
+  initPromise = (async () => {
+    if (!isAnalyticsEnabled()) {
+      pending.length = 0;
+      return null;
+    }
+    if (respectDnt()) {
+      pending.length = 0;
+      return null;
+    }
+    const allowLocal = String(env().VITE_ANALYTICS_PREVIEW || "").toLowerCase() === "true";
+    if (isLocalDevHost() && !allowLocal) {
+      pending.length = 0;
+      return null;
+    }
 
-  try {
-    const mod = await import("posthog-js");
-    const posthog = mod.default || mod;
-    posthog.init(getPostHogKey(), {
-      api_host: getPostHogHost(),
-      cookieless_mode: "always",
-      person_profiles: "never",
-      persistence: "memory",
-      autocapture: false,
-      capture_pageview: false,
-      capture_pageleave: true,
-      disable_session_recording: true,
-      respect_dnt: true,
-      sanitize_properties: (props) => {
-        // Drop anything that looks like PII if autocapture ever re-enabled.
-        const cleaned = { ...props };
-        for (const k of Object.keys(cleaned)) {
-          if (/email|password|phone|ip/i.test(k)) delete cleaned[k];
-        }
-        return cleaned;
-      },
-    });
-    client = posthog;
-    return client;
-  } catch (err) {
-    console.warn("Trooth analytics: PostHog failed to load.", err);
-    return null;
-  }
+    try {
+      const mod = await import("posthog-js");
+      const posthog = mod.default || mod;
+      posthog.init(getPostHogKey(), {
+        api_host: getPostHogHost(),
+        cookieless_mode: "always",
+        person_profiles: "never",
+        persistence: "memory",
+        autocapture: false,
+        capture_pageview: false,
+        capture_pageleave: true,
+        disable_session_recording: true,
+        respect_dnt: true,
+        sanitize_properties: (props) => {
+          const cleaned = { ...props };
+          for (const k of Object.keys(cleaned)) {
+            if (/email|password|phone|ip/i.test(k)) delete cleaned[k];
+          }
+          return cleaned;
+        },
+      });
+      client = posthog;
+      flushPending();
+      return client;
+    } catch (err) {
+      console.warn("Trooth analytics: PostHog failed to load.", err);
+      pending.length = 0;
+      return null;
+    }
+  })();
+  return initPromise;
 }
 
 /** When true, track() captures even without env (test helper only). */
 let forceCaptureForTests = false;
 
-/** Core capture. No-op when analytics is disabled or not yet initialized. */
+function flushPending() {
+  if (!client || typeof client.capture !== "function") return;
+  while (pending.length) {
+    const [event, props] = pending.shift();
+    try {
+      client.capture(event, props);
+    } catch (err) {
+      console.warn("Trooth analytics: capture failed.", err);
+    }
+  }
+}
+
+/** Core capture. No-op when analytics is disabled. Queues until init finishes. */
 export function track(event, props = {}) {
   if (!event || typeof event !== "string") return;
   if (!forceCaptureForTests && !isAnalyticsEnabled()) return;
-  if (!client || typeof client.capture !== "function") return;
+  const cleaned = scrubProps(props);
+  if (!client || typeof client.capture !== "function") {
+    if (pending.length < 50) pending.push([event, cleaned]);
+    if (!initStarted) initAnalytics().catch(() => {});
+    return;
+  }
   try {
-    client.capture(event, scrubProps(props));
+    client.capture(event, cleaned);
   } catch (err) {
     console.warn("Trooth analytics: capture failed.", err);
   }
@@ -425,6 +458,8 @@ export function trackFeedbackSubmitted(props = {}) {
 export function _resetAnalyticsForTests() {
   client = null;
   initStarted = false;
+  initPromise = null;
+  pending.length = 0;
   forceCaptureForTests = false;
   returnVisitFired = false;
   scrollDepthFired.clear();
@@ -437,5 +472,7 @@ export function _resetAnalyticsForTests() {
 export function _setAnalyticsClientForTests(fake) {
   client = fake;
   initStarted = true;
+  initPromise = Promise.resolve(fake);
   forceCaptureForTests = true;
+  flushPending();
 }

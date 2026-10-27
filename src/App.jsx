@@ -111,18 +111,22 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    initAnalytics().catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    trackPageView({
-      path: window.location.pathname,
-      view: state.view,
-      speaker_id: state.speakerId || undefined,
-      forecast_id: state.forecastId || undefined,
-      domain: state.cat !== "All" ? state.cat : undefined,
-      search: window.location.search,
-    });
+    let cancelled = false;
+    (async () => {
+      await initAnalytics();
+      if (cancelled) return;
+      trackPageView({
+        path: window.location.pathname,
+        view: state.view,
+        speaker_id: state.speakerId || undefined,
+        forecast_id: state.forecastId || undefined,
+        domain: state.cat !== "All" ? state.cat : undefined,
+        search: window.location.search,
+      });
+    })().catch(() => {});
+    return () => {
+      cancelled = true;
+    };
   }, [state.view, state.speakerId, state.forecastId]);
 
   const setState = (patch) => setStateRaw((prev) => ({ ...prev, ...patch }));
