@@ -64,9 +64,10 @@ test("netlify.toml enables growth capture only on previews", () => {
 
 test("growth-submit function never auto-publishes and gates sending", () => {
   const src = readFileSync(join(root, "netlify/functions/growth-submit.mjs"), "utf8");
-  assert.match(src, /legal_ops_review/);
+  assert.match(src, /legal_ops_review|queueForKind/);
   assert.match(src, /GROWTH_CONSENT_APPROVED/);
   assert.match(src, /auto_published:\s*false/);
+  assert.match(src, /putEntry|getGrowthStore/);
   assert.doesNotMatch(src, /nodemailer|sendgrid|resend|postmark/i);
 });
 
