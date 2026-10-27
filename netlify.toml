@@ -177,3 +177,12 @@
   VITE_GROWTH_CAPTURE = "true"
   GROWTH_EMAIL_SENDING = "false"
   GROWTH_CONSENT_APPROVED = "false"
+
+# Daily purge of growth Blobs past 90-day retention (UTC 10:17 ≈ after morning publish window).
+[functions."growth-purge"]
+  schedule = "17 14 * * *"
+
+# Secrets the owner must set in Netlify UI (Site does NOT set these in this PR):
+#   GROWTH_EXPORT_TOKEN       — bearer token for /.netlify/functions/growth-export (required for export)
+#   GROWTH_RATE_LIMIT_SALT    — high-entropy salt for hashing client IPs (never store raw IPs)
+# Blobs credentials are automatic inside Netlify Functions.

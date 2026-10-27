@@ -1,17 +1,26 @@
 /**
- * Growth capture intake. Preview-safe stub:
- * - Validates payload
- * - Never auto-publishes forecasts
- * - Never sends email unless GROWTH_EMAIL_SENDING=true AND GROWTH_CONSENT_APPROVED=true
- * - Appends JSON lines to an in-memory note in the response; logs for Netlify function logs
- * - Forecast submissions are tagged legal_ops_queue for Legal-Ops review
+ * Growth capture intake.
+ * - Validates payload; never auto-publishes forecasts
+ * - Persists to Netlify Blobs (trooth-growth) with 90-day retention
+ * - Never stores raw IPs (salted hash only, for rate limiting)
+ * - Email sending hard-gated until GROWTH_EMAIL_SENDING + GROWTH_CONSENT_APPROVED
  */
+
+import { isBlockedSubmitHost } from "./blocked-submit-hosts.mjs";
+import {
+  getGrowthStore,
+  putEntry,
+  purgeExpired,
+  queueForKind,
+  hashClientAddress,
+  clientIpFromEvent,
+  checkAndBumpRate,
+  expiresAtFrom,
+} from "./lib/growth-store.mjs";
 
 const SENDING =
   String(process.env.GROWTH_EMAIL_SENDING || "").toLowerCase() === "true" &&
   String(process.env.GROWTH_CONSENT_APPROVED || "").toLowerCase() === "true";
-
-import { isBlockedSubmitHost } from "./blocked-submit-hosts.mjs";
 
 const KINDS = new Set([
   "feedback",
@@ -59,7 +68,6 @@ export async function handler(event) {
     return json(400, { ok: false, error: "unknown_kind" });
   }
 
-  // Soft-drop spam; look successful to bots
   if (isHoneypotTripped(payload)) {
     return json(200, { ok: true, dropped: "honeypot", id: "dropped" });
   }
@@ -70,51 +78,73 @@ export async function handler(event) {
       return json(400, { ok: false, error: "https_required" });
     }
     if (isBlockedSubmitHost(url)) {
-      return json(400, { ok: false, error: "host_blocked", message: "That host is not accepted under our source rules." });
+      return json(400, {
+        ok: false,
+        error: "host_blocked",
+        message: "That host is not accepted under our source rules.",
+      });
     }
+  }
+
+  const store = await getGrowthStore();
+
+  // Rate limit via salted hash only — raw IP never written to the store
+  const ip = clientIpFromEvent(event);
+  const clientHash = hashClientAddress(ip);
+  const rate = await checkAndBumpRate(store, clientHash);
+  if (rate.limited) {
+    return json(429, { ok: false, error: "rate_limited" });
+  }
+
+  // Opportunistic retention cleanup (also run by scheduled growth-purge)
+  try {
+    await purgeExpired(store);
+  } catch (err) {
+    console.warn("[growth-submit] purge skipped", String(err && err.message));
   }
 
   const id = `g_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  const received_at = new Date().toISOString();
+  const queue = queueForKind(kind);
+
+  const cleanPayload = { ...payload, password: undefined };
+  delete cleanPayload.ip;
+  delete cleanPayload.client_ip;
+  delete cleanPayload.website; // honeypot empty
+
   const record = {
     id,
     kind,
-    received_at: new Date().toISOString(),
+    received_at,
+    expires_at: expiresAtFrom(received_at),
     email_sending_enabled: SENDING,
-    queue:
-      kind === "forecast_submission"
-        ? "legal_ops_review"
-        : kind === "feedback"
-          ? "feedback"
-          : kind === "poll"
-            ? "subscriber_prefs"
-            : "email_preview_store",
-    // Strip obvious secrets; keep fields for Legal-Ops / preview inspection
-    payload: {
-      ...payload,
-      // never echo raw passwords if somehow sent
-      password: undefined,
-    },
+    queue,
+    // salted hash only — omit when salt unset so we don't store empty markers
+    ...(clientHash ? { client_hash: clientHash } : {}),
+    payload: cleanPayload,
   };
 
-  // Live email is hard-blocked until both env flags are set (owner-approved consent).
+  await putEntry(store, record);
+
   let emailAction = "skipped_sending_disabled";
   if (kind === "email_signup" || kind === "email_confirm") {
-    if (!SENDING) {
-      emailAction = "stored_only_sending_disabled";
-    } else {
-      emailAction = "would_send_confirmation"; // still no real ESP wired
-    }
+    emailAction = SENDING ? "would_send_confirmation" : "stored_only_sending_disabled";
   }
 
-  console.log("[growth-submit]", JSON.stringify({ id, kind, queue: record.queue, emailAction }));
+  console.log(
+    "[growth-submit]",
+    JSON.stringify({ id, kind, queue, emailAction, stored: true, has_client_hash: Boolean(clientHash) })
+  );
 
   return json(200, {
     ok: true,
     id,
     kind,
-    queue: record.queue,
+    queue,
     email_action: emailAction,
     auto_published: false,
+    stored: true,
+    retention_days: 90,
     message:
       kind === "forecast_submission"
         ? "Queued for Legal-Ops review. Nothing was published."
