@@ -79,3 +79,32 @@ test("FeedbackWidget gated and placed after grade content", () => {
   assert.match(detail, /FeedbackWidget/);
   assert.ok(detail.indexOf("ClaimCard") < detail.indexOf("FeedbackWidget"));
 });
+
+test("EmailCapture is inline-only and marks draft consent", () => {
+  const src = readFileSync(join(root, "src/components/growth/EmailCapture.jsx"), "utf8");
+  assert.match(src, /growthCaptureEnabled/);
+  assert.match(src, /email_signup_started/);
+  assert.match(src, /email_signup_completed/);
+  assert.match(src, /DRAFT/);
+  assert.doesNotMatch(src, /exitIntent|exit-intent|full-page interstitial/i);
+  assert.match(src, /pre-checked/);
+  assert.match(src, /data-growth="email-capture"/);
+});
+
+test("Profile and Footer place email capture inline", () => {
+  const profile = readFileSync(join(root, "src/components/Profile.jsx"), "utf8");
+  assert.match(profile, /EmailCapture/);
+  assert.match(profile, /speaker_alert/);
+  assert.match(profile, /weekly_movers/);
+  const footer = readFileSync(join(root, "src/components/Footer.jsx"), "utf8");
+  assert.match(footer, /Weekly movers/);
+  assert.match(footer, /EmailCapture/);
+});
+
+test("router knows confirm and unsubscribe", async () => {
+  const { parsePath, pathFor } = await import("./router.js");
+  assert.equal(parsePath("/confirm").view, "confirm");
+  assert.equal(parsePath("/unsubscribe").view, "unsubscribe");
+  assert.equal(pathFor("confirm"), "/confirm");
+  assert.equal(pathFor("unsubscribe"), "/unsubscribe");
+});
