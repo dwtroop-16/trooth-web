@@ -140,7 +140,19 @@ export default function Profile({ vals, openClaim }) {
       ) : (
         <div style={css("display:flex;flex-direction:column;gap:10px;")}>
           {p.track.map((card) => (
-            <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
+            <ClaimCard
+              key={card.id}
+              card={card}
+              compact
+              onOpen={() =>
+                openClaim(card.id, {
+                  entry: "profile",
+                  speaker_id: card.speakerId,
+                  domain: card.domain,
+                  status: card.grade,
+                })
+              }
+            />
           ))}
         </div>
       )}

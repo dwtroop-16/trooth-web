@@ -3,6 +3,10 @@ import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { horizonDisplay } from "./kickoffStatus.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
+import {
+  trackSearchPerformed,
+  markSuggestionClick,
+} from "./analytics.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -412,7 +416,14 @@ export function buildVals(state, actions, data) {
         nResolved: row.stats.n_resolved,
         hitRate: formatPct(row.stats.hit_rate),
         pending: row.stats.n_pending,
-        open: () => openSpeaker(row.speaker.id),
+        open: () =>
+          openSpeaker(row.speaker.id, {
+            entry: "board",
+            domain: row.domainLabel,
+            rank: i + 1,
+            hit_rate: row.stats.hit_rate,
+            n_resolved: row.stats.n_resolved,
+          }),
       };
     });
   };
@@ -457,7 +468,10 @@ export function buildVals(state, actions, data) {
           name: sp.name,
           org: sp.org,
           kind: "speaker",
-          open: () => openSpeaker(sp.id),
+          open: () => {
+            markSuggestionClick();
+            openSpeaker(sp.id, { entry: "search", domain: domainLabelOf(sp.domain) });
+          },
         }))
     : [];
 
@@ -475,7 +489,15 @@ export function buildVals(state, actions, data) {
       grade: c.grade,
       domain: c.domain,
       kind: "claim",
-      open: () => openClaim(c.id),
+      open: () => {
+        markSuggestionClick();
+        openClaim(c.id, {
+          entry: "search",
+          speaker_id: c.speakerId,
+          domain: c.domain,
+          status: c.grade,
+        });
+      },
     });
   }
 
@@ -570,8 +592,8 @@ export function buildVals(state, actions, data) {
         statusIcon: sm.icon,
         catColor: cm.color,
         catTint: cm.tint,
-        backToProfile: () => openSpeaker(card.speakerId),
-        openSpeaker: () => openSpeaker(card.speakerId),
+        backToProfile: () => openSpeaker(card.speakerId, { entry: "card", domain: card.domain }),
+        openSpeaker: () => openSpeaker(card.speakerId, { entry: "card", domain: card.domain }),
       };
     }
   }
@@ -591,6 +613,12 @@ export function buildVals(state, actions, data) {
     clearSearch: () => setState({ q: "" }),
     submitSearch: () => {
       const query = (s.q || "").trim();
+      trackSearchPerformed({
+        query_len: query.length,
+        result_speakers: matchingSpeakers.length,
+        result_claims: matchingClaims.length,
+        view: s.view === "claims" ? "claims" : "home",
+      });
       if (typeof goClaims === "function") {
         goClaims({ q: query, domain: cat !== "All" ? cat : "All", replace: false });
       }

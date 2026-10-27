@@ -1,6 +1,8 @@
+import { useEffect, useRef } from "react";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
 
 function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
@@ -60,6 +62,34 @@ export default function Home({ vals, openClaim }) {
   const featuredId = vals.featuredClaim?.id;
   const recentOnly = featuredId ? recent.filter((c) => c.id !== featuredId) : recent;
   const matchCount = vals.matchCount || 0;
+  const noResultsLogged = useRef("");
+
+  useEffect(() => attachScrollDepth({ path: "/", view: "home" }), []);
+
+  useEffect(() => {
+    if (!q) {
+      noResultsLogged.current = "";
+      return;
+    }
+    const noClaims = (vals.matchingClaims || []).length === 0;
+    const noSpeakers = !!vals.noResults;
+    if (noClaims && noSpeakers && noResultsLogged.current !== q) {
+      noResultsLogged.current = q;
+      trackSearchNoResults({
+        query_len: q.length,
+        view: "home",
+        domain_filter: vals.categories?.find((c) => c.active)?.label || "All",
+      });
+    }
+  }, [q, vals.matchingClaims, vals.noResults, vals.categories]);
+
+  const openHomeClaim = (card) =>
+    openClaim(card.id, {
+      entry: "home",
+      speaker_id: card.speakerId,
+      domain: card.domain,
+      status: card.grade,
+    });
 
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;")}>
@@ -119,7 +149,7 @@ export default function Home({ vals, openClaim }) {
           </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
             {vals.matchingClaims.slice(0, 8).map((card) => (
-              <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
+              <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openHomeClaim(card)} />
             ))}
             {vals.matchingClaims.length === 0 && (
               <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>
@@ -155,10 +185,10 @@ export default function Home({ vals, openClaim }) {
           </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
             {vals.featuredClaim ? (
-              <ClaimCard card={vals.featuredClaim} compact quiet onOpen={() => openClaim(vals.featuredClaim.id)} />
+              <ClaimCard card={vals.featuredClaim} compact quiet onOpen={() => openHomeClaim(vals.featuredClaim)} />
             ) : null}
             {recentOnly.map((card) => (
-              <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openClaim(card.id)} />
+              <ClaimCard key={card.id} card={card} compact quiet onOpen={() => openHomeClaim(card)} />
             ))}
             {!vals.featuredClaim && recentOnly.length === 0 && (
               <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>

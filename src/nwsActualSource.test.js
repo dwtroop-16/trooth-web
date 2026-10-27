@@ -91,6 +91,7 @@ test("ClaimCard renders the retention note as plain text and never links observa
   const src = readFileSync(join(HERE, "components/ClaimCard.jsx"), "utf8")
     .replace('"../claimCard.js"', JSON.stringify(pathToFileURL(join(HERE, "claimCard.js")).href))
     .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
+    .replace('"../analytics.js"', JSON.stringify("data:text/javascript,export function trackSourceLinkClicked(){}"))
     .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
   const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
   const dir = mkdtempSync(join(tmpdir(), "claimcard-"));

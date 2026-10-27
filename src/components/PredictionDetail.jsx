@@ -1,10 +1,22 @@
+import { useEffect } from "react";
 import { css, formatMetric } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import { attachScrollDepth } from "../analytics.js";
 
 export default function PredictionDetail({ vals }) {
   const d = vals.d;
   const showStats = d.error != null || d.ape != null;
+  useEffect(
+    () =>
+      attachScrollDepth({
+        path: `/claim/${encodeURIComponent(d.id)}`,
+        view: "prediction",
+        speaker_id: d.speakerId,
+        forecast_id: d.id,
+      }),
+    [d.id, d.speakerId]
+  );
   return (
     <main style={css("max-width:760px;margin:0 auto;padding:28px 20px 48px;animation:vFadeUp .28s ease;")}>
       <Hover as="button" onClick={d.backToProfile} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;" hover="color:var(--forest);">← Back to {d.speakerName}</Hover>

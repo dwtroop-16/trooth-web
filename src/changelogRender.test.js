@@ -37,6 +37,7 @@ export function loadPublicChangelog() {
   const src = readFileSync(join(HERE, "components/Changelog.jsx"), "utf8")
     .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
     .replace('"../loadChangelog.js"', JSON.stringify(pathToFileURL(loader).href))
+    .replace('"../analytics.js"', JSON.stringify("data:text/javascript,export function trackSourceLinkClicked(){}"))
     .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
   const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
   const file = join(dir, "Changelog.mjs");
