@@ -79,10 +79,10 @@ function respectDnt() {
   return dnt === "1" || dnt === "yes";
 }
 
-function isPreviewHost() {
+function isLocalDevHost() {
   if (typeof window === "undefined" || !window.location) return false;
   const host = window.location.hostname || "";
-  return host.includes("netlify.app") || host.includes("localhost") || host === "127.0.0.1";
+  return host.includes("localhost") || host === "127.0.0.1";
 }
 
 function scrubProps(props) {
@@ -99,15 +99,16 @@ function scrubProps(props) {
 
 /**
  * Initialize PostHog once. Safe to call repeatedly.
- * Preview / localhost hosts stay silent unless VITE_ANALYTICS_PREVIEW=true.
+ * Localhost stays silent unless VITE_ANALYTICS_PREVIEW=true.
+ * Deploy-preview builds set VITE_ANALYTICS_ENABLED in netlify.toml and send.
  */
 export async function initAnalytics() {
   if (initStarted) return client;
   initStarted = true;
   if (!isAnalyticsEnabled()) return null;
   if (respectDnt()) return null;
-  const allowPreview = String(env().VITE_ANALYTICS_PREVIEW || "").toLowerCase() === "true";
-  if (isPreviewHost() && !allowPreview) return null;
+  const allowLocal = String(env().VITE_ANALYTICS_PREVIEW || "").toLowerCase() === "true";
+  if (isLocalDevHost() && !allowLocal) return null;
 
   try {
     const mod = await import("posthog-js");

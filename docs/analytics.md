@@ -17,25 +17,27 @@ Never send email, password, IP, claim free-text, or raw search query strings as 
 
 A one-sentence public blurb on `/method` or the footer still needs Legal + owner approval before it goes live. Do not publish legal copy from this PR.
 
-## Owner setup (after merge approval)
+## Current enablement (this PR)
 
-1. Create a PostHog project (prefer Cloud EU if available; otherwise US Cloud with a DPA on file).
-2. In PostHog project settings → Web analytics, turn on **Enable cookieless tracking** and save. Without this, cookieless events are ignored.
-3. Copy the project API key.
-4. In Netlify → Site settings → Environment variables (production, and optionally branch deploys), set:
+Deploy previews only. `netlify.toml` `[context.deploy-preview.environment]` sets:
 
 | Variable | Value |
 | --- | --- |
 | `VITE_ANALYTICS_ENABLED` | `true` |
-| `VITE_POSTHOG_KEY` | your PostHog project API key |
-| `VITE_POSTHOG_HOST` | `https://us.i.posthog.com` or `https://eu.i.posthog.com` |
-| `VITE_ANALYTICS_PREVIEW` | omit (default). Set `true` only if you want deploy-preview / localhost traffic in PostHog |
+| `VITE_POSTHOG_KEY` | project API key (public client key) |
+| `VITE_POSTHOG_HOST` | `https://us.i.posthog.com` |
 
-5. Trigger a production rebuild so Vite inlines the env at build time.
-6. Build Funnel A (Land → board engage → speaker/claim → source click) and the eight-metric weekly dashboard in the PostHog UI (see the measurement plan).
-7. Do **not** enable session replay, `identify()`, or cookie persistence without a CMP and Legal OK.
+Production has **no** `VITE_ANALYTICS_*` vars — the module no-ops on trooth.app until the owner explicitly enables production. EU PostHog projects must use `https://eu.i.posthog.com` instead of the US host.
 
-No PostHog account or secrets are created by this PR.
+Localhost stays silent unless you also set `VITE_ANALYTICS_PREVIEW=true` in a local `.env`.
+
+## Owner setup for production (later, needs explicit OK)
+
+1. In PostHog project settings → Web analytics, turn on **Enable cookieless tracking** and save. Without this, cookieless events are ignored.
+2. Prefer Cloud EU if available; otherwise US Cloud with a DPA on file. Match `VITE_POSTHOG_HOST` to the region (`eu.i.posthog.com` vs `us.i.posthog.com`).
+3. Add the same three vars under Netlify production (or `[context.production.environment]`) only after owner approval.
+4. Build Funnel A and the eight-metric weekly dashboard in the PostHog UI.
+5. Do **not** enable session replay, `identify()`, or cookie persistence without a CMP and Legal OK.
 
 ## Module API
 
@@ -68,4 +70,4 @@ Example: `utm_source=meta&utm_medium=paid_social&utm_campaign=trust-sports-20261
 
 ## Local / preview
 
-With no env vars, every call is a no-op and `npm test` stays quiet. Deploy previews on `*.netlify.app` and `localhost` do not send events unless `VITE_ANALYTICS_PREVIEW=true`.
+With no env vars, every call is a no-op and `npm test` stays quiet. Deploy-preview Netlify builds send to PostHog via the context env above. Localhost does not send unless `VITE_ANALYTICS_PREVIEW=true`.
