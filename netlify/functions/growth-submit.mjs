@@ -11,6 +11,8 @@ const SENDING =
   String(process.env.GROWTH_EMAIL_SENDING || "").toLowerCase() === "true" &&
   String(process.env.GROWTH_CONSENT_APPROVED || "").toLowerCase() === "true";
 
+import { isBlockedSubmitHost } from "./blocked-submit-hosts.mjs";
+
 const KINDS = new Set([
   "feedback",
   "email_signup",
@@ -60,6 +62,16 @@ export async function handler(event) {
   // Soft-drop spam; look successful to bots
   if (isHoneypotTripped(payload)) {
     return json(200, { ok: true, dropped: "honeypot", id: "dropped" });
+  }
+
+  if (kind === "forecast_submission") {
+    const url = String(payload.public_url || "").trim();
+    if (!/^https:\/\//i.test(url)) {
+      return json(400, { ok: false, error: "https_required" });
+    }
+    if (isBlockedSubmitHost(url)) {
+      return json(400, { ok: false, error: "host_blocked", message: "That host is not accepted under our source rules." });
+    }
   }
 
   const id = `g_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;

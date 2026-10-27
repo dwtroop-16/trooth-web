@@ -56,7 +56,7 @@ export const pollCopy = {
 export const forecastSubmitCopy = {
   title: "Submit a forecast we missed",
   blurb:
-    "Submit only a verbatim public claim by a named professional, with a publicly readable https URL (no login, paywall, DRM, or TV stream). Legal-Ops reviews every submission. Nothing is auto-published. Optional email is for status only, never marketing. " +
+    "Submit only a verbatim public claim by a named professional, with a publicly readable https URL (no login, paywall, DRM, or TV stream). Legal-Ops reviews every submission. Nothing is published automatically. Optional email is for status only, never marketing. " +
     DRAFT_BANNER,
   submit: "Send to Legal-Ops review",
   thanks: "Queued for Legal-Ops review. Nothing was published.",

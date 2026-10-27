@@ -21,6 +21,7 @@ const AccountModal = lazy(() => import("./components/AccountModal.jsx"));
 const Toast = lazy(() => import("./components/Toast.jsx"));
 const ConfirmPage = lazy(() => import("./components/growth/ConfirmPage.jsx"));
 const UnsubscribePage = lazy(() => import("./components/growth/UnsubscribePage.jsx"));
+const SubmitForecastForm = lazy(() => import("./components/growth/SubmitForecastForm.jsx"));
 
 function filtersFromLocation() {
   const parsed = parsePath(window.location.pathname);
@@ -164,6 +165,7 @@ export default function App() {
   const goChangelog = () => navigate(pathFor("changelog"));
   const goConfirm = () => navigate(pathFor("confirm"));
   const goUnsubscribe = () => navigate(pathFor("unsubscribe"));
+  const goSubmitForecast = () => navigate(pathFor("submit_forecast"));
   const setCat = (c) => {
     const cat = normalizeDomain(c);
     setStateRaw((prev) => {
@@ -373,6 +375,7 @@ export default function App() {
       goMethod,
       goChangelog,
       goClaims,
+      goSubmitForecast,
       submit,
       account,
       openModal: openTipModal,
@@ -409,6 +412,7 @@ export default function App() {
           {vals.isClaims && <Claims vals={vals} openClaim={openClaim} />}
           {vals.isConfirm && <ConfirmPage goHome={goHome} />}
           {vals.isUnsubscribe && <UnsubscribePage goHome={goHome} />}
+          {vals.isSubmitForecast && <SubmitForecastForm goHome={goHome} />}
           {vals.modal && <LogModal vals={vals} />}
           {vals.accountModal && <AccountModal vals={vals} />}
           {vals.toast && <Toast text={vals.toast} />}
