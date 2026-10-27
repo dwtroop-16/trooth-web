@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { isPublicHttpsUrl, isBlockedSubmitHost, isValidEmail, normalizeClaimText } from "./growth/validate.js";
+import { isPublicHttpsUrl, isValidEmail, normalizeClaimText } from "./growth/validate.js";
 import { CONSENT_VERSION, DRAFT_BANNER, feedbackCopy } from "./growth/consentCopy.js";
 import { track, _debugEvents, _resetDebugEvents } from "./lib/analytics.js";
 
@@ -38,10 +38,12 @@ test("validate public https urls", () => {
   assert.equal(isPublicHttpsUrl("not-a-url"), false);
 });
 
-test("validate blocked submit hosts", () => {
-  assert.equal(isBlockedSubmitHost("https://www.heisman.com/x"), true);
-  assert.equal(isBlockedSubmitHost("https://ca.marketscreener.com/x"), true);
-  assert.equal(isBlockedSubmitHost("https://api.weather.gov/x"), false);
+test("blocked submit hosts live in the Netlify function, not the SPA bundle", () => {
+  const fn = readFileSync(join(root, "netlify/functions/blocked-submit-hosts.mjs"), "utf8");
+  assert.match(fn, /heisman\.com/);
+  assert.match(fn, /marketscreener\.com/);
+  const client = readFileSync(join(root, "src/growth/validate.js"), "utf8");
+  assert.doesNotMatch(client, /heisman\.com/);
 });
 
 test("email and claim normalize", () => {
@@ -117,4 +119,20 @@ test("SubscriberPoll is skippable and draft-marked", () => {
   assert.match(src, /data-growth="subscriber-poll"/);
   const confirm = readFileSync(join(root, "src/components/growth/ConfirmPage.jsx"), "utf8");
   assert.match(confirm, /SubscriberPoll/);
+});
+
+test("SubmitForecastForm queues Legal-Ops only", () => {
+  const src = readFileSync(join(root, "src/components/growth/SubmitForecastForm.jsx"), "utf8");
+  assert.match(src, /growthCaptureEnabled/);
+  assert.match(src, /forecast_submission/);
+  assert.match(src, /Legal-Ops/);
+  assert.match(src, /DRAFT/);
+  assert.match(src, /published automatically/);
+  assert.doesNotMatch(src, /heisman\.com/);
+});
+
+test("router knows submit-forecast", async () => {
+  const { parsePath, pathFor } = await import("./router.js");
+  assert.equal(parsePath("/submit-forecast").view, "submit_forecast");
+  assert.equal(pathFor("submit_forecast"), "/submit-forecast");
 });

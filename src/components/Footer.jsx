@@ -21,7 +21,7 @@ export default function Footer({ vals }) {
           Weekly movers
         </Hover>
       ) : null}
-      {vals.goSubmitForecast ? (
+      {growthCaptureEnabled && vals.goSubmitForecast ? (
         <Hover as="button" onClick={vals.goSubmitForecast} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">
           Submit a forecast
         </Hover>
