@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
+import { growthCaptureEnabled } from "../lib/flags.js";
+import EmailCapture from "./growth/EmailCapture.jsx";
 
 export default function Footer({ vals }) {
+  const [showMovers, setShowMovers] = useState(false);
   return (
     <footer style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;display:flex;flex-wrap:wrap;gap:18px 28px;align-items:center;border-top:1px solid var(--hair);color:var(--muted);font-size:13px;")}>
       <span style={css("display:flex;align-items:center;gap:8px;")}>
@@ -12,7 +16,22 @@ export default function Footer({ vals }) {
       <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Claims</Hover>
       <Hover as="button" onClick={vals.goChangelog} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Changelog</Hover>
       <Hover as="button" onClick={vals.openModal} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Suggest a source</Hover>
+      {growthCaptureEnabled ? (
+        <Hover as="button" onClick={() => setShowMovers((v) => !v)} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">
+          Weekly movers
+        </Hover>
+      ) : null}
+      {vals.goSubmitForecast ? (
+        <Hover as="button" onClick={vals.goSubmitForecast} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">
+          Submit a forecast
+        </Hover>
+      ) : null}
       <span style={css("margin-left:auto;")}>Hit / Miss / Pending · pending is not a miss</span>
+      {showMovers ? (
+        <div style={css("flex-basis:100%;max-width:480px;")}>
+          <EmailCapture product="weekly_movers" entry="footer" />
+        </div>
+      ) : null}
     </footer>
   );
 }

@@ -1,6 +1,7 @@
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import EmailCapture from "./growth/EmailCapture.jsx";
 
 function ProfileStatTable({ title, columns, rows, emptyLabel }) {
   const rowClass =
@@ -101,6 +102,14 @@ export default function Profile({ vals, openClaim }) {
           <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.brier}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>Mean Brier (where defined)</div></div>
         </div>
       </div>
+
+      <EmailCapture
+        product="speaker_alert"
+        speakerId={p.id}
+        speakerName={p.name}
+        entry="person"
+      />
+      <EmailCapture product="weekly_movers" entry="person" />
 
       {divisionRows.length > 0 ? (
         <div style={css("margin-top:28px;")}>
