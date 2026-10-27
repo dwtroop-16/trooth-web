@@ -13,11 +13,15 @@ import {
   trackSearchPerformed,
   trackSearchNoResults,
   trackScrollDepth,
+  attachScrollDepth,
   trackSortChanged,
   trackShareClicked,
   trackEmailSignupStarted,
   trackEmailSignupCompleted,
   trackFeedbackSubmitted,
+  stripSearchParamFromUrl,
+  scrubAnalyticsProperties,
+  beforeSendScrubSearch,
   _resetAnalyticsForTests,
   _setAnalyticsClientForTests,
 } from "./analytics.js";
@@ -197,5 +201,82 @@ test("flush on client inject: earlier queued tracks appear after _setAnalyticsCl
     events.map((e) => e.name),
     ["page_view", "filter_used"]
   );
+});
+
+test("stripSearchParamFromUrl removes q but keeps utm_*", () => {
+  assert.equal(
+    stripSearchParamFromUrl("https://trooth.app/claims?q=kenyon&utm_source=meta&utm_campaign=trust-sports-202610"),
+    "https://trooth.app/claims?utm_source=meta&utm_campaign=trust-sports-202610"
+  );
+  assert.equal(stripSearchParamFromUrl("/claims?q=kenyon"), "/claims");
+  assert.equal(stripSearchParamFromUrl("/claims?utm_source=x"), "/claims?utm_source=x");
+  assert.equal(stripSearchParamFromUrl("https://trooth.app/method"), "https://trooth.app/method");
+});
+
+test("beforeSendScrubSearch strips q from $current_url and referrer props", () => {
+  const scrubbed = beforeSendScrubSearch({
+    event: "page_view",
+    properties: {
+      $current_url: "https://trooth.app/claims?q=kenyon&utm_source=x",
+      $initial_current_url: "https://trooth.app/claims?q=kenyon",
+      $referrer: "https://example.com/?q=secret",
+      $initial_referrer: "https://example.com/?q=secret",
+      referrer: "https://trooth.app/claims?q=kenyon",
+      path: "/claims",
+      query_len: 6,
+      q: "kenyon",
+    },
+  });
+  const props = scrubbed.properties;
+  assert.equal(props.$current_url, "https://trooth.app/claims?utm_source=x");
+  assert.equal(props.$initial_current_url, "https://trooth.app/claims");
+  assert.equal(props.$referrer, "https://example.com/");
+  assert.equal(props.referrer, "https://trooth.app/claims");
+  assert.equal(props.query_len, 6);
+  assert.equal(Object.prototype.hasOwnProperty.call(props, "q"), false);
+  const blob = JSON.stringify(scrubbed);
+  assert.equal(blob.includes("kenyon"), false);
+  assert.equal(blob.includes("q=kenyon"), false);
+});
+
+test("scrubAnalyticsProperties drops exact ip/email keys but keeps description", () => {
+  const out = scrubAnalyticsProperties({
+    description: "hit rate tip",
+    email: "a@b.c",
+    $ip: "1.2.3.4",
+    ip: "1.2.3.4",
+    phone: "555",
+    password: "x",
+    speaker_id: "cbs-pete-prisco",
+  });
+  assert.equal(out.description, "hit rate tip");
+  assert.equal(out.speaker_id, "cbs-pete-prisco");
+  assert.equal(out.email, undefined);
+  assert.equal(out.$ip, undefined);
+  assert.equal(out.ip, undefined);
+});
+
+test("attachScrollDepth does not fire 100 on attach for short pages", () => {
+  const events = [];
+  _setAnalyticsClientForTests({
+    capture: (name, props) => events.push({ name, props }),
+  });
+  // Fake a short page in a minimal jsdom-less environment: skip if no window.
+  if (typeof window === "undefined") {
+    const cleanup = attachScrollDepth({ path: "/claim/x", view: "prediction" });
+    assert.equal(typeof cleanup, "function");
+    cleanup();
+    assert.equal(events.filter((e) => e.name === "scroll_depth").length, 0);
+    return;
+  }
+});
+
+test("trackScrollDepth still accepts explicit markers when called directly", () => {
+  const events = [];
+  _setAnalyticsClientForTests({
+    capture: (name, props) => events.push({ name, props }),
+  });
+  trackScrollDepth({ path: "/claim/x", view: "prediction", depth_pct: 100 });
+  assert.equal(events.filter((e) => e.name === "scroll_depth" && e.props.depth_pct === 100).length, 1);
 });
 

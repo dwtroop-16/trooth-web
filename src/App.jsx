@@ -228,6 +228,17 @@ export default function App() {
   };
   const goHome = () => navigate(pathFor("home"));
   const goMethod = () => navigate(pathFor("method"));
+  const goPrivacy = () => {
+    navigate(pathFor("method"));
+    requestAnimationFrame(() => {
+      try {
+        window.history.replaceState({}, "", "/method#privacy");
+      } catch {
+        /* ignore */
+      }
+      document.getElementById("privacy")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
   const goChangelog = () => navigate(pathFor("changelog"));
   const setCat = (c) => {
     const cat = normalizeDomain(c);
@@ -444,6 +455,7 @@ export default function App() {
       goHome,
       setCat,
       goMethod,
+      goPrivacy,
       goChangelog,
       goClaims,
       submit,
