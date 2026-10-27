@@ -1,6 +1,7 @@
 import { css, formatMetric } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import FeedbackWidget from "./growth/FeedbackWidget.jsx";
 
 export default function PredictionDetail({ vals }) {
   const d = vals.d;
@@ -19,6 +20,13 @@ export default function PredictionDetail({ vals }) {
           {d.ape != null && <div>APE · {formatMetric(d.ape, 3)}</div>}
         </div>
       )}
+
+      <FeedbackWidget
+        forecastId={d.id}
+        speakerId={d.speakerId}
+        domain={d.domain}
+        grade={d.grade}
+      />
     </main>
   );
 }
