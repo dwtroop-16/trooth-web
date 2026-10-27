@@ -5,12 +5,13 @@ import { growthCaptureEnabled } from "../../lib/flags.js";
 import { DRAFT_BANNER, emailSendingDisabledNote } from "../../growth/consentCopy.js";
 import { submitGrowth } from "../../growth/submitClient.js";
 import { track } from "../../lib/analytics.js";
+import SubscriberPoll from "./SubscriberPoll.jsx";
 
 /**
  * Double-opt-in landing. Real tokens not issued until email sending is approved.
- * Post-confirm poll is added in the next stacked PR.
+ * Shows skippable SubscriberPoll after confirm.
  */
-export default function ConfirmPage({ goHome, PollComponent }) {
+export default function ConfirmPage({ goHome }) {
   const [phase, setPhase] = useState("loading");
   const [showPoll, setShowPoll] = useState(false);
 
@@ -66,7 +67,7 @@ export default function ConfirmPage({ goHome, PollComponent }) {
       {phase === "error" && (
         <p style={css("color:var(--body);line-height:1.5;")}>That confirmation link is invalid or expired.</p>
       )}
-      {showPoll && PollComponent ? <PollComponent onDone={() => setShowPoll(false)} /> : null}
+      {showPoll ? <SubscriberPoll onDone={() => setShowPoll(false)} /> : null}
       <Hover as="button" onClick={goHome} style="margin-top:20px;background:none;border:none;color:var(--forest);cursor:pointer;padding:0;font-size:14px;">← Home</Hover>
     </main>
   );
