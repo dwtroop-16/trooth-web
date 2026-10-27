@@ -108,3 +108,13 @@ test("router knows confirm and unsubscribe", async () => {
   assert.equal(pathFor("confirm"), "/confirm");
   assert.equal(pathFor("unsubscribe"), "/unsubscribe");
 });
+
+test("SubscriberPoll is skippable and draft-marked", () => {
+  const src = readFileSync(join(root, "src/components/growth/SubscriberPoll.jsx"), "utf8");
+  assert.match(src, /growthCaptureEnabled/);
+  assert.match(src, /pollCopy\.skip/);
+  assert.match(src, /DRAFT/);
+  assert.match(src, /data-growth="subscriber-poll"/);
+  const confirm = readFileSync(join(root, "src/components/growth/ConfirmPage.jsx"), "utf8");
+  assert.match(confirm, /SubscriberPoll/);
+});
