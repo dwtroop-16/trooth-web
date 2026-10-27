@@ -156,3 +156,24 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+
+# Growth capture (Site): off in production until owner merges + turns flag on.
+# Deploy previews enable the UI so Legal-Ops / owner can review without live email.
+[functions]
+  directory = "netlify/functions"
+
+[context.production.environment]
+  VITE_GROWTH_CAPTURE = "false"
+  GROWTH_EMAIL_SENDING = "false"
+  GROWTH_CONSENT_APPROVED = "false"
+
+[context.deploy-preview.environment]
+  VITE_GROWTH_CAPTURE = "true"
+  GROWTH_EMAIL_SENDING = "false"
+  GROWTH_CONSENT_APPROVED = "false"
+
+[context.branch-deploy.environment]
+  VITE_GROWTH_CAPTURE = "true"
+  GROWTH_EMAIL_SENDING = "false"
+  GROWTH_CONSENT_APPROVED = "false"
