@@ -1,6 +1,7 @@
 import { renderPublicClaimCard } from "../claimCard.js";
 import { formatWhen, statusMeta, css, hostnameFromUrl } from "../helpers.js";
 import Hover from "./Hover.jsx";
+import { trackSourceLinkClicked } from "../analytics.js";
 
 // Plain-text parts produced by the Legal-Ops link rules (linkPolicy.js), shown inline beside the link.
 const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_url"]);
@@ -45,7 +46,25 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
           <span style={faint}>Source · </span>
           {rendered.sourceParts.map((part, i) =>
             part.kind === "link" ? (
-              <a key={i} href={part.href} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{part.text || sourceHost}</a>
+              <a
+                key={i}
+                href={part.href}
+                target="_blank"
+                rel="noreferrer"
+                style={css("color:var(--forest);")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  trackSourceLinkClicked({
+                    forecast_id: card.id,
+                    speaker_id: card.speakerId,
+                    domain: card.domain || rendered.domain,
+                    status: rendered.grade,
+                    link_role: "source",
+                    source_host: hostnameFromUrl(part.href) || sourceHost,
+                    href_allowed: true,
+                  });
+                }}
+              >{part.text || sourceHost}</a>
             ) : (
               <span key={i} data-link-rule={part.role}>{i > 0 ? " " : ""}{part.text}</span>
             )
@@ -63,7 +82,25 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
           <span style={faint}>Actual source · </span>
           {rendered.actualSourceParts.map((part, i) =>
             part.kind === "link" ? (
-              <a key={i} href={part.href} target="_blank" rel="noreferrer" style={css("color:var(--forest);")} onClick={(e) => e.stopPropagation()}>{part.text || actualHost}</a>
+              <a
+                key={i}
+                href={part.href}
+                target="_blank"
+                rel="noreferrer"
+                style={css("color:var(--forest);")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  trackSourceLinkClicked({
+                    forecast_id: card.id,
+                    speaker_id: card.speakerId,
+                    domain: card.domain || rendered.domain,
+                    status: rendered.grade,
+                    link_role: "actual_source",
+                    source_host: hostnameFromUrl(part.href) || actualHost,
+                    href_allowed: true,
+                  });
+                }}
+              >{part.text || actualHost}</a>
             ) : LINK_RULE_ROLES.has(part.role) ? (
               <span key={i} data-link-rule={part.role}>{i > 0 ? " " : ""}{part.text}</span>
             ) : null

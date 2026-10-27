@@ -10,6 +10,13 @@ import Footer from "./components/Footer.jsx";
 import NotFound from "./components/NotFound.jsx";
 import SampleBanner from "./components/SampleBanner.jsx";
 import { css } from "./helpers.js";
+import {
+  initAnalytics,
+  trackPageView,
+  trackFilterUsed,
+  trackSpeakerClicked,
+  trackForecastExpanded,
+} from "./analytics.js";
 
 const Profile = lazy(() => import("./components/Profile.jsx"));
 const PredictionDetail = lazy(() => import("./components/PredictionDetail.jsx"));
@@ -103,6 +110,25 @@ export default function App() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      await initAnalytics();
+      if (cancelled) return;
+      trackPageView({
+        path: window.location.pathname,
+        view: state.view,
+        speaker_id: state.speakerId || undefined,
+        forecast_id: state.forecastId || undefined,
+        domain: state.cat !== "All" ? state.cat : undefined,
+        search: window.location.search,
+      });
+    })().catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [state.view, state.speakerId, state.forecastId]);
+
   const setState = (patch) => setStateRaw((prev) => ({ ...prev, ...patch }));
   const scrollTop = () => window.scrollTo({ top: 0 });
 
@@ -143,6 +169,30 @@ export default function App() {
   const setClaimsFilter = (patch, { push = false, replace = false } = {}) => {
     setStateRaw((prev) => {
       const next = { ...prev, ...patch };
+      if (Object.prototype.hasOwnProperty.call(patch, "claimStatus") && patch.claimStatus !== prev.claimStatus) {
+        trackFilterUsed({
+          filter_type: "grade",
+          filter_value: patch.claimStatus,
+          view: "claims",
+          previous_value: prev.claimStatus,
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimSpeaker") && patch.claimSpeaker !== prev.claimSpeaker) {
+        trackFilterUsed({
+          filter_type: "speaker",
+          filter_value: patch.claimSpeaker,
+          view: "claims",
+          previous_value: prev.claimSpeaker,
+        });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimHorizon") && patch.claimHorizon !== prev.claimHorizon) {
+        trackFilterUsed({
+          filter_type: "horizon",
+          filter_value: patch.claimHorizon,
+          view: "claims",
+          previous_value: prev.claimHorizon,
+        });
+      }
       if (next.view === "claims") {
         const full = claimsPathFromState(next);
         const current = window.location.pathname + window.location.search;
@@ -155,14 +205,41 @@ export default function App() {
     });
   };
 
-  const openSpeaker = (id) => navigate(pathFor("profile", id));
-  const openClaim = (id) => navigate(pathFor("prediction", id));
+  const openSpeaker = (id, meta = {}) => {
+    trackSpeakerClicked({
+      speaker_id: id,
+      domain: meta.domain,
+      rank: meta.rank,
+      entry: meta.entry || "card",
+      hit_rate: meta.hit_rate,
+      n_resolved: meta.n_resolved,
+    });
+    navigate(pathFor("profile", id));
+  };
+  const openClaim = (id, meta = {}) => {
+    trackForecastExpanded({
+      forecast_id: id,
+      speaker_id: meta.speaker_id,
+      domain: meta.domain,
+      status: meta.status,
+      entry: meta.entry || "card",
+    });
+    navigate(pathFor("prediction", id));
+  };
   const goHome = () => navigate(pathFor("home"));
   const goMethod = () => navigate(pathFor("method"));
   const goChangelog = () => navigate(pathFor("changelog"));
   const setCat = (c) => {
     const cat = normalizeDomain(c);
     setStateRaw((prev) => {
+      if (prev.cat !== cat) {
+        trackFilterUsed({
+          filter_type: "domain",
+          filter_value: cat,
+          view: prev.view === "claims" ? "claims" : "home",
+          previous_value: prev.cat,
+        });
+      }
       if (prev.view === "claims") {
         const next = { ...prev, cat };
         const full = claimsPathFromState(next);

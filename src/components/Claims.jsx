@@ -1,6 +1,8 @@
+import { useEffect, useRef } from "react";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
+import { trackSearchNoResults } from "../analytics.js";
 
 const STATUS_TABS = ["All", "Hit", "Miss", "Pending", "Unscorable", "In review"];
 const HORIZON_TABS = [
@@ -37,6 +39,31 @@ function Pill({ active, onClick, children }) {
 
 export default function Claims({ vals, openClaim }) {
   const q = (vals.q || "").trim();
+  const noResultsLogged = useRef("");
+
+  useEffect(() => {
+    if (!q) {
+      noResultsLogged.current = "";
+      return;
+    }
+    if ((vals.claimList || []).length === 0 && noResultsLogged.current !== q) {
+      noResultsLogged.current = q;
+      trackSearchNoResults({
+        query_len: q.length,
+        view: "claims",
+        domain_filter: vals.categories?.find((c) => c.active)?.label || "All",
+        grade_filter: vals.claimStatus || "All",
+      });
+    }
+  }, [q, vals.claimList, vals.categories, vals.claimStatus]);
+
+  const openClaimsCard = (card) =>
+    openClaim(card.id, {
+      entry: "claims",
+      speaker_id: card.speakerId,
+      domain: card.domain,
+      status: card.grade,
+    });
 
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;animation:vFadeUp .28s ease;")}>
@@ -106,7 +133,7 @@ export default function Claims({ vals, openClaim }) {
 
       <div style={css("display:flex;flex-direction:column;gap:10px;")}>
         {vals.claimList.map((card) => (
-          <ClaimCard key={card.id} card={card} compact onOpen={() => openClaim(card.id)} />
+          <ClaimCard key={card.id} card={card} compact onOpen={() => openClaimsCard(card)} />
         ))}
         {vals.claimList.length === 0 && (
           <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:28px 22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.55;")}>
