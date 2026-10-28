@@ -32,7 +32,7 @@ function filtersFromLocation() {
   const filters =
     parsed.view === "claims"
       ? parseClaimsQuery(window.location.search)
-      : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All" };
+      : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All", sport: "", team: "", loc: "", week: "", from: "", to: "", group: "" };
   return { parsed, filters };
 }
 
@@ -47,6 +47,13 @@ function initialFromLocation() {
     claimStatus: filters.grade || "All",
     claimSpeaker: filters.speaker || "All",
     claimHorizon: filters.horizon || "All",
+    claimSport: filters.sport || "",
+    claimTeam: filters.team || "",
+    claimLoc: filters.loc || "",
+    claimWeek: filters.week || "",
+    claimFrom: filters.from || "",
+    claimTo: filters.to || "",
+    claimGroup: filters.group || "",
     modal: false,
     toast: "",
     mClaim: "",
@@ -104,6 +111,13 @@ export default function App() {
         claimStatus: parsed.view === "claims" ? filters.grade : prev.claimStatus,
         claimSpeaker: parsed.view === "claims" ? filters.speaker : prev.claimSpeaker,
         claimHorizon: parsed.view === "claims" ? filters.horizon : prev.claimHorizon,
+        claimSport: parsed.view === "claims" ? filters.sport || "" : prev.claimSport,
+        claimTeam: parsed.view === "claims" ? filters.team || "" : prev.claimTeam,
+        claimLoc: parsed.view === "claims" ? filters.loc || "" : prev.claimLoc,
+        claimWeek: parsed.view === "claims" ? filters.week || "" : prev.claimWeek,
+        claimFrom: parsed.view === "claims" ? filters.from || "" : prev.claimFrom,
+        claimTo: parsed.view === "claims" ? filters.to || "" : prev.claimTo,
+        claimGroup: parsed.view === "claims" ? filters.group || "" : prev.claimGroup,
       }));
     };
     window.addEventListener("popstate", onPop);
@@ -150,6 +164,13 @@ export default function App() {
             claimStatus: claimsFilters.grade,
             claimSpeaker: claimsFilters.speaker,
             claimHorizon: claimsFilters.horizon,
+            claimSport: claimsFilters.sport || "",
+            claimTeam: claimsFilters.team || "",
+            claimLoc: claimsFilters.loc || "",
+            claimWeek: claimsFilters.week || "",
+            claimFrom: claimsFilters.from || "",
+            claimTo: claimsFilters.to || "",
+            claimGroup: claimsFilters.group || "",
           }
         : {}),
       ...patch,
@@ -164,6 +185,13 @@ export default function App() {
       grade: s.claimStatus,
       speaker: s.claimSpeaker,
       horizon: s.claimHorizon,
+      sport: s.claimSport,
+      team: s.claimTeam,
+      loc: s.claimLoc,
+      week: s.claimWeek,
+      from: s.claimFrom,
+      to: s.claimTo,
+      group: s.claimGroup,
     });
 
   const setClaimsFilter = (patch, { push = false, replace = false } = {}) => {
@@ -192,6 +220,34 @@ export default function App() {
           view: "claims",
           previous_value: prev.claimHorizon,
         });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimSport") && (patch.claimSport || "") !== (prev.claimSport || "")) {
+        // Facet ids only (team/station/week/date tokens); free search text is never sent.
+        trackFilterUsed({ filter_type: "sport", filter_value: patch.claimSport || "All", view: "claims", previous_value: prev.claimSport || "All" });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimTeam") && (patch.claimTeam || "") !== (prev.claimTeam || "")) {
+        // Facet ids only (team/station/week/date tokens); free search text is never sent.
+        trackFilterUsed({ filter_type: "team", filter_value: patch.claimTeam || "All", view: "claims", previous_value: prev.claimTeam || "All" });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimLoc") && (patch.claimLoc || "") !== (prev.claimLoc || "")) {
+        // Facet ids only (team/station/week/date tokens); free search text is never sent.
+        trackFilterUsed({ filter_type: "loc", filter_value: patch.claimLoc || "All", view: "claims", previous_value: prev.claimLoc || "All" });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimWeek") && (patch.claimWeek || "") !== (prev.claimWeek || "")) {
+        // Facet ids only (team/station/week/date tokens); free search text is never sent.
+        trackFilterUsed({ filter_type: "week", filter_value: patch.claimWeek || "All", view: "claims", previous_value: prev.claimWeek || "All" });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimFrom") && (patch.claimFrom || "") !== (prev.claimFrom || "")) {
+        // Facet ids only (team/station/week/date tokens); free search text is never sent.
+        trackFilterUsed({ filter_type: "from", filter_value: patch.claimFrom || "All", view: "claims", previous_value: prev.claimFrom || "All" });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimTo") && (patch.claimTo || "") !== (prev.claimTo || "")) {
+        // Facet ids only (team/station/week/date tokens); free search text is never sent.
+        trackFilterUsed({ filter_type: "to", filter_value: patch.claimTo || "All", view: "claims", previous_value: prev.claimTo || "All" });
+      }
+      if (Object.prototype.hasOwnProperty.call(patch, "claimGroup") && (patch.claimGroup || "") !== (prev.claimGroup || "")) {
+        // Facet ids only (team/station/week/date tokens); free search text is never sent.
+        trackFilterUsed({ filter_type: "group", filter_value: patch.claimGroup || "All", view: "claims", previous_value: prev.claimGroup || "All" });
       }
       if (next.view === "claims") {
         const full = claimsPathFromState(next);
@@ -260,14 +316,29 @@ export default function App() {
     const grade = opts.grade !== undefined ? opts.grade : "All";
     const speaker = opts.speaker !== undefined ? opts.speaker : "All";
     const horizon = opts.horizon !== undefined ? opts.horizon : "All";
+    const facetOpts = {};
+    facetOpts.sport = opts.sport || "";
+    facetOpts.team = opts.team || "";
+    facetOpts.loc = opts.loc || "";
+    facetOpts.week = opts.week || "";
+    facetOpts.from = opts.from || "";
+    facetOpts.to = opts.to || "";
+    facetOpts.group = opts.group || "";
     navigate(
-      pathForClaims({ q, domain, grade, speaker, horizon }),
+      pathForClaims({ q, domain, grade, speaker, horizon, ...facetOpts }),
       {
         cat: normalizeDomain(domain),
         q: (q || "").trim(),
         claimStatus: grade || "All",
         claimSpeaker: speaker || "All",
         claimHorizon: horizon || "All",
+        claimSport: facetOpts.sport,
+        claimTeam: facetOpts.team,
+        claimLoc: facetOpts.loc,
+        claimWeek: facetOpts.week,
+        claimFrom: facetOpts.from,
+        claimTo: facetOpts.to,
+        claimGroup: facetOpts.group,
       }
     );
   };

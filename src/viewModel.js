@@ -8,6 +8,7 @@ import {
   markSuggestionClick,
 } from "./analytics.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
+import { categorizeForecast, categorySearchTerms, applyFacetFilters, facetOptions, groupCards, GROUP_KEYS } from "./categories.js";
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -40,6 +41,7 @@ export function claimSearchText(card) {
     card.sportLabel,
     ...(card.teamLabels || []),
     ...(card.accounts || []),
+    ...categorySearchTerms(card.cat),
   ];
   return parts.filter((p) => p != null && p !== "").join(" ").toLowerCase();
 }
@@ -268,6 +270,8 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     brier: score?.brier ?? null,
   };
   renderPublicClaimCard(card);
+  // Facet categories live beside the 8 card fields; they never change what the card renders.
+  card.cat = categorizeForecast(forecast);
   return card;
 }
 
@@ -518,7 +522,22 @@ export function buildVals(state, actions, data) {
   } else if (claimHorizon === "past") {
     claimList = claimList.filter((c) => horizonIsPast(c, now) === true);
   }
+  const facets = {
+    sport: s.claimSport || "",
+    team: s.claimTeam || "",
+    loc: s.claimLoc || "",
+    week: s.claimWeek || "",
+    from: s.claimFrom || "",
+    to: s.claimTo || "",
+  };
+  // Options are computed before facet narrowing (but after sport) so selects never dead-end.
+  const facetBase = facets.sport ? applyFacetFilters(claimList, { sport: facets.sport }) : claimList;
+  const claimFacetOptions = facetOptions(facetBase);
+  claimFacetOptions.sports = facetOptions(claimList).sports;
+  claimList = applyFacetFilters(claimList, facets);
   claimList = sortClaimList(claimList);
+  const claimGroup = GROUP_KEYS.includes(s.claimGroup) ? s.claimGroup : "";
+  const claimGroups = claimGroup ? groupCards(claimList, claimGroup) : null;
 
   const speakerOptions = [
     { id: "All", name: "All speakers" },
@@ -642,6 +661,14 @@ export function buildVals(state, actions, data) {
     matchingClaims,
     claimList,
     claimListCount: claimList.length + (claimList.length === 1 ? " claim" : " claims"),
+    claimFacets: facets,
+    claimFacetOptions,
+    claimGroup,
+    claimGroups,
+    setClaimFacet: (patch) => {
+      if (typeof actions.setClaimsFilter === "function") actions.setClaimsFilter(patch, { push: true });
+      else setState(patch);
+    },
     claimStatus,
     setClaimStatus: (v) => {
       if (typeof actions.setClaimsFilter === "function") actions.setClaimsFilter({ claimStatus: v }, { push: true });

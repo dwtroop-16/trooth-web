@@ -76,7 +76,27 @@ export function parseClaimsQuery(search) {
   const grade = normalizeGrade(params.get("grade") || params.get("status") || "All");
   const speaker = (params.get("speaker") || "All").trim() || "All";
   const horizon = normalizeHorizon(params.get("horizon") || "All");
-  return { q, domain, grade, speaker, horizon };
+  const sport = facetToken(params.get("sport"));
+  const team = facetToken(params.get("team"));
+  const loc = facetToken(params.get("loc") || params.get("location"));
+  const week = facetToken(params.get("week"));
+  const from = dateToken(params.get("from"));
+  const to = dateToken(params.get("to"));
+  const group = facetToken(params.get("group"));
+  const out = { q, domain, grade, speaker, horizon };
+  // Facet params are only present when set, so older callers see the same shape.
+  for (const [k, v] of Object.entries({ sport, team, loc, week, from, to, group })) if (v) out[k] = v;
+  return out;
+}
+
+/** Facet ids are lowercase slugs (nfl-philadelphia, station-knyc). Anything else is dropped. */
+function facetToken(v) {
+  const t = (v || "").trim().toLowerCase();
+  return /^[a-z0-9][a-z0-9-]{0,80}$/.test(t) ? t : "";
+}
+function dateToken(v) {
+  const t = (v || "").trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(t) ? t : "";
 }
 
 /**
@@ -94,6 +114,10 @@ export function pathForClaims(filters = {}) {
   if (speaker && speaker !== "All") params.set("speaker", speaker);
   const horizon = normalizeHorizon(filters.horizon || "All");
   if (horizon && horizon !== "All") params.set("horizon", horizon);
+  for (const key of ["sport", "team", "loc", "week", "from", "to", "group"]) {
+    const v = key === "from" || key === "to" ? dateToken(filters[key]) : facetToken(filters[key]);
+    if (v) params.set(key, v);
+  }
   const qs = params.toString();
   return qs ? `/claims?${qs}` : "/claims";
 }
