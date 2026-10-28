@@ -3,6 +3,7 @@
  * Build live site bundle from Trooth ingest + scorer + actuals (read-only sources).
  * Does not invent forecasts, actuals, or grades. Does not scrape.
  */
+import { writeCategoryMeta } from "./category-meta.mjs";
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -487,6 +488,8 @@ export const DATA_SOURCE = live.source || "live";
     teamLabels.fbs[slug] = (meta && meta.label) || slug;
   }
   writeFileSync(join(SITE, "src/generated/teamLabels.json"), JSON.stringify(teamLabels, null, 2) + "\n");
+  // Facet metadata for /claims (sport, teams, location, date, week) — identity fields only.
+  writeCategoryMeta(ROOT, SITE, Object.keys(SUBJECTS));
 
   // Changelog days into site working copy
   const changelogSrc = join(ROOT, "changelog");
