@@ -340,7 +340,7 @@ function sortClaimList(list) {
 
 export function buildVals(state, actions, data) {
 
-  const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal } = actions;
+  const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goPrivacy, goChangelog, goClaims, submit, account, openModal } = actions;
   // actions.setClaimsFilter optional (URL sync on /claims)
   const speakers = data.speakers || [];
   const forecasts = data.forecasts || [];
@@ -605,6 +605,7 @@ export function buildVals(state, actions, data) {
   return {
     goHome,
     goMethod,
+    goPrivacy,
     goChangelog,
     goClaims,
     categories,

@@ -76,6 +76,72 @@ export function viewFromPath(pathname) {
   return "notfound";
 }
 
+
+/** URL-ish property keys that may carry ?q= search text. */
+const URL_PROP_KEYS = new Set([
+  "$current_url",
+  "$initial_current_url",
+  "$referrer",
+  "$initial_referrer",
+  "referrer",
+  "$pathname",
+  "path",
+  "landing_path",
+]);
+
+/**
+ * Remove the `q` search param; keep utm_* and other params.
+ * Works on absolute URLs and path+query strings.
+ */
+export function stripSearchParamFromUrl(raw) {
+  if (typeof raw !== "string" || raw === "") return raw;
+  if (!/[?&]q=/i.test(raw)) return raw;
+  try {
+    const absolute = /^https?:\/\//i.test(raw);
+    const u = new URL(raw, "https://trooth.app");
+    if (!u.searchParams.has("q")) return raw;
+    u.searchParams.delete("q");
+    const qs = u.searchParams.toString();
+    const tail = u.pathname + (qs ? `?${qs}` : "") + (u.hash || "");
+    return absolute ? `${u.origin}${tail}` : tail;
+  } catch {
+    return raw
+      .replace(/([?&])q=[^&#]*/gi, "$1")
+      .replace(/\?&/, "?")
+      .replace(/[?&]$/, "")
+      .replace(/&&+/g, "&");
+  }
+}
+
+/** Drop raw search / PII keys; strip q= from URL-like string props. */
+export function scrubAnalyticsProperties(props) {
+  if (!props || typeof props !== "object") return {};
+  const out = {};
+  for (const [k, v] of Object.entries(props)) {
+    if (v === undefined || v === null) continue;
+    if (/^(\$?ip|email|password|phone|q|query)$/i.test(k)) continue;
+    if (typeof v === "string" && (URL_PROP_KEYS.has(k) || /url|referrer|pathname|path/i.test(k) || /[?&]q=/i.test(v))) {
+      out[k] = stripSearchParamFromUrl(v);
+    } else {
+      out[k] = v;
+    }
+  }
+  return out;
+}
+
+/**
+ * before_send hook: scrub event properties (and $set / $set_once) of search text.
+ * Returns null to drop the event, or the amended event.
+ */
+export function beforeSendScrubSearch(event) {
+  if (!event || typeof event !== "object") return event;
+  const next = { ...event };
+  if (next.properties) next.properties = scrubAnalyticsProperties(next.properties);
+  if (next.$set) next.$set = scrubAnalyticsProperties(next.$set);
+  if (next.$set_once) next.$set_once = scrubAnalyticsProperties(next.$set_once);
+  return next;
+}
+
 function respectDnt() {
   if (typeof navigator === "undefined") return false;
   const dnt = navigator.doNotTrack || navigator.msDoNotTrack || (typeof window !== "undefined" && window.doNotTrack);
@@ -89,15 +155,7 @@ function isLocalDevHost() {
 }
 
 function scrubProps(props) {
-  if (!props || typeof props !== "object") return {};
-  const out = {};
-  for (const [k, v] of Object.entries(props)) {
-    if (v === undefined || v === null) continue;
-    // Never forward free-text claim / email-like keys.
-    if (/email|password|claim_text|query$/i.test(k) && typeof v === "string" && v.includes("@")) continue;
-    out[k] = v;
-  }
-  return out;
+  return scrubAnalyticsProperties(props);
 }
 
 /**
@@ -134,14 +192,18 @@ export async function initAnalytics() {
         autocapture: false,
         capture_pageview: false,
         capture_pageleave: true,
+        capture_dead_clicks: false,
+        capture_performance: false,
         disable_session_recording: true,
+        advanced_disable_flags: true,
         respect_dnt: true,
+        before_send: beforeSendScrubSearch,
         sanitize_properties: (props) => {
           const cleaned = { ...props };
           for (const k of Object.keys(cleaned)) {
-            if (/email|password|phone|ip/i.test(k)) delete cleaned[k];
+            if (/^(\$?ip|email|password|phone)$/i.test(k)) delete cleaned[k];
           }
-          return cleaned;
+          return scrubAnalyticsProperties(cleaned);
         },
       });
       client = posthog;
@@ -394,11 +456,11 @@ export function attachScrollDepth({ path, view, speaker_id, forecast_id } = {}) 
     const doc = document.documentElement;
     const body = document.body;
     const scrollTop = window.scrollY || doc.scrollTop || body.scrollTop || 0;
+    // Skip non-scrollable pages — never fire 100% on load for short content.
     const height = Math.max(doc.scrollHeight, body.scrollHeight) - window.innerHeight;
-    if (height <= 0) {
-      trackScrollDepth({ path: pathname, view, depth_pct: 100, speaker_id, forecast_id });
-      return;
-    }
+    if (height <= 0) return;
+    // Only count after a real scroll (ignore programmatic 0-height edge cases).
+    if (scrollTop <= 0) return;
     const pct = (scrollTop / height) * 100;
     for (const mark of [25, 50, 75, 100]) {
       if (pct >= mark) {
@@ -406,7 +468,6 @@ export function attachScrollDepth({ path, view, speaker_id, forecast_id } = {}) 
       }
     }
   };
-  onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
   return () => window.removeEventListener("scroll", onScroll);
 }

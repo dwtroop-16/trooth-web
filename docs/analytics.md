@@ -1,21 +1,32 @@
 # Trooth analytics
 
-Product analytics for [trooth.app](https://trooth.app), driven by the measurement plan Page. Primary tool: **PostHog** in cookieless mode. This module ships behind env flags; nothing is sent until the owner sets keys and flips the enable flag.
+Product analytics for [trooth.app](https://trooth.app), driven by the measurement plan Page. Primary tool: **PostHog** in cookieless mode.
 
-## Privacy note
+## Public privacy notice
 
-We use privacy-preserving analytics without cookies or personal profiles to improve the product. PostHog runs with:
+Shown on [`/method#privacy`](https://trooth.app/method#privacy) and linked from the footer as **Privacy**:
+
+> We use PostHog, a US analytics service, to count page views and clicks so we can improve Trooth. It runs without cookies, we don't use it for ads or sell the data, and search text is not sent.
+
+## Privacy controls (client)
+
+PostHog runs with:
 
 - `cookieless_mode: "always"` — no analytics cookies, no localStorage / sessionStorage persistence from PostHog
 - `person_profiles: "never"` — no identify / person merge
 - `persistence: "memory"` — in-page memory only
 - `autocapture: false` — only explicit `track()` events
-- `disable_session_recording: true` — replay stays off until Legal signs off
+- `capture_dead_clicks: false` — do not load dead-click autocapture
+- `capture_performance: false` — do not load web-vitals / network performance extensions
+- `disable_session_recording: true` — session replay off
+- `advanced_disable_flags: true` — no `/flags` request (avoids `$initial_current_url` with search text)
 - `respect_dnt: true` — honor Do Not Track
+- `before_send` — strips the `q` search param from `$current_url`, `$initial_current_url`, `$referrer`, `$initial_referrer`, and other URL-like properties (utm_* kept)
+- `sanitize_properties` — drops exact keys matching `/^(\$?ip|email|password|phone)$/i`, then runs the same URL scrub
 
-Never send email, password, IP, claim free-text, or raw search query strings as event properties. Search events carry `query_len` only.
+Never send email, password, IP, claim free-text, or raw search query strings as event properties. Search events carry `query_len` only. Search text is also stripped from auto URL properties before send.
 
-A one-sentence public blurb on `/method` or the footer still needs Legal + owner approval before it goes live. Do not publish legal copy from this PR.
+**IP note:** posthog-js cannot fully disable server-side IP handling. Prefer the PostHog project setting **Discard client IP data**. That setting is not exposed on the public remote config endpoint; treat it as UNVERIFIED until checked in the PostHog UI.
 
 ## Current enablement
 
@@ -33,10 +44,11 @@ Localhost stays silent unless you also set `VITE_ANALYTICS_PREVIEW=true` in a lo
 
 ## PostHog project checklist
 
-1. In PostHog project settings → Web analytics, turn on **Enable cookieless tracking** and save. Without this, cookieless events are ignored.
-2. Prefer Cloud EU if available; otherwise US Cloud with a DPA on file. Match `VITE_POSTHOG_HOST` to the region.
-3. Build Funnel A and the eight-metric weekly dashboard in the PostHog UI.
-4. Do **not** enable session replay, `identify()`, or cookie persistence without a CMP and Legal OK.
+1. Web analytics → **Enable cookieless tracking**.
+2. Prefer **Discard client IP data** (project privacy setting).
+3. Confirm session replay stays off in project settings (client already sets `disable_session_recording: true`).
+4. Build Funnel A and the eight-metric weekly dashboard in the PostHog UI.
+5. Do **not** enable session replay, `identify()`, or cookie persistence without a CMP and Legal OK.
 
 ## Module API
 
@@ -46,13 +58,14 @@ Localhost stays silent unless you also set `VITE_ANALYTICS_PREVIEW=true` in a lo
 | --- | --- |
 | `initAnalytics()` | Lazy-load `posthog-js` when enabled |
 | `track(event, props)` | Core capture; no-op when disabled |
+| `stripSearchParamFromUrl` / `scrubAnalyticsProperties` / `beforeSendScrubSearch` | Search-text scrubbing |
 | `trackPageView` / `trackFilterUsed` / `trackSpeakerClicked` / `trackForecastExpanded` / `trackSourceLinkClicked` / `trackSearchPerformed` / `trackSearchNoResults` / `trackScrollDepth` / `attachScrollDepth` | Ready-now events |
 | `trackSortChanged` / `trackShareClicked` / `trackEmailSignupStarted` / `trackEmailSignupCompleted` / `trackFeedbackSubmitted` | Stubs for growth-capture / future UI |
 | `parseUtm` / `viewFromPath` / `isAnalyticsEnabled` | Helpers + tests |
 
 ## CSP
 
-There is no Content-Security-Policy in `netlify.toml` or `public/_headers` today, so this PR does not add one. When a CSP is introduced, allow `script-src` / `connect-src` for the chosen PostHog host (e.g. `https://*.i.posthog.com` or the EU host). Do not wildcard blindly.
+There is no Content-Security-Policy in `netlify.toml` or `public/_headers` today. When a CSP is introduced, allow `script-src` / `connect-src` for the chosen PostHog host (e.g. `https://*.i.posthog.com` or the EU host). Do not wildcard blindly.
 
 ## UTM convention (paid)
 
