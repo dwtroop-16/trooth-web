@@ -35,7 +35,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
             <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
               <span style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
               <div style={css("min-width:0;")}>
-                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.name}</div>
+                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.rank != null ? <span style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-right:6px;")}>#{r.rank}</span> : null}{r.name}</div>
                 <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
               </div>
             </div>
@@ -43,7 +43,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
               <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
             ) : null}
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (r.ranked === false ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{r.hitRate}</span>
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
           </Hover>
         ))}
@@ -173,10 +173,15 @@ export default function Home({ vals, openClaim }) {
         }
         showDomain={showDomain}
       />
+      {vals.showModelsLink ? (
+        <div style={css("margin-top:10px;")}>
+          <Hover as="button" onClick={() => vals.goModels()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Computer models</Hover>
+        </div>
+      ) : null}
       {vals.pickRows && vals.pickRows.length ? (
         <div style={css("margin-top:28px;")}>
           <Scoreboard
-            title="Pick record"
+            title={vals.pickTitle}
             resultCount={vals.pickRows.length + (vals.pickRows.length === 1 ? " speaker" : " speakers")}
             rankNote={vals.pickNote}
             rows={vals.pickRows}
@@ -185,13 +190,6 @@ export default function Home({ vals, openClaim }) {
           />
         </div>
       ) : null}
-      {[["Models · exact scores", vals.modelExactRows], ["Models · pick record", vals.modelPickRows]].map(([t, rows]) =>
-        rows && rows.length ? (
-          <div key={t} style={css("margin-top:28px;")}>
-            <Scoreboard title={t} resultCount={rows.length + " models"} rankNote="models are never ranked against people" rows={rows} empty={false} showDomain={false} />
-          </div>
-        ) : null,
-      )}
       <div style={css("margin-top:10px;")}>
         <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>
       </div>

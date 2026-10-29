@@ -6,6 +6,7 @@ import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
+import Models from "./components/Models.jsx";
 import Footer from "./components/Footer.jsx";
 import NotFound from "./components/NotFound.jsx";
 import SampleBanner from "./components/SampleBanner.jsx";
@@ -228,6 +229,7 @@ export default function App() {
   };
   const goHome = () => navigate(pathFor("home"));
   const goMethod = () => navigate(pathFor("method"));
+  const goModels = () => navigate(pathFor("models"));
   const goChangelog = () => navigate(pathFor("changelog"));
   const setCat = (c) => {
     const cat = normalizeDomain(c);
@@ -446,6 +448,7 @@ export default function App() {
       goMethod,
       goChangelog,
       goClaims,
+      goModels,
       submit,
       account,
       openModal: openTipModal,
@@ -457,6 +460,7 @@ export default function App() {
     let title = "Trooth";
     if (vals.isNotFound) title = "Not found · Trooth";
     else if (vals.isClaims) title = "Claims · Trooth";
+    else if (vals.isModels) title = "Computer models · Trooth";
     else if (vals.isMethod) title = "Method · Trooth";
     else if (vals.isChangelog) title = "Changelog · Trooth";
     else if (vals.isProfile && vals.p) title = vals.p.name + " · Trooth";
@@ -465,7 +469,7 @@ export default function App() {
       title = (claim.length > 48 ? claim.slice(0, 48) : claim) + " · Trooth";
     }
     document.title = title;
-  }, [vals.isHome, vals.isClaims, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.p, vals.d]);
+  }, [vals.isHome, vals.isClaims, vals.isModels, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.p, vals.d]);
 
   return (
     <div style={css("min-height:100vh;background:var(--paper);font-family:Archivo,sans-serif;color:var(--ink);display:flex;flex-direction:column;")}>
@@ -474,6 +478,7 @@ export default function App() {
       <div style={css("flex:1;")}>
         {vals.isHome && <Home vals={vals} openClaim={openClaim} />}
         {vals.isNotFound && <NotFound goHome={goHome} />}
+        {vals.isModels && <Models vals={vals} openClaim={openClaim} />}
         <Suspense fallback={<SuspenseFallback />}>
           {vals.isProfile && <Profile vals={vals} openClaim={openClaim} />}
           {vals.isPrediction && <PredictionDetail vals={vals} />}

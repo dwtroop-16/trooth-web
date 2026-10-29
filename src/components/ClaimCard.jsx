@@ -43,7 +43,6 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
       {card.isWinnerPick ? (
         <div style={css("font-size:13px;color:var(--body);margin-top:4px;")}>
           <span style={css("color:var(--faint);")}>Pick · </span>{card.pickedTeam || "In review"}
-          <span style={css("color:var(--faint);")}> · winner only, counts in the pick record</span>
         </div>
       ) : null}
 

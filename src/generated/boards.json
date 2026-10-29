@@ -1,6 +1,7 @@
 {
   "people_board": [
     {
+      "speaker_id": "stanford-steve-coughlin",
       "speaker": "\"Stanford Steve\" Coughlin",
       "org": "ESPN",
       "n_resolved": 4,
@@ -12,9 +13,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "adam-rittenberg",
       "speaker": "Adam Rittenberg",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -26,9 +29,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "adam-schefter",
       "speaker": "Adam Schefter",
       "org": "ESPN",
       "n_resolved": 4,
@@ -40,9 +45,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "alaina-getzenberg",
       "speaker": "Alaina Getzenberg",
       "org": "ESPN",
       "n_resolved": 4,
@@ -54,9 +61,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "allan-lichtman",
       "speaker": "Allan Lichtman",
       "org": "American University (via CNBC)",
       "n_resolved": 1,
@@ -68,9 +77,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "politics",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "andrea-adelson",
       "speaker": "Andrea Adelson",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -82,9 +93,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "andrew-hawkins",
       "speaker": "Andrew Hawkins",
       "org": "ESPN",
       "n_resolved": 4,
@@ -96,9 +109,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-ben-arthur",
       "speaker": "Ben Arthur",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -113,6 +128,7 @@
       "rank": null
     },
     {
+      "speaker_id": "ben-baby",
       "speaker": "Ben Baby",
       "org": "ESPN",
       "n_resolved": 4,
@@ -124,9 +140,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-ben-portnoy",
       "speaker": "Ben Portnoy",
       "org": "FOX Sports",
       "n_resolved": 0,
@@ -141,6 +159,7 @@
       "rank": null
     },
     {
+      "speaker_id": "ben-solak",
       "speaker": "Ben Solak",
       "org": "ESPN",
       "n_resolved": 4,
@@ -152,9 +171,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "bill-connelly",
       "speaker": "Bill Connelly",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -166,9 +187,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "booger-mcfarland",
       "speaker": "Booger McFarland",
       "org": "ESPN",
       "n_resolved": 4,
@@ -180,9 +203,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-brad-crawford",
       "speaker": "Brad Crawford",
       "org": "CBS Sports",
       "n_resolved": 181,
@@ -197,6 +222,7 @@
       "rank": 1
     },
     {
+      "speaker_id": "brady-henderson",
       "speaker": "Brady Henderson",
       "org": "ESPN",
       "n_resolved": 4,
@@ -208,9 +234,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-brady-quinn",
       "speaker": "Brady Quinn",
       "org": "FOX Sports (Big Noon Kickoff)",
       "n_resolved": 0,
@@ -225,6 +253,7 @@
       "rank": null
     },
     {
+      "speaker_id": "cbs-brandon-marcello",
       "speaker": "Brandon Marcello",
       "org": "CBS Sports",
       "n_resolved": 7,
@@ -239,6 +268,7 @@
       "rank": null
     },
     {
+      "speaker_id": "brooke-pryor",
       "speaker": "Brooke Pryor",
       "org": "ESPN",
       "n_resolved": 4,
@@ -250,9 +280,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "buck",
       "speaker": "Buck",
       "org": "ESPN",
       "n_resolved": 4,
@@ -264,9 +296,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cantor-cj-muse",
       "speaker": "C.J. Muse",
       "org": "Cantor Fitzgerald",
       "n_resolved": 0,
@@ -281,6 +315,7 @@
       "rank": null
     },
     {
+      "speaker_id": "cbs-chip-patterson",
       "speaker": "Chip Patterson",
       "org": "CBS Sports",
       "n_resolved": 7,
@@ -295,6 +330,7 @@
       "rank": null
     },
     {
+      "speaker_id": "wolfe-chris-caso",
       "speaker": "Chris Caso",
       "org": "Wolfe Research",
       "n_resolved": 0,
@@ -309,6 +345,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-chris-fallica",
       "speaker": "Chris Fallica",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -323,6 +360,7 @@
       "rank": null
     },
     {
+      "speaker_id": "cbs-chris-hummer",
       "speaker": "Chris Hummer",
       "org": "CBS Sports",
       "n_resolved": 181,
@@ -337,6 +375,7 @@
       "rank": 2
     },
     {
+      "speaker_id": "susquehanna-christopher-rolland",
       "speaker": "Christopher Rolland",
       "org": "Susquehanna",
       "n_resolved": 0,
@@ -351,6 +390,7 @@
       "rank": null
     },
     {
+      "speaker_id": "courtney-cronin",
       "speaker": "Courtney Cronin",
       "org": "ESPN",
       "n_resolved": 4,
@@ -362,9 +402,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "dan-graziano",
       "speaker": "Dan Graziano",
       "org": "ESPN",
       "n_resolved": 4,
@@ -376,9 +418,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "dan-orlovsky",
       "speaker": "Dan Orlovsky",
       "org": "ESPN",
       "n_resolved": 4,
@@ -390,9 +434,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "daniel-oyefusi",
       "speaker": "Daniel Oyefusi",
       "org": "ESPN",
       "n_resolved": 4,
@@ -404,9 +450,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "dave-wilson",
       "speaker": "Dave Wilson",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -418,9 +466,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-david-cobb",
       "speaker": "David Cobb",
       "org": "CBS Sports",
       "n_resolved": 7,
@@ -435,6 +485,7 @@
       "rank": null
     },
     {
+      "speaker_id": "david-hale",
       "speaker": "David Hale",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -446,9 +497,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "br-david-kenyon",
       "speaker": "David Kenyon",
       "org": "Bleacher Report",
       "n_resolved": 80,
@@ -463,6 +516,7 @@
       "rank": 5
     },
     {
+      "speaker_id": "david-newton",
       "speaker": "David Newton",
       "org": "ESPN",
       "n_resolved": 4,
@@ -474,9 +528,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "douglas-mackinnon",
       "speaker": "Douglas MacKinnon",
       "org": "The Hill (opinion contributor)",
       "n_resolved": 1,
@@ -488,9 +544,11 @@
       "hit_rate": 1,
       "eligible": false,
       "domain": "politics",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "eli-lederman",
       "speaker": "Eli Lederman",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -502,9 +560,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-eric-d-williams",
       "speaker": "Eric D. Williams",
       "org": "FOX Sports",
       "n_resolved": 3,
@@ -519,6 +579,7 @@
       "rank": null
     },
     {
+      "speaker_id": "eric-woodyard",
       "speaker": "Eric Woodyard",
       "org": "ESPN",
       "n_resolved": 4,
@@ -530,9 +591,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fed-fomc",
       "speaker": "FOMC",
       "org": "Federal Reserve Board",
       "n_resolved": 12,
@@ -547,6 +610,7 @@
       "rank": 1
     },
     {
+      "speaker_id": "field-yates",
       "speaker": "Field Yates",
       "org": "ESPN",
       "n_resolved": 4,
@@ -558,9 +622,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-geoff-schwartz",
       "speaker": "Geoff Schwartz",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -575,6 +641,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-greg-auman",
       "speaker": "Greg Auman",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -589,6 +656,7 @@
       "rank": null
     },
     {
+      "speaker_id": "jpmorgan-harlan-sur",
       "speaker": "Harlan Sur",
       "org": "JPMorgan",
       "n_resolved": 0,
@@ -603,6 +671,7 @@
       "rank": null
     },
     {
+      "speaker_id": "harsh-kumar",
       "speaker": "Harsh Kumar",
       "org": "BMO Capital Markets",
       "n_resolved": 0,
@@ -617,6 +686,7 @@
       "rank": null
     },
     {
+      "speaker_id": "harsh-kumar",
       "speaker": "Harsh Kumar",
       "org": "Piper Sandler",
       "n_resolved": 0,
@@ -631,6 +701,7 @@
       "rank": null
     },
     {
+      "speaker_id": "heather-dinich",
       "speaker": "Heather Dinich",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -642,9 +713,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-henry-mckenna",
       "speaker": "Henry McKenna",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -659,6 +732,7 @@
       "rank": null
     },
     {
+      "speaker_id": "henry-olsen",
       "speaker": "Henry Olsen",
       "org": "Ethics & Public Policy Center",
       "n_resolved": 1,
@@ -670,9 +744,11 @@
       "hit_rate": 1,
       "eligible": false,
       "domain": "politics",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "herm-edwards",
       "speaker": "Herm Edwards",
       "org": "ESPN",
       "n_resolved": 4,
@@ -684,9 +760,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "j-miles-coleman",
       "speaker": "J. Miles Coleman",
       "org": "Sabato's Crystal Ball",
       "n_resolved": 0,
@@ -698,9 +776,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "politics",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "jake-trotter",
       "speaker": "Jake Trotter",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -712,9 +792,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "jamison-hensley",
       "speaker": "Jamison Hensley",
       "org": "ESPN",
       "n_resolved": 4,
@@ -726,9 +808,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-jared-dubin",
       "speaker": "Jared Dubin",
       "org": "CBS Sports",
       "n_resolved": 6,
@@ -743,6 +827,7 @@
       "rank": null
     },
     {
+      "speaker_id": "jason-mccourty",
       "speaker": "Jason McCourty",
       "org": "ESPN",
       "n_resolved": 4,
@@ -754,9 +839,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "jeff-darlington",
       "speaker": "Jeff Darlington",
       "org": "ESPN",
       "n_resolved": 4,
@@ -768,9 +855,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "jeff-saturday",
       "speaker": "Jeff Saturday",
       "org": "ESPN",
       "n_resolved": 4,
@@ -782,9 +871,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "jenna-laine",
       "speaker": "Jenna Laine",
       "org": "ESPN",
       "n_resolved": 4,
@@ -796,9 +887,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "jeremy-fowler",
       "speaker": "Jeremy Fowler",
       "org": "ESPN",
       "n_resolved": 4,
@@ -810,9 +903,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-joel-klatt",
       "speaker": "Joel Klatt",
       "org": "FOX Sports",
       "n_resolved": 4,
@@ -827,6 +922,7 @@
       "rank": null
     },
     {
+      "speaker_id": "cbs-john-breech",
       "speaker": "John Breech",
       "org": "CBS Sports",
       "n_resolved": 277,
@@ -841,6 +937,7 @@
       "rank": 3
     },
     {
+      "speaker_id": "john-keim",
       "speaker": "John Keim",
       "org": "ESPN",
       "n_resolved": 4,
@@ -852,9 +949,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-john-talty",
       "speaker": "John Talty",
       "org": "CBS Sports",
       "n_resolved": 7,
@@ -869,6 +968,7 @@
       "rank": null
     },
     {
+      "speaker_id": "keybanc-john-vinh",
       "speaker": "John Vinh",
       "org": "KeyBanc",
       "n_resolved": 0,
@@ -883,6 +983,7 @@
       "rank": null
     },
     {
+      "speaker_id": "cbs-jordan-dajani",
       "speaker": "Jordan Dajani",
       "org": "CBS Sports",
       "n_resolved": 6,
@@ -897,6 +998,7 @@
       "rank": null
     },
     {
+      "speaker_id": "jordan-raanan",
       "speaker": "Jordan Raanan",
       "org": "ESPN",
       "n_resolved": 4,
@@ -908,9 +1010,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "jordan-reid",
       "speaker": "Jordan Reid",
       "org": "ESPN",
       "n_resolved": 4,
@@ -922,9 +1026,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "morgan-stanley-joseph-moore",
       "speaker": "Joseph Moore",
       "org": "Morgan Stanley",
       "n_resolved": 0,
@@ -939,6 +1045,7 @@
       "rank": null
     },
     {
+      "speaker_id": "wells-fargo-joseph-quatrochi",
       "speaker": "Joseph Quatrochi",
       "org": "Wells Fargo",
       "n_resolved": 0,
@@ -953,6 +1060,7 @@
       "rank": null
     },
     {
+      "speaker_id": "josh-weinfuss",
       "speaker": "Josh Weinfuss",
       "org": "ESPN",
       "n_resolved": 4,
@@ -964,9 +1072,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "kalyn-kahler",
       "speaker": "Kalyn Kahler",
       "org": "ESPN",
       "n_resolved": 4,
@@ -978,9 +1088,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "katherine-terrell",
       "speaker": "Katherine Terrell",
       "org": "ESPN",
       "n_resolved": 4,
@@ -992,9 +1104,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "katie-george",
       "speaker": "Katie George",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1006,9 +1120,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "kevin-clark",
       "speaker": "Kevin Clark",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1020,9 +1136,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "kevin-seifert",
       "speaker": "Kevin Seifert",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1034,9 +1152,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "kimberley-martin",
       "speaker": "Kimberley Martin",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1048,9 +1168,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "kris-rhim",
       "speaker": "Kris Rhim",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1062,9 +1184,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "td-cowen-krish-sankar",
       "speaker": "Krish Sankar",
       "org": "TD Cowen",
       "n_resolved": 0,
@@ -1079,6 +1203,7 @@
       "rank": null
     },
     {
+      "speaker_id": "kyle-bonagura",
       "speaker": "Kyle Bonagura",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -1090,9 +1215,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "kyle-kondik",
       "speaker": "Kyle Kondik",
       "org": "Sabato's Crystal Ball",
       "n_resolved": 0,
@@ -1104,9 +1231,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "politics",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-laken-litman",
       "speaker": "Laken Litman",
       "org": "FOX Sports",
       "n_resolved": 0,
@@ -1121,6 +1250,7 @@
       "rank": null
     },
     {
+      "speaker_id": "laura-rutledge",
       "speaker": "Laura Rutledge",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1132,9 +1262,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "lindsey-thiry",
       "speaker": "Lindsey Thiry",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1146,9 +1278,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "louis-riddick",
       "speaker": "Louis Riddick",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1160,9 +1294,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "marc-raimondi",
       "speaker": "Marc Raimondi",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1174,9 +1310,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "marcel-louis-jacques",
       "speaker": "Marcel Louis-Jacques",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1188,9 +1326,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "marcus-spears",
       "speaker": "Marcus Spears",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1202,9 +1342,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-mark-ingram",
       "speaker": "Mark Ingram",
       "org": "FOX Sports (Big Noon Kickoff)",
       "n_resolved": 0,
@@ -1219,6 +1361,7 @@
       "rank": null
     },
     {
+      "speaker_id": "evercore-mark-lipacis",
       "speaker": "Mark Lipacis",
       "org": "Evercore ISI",
       "n_resolved": 0,
@@ -1233,6 +1376,7 @@
       "rank": null
     },
     {
+      "speaker_id": "mark-schlabach",
       "speaker": "Mark Schlabach",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -1244,9 +1388,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-matt-leinart",
       "speaker": "Matt Leinart",
       "org": "FOX Sports (Big Noon Kickoff)",
       "n_resolved": 0,
@@ -1261,6 +1407,7 @@
       "rank": null
     },
     {
+      "speaker_id": "matt-miller",
       "speaker": "Matt Miller",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1272,9 +1419,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "max-olson",
       "speaker": "Max Olson",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -1286,9 +1435,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "susquehanna-mehdi-hosseini",
       "speaker": "Mehdi Hosseini",
       "org": "Susquehanna",
       "n_resolved": 0,
@@ -1303,6 +1454,7 @@
       "rank": null
     },
     {
+      "speaker_id": "mel-kiper-jr",
       "speaker": "Mel Kiper Jr.",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1314,9 +1466,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-michael-cohen",
       "speaker": "Michael Cohen",
       "org": "FOX Sports",
       "n_resolved": 0,
@@ -1331,6 +1485,7 @@
       "rank": null
     },
     {
+      "speaker_id": "michael-dirocco",
       "speaker": "Michael DiRocco",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1342,9 +1497,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "michelle-beisner-buck",
       "speaker": "Michelle Beisner-Buck",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1356,9 +1513,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "mike-chase",
       "speaker": "Mike Chase",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1370,9 +1529,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "mike-greenberg",
       "speaker": "Mike Greenberg",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1384,9 +1545,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "mike-reiss",
       "speaker": "Mike Reiss",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1398,9 +1561,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "mike-tannenbaum",
       "speaker": "Mike Tannenbaum",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1412,9 +1577,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "mina-kimes",
       "speaker": "Mina Kimes",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1426,9 +1593,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "nws-okx",
       "speaker": "NWS New York (OKX)",
       "org": "National Weather Service",
       "n_resolved": 192,
@@ -1443,6 +1612,7 @@
       "rank": 1
     },
     {
+      "speaker_id": "nate-taylor",
       "speaker": "Nate Taylor",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1454,9 +1624,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "nick-wagoner",
       "speaker": "Nick Wagoner",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1468,9 +1640,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "paolo-uggetti",
       "speaker": "Paolo Uggetti",
       "org": "ESPN (via ABC7)",
       "n_resolved": 0,
@@ -1482,9 +1656,11 @@
       "hit_rate": null,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-pete-prisco",
       "speaker": "Pete Prisco",
       "org": "CBS Sports",
       "n_resolved": 266,
@@ -1499,6 +1675,7 @@
       "rank": 4
     },
     {
+      "speaker_id": "peter-schrager",
       "speaker": "Peter Schrager",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1510,9 +1687,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "needham-quinn-bolton",
       "speaker": "Quinn Bolton",
       "org": "Needham",
       "n_resolved": 0,
@@ -1527,6 +1706,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-rj-young",
       "speaker": "RJ Young",
       "org": "FOX Sports",
       "n_resolved": 0,
@@ -1541,6 +1721,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-ralph-vacchiano",
       "speaker": "Ralph Vacchiano",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -1555,6 +1736,7 @@
       "rank": null
     },
     {
+      "speaker_id": "rex-ryan",
       "speaker": "Rex Ryan",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1566,9 +1748,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "rich-cimini",
       "speaker": "Rich Cimini",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1580,9 +1764,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-richard-johnson",
       "speaker": "Richard Johnson",
       "org": "CBS Sports",
       "n_resolved": 7,
@@ -1597,6 +1783,7 @@
       "rank": null
     },
     {
+      "speaker_id": "rob-demovsky",
       "speaker": "Rob Demovsky",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1608,9 +1795,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "russell-yurk",
       "speaker": "Russell Yurk",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1622,9 +1811,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "ryan-clark",
       "speaker": "Ryan Clark",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1636,9 +1827,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "ryan-mcfadden",
       "speaker": "Ryan McFadden",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1650,9 +1843,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "sal-paolantonio",
       "speaker": "Sal Paolantonio",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1664,9 +1859,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "fox-sam-panayotovich",
       "speaker": "Sam Panayotovich",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -1681,6 +1878,7 @@
       "rank": null
     },
     {
+      "speaker_id": "sarah-barshop",
       "speaker": "Sarah Barshop",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1692,9 +1890,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "scott-van-pelt",
       "speaker": "Scott Van Pelt",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1706,9 +1906,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-shehan-jeyarajah",
       "speaker": "Shehan Jeyarajah",
       "org": "CBS Sports",
       "n_resolved": 7,
@@ -1723,6 +1925,7 @@
       "rank": null
     },
     {
+      "speaker_id": "rbc-srini-pajjuri",
       "speaker": "Srini Pajjuri",
       "org": "RBC Capital Markets",
       "n_resolved": 0,
@@ -1737,6 +1940,7 @@
       "rank": null
     },
     {
+      "speaker_id": "bernstein-stacy-rasgon",
       "speaker": "Stacy Rasgon",
       "org": "Bernstein",
       "n_resolved": 0,
@@ -1751,6 +1955,7 @@
       "rank": null
     },
     {
+      "speaker_id": "stephen-a-smith",
       "speaker": "Stephen A. Smith",
       "org": "ESPN",
       "n_resolved": 2,
@@ -1762,9 +1967,11 @@
       "hit_rate": 0.5,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "stephen-holder",
       "speaker": "Stephen Holder",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1776,9 +1983,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "tedy-bruschi",
       "speaker": "Tedy Bruschi",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1790,9 +1999,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "tim-hasselback",
       "speaker": "Tim Hasselback",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1804,9 +2015,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "tim-mcmanus",
       "speaker": "Tim McManus",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1818,9 +2031,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "ubs-timothy-arcuri",
       "speaker": "Timothy Arcuri",
       "org": "UBS",
       "n_resolved": 0,
@@ -1835,6 +2050,7 @@
       "rank": null
     },
     {
+      "speaker_id": "todd-archer",
       "speaker": "Todd Archer",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1846,9 +2062,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-tom-fornelli",
       "speaker": "Tom Fornelli",
       "org": "CBS Sports",
       "n_resolved": 7,
@@ -1863,6 +2081,7 @@
       "rank": null
     },
     {
+      "speaker_id": "barclays-tom-omalley",
       "speaker": "Tom O'Malley",
       "org": "Barclays",
       "n_resolved": 0,
@@ -1877,6 +2096,7 @@
       "rank": null
     },
     {
+      "speaker_id": "goldman-toshiya-hari",
       "speaker": "Toshiya Hari",
       "org": "Goldman Sachs",
       "n_resolved": 0,
@@ -1891,6 +2111,7 @@
       "rank": null
     },
     {
+      "speaker_id": "turron-davenport",
       "speaker": "Turron Davenport",
       "org": "ESPN",
       "n_resolved": 4,
@@ -1902,9 +2123,11 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
-      "rank": null
+      "rank": null,
+      "speaker_id_fallback": true
     },
     {
+      "speaker_id": "cbs-tyler-sullivan",
       "speaker": "Tyler Sullivan",
       "org": "CBS Sports",
       "n_resolved": 13,
@@ -1919,6 +2142,7 @@
       "rank": 6
     },
     {
+      "speaker_id": "fox-urban-meyer",
       "speaker": "Urban Meyer",
       "org": "FOX Sports (Big Noon Kickoff)",
       "n_resolved": 0,
@@ -1933,6 +2157,7 @@
       "rank": null
     },
     {
+      "speaker_id": "bofa-vivek-arya",
       "speaker": "Vivek Arya",
       "org": "Bank of America",
       "n_resolved": 0,
@@ -1947,6 +2172,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-will-hill",
       "speaker": "Will Hill",
       "org": "FOX Sports",
       "n_resolved": 1,
@@ -1965,6 +2191,7 @@
   "min_resolved": 10,
   "pick_record": [
     {
+      "speaker_id": "si-albert-breer",
       "speaker": "Albert Breer",
       "org": "Sports Illustrated",
       "n_resolved": 0,
@@ -1978,6 +2205,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-ben-portnoy",
       "speaker": "Ben Portnoy",
       "org": "FOX Sports",
       "n_resolved": 0,
@@ -1991,6 +2219,7 @@
       "rank": null
     },
     {
+      "speaker_id": "si-eva-geitheim",
       "speaker": "Eva Geitheim",
       "org": "Sports Illustrated",
       "n_resolved": 0,
@@ -2004,6 +2233,7 @@
       "rank": null
     },
     {
+      "speaker_id": "si-gilberto-manzano",
       "speaker": "Gilberto Manzano",
       "org": "Sports Illustrated",
       "n_resolved": 0,
@@ -2017,6 +2247,7 @@
       "rank": null
     },
     {
+      "speaker_id": "si-iain-macmillan",
       "speaker": "Iain MacMillan",
       "org": "Sports Illustrated",
       "n_resolved": 0,
@@ -2030,6 +2261,7 @@
       "rank": null
     },
     {
+      "speaker_id": "si-john-pluym",
       "speaker": "John Pluym",
       "org": "Sports Illustrated",
       "n_resolved": 0,
@@ -2043,6 +2275,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-laken-litman",
       "speaker": "Laken Litman",
       "org": "FOX Sports",
       "n_resolved": 0,
@@ -2056,6 +2289,7 @@
       "rank": null
     },
     {
+      "speaker_id": "si-mike-kadlick",
       "speaker": "Mike Kadlick",
       "org": "Sports Illustrated",
       "n_resolved": 0,
@@ -2069,6 +2303,7 @@
       "rank": null
     },
     {
+      "speaker_id": "si-peter-dewey",
       "speaker": "Peter Dewey",
       "org": "Sports Illustrated",
       "n_resolved": 0,
@@ -2082,6 +2317,7 @@
       "rank": null
     },
     {
+      "speaker_id": "fox-rj-young",
       "speaker": "RJ Young",
       "org": "FOX Sports",
       "n_resolved": 0,

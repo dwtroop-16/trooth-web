@@ -9,6 +9,7 @@ import {
 } from "./analytics.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 import scorerBoards from "./generated/boards.json" with { type: "json" };
+import speakerKinds from "./generated/speakerKinds.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -101,36 +102,91 @@ export function winnerTeamLabel(slug, division) {
 }
 
 /**
- * Scorer board rows (rubric 1.3.9) -> display rows. Ranked rows (rank != null) first by rank,
- * then unranked by resolved desc, name. Speaker matched by name + org for the profile link.
+ * Scorer board rows (rubric 1.3.9, pagemap v1.2.0) -> display rows. Uses Scorer's rank and
+ * eligible. Below the minimum: listed, no rank, no hit rate, "Not ranked yet", "N of 10 resolved".
+ * Joins on speaker_id (build attaches a name + org fallback until Scorer emits it).
+ * People boards drop kind model / outlet_feed (speakers-v1.json 1.5.0).
  */
-export function scorerBoardRows(list, speakers, openSpeaker) {
-  const byNameOrg = new Map(speakers.map((sp) => [sp.name + "|" + (sp.org || ""), sp]));
-  const byName = new Map(speakers.map((sp) => [sp.name, sp]));
+export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, { people = true } = {}) {
+  const byId = new Map(speakers.map((sp) => [sp.id, sp]));
   return [...(list || [])]
+    .filter((r) => !people || speakerKindOf({ id: r.speaker_id }) === "person")
     .sort((a, b) => {
-      if (a.rank != null && b.rank != null) return a.rank - b.rank;
-      if (a.rank != null) return -1;
-      if (b.rank != null) return 1;
+      const ar = a.eligible && a.rank != null;
+      const br = b.eligible && b.rank != null;
+      if (ar && br) return a.rank - b.rank || String(a.domain || "").localeCompare(String(b.domain || ""));
+      if (ar) return -1;
+      if (br) return 1;
       if (b.n_resolved !== a.n_resolved) return b.n_resolved - a.n_resolved;
       return String(a.speaker).localeCompare(String(b.speaker));
     })
-    .map((r, i) => {
-      const sp = byNameOrg.get(r.speaker + "|" + (r.org || "")) || byName.get(r.speaker) || null;
+    .map((r) => {
+      const sp = (r.speaker_id && byId.get(r.speaker_id)) || null;
+      const ranked = !!r.eligible && r.rank != null;
+      const domainLabel = r.domain ? (r.domain === "finance" ? "Finance" : r.domain[0].toUpperCase() + r.domain.slice(1)) : "Sports";
       return {
-        rank: r.rank,
-        speakerId: sp?.id || "name:" + r.speaker + "|" + (r.org || ""),
-        name: r.speaker,
-        org: r.org || "",
+        rank: ranked ? r.rank : null,
+        ranked,
+        speakerId: sp?.id || r.speaker_id || "name:" + r.speaker + "|" + (r.org || ""),
+        name: sp?.name || r.speaker,
+        org: r.org || sp?.org || "",
         initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
         avatar: sp?.avatar || "#6B7280",
-        domain: r.domain ? r.domain[0].toUpperCase() + r.domain.slice(1) : "Sports",
-        nResolved: r.n_resolved,
-        hitRate: r.eligible ? formatPct(r.hit_rate) : r.n_resolved ? formatPct(r.hit_rate) + "*" : "—",
+        domain: domainLabel,
+        nResolved: ranked ? r.n_resolved : `${r.n_resolved} of ${minResolved} resolved`,
+        hitRate: ranked ? formatPct(r.hit_rate) : "Not ranked yet",
         pending: r.n_pending,
-        open: () => (sp && openSpeaker ? openSpeaker(sp.id, { entry: "board" }) : undefined),
+        open: () => (sp && openSpeaker ? openSpeaker(sp.id, { entry: "board", domain: domainLabel, rank: ranked ? r.rank : null }) : undefined),
       };
     });
+}
+
+/** /models: kind "model" speakers, person scorecard layout, never ranked against people. */
+export function buildModelsView(speakers, forecasts, scores, cards, boards, openSpeaker) {
+  const models = speakers.filter(isModelSpeaker);
+  const min = boards?.min_resolved || 10;
+  return {
+    models: models.map((sp) => {
+      const ex = speakerStats(sp, forecasts, scores);
+      const pk = speakerStats(sp, forecasts, scores, "pick");
+      return {
+        id: sp.id,
+        name: sp.name,
+        credit: sp.org || sp.name,
+        label: "Model",
+        exact: { n_resolved: ex.n_resolved, n_pending: ex.n_pending, hit_rate: ex.n_resolved >= min ? formatPct(ex.hit_rate) : "Not ranked yet" },
+        pick: { n_resolved: pk.n_resolved, n_pending: pk.n_pending, hit_rate: pk.n_resolved >= min ? formatPct(pk.hit_rate) : "Not ranked yet" },
+        track: cards.filter((c) => c.speakerId === sp.id),
+        open: () => (openSpeaker ? openSpeaker(sp.id, { entry: "models" }) : undefined),
+      };
+    }),
+    exactRows: scorerBoardRows(boards?.models_board?.exact, speakers, openSpeaker, min, { people: false }),
+    pickRows: scorerBoardRows(boards?.models_board?.pick, speakers, openSpeaker, min, { people: false }),
+  };
+}
+
+/**
+ * Result line for a graded winner pick. Reads the official final defensively: the actual's value
+ * as "away-home" points (game-card order), or score.actual_value as "away-home" points. Scorer's
+ * confirmed mapping (2026-10-29): actual.value and score.actual_value are the final "{away}-{home}";
+ * no winning-slug field. Winner = higher side; tie = no winner (Miss). Returns null if unparsable.
+ */
+export function winnerResultLine(forecast, score, actual, division) {
+  const game = parseGameTeams(forecast.subject?.id || "");
+  const parsePts = (v) => {
+    const m = typeof v === "string" ? v.match(/^\s*(\d+)\s*[-–]\s*(\d+)\s*$/) : null;
+    return m ? [Number(m[1]), Number(m[2])] : null;
+  };
+  const pts = parsePts(actual?.value) || parsePts(score?.actual_value) ||
+    (score?.actual_value && typeof score.actual_value === "object" && score.actual_value.away != null
+      ? [Number(score.actual_value.away), Number(score.actual_value.home)] : null);
+  if (pts && game) {
+    const [a, h] = pts;
+    if (a === h) return `Tie, ${a}–${h}`;
+    const won = a > h ? game.away : game.home;
+    return `${teamLabelFor(won, division)} won, ${a}–${h}`;
+  }
+  return null;
 }
 
 function emptyBucket() {
@@ -277,12 +333,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const winner = isWinnerPick(forecast);
   const pickedTeam = winner ? winnerTeamLabel(forecast.claim.value, division) : null;
-  // Winner rows graded winner_from_score: show which team won (display name) plus the official final.
+  // Winner rows graded winner_from_score (pagemap v1.2.0): "{Winner} won, {away}–{home}"; tie "Tie, x–x".
   let actualDisplay = actualValue;
-  if (winner && shown) {
-    const won = score?.actual_value && ALL_TEAM_SLUGS.has(score.actual_value) ? teamLabelFor(score.actual_value, division) : null;
-    actualDisplay = won ? (shown.value != null && shown.value !== score.actual_value ? `${won} won (${shown.value})` : `${won} won`) : shown.value;
-  }
+  if (winner && graded) actualDisplay = winnerResultLine(forecast, score, shown, division) ?? actualValue;
   const card = {
     id: forecast.id,
     speakerId: speaker?.id || forecast.speaker_id,
@@ -315,9 +368,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     sportLabel: division || "",
     teamLabels,
     accounts: speaker?.accounts || [],
-    error: score?.abs_error ?? null,
-    ape: score?.ape ?? null,
-    brier: score?.brier ?? null,
+    error: winner ? null : score?.abs_error ?? null,
+    ape: winner ? null : score?.ape ?? null,
+    brier: winner ? null : score?.brier ?? null,
   };
   renderPublicClaimCard(card);
   return card;
@@ -329,8 +382,14 @@ export function isWinnerPick(forecast) {
 }
 
 /** Rubric v1.3.9: models/sites are listed on a separate Models board, never ranked against people. */
+export function speakerKindOf(speaker) {
+  return speaker?.kind || (speaker?.id && speakerKinds[speaker.id]) || "person";
+}
 export function isModelSpeaker(speaker) {
-  return speaker?.kind === "model";
+  return speakerKindOf(speaker) === "model";
+}
+export function isPersonSpeaker(speaker) {
+  return speakerKindOf(speaker) === "person";
 }
 
 /**
@@ -423,10 +482,17 @@ export function buildVals(state, actions, data) {
 
   const scoreBy = Object.fromEntries(scores.map((sc) => [sc.forecast_id, sc]));
   const actualByKey = Object.fromEntries(actuals.map((a) => [a.match_key, a]));
+  // Scorer: join score -> actual on actual_id (winner score keys end |winner, the actual |score).
+  const actualById = Object.fromEntries(actuals.filter((a) => a.id).map((a) => [a.id, a]));
   const speakerBy = Object.fromEntries(speakers.map((sp) => [sp.id, sp]));
 
   const cards = forecasts.map((f) =>
-    toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key])
+    toPublicClaimCard(
+      f,
+      speakerBy[f.speaker_id],
+      scoreBy[f.id],
+      (scoreBy[f.id]?.actual_id && actualById[scoreBy[f.id].actual_id]) || (isWinnerPick(f) ? null : actualByKey[f.match_key]),
+    )
   );
   const cardById = Object.fromEntries(cards.map((c) => [c.id, c]));
 
@@ -443,59 +509,18 @@ export function buildVals(state, actions, data) {
     return hitName || hitClaim;
   };
 
-  /** Build scoreboard rows for one domain (or All). Stats are scoped to forecasts in that domain. */
+  /**
+   * Score board rows (pagemap v1.2.0): Scorer's people_board rank + eligible, people only.
+   * Domain tab = that domain's rows; All = every domain row, ranked rows first.
+   */
   const buildBoardRows = (domainFilter) => {
     const domainKey = domainFilter === "All" ? null : domainFilter.toLowerCase();
-    const scopedForecasts = domainKey
-      ? forecasts.filter((f) => f.domain === domainKey)
-      : forecasts;
-    const speakerIdsInScope = new Set(scopedForecasts.map((f) => f.speaker_id));
-
-    const statsRows = speakers
-      .filter((sp) => !isModelSpeaker(sp))
-      .filter((sp) => {
-        const label = domainLabelOf(sp.domain);
-        if (domainFilter === "All") return scope.includes(label);
-        return label === domainFilter || speakerIdsInScope.has(sp.id);
-      })
-      .map((sp) => {
-        const st = speakerStats(sp, scopedForecasts, scores);
-        const domainLabel = domainLabelOf(sp.domain);
-        return { speaker: sp, stats: st, domainLabel };
-      })
-      .filter((row) => matchesQuery(row.speaker))
-      .sort((a, b) => {
-        if (b.stats.n_resolved !== a.stats.n_resolved) return b.stats.n_resolved - a.stats.n_resolved;
-        const ar = a.stats.hit_rate == null ? -1 : a.stats.hit_rate;
-        const br = b.stats.hit_rate == null ? -1 : b.stats.hit_rate;
-        if (br !== ar) return br - ar;
-        return a.speaker.name.localeCompare(b.speaker.name);
-      });
-
-    return statsRows.map((row, i) => {
-      const cm = CATCOLORS[row.domainLabel] || CATCOLORS.Finance;
-      return {
-        rank: i + 1,
-        speakerId: row.speaker.id,
-        name: row.speaker.name,
-        org: row.speaker.org,
-        initials: row.speaker.initials,
-        avatar: row.speaker.avatar,
-        domain: row.domainLabel,
-        catColor: cm.color,
-        catTint: cm.tint,
-        nResolved: row.stats.n_resolved,
-        hitRate: formatPct(row.stats.hit_rate),
-        pending: row.stats.n_pending,
-        open: () =>
-          openSpeaker(row.speaker.id, {
-            entry: "board",
-            domain: row.domainLabel,
-            rank: i + 1,
-            hit_rate: row.stats.hit_rate,
-            n_resolved: row.stats.n_resolved,
-          }),
-      };
+    const list = (scorerBoards.people_board || []).filter(
+      (r) => (!domainKey || r.domain === domainKey) && (!domainKey ? scope.map((x) => x.toLowerCase()).includes(r.domain) : true),
+    );
+    return scorerBoardRows(list, speakers, openSpeaker, scorerBoards.min_resolved).filter((row) => {
+      const sp = speakerBy[row.speakerId];
+      return sp ? matchesQuery(sp) : matchesQuery({ name: row.name, org: row.org });
     });
   };
 
@@ -618,8 +643,9 @@ export function buildVals(state, actions, data) {
       const all = speakerStats(sp, forecasts, scores, "all");
       p = {
         isModel: isModelSpeaker(sp),
+        kindLabel: isModelSpeaker(sp) ? "Model" : null,
         pickRecord: pk.n_captured
-          ? { n_resolved: pk.n_resolved, n_hit: pk.n_hit, n_pending: pk.n_pending, hit_rate: formatPct(pk.hit_rate), eligible: pk.n_resolved >= 10 }
+          ? { n_resolved: pk.n_resolved, n_hit: pk.n_hit, n_pending: pk.n_pending, hit_rate: formatPct(pk.hit_rate), eligible: pk.n_resolved >= (scorerBoards.min_resolved || 10), min: scorerBoards.min_resolved || 10 }
           : null,
         id: sp.id,
         name: sp.name,
@@ -743,11 +769,15 @@ export function buildVals(state, actions, data) {
     },
     boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
     resultCount: (allRows.length === 0 ? "0 speakers" : rows.length + (rows.length === 1 ? " speaker" : " speakers") + (allRows.length > BOARD_CAP ? " (top " + BOARD_CAP + ")" : "")),
-    rankNote: "exact scores only · resolved first, then hit rate — pending is not a miss",
-    pickRows: cat === "All" || cat === "Sports" ? scorerBoardRows(scorerBoards.pick_record, speakers.filter((sp) => !isModelSpeaker(sp)), openSpeaker).filter((r) => matchesQuery({ name: r.name, org: r.org })) : [],
-    pickNote: "winner picks only · " + (scorerBoards.min_resolved || 10) + " resolved to rank · * below minimum",
-    modelExactRows: scorerBoardRows(scorerBoards.models_board?.exact, speakers, openSpeaker),
-    modelPickRows: scorerBoardRows(scorerBoards.models_board?.pick, speakers, openSpeaker),
+    rankNote: "ranked at " + (scorerBoards.min_resolved || 10) + " resolved · pending is not a miss",
+    // Pick record: Sports tab only, below the Score board (pagemap v1.2.0). Not on home.
+    pickRows: cat === "Sports" ? scorerBoardRows(scorerBoards.pick_record, speakers, openSpeaker, scorerBoards.min_resolved).filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : [],
+    pickTitle: "Pick record: who picked the winner",
+    pickNote: "winner picks only · ranked at " + (scorerBoards.min_resolved || 10) + " resolved",
+    showModelsLink: cat === "Sports",
+    goModels: () => (typeof actions.goModels === "function" ? actions.goModels() : undefined),
+    isModels: s.view === "models",
+    models: buildModelsView(speakers, forecasts, scores, cards, scorerBoards, openSpeaker),
     rows,
     boardShowDomain: cat === "All",
     boardCapped: allRows.length > BOARD_CAP,

@@ -74,7 +74,7 @@ export default function Profile({ vals, openClaim }) {
         <span style={css(`width:40px;height:40px;border-radius:50%;background:${p.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:16px;font-weight:600;flex-shrink:0;`)}>{p.initials}</span>
         <div>
           <h1 style={css("font-family:Newsreader,serif;font-size:28px;font-weight:600;letter-spacing:-0.01em;margin:0;color:var(--ink);")}>{p.name}</h1>
-          <div style={css("font-size:13.5px;color:var(--muted);margin-top:2px;")}>{p.org || "—"}</div>
+          <div style={css("font-size:13.5px;color:var(--muted);margin-top:2px;")}>{p.kindLabel ? <span style={css("font-size:11px;font-weight:700;border:1px solid var(--hair);border-radius:999px;padding:1px 7px;margin-right:6px;")}>{p.kindLabel}</span> : null}{p.org || "—"}</div>
           <div style={css("font-size:13px;color:var(--body);margin-top:6px;")}>
             Source accounts · {p.accounts.length ? p.accounts.join(" · ") : "none listed"}
           </div>
@@ -105,11 +105,11 @@ export default function Profile({ vals, openClaim }) {
       {p.pickRecord ? (
         <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;margin-top:16px;")}>
           <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;line-height:1;color:var(--ink);")}>{p.pickRecord.hit_rate}</span>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;line-height:1;color:var(--ink);")}>{p.pickRecord.eligible ? p.pickRecord.hit_rate : "Not ranked yet"}</span>
             <span style={css("font-size:13px;color:var(--muted);")}>pick record · winner-only picks, separate from the exact-score hit rate above</span>
           </div>
           <div style={css("font-size:13px;color:var(--body);margin-top:10px;")}>
-            {p.pickRecord.n_hit} of {p.pickRecord.n_resolved} resolved · {p.pickRecord.n_pending} pending{p.pickRecord.eligible ? "" : " · ranks after 10 resolved"}
+            {p.pickRecord.eligible ? `${p.pickRecord.n_hit} of ${p.pickRecord.n_resolved} resolved` : `${p.pickRecord.n_resolved} of ${p.pickRecord.min} resolved`} · {p.pickRecord.n_pending} pending
           </div>
         </div>
       ) : null}
