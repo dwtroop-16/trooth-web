@@ -54,7 +54,7 @@ export default function Profile({ vals, openClaim }) {
     key: row.division,
     label: row.division,
     n_resolved: row.n_resolved,
-    hit_rate: row.hit_rate,
+    hit_rate: row.n_resolved ? row.hit_rate + " · " + row.rate_detail : row.hit_rate,
     n_pending: row.n_pending,
   }));
   const teamRows = (p.teamBoards || []).map((row) => ({
@@ -62,7 +62,7 @@ export default function Profile({ vals, openClaim }) {
     label: row.teamLabel,
     division: row.division,
     n_resolved: row.n_resolved,
-    hit_rate: row.hit_rate,
+    hit_rate: row.n_resolved ? row.hit_rate + " · " + row.rate_detail : row.hit_rate,
     n_pending: row.n_pending,
   }));
   const showTeamSection = (p.teamBoards && p.teamBoards.length > 0) || p.hasSports;

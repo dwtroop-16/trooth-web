@@ -164,3 +164,23 @@ test("claims view filters by grade and exposes match metadata", () => {
   assert.ok(typeof vals.matchCountLabel === "string");
   assert.ok(Array.isArray(vals.searchSuggestions));
 });
+
+test("no rendered rate has a decimal (boards, pick record, All sections, person pages)", () => {
+  const dec = /\d\.\d+\s*%/;
+  const seen = [];
+  for (const cat of ["All", "Sports", "Weather", "Finance", "Politics"]) {
+    const v = buildVals({ view: "home", cat, q: "" }, actions, data);
+    for (const r of [...v.rows, ...(v.pickRows || []), ...(v.boardSections || []).flatMap((x) => x.rows)]) seen.push(r.hitRate);
+  }
+  for (const sp of SPEAKERS) {
+    const p = buildVals({ view: "profile", speakerId: sp.id, cat: "All", q: "" }, actions, data).p;
+    if (!p) continue;
+    seen.push(p.hit_rate, p.miss_rate, p.pickRecord?.hit_rate);
+    for (const b of [...p.divisionBoards, ...p.teamBoards]) seen.push(b.hit_rate);
+  }
+  const bad = seen.filter((x) => x != null && dec.test(String(x)));
+  assert.deepEqual(bad, []);
+  const hum = buildVals({ view: "profile", speakerId: "cbs-chris-hummer", cat: "All", q: "" }, actions, data).p;
+  const row = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data).rows.find((r) => r.speakerId === "cbs-chris-hummer");
+  assert.equal(row.hitRate, hum.hit_rate);
+});

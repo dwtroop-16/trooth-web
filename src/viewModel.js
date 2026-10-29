@@ -1,4 +1,4 @@
-import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
+import { formatWhen, formatPct, pctFromCounts, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { displayedPcts } from "./missRate.js";
 import { horizonDisplay } from "./kickoffStatus.js";
@@ -139,7 +139,8 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
         avatar: sp?.avatar || "#6B7280",
         domain: domainLabel,
         nResolved: ranked ? r.n_resolved : `${r.n_resolved} of ${minResolved} resolved`,
-        hitRate: ranked ? formatPct(r.hit_rate) : "Not ranked yet",
+        hitRate: ranked ? pctFromCounts(r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved), r.n_resolved) : "Not ranked yet",
+        rateDetail: `${r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved)} of ${r.n_resolved} resolved`,
         pending: r.n_pending,
         open: () => (sp && openSpeaker ? openSpeaker(sp.id, { entry: "board", domain: domainLabel, rank: ranked ? r.rank : null }) : undefined),
       };
@@ -159,8 +160,8 @@ export function buildModelsView(speakers, forecasts, scores, cards, boards, open
         name: sp.name,
         credit: sp.org || sp.name,
         label: "Model",
-        exact: { n_resolved: ex.n_resolved, n_pending: ex.n_pending, hit_rate: ex.n_resolved >= min ? formatPct(ex.hit_rate) : "Not ranked yet" },
-        pick: { n_resolved: pk.n_resolved, n_pending: pk.n_pending, hit_rate: pk.n_resolved >= min ? formatPct(pk.hit_rate) : "Not ranked yet" },
+        exact: { n_resolved: ex.n_resolved, n_pending: ex.n_pending, hit_rate: ex.n_resolved >= min ? pctFromCounts(ex.n_hit, ex.n_resolved) + ` · ${ex.n_hit} of ${ex.n_resolved} resolved` : "Not ranked yet" },
+        pick: { n_resolved: pk.n_resolved, n_pending: pk.n_pending, hit_rate: pk.n_resolved >= min ? pctFromCounts(pk.n_hit, pk.n_resolved) + ` · ${pk.n_hit} of ${pk.n_resolved} resolved` : "Not ranked yet" },
         track: cards.filter((c) => c.speakerId === sp.id),
         open: () => (openSpeaker ? openSpeaker(sp.id, { entry: "models" }) : undefined),
       };
@@ -282,7 +283,8 @@ export function buildSpeakerScoreboards(speaker, forecasts, scores) {
       n_resolved: b.n_resolved,
       n_hit: b.n_hit,
       n_pending: b.n_pending,
-      hit_rate: formatPct(b.n_resolved ? b.n_hit / b.n_resolved : null),
+      hit_rate: pctFromCounts(b.n_hit, b.n_resolved),
+      rate_detail: `${b.n_hit} of ${b.n_resolved} resolved`,
     }))
     .sort((a, b) => {
       const ai = DIVISION_SPORT_ORDER.indexOf(a.division);
@@ -304,7 +306,8 @@ export function buildSpeakerScoreboards(speaker, forecasts, scores) {
       n_resolved: b.n_resolved,
       n_hit: b.n_hit,
       n_pending: b.n_pending,
-      hit_rate: formatPct(b.n_resolved ? b.n_hit / b.n_resolved : null),
+      hit_rate: pctFromCounts(b.n_hit, b.n_resolved),
+      rate_detail: `${b.n_hit} of ${b.n_resolved} resolved`,
     }))
     .sort((a, b) => {
       if (b.n_resolved !== a.n_resolved) return b.n_resolved - a.n_resolved;
@@ -677,7 +680,7 @@ export function buildVals(state, actions, data) {
         isModel: isModelSpeaker(sp),
         kindLabel: isModelSpeaker(sp) ? "Model" : speakerKindOf(sp) === "outlet_feed" ? "Agency" : null,
         pickRecord: pk.n_captured
-          ? { n_resolved: pk.n_resolved, n_hit: pk.n_hit, n_pending: pk.n_pending, hit_rate: formatPct(pk.hit_rate), eligible: pk.n_resolved >= (scorerBoards.min_resolved || 10), min: scorerBoards.min_resolved || 10 }
+          ? { n_resolved: pk.n_resolved, n_hit: pk.n_hit, n_pending: pk.n_pending, hit_rate: pctFromCounts(pk.n_hit, pk.n_resolved), eligible: pk.n_resolved >= (scorerBoards.min_resolved || 10), min: scorerBoards.min_resolved || 10 }
           : null,
         id: sp.id,
         name: sp.name,
