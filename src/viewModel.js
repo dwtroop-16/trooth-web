@@ -534,6 +534,18 @@ export function buildVals(state, actions, data) {
 
   const BOARD_CAP = 12;
   const allRows = buildBoardRows(cat);
+  // Architect ruling (2026-10-29): All tab = one section per domain, each with its own Scorer ranks.
+  // Ranks never mix across domains; empty domains are omitted.
+  const SECTION_ORDER = ["Sports", "Weather", "Finance", "Politics"];
+  const boardSections =
+    cat === "All"
+      ? SECTION_ORDER.filter((d) => scope.includes(d))
+          .map((d) => {
+            const rowsD = buildBoardRows(d);
+            return { domain: d, title: d, rows: rowsD.slice(0, BOARD_CAP), total: rowsD.length };
+          })
+          .filter((sec) => sec.rows.length > 0)
+      : null;
   const rows = allRows.slice(0, BOARD_CAP);
 
   const scopedCards = cards.filter((c) => scope.includes(c.domain));
@@ -788,6 +800,7 @@ export function buildVals(state, actions, data) {
     models: buildModelsView(speakers, forecasts, scores, cards, scorerBoards, openSpeaker),
     rows,
     boardShowDomain: cat === "All",
+    boardSections,
     boardCapped: allRows.length > BOARD_CAP,
     noResults: allRows.length === 0,
     recentResolved,

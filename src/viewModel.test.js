@@ -39,6 +39,23 @@ test("All tab: one capped board in Scorer order (ranked by rank, then unranked b
   }
 });
 
+test("All tab: domain sections with their own Scorer ranks, no mixed ranks", () => {
+  const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
+  assert.ok(vals.boardSections.length > 0);
+  const order = ["Sports", "Weather", "Finance", "Politics"];
+  let last = -1;
+  for (const sec of vals.boardSections) {
+    assert.ok(order.indexOf(sec.domain) > last);
+    last = order.indexOf(sec.domain);
+    assert.ok(sec.rows.length > 0);
+    assert.ok(sec.rows.every((r) => r.domain === sec.domain));
+    const ranks = sec.rows.filter((r) => r.rank != null).map((r) => r.rank);
+    assert.equal(new Set(ranks).size, ranks.length, sec.domain + " has duplicate ranks");
+  }
+  const single = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
+  assert.equal(single.boardSections, null);
+});
+
 test("single domain tab scopes one board to that domain, from people_board", () => {
   const vals = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
   assert.equal(vals.boardShowDomain, false);

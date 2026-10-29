@@ -160,6 +160,36 @@ export default function Home({ vals, openClaim }) {
         </div>
       ) : null}
 
+      {vals.boardSections ? (
+        vals.boardSections.length ? (
+          vals.boardSections.map((sec, i) => (
+            <div key={sec.domain} style={css(i ? "margin-top:28px;" : "")}>
+              <Scoreboard
+                title={sec.title}
+                resultCount={sec.rows.length + (sec.rows.length === 1 ? " speaker" : " speakers") + (sec.total > sec.rows.length ? " (top " + sec.rows.length + ")" : "")}
+                rankNote={vals.rankNote}
+                rows={sec.rows}
+                empty={false}
+                showDomain={false}
+              />
+            </div>
+          ))
+        ) : (
+          <Scoreboard
+        title={vals.boardTitle}
+        resultCount={vals.resultCount}
+        rankNote={vals.rankNote}
+        rows={vals.rows}
+        empty={vals.noResults}
+        emptyLabel={
+          q
+            ? `No speakers match “${q}” in this tab. Claim matches above still search all domains.`
+            : "No speakers yet"
+        }
+        showDomain={showDomain}
+      />
+        )
+      ) : (
       <Scoreboard
         title={vals.boardTitle}
         resultCount={vals.resultCount}
@@ -173,6 +203,7 @@ export default function Home({ vals, openClaim }) {
         }
         showDomain={showDomain}
       />
+      )}
       {vals.showModelsLink ? (
         <div style={css("margin-top:10px;")}>
           <Hover as="button" onClick={() => vals.goModels()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Computer models</Hover>
