@@ -1,3 +1,4 @@
+import { avatarFor } from "./avatar.js";
 import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { horizonDisplay } from "./kickoffStatus.js";
@@ -411,7 +412,7 @@ export function buildVals(state, actions, data) {
         name: row.speaker.name,
         org: row.speaker.org,
         initials: row.speaker.initials,
-        avatar: row.speaker.avatar,
+        avatar: avatarFor(row.speaker.id),
         domain: row.domainLabel,
         catColor: cm.color,
         catTint: cm.tint,
@@ -551,7 +552,7 @@ export function buildVals(state, actions, data) {
         org: sp.org,
         accounts: sp.accounts || [],
         initials: sp.initials,
-        avatar: sp.avatar,
+        avatar: avatarFor(sp.id),
         bio: sp.bio,
         domain: domainLabel,
         catColor: cm.color,
