@@ -102,6 +102,18 @@ export default function Profile({ vals, openClaim }) {
         </div>
       </div>
 
+      {p.pickRecord ? (
+        <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;margin-top:16px;")}>
+          <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;line-height:1;color:var(--ink);")}>{p.pickRecord.hit_rate}</span>
+            <span style={css("font-size:13px;color:var(--muted);")}>pick record · winner-only picks, separate from the exact-score hit rate above</span>
+          </div>
+          <div style={css("font-size:13px;color:var(--body);margin-top:10px;")}>
+            {p.pickRecord.n_hit} of {p.pickRecord.n_resolved} resolved · {p.pickRecord.n_pending} pending{p.pickRecord.eligible ? "" : " · ranks after 10 resolved"}
+          </div>
+        </div>
+      ) : null}
+
       {divisionRows.length > 0 ? (
         <div style={css("margin-top:28px;")}>
           <ProfileStatTable

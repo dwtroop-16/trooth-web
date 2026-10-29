@@ -228,6 +228,8 @@ function mapScore(row) {
     ape: row.ape == null ? null : Number(row.ape),
     brier: row.brier == null ? null : Number(row.brier),
     scored_at: row.scored_at,
+    actual_value: row.actual_value ?? null,
+    comparison_method: row.comparison_method ?? null,
   };
 }
 
@@ -486,6 +488,18 @@ export const DATA_SOURCE = live.source || "live";
   for (const [slug, meta] of Object.entries(fbsTeams.teams || {})) {
     teamLabels.fbs[slug] = (meta && meta.label) || slug;
   }
+  // Rubric v1.3.9 boards from Scorer: exact-score people board, winner pick record, models board.
+  // Kept in their own file so exact-score rankings, winner picks and models never mix.
+  const boardsOut = {};
+  for (const [key, file] of [["people_board", "people_board.json"], ["pick_record", "pick_record.json"], ["models_board", "models_board.json"]]) {
+    const b = readJson(join(ROOT, "scorer/out", file));
+    if (b.rubric !== "1.3.9" || b.min_resolved !== 10) throw new Error(`${file}: expected rubric 1.3.9, min_resolved 10`);
+    boardsOut[key] = b[key];
+    boardsOut.rubric = b.rubric;
+    boardsOut.min_resolved = b.min_resolved;
+  }
+  writeFileSync(join(SITE, "src/generated/boards.json"), JSON.stringify(boardsOut, null, 2) + "\n");
+
   writeFileSync(join(SITE, "src/generated/teamLabels.json"), JSON.stringify(teamLabels, null, 2) + "\n");
 
   // Changelog days into site working copy

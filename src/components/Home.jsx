@@ -173,6 +173,25 @@ export default function Home({ vals, openClaim }) {
         }
         showDomain={showDomain}
       />
+      {vals.pickRows && vals.pickRows.length ? (
+        <div style={css("margin-top:28px;")}>
+          <Scoreboard
+            title="Pick record"
+            resultCount={vals.pickRows.length + (vals.pickRows.length === 1 ? " speaker" : " speakers")}
+            rankNote={vals.pickNote}
+            rows={vals.pickRows}
+            empty={false}
+            showDomain={false}
+          />
+        </div>
+      ) : null}
+      {[["Models · exact scores", vals.modelExactRows], ["Models · pick record", vals.modelPickRows]].map(([t, rows]) =>
+        rows && rows.length ? (
+          <div key={t} style={css("margin-top:28px;")}>
+            <Scoreboard title={t} resultCount={rows.length + " models"} rankNote="models are never ranked against people" rows={rows} empty={false} showDomain={false} />
+          </div>
+        ) : null,
+      )}
       <div style={css("margin-top:10px;")}>
         <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>
       </div>

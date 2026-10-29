@@ -8,6 +8,7 @@ import {
   markSuggestionClick,
 } from "./analytics.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
+import scorerBoards from "./generated/boards.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -93,6 +94,45 @@ function teamLabelFor(slug, division) {
   return NFL_TEAM_LABELS[slug] || FBS_TEAM_LABELS[slug] || slug;
 }
 
+/** Picked team display name from the enum (team id) files; never a raw slug or "undefined". */
+export function winnerTeamLabel(slug, division) {
+  if (!slug || !ALL_TEAM_SLUGS.has(slug)) return null;
+  return teamLabelFor(slug, division);
+}
+
+/**
+ * Scorer board rows (rubric 1.3.9) -> display rows. Ranked rows (rank != null) first by rank,
+ * then unranked by resolved desc, name. Speaker matched by name + org for the profile link.
+ */
+export function scorerBoardRows(list, speakers, openSpeaker) {
+  const byNameOrg = new Map(speakers.map((sp) => [sp.name + "|" + (sp.org || ""), sp]));
+  const byName = new Map(speakers.map((sp) => [sp.name, sp]));
+  return [...(list || [])]
+    .sort((a, b) => {
+      if (a.rank != null && b.rank != null) return a.rank - b.rank;
+      if (a.rank != null) return -1;
+      if (b.rank != null) return 1;
+      if (b.n_resolved !== a.n_resolved) return b.n_resolved - a.n_resolved;
+      return String(a.speaker).localeCompare(String(b.speaker));
+    })
+    .map((r, i) => {
+      const sp = byNameOrg.get(r.speaker + "|" + (r.org || "")) || byName.get(r.speaker) || null;
+      return {
+        rank: r.rank,
+        speakerId: sp?.id || "name:" + r.speaker + "|" + (r.org || ""),
+        name: r.speaker,
+        org: r.org || "",
+        initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
+        avatar: sp?.avatar || "#6B7280",
+        domain: r.domain ? r.domain[0].toUpperCase() + r.domain.slice(1) : "Sports",
+        nResolved: r.n_resolved,
+        hitRate: r.eligible ? formatPct(r.hit_rate) : r.n_resolved ? formatPct(r.hit_rate) + "*" : "—",
+        pending: r.n_pending,
+        open: () => (sp && openSpeaker ? openSpeaker(sp.id, { entry: "board" }) : undefined),
+      };
+    });
+}
+
 function emptyBucket() {
   return { n_resolved: 0, n_hit: 0, n_pending: 0 };
 }
@@ -139,7 +179,8 @@ export function forecastBoardAttribution(forecast) {
 
 /** Build divisionBoards + teamBoards for one speaker (same hit/miss/pending defs as speakerStats). */
 export function buildSpeakerScoreboards(speaker, forecasts, scores) {
-  const mine = forecasts.filter((f) => f.speaker_id === speaker.id);
+  // Division/team boards are exact-score records; winner picks count only in the pick record.
+  const mine = forecasts.filter((f) => f.speaker_id === speaker.id && !isWinnerPick(f));
   const byF = Object.fromEntries(scores.map((s) => [s.forecast_id, s]));
   const divMap = new Map();
   const teamMap = new Map();
@@ -234,6 +275,14 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const retained = shown && shown.source?.retention_note ? shown : null;
   const { division, teams } = forecastBoardAttribution(forecast);
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
+  const winner = isWinnerPick(forecast);
+  const pickedTeam = winner ? winnerTeamLabel(forecast.claim.value, division) : null;
+  // Winner rows graded winner_from_score: show which team won (display name) plus the official final.
+  let actualDisplay = actualValue;
+  if (winner && shown) {
+    const won = score?.actual_value && ALL_TEAM_SLUGS.has(score.actual_value) ? teamLabelFor(score.actual_value, division) : null;
+    actualDisplay = won ? (shown.value != null && shown.value !== score.actual_value ? `${won} won (${shown.value})` : `${won} won`) : shown.value;
+  }
   const card = {
     id: forecast.id,
     speakerId: speaker?.id || forecast.speaker_id,
@@ -246,7 +295,10 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     // kickoff_status pending: the horizon is a placeholder; keep it off the card entirely.
     kickoffStatus: forecast.kickoff_status ?? null,
     horizon: forecast.kickoff_status === "pending" ? null : forecast.horizon_end,
-    actual: actualValue,
+    actual: actualDisplay,
+    isWinnerPick: winner,
+    pickedTeam,
+    comparisonMethod: score?.comparison_method ?? null,
     actualSourceName,
     actualSourceUrl,
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
@@ -271,8 +323,26 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   return card;
 }
 
-export function speakerStats(speaker, forecasts, scores) {
-  const mine = forecasts.filter((f) => f.speaker_id === speaker.id);
+/** Rubric v1.3.9: winner-only picks (unit "winner") live in a separate pick record. */
+export function isWinnerPick(forecast) {
+  return forecast?.claim?.unit === "winner";
+}
+
+/** Rubric v1.3.9: models/sites are listed on a separate Models board, never ranked against people. */
+export function isModelSpeaker(speaker) {
+  return speaker?.kind === "model";
+}
+
+/**
+ * mode "exact" (default): exact-score record, winner picks excluded.
+ * mode "pick": winner pick record only. mode "all": every forecast.
+ */
+export function speakerStats(speaker, forecasts, scores, mode = "exact") {
+  const mine = forecasts.filter(
+    (f) =>
+      f.speaker_id === speaker.id &&
+      (mode === "all" || (mode === "pick" ? isWinnerPick(f) : !isWinnerPick(f))),
+  );
   const byF = Object.fromEntries(scores.map((s) => [s.forecast_id, s]));
   let n_captured = mine.length;
   let n_scorable = 0;
@@ -382,6 +452,7 @@ export function buildVals(state, actions, data) {
     const speakerIdsInScope = new Set(scopedForecasts.map((f) => f.speaker_id));
 
     const statsRows = speakers
+      .filter((sp) => !isModelSpeaker(sp))
       .filter((sp) => {
         const label = domainLabelOf(sp.domain);
         if (domainFilter === "All") return scope.includes(label);
@@ -543,7 +614,13 @@ export function buildVals(state, actions, data) {
       const cm = CATCOLORS[domainLabel] || CATCOLORS.Finance;
       const track = cards.filter((c) => c.speakerId === sp.id);
       const boards = buildSpeakerScoreboards(sp, forecasts, scores);
+      const pk = speakerStats(sp, forecasts, scores, "pick");
+      const all = speakerStats(sp, forecasts, scores, "all");
       p = {
+        isModel: isModelSpeaker(sp),
+        pickRecord: pk.n_captured
+          ? { n_resolved: pk.n_resolved, n_hit: pk.n_hit, n_pending: pk.n_pending, hit_rate: formatPct(pk.hit_rate), eligible: pk.n_resolved >= 10 }
+          : null,
         id: sp.id,
         name: sp.name,
         org: sp.org,
@@ -554,8 +631,8 @@ export function buildVals(state, actions, data) {
         domain: domainLabel,
         catColor: cm.color,
         catTint: cm.tint,
-        n_captured: st.n_captured,
-        n_scorable: st.n_scorable,
+        n_captured: all.n_captured,
+        n_scorable: all.n_scorable,
         n_resolved: st.n_resolved,
         n_pending: st.n_pending,
         n_unscorable: st.n_unscorable,
@@ -666,7 +743,11 @@ export function buildVals(state, actions, data) {
     },
     boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
     resultCount: (allRows.length === 0 ? "0 speakers" : rows.length + (rows.length === 1 ? " speaker" : " speakers") + (allRows.length > BOARD_CAP ? " (top " + BOARD_CAP + ")" : "")),
-    rankNote: "resolved first, then hit rate — pending is not a miss",
+    rankNote: "exact scores only · resolved first, then hit rate — pending is not a miss",
+    pickRows: cat === "All" || cat === "Sports" ? scorerBoardRows(scorerBoards.pick_record, speakers.filter((sp) => !isModelSpeaker(sp)), openSpeaker).filter((r) => matchesQuery({ name: r.name, org: r.org })) : [],
+    pickNote: "winner picks only · " + (scorerBoards.min_resolved || 10) + " resolved to rank · * below minimum",
+    modelExactRows: scorerBoardRows(scorerBoards.models_board?.exact, speakers, openSpeaker),
+    modelPickRows: scorerBoardRows(scorerBoards.models_board?.pick, speakers, openSpeaker),
     rows,
     boardShowDomain: cat === "All",
     boardCapped: allRows.length > BOARD_CAP,
