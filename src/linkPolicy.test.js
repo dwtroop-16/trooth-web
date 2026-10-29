@@ -77,9 +77,14 @@ test("linkPolicy: fred.stlouisfed.org is plain text, never a link (Architect 202
   assert.equal(isAllowedHref("https://www.stlouisfed.org/"), true);
 });
 
-test("linkPolicy: other hosts (FOX Sports etc.) are unchanged", () => {
+test("linkPolicy: foxsports.com and si.com are plain-text cites, never links (Legal 05bh/05bi)", () => {
   const fox = "https://www.foxsports.com/stories/nfl/some-story";
-  assert.deepEqual(sourceLinkParts(fox, "www.foxsports.com"), [{ kind: "link", href: fox, text: "www.foxsports.com" }]);
+  assert.deepEqual(sourceLinkParts(fox, "www.foxsports.com"), [{ kind: "text", role: "plain_text_url", text: `FOX Sports (${fox} ; not linked)` }]);
+  const si = "https://www.si.com/betting/x";
+  assert.deepEqual(sourceLinkParts(si, "www.si.com"), [{ kind: "text", role: "plain_text_url", text: `Sports Illustrated (${si} ; not linked)` }]);
+  for (const u of [fox, si, "https://si.com/", "https://foxsports.com/"]) assert.equal(isAllowedHref(u), false);
+  assert.equal(isAllowedHref("https://www.weather.gov/okx/"), true);
+  assert.equal(isAllowedHref("https://www.notsi.com/"), true);
 });
 
 test("every card's link parts obey the rules (view-model scan of all cards)", () => {
@@ -127,7 +132,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         if (isNfl(href) && href !== NFL_HOME) bad.push(`${card.id} nfl ${href}`);
         if (/ncaa\.com/i.test(href)) bad.push(`${card.id} ncaa ${href}`);
         if (/stlouisfed\.org/i.test(href)) bad.push(`${card.id} fred ${href}`);
-        if (/(^|\.)foxsports\.com$/.test(hostOf(href))) foxLinks++;
+        if (/(^|\.)(foxsports|si)\.com$/.test(hostOf(href))) bad.push(`${card.id} si/fox ${href}`);
       }
       if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_CREDIT), card.id);
       if ((card.grade === "Hit" || card.grade === "Miss") && isFred(card.actualSourceUrl)) {
@@ -148,7 +153,11 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
   assert.ok(anchors > 0, "cards render links");
   console.log(`# rendered ncaa.com actual sources as plain text (per card) = ${ncaaRendered / 2}`);
   console.log(`# rendered fred.stlouisfed.org actual sources as plain text (per card) = ${fredRendered / 2}`);
-  // FOX Sports links are untouched: every FOX source still renders as its own href.
-  const foxCards = cards.filter((c) => /(^|\.)foxsports\.com$/.test(hostOf(c.sourceUrl)));
-  assert.ok(foxLinks >= foxCards.length * 2);
+  // Legal 05bh/05bi: every FOX Sports / SI source renders as a plain-text cite.
+  for (const c of cards.filter((c) => /(^|\.)(foxsports|si)\.com$/.test(hostOf(c.sourceUrl)))) {
+    const html = unescape(renderToStaticMarkup(React.createElement(ClaimCard, { card: c, compact: false })));
+    assert.ok(html.includes(`(${c.sourceUrl} ; not linked)`), c.id);
+    foxLinks++;
+  }
+  assert.ok(foxLinks > 0, "si/fox cards exist");
 });

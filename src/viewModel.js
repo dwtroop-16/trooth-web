@@ -238,7 +238,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     id: forecast.id,
     speakerId: speaker?.id || forecast.speaker_id,
     speakerName: (speaker && speaker.name) || forecast.speaker.name,
-    speakerOrg: (speaker && speaker.org) || forecast.speaker.org,
+    // Firm as of the claim date: the forecast row's own speaker.org wins over the registry's current org
+    // (Card QA P1, ruling 05ac: e.g. Harsh Kumar was at Piper Sandler before moving to BMO 2026-07-13).
+    speakerOrg: forecast.speaker?.org || (speaker && speaker.org) || null,
     claimText: forecast.claim.text,
     sourceUrl: forecast.source.url,
     sourceHost: hostnameFromUrl(forecast.source.url),

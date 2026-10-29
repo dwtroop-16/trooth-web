@@ -15,7 +15,9 @@
 //     Grades are unaffected.
 //     fred.stlouisfed.org (Architect 2026-10-02): "FRED (<full URL> ; not linked)", never an href.
 //
-// Every other host (FOX Sports, NWS, ...) is returned unchanged.
+//     foxsports.com (Legal 05bh) and si.com (Legal 05bi), 2026-10-29: plain-text cite, never an href.
+//
+// Every other host (NWS, ...) is returned unchanged.
 
 export const BLOCKED_LINK_DOMAINS = {
   "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)" },
@@ -29,6 +31,9 @@ export const HOME_ONLY_LINK_DOMAINS = {
 export const PLAIN_TEXT_LINK_DOMAINS = {
   "ncaa.com": { name: "NCAA.com", note: "not linked" },
   "fred.stlouisfed.org": { name: "FRED", note: "not linked" },
+  // Legal-Ops 05bh (FOX Sports) and 05bi (Sports Illustrated), 2026-10-29: plain-text cite, no hyperlink.
+  "foxsports.com": { name: "FOX Sports", note: "not linked" },
+  "si.com": { name: "Sports Illustrated", note: "not linked" },
 };
 
 export function hostOf(url) {
