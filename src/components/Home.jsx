@@ -216,14 +216,15 @@ export default function Home({ vals, openClaim }) {
           <Hover as="button" onClick={() => vals.goModels()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Computer models</Hover>
         </div>
       ) : null}
-      {vals.pickRows && vals.pickRows.length ? (
+      {vals.showPickBoard ? (
         <div style={css("margin-top:28px;")}>
           <Scoreboard
             title={vals.pickTitle}
             resultCount={vals.pickCount}
             rankNote={vals.pickNote}
             rows={vals.pickRows}
-            empty={false}
+            empty={!vals.pickRows || vals.pickRows.length === 0}
+            emptyLabel={vals.pickEmptyLabel}
             showDomain={false}
           />
         </div>
