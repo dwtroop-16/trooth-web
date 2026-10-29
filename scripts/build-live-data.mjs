@@ -230,6 +230,7 @@ function mapScore(row) {
     scored_at: row.scored_at,
     actual_value: row.actual_value ?? null,
     comparison_method: row.comparison_method ?? null,
+    winner_slug: row.winner_slug ?? null,
   };
 }
 

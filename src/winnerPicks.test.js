@@ -84,7 +84,25 @@ test("below-minimum rows: no rank, no hit rate, 'Not ranked yet', 'N of 10 resol
   assert.ok(rows.every((r) => !String(r.hitRate).includes("*")));
 });
 
-test("people boards exclude outlet_feed and model kinds", () => {
-  const rows = scorerBoardRows(boards.people_board, SPEAKERS, null, 10);
-  assert.ok(!rows.some((r) => r.speakerId === "nws-okx"));
+test("people boards drop kind model only; outlet_feed stays labeled Agency", () => {
+  const rows = scorerBoardRows(
+    [
+      { speaker_id: "nws-okx", kind: "outlet_feed", speaker: "NWS New York (OKX)", org: "National Weather Service", n_resolved: 192, eligible: true, rank: 1, hit_rate: 0.3, domain: "weather" },
+      { speaker_id: "m1", kind: "model", speaker: "Model", org: "Site", n_resolved: 20, eligible: true, rank: 1, hit_rate: 0.5, domain: "sports" },
+    ],
+    SPEAKERS, null, 10,
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].kindLabel, "Agency");
+});
+
+test("winner_slug preferred over score-derived winner", () => {
+  const f = winners.find((x) => parseGameTeams(x.subject.id));
+  const { away, home } = parseGameTeams(f.subject.id);
+  const sp = SPEAKERS.find((s) => s.id === f.speaker_id);
+  const act = { status: "resolved", value: "24-17", source: { name: "O", url: "https://example.edu/b" } };
+  const c = toPublicClaimCard(f, sp, { forecast_id: f.id, status: "miss", actual_value: "24-17", winner_slug: home }, act);
+  assert.equal(c.actual, `${winnerTeamLabel(home)} won, 24–17`);
+  const t = toPublicClaimCard(f, sp, { forecast_id: f.id, status: "miss", actual_value: "20-20", winner_slug: null }, { ...act, value: "20-20" });
+  assert.equal(t.actual, "Tie, 20–20");
 });

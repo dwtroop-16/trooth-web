@@ -110,7 +110,8 @@ export function winnerTeamLabel(slug, division) {
 export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, { people = true } = {}) {
   const byId = new Map(speakers.map((sp) => [sp.id, sp]));
   return [...(list || [])]
-    .filter((r) => !people || speakerKindOf({ id: r.speaker_id }) === "person")
+    // People boards drop only kind model (models live on /models). outlet_feed stays, labeled "Agency".
+    .filter((r) => !people || (r.kind || speakerKindOf({ id: r.speaker_id })) !== "model")
     .sort((a, b) => {
       const ar = a.eligible && a.rank != null;
       const br = b.eligible && b.rank != null;
@@ -129,7 +130,8 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
         ranked,
         speakerId: sp?.id || r.speaker_id || "name:" + r.speaker + "|" + (r.org || ""),
         name: sp?.name || r.speaker,
-        org: r.org || sp?.org || "",
+        org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + (r.org || sp?.org || ""),
+        kindLabel: (r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency" : null,
         initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
         avatar: sp?.avatar || "#6B7280",
         domain: domainLabel,
@@ -180,6 +182,12 @@ export function winnerResultLine(forecast, score, actual, division) {
   const pts = parsePts(actual?.value) || parsePts(score?.actual_value) ||
     (score?.actual_value && typeof score.actual_value === "object" && score.actual_value.away != null
       ? [Number(score.actual_value.away), Number(score.actual_value.home)] : null);
+  // Scorer winner_slug (team slug; null on tie). Preferred; score-derived only if the field is missing.
+  if (score && "winner_slug" in score && pts) {
+    const [a, h] = pts;
+    if (score.winner_slug == null) return a === h ? `Tie, ${a}–${h}` : null;
+    if (ALL_TEAM_SLUGS.has(score.winner_slug)) return `${teamLabelFor(score.winner_slug, division)} won, ${a}–${h}`;
+  }
   if (pts && game) {
     const [a, h] = pts;
     if (a === h) return `Tie, ${a}–${h}`;
@@ -643,7 +651,7 @@ export function buildVals(state, actions, data) {
       const all = speakerStats(sp, forecasts, scores, "all");
       p = {
         isModel: isModelSpeaker(sp),
-        kindLabel: isModelSpeaker(sp) ? "Model" : null,
+        kindLabel: isModelSpeaker(sp) ? "Model" : speakerKindOf(sp) === "outlet_feed" ? "Agency" : null,
         pickRecord: pk.n_captured
           ? { n_resolved: pk.n_resolved, n_hit: pk.n_hit, n_pending: pk.n_pending, hit_rate: formatPct(pk.hit_rate), eligible: pk.n_resolved >= (scorerBoards.min_resolved || 10), min: scorerBoards.min_resolved || 10 }
           : null,
