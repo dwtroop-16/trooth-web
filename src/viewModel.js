@@ -1,5 +1,6 @@
 import { formatWhen, formatPct, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
+import { displayedPcts } from "./missRate.js";
 import { horizonDisplay } from "./kickoffStatus.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
@@ -61,6 +62,8 @@ export function sportDivision(sid) {
   const id = sid || "";
   if (id.startsWith("nfl-")) return "NFL";
   if (id.startsWith("fbs-") || id.startsWith("ncaa-fbs-") || id.startsWith("ncaa-")) return "NCAA FBS";
+  // Heisman is a college football award: count it under NCAA FBS (was falling into "Sports").
+  if (id.startsWith("heisman-")) return "NCAA FBS";
   return null;
 }
 
@@ -195,6 +198,14 @@ export function winnerResultLine(forecast, score, actual, division) {
     return `${teamLabelFor(won, division)} won, ${a}–${h}`;
   }
   return null;
+}
+
+/** "114 speakers · 6 ranked · 108 not ranked yet" */
+export function boardCountLabel(rows) {
+  const n = rows.length;
+  if (!n) return "0 speakers";
+  const r = rows.filter((x) => x.ranked).length;
+  return `${n} ${n === 1 ? "speaker" : "speakers"} · ${r} ranked · ${n - r} not ranked yet`;
 }
 
 function emptyBucket() {
@@ -542,11 +553,12 @@ export function buildVals(state, actions, data) {
       ? SECTION_ORDER.filter((d) => scope.includes(d))
           .map((d) => {
             const rowsD = buildBoardRows(d);
-            return { domain: d, title: d, rows: rowsD.slice(0, BOARD_CAP), total: rowsD.length };
+            return { domain: d, title: d, rows: rowsD, total: rowsD.length, countLabel: boardCountLabel(rowsD) };
           })
           .filter((sec) => sec.rows.length > 0)
       : null;
-  const rows = allRows.slice(0, BOARD_CAP);
+  // Pagemap "Ranking minimum": ranked rows, then every "Not ranked yet" speaker. Never capped or hidden.
+  const rows = allRows;
 
   const scopedCards = cards.filter((c) => scope.includes(c.domain));
   const recentResolved = scopedCards
@@ -683,7 +695,10 @@ export function buildVals(state, actions, data) {
         n_pending: st.n_pending,
         n_unscorable: st.n_unscorable,
         n_void: st.n_void,
-        hit_rate: formatPct(st.hit_rate),
+        hit_rate: st.n_resolved ? displayedPcts({ n_hit: st.n_hit, n_resolved: st.n_resolved }).hit + "%" : "— no resolved yet",
+        miss_rate: st.n_resolved ? displayedPcts({ n_hit: st.n_hit, n_resolved: st.n_resolved }).miss + "%" : "— no resolved yet",
+        n_hit: st.n_hit,
+        n_miss: st.n_resolved - st.n_hit,
         mae: formatMetric(st.mean_abs_error, 2),
         ape: formatMetric(st.mean_ape, 3),
         brier: formatMetric(st.mean_brier, 3),
@@ -788,11 +803,12 @@ export function buildVals(state, actions, data) {
       pending: nPending,
     },
     boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
-    resultCount: (allRows.length === 0 ? "0 speakers" : rows.length + (rows.length === 1 ? " speaker" : " speakers") + (allRows.length > BOARD_CAP ? " (top " + BOARD_CAP + ")" : "")),
+    resultCount: boardCountLabel(rows),
     rankNote: "ranked at " + (scorerBoards.min_resolved || 10) + " resolved · pending is not a miss",
     // Pick record: Sports tab only, below the Score board (pagemap v1.2.0). Not on home.
     pickRows: cat === "Sports" ? scorerBoardRows(scorerBoards.pick_record, speakers, openSpeaker, scorerBoards.min_resolved).filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : [],
     pickTitle: "Pick record: who picked the winner",
+    get pickCount() { return boardCountLabel(this.pickRows); },
     pickNote: "winner picks only · ranked at " + (scorerBoards.min_resolved || 10) + " resolved",
     showModelsLink: cat === "Sports",
     goModels: () => (typeof actions.goModels === "function" ? actions.goModels() : undefined),
@@ -801,7 +817,7 @@ export function buildVals(state, actions, data) {
     rows,
     boardShowDomain: cat === "All",
     boardSections,
-    boardCapped: allRows.length > BOARD_CAP,
+    boardCapped: false,
     noResults: allRows.length === 0,
     recentResolved,
     featuredClaim,

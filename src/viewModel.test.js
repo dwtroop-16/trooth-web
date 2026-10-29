@@ -1,3 +1,4 @@
+import boards from "./generated/boards.json" with { type: "json" };
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DOMAINS, SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
@@ -24,7 +25,6 @@ const data = { speakers: SPEAKERS, forecasts: FORECASTS, actuals: ACTUALS, score
 test("All tab: one capped board in Scorer order (ranked by rank, then unranked by resolved)", () => {
   const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
   assert.equal(vals.boardShowDomain, true);
-  assert.ok(vals.rows.length <= 12);
   assert.ok(!("categoryBoards" in vals));
   assert.ok(!("showAllBoards" in vals));
   let seenUnranked = false;
@@ -69,13 +69,27 @@ test("single domain tab scopes one board to that domain, from people_board", () 
   assert.equal(home.showModelsLink, false);
 });
 
-test("board cap is 12 when more speakers exist", () => {
-  const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
-  assert.ok(vals.rows.length <= 12);
-  if (SPEAKERS.length > 12) {
-    assert.equal(vals.rows.length, 12);
-    assert.equal(vals.boardCapped, true);
-  }
+test("no cap: every Not ranked yet speaker is listed (Sports, Pick record, All sections)", () => {
+  const sports = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
+  const want = boards.people_board.filter((r) => r.domain === "sports" && r.kind !== "model").length;
+  assert.equal(sports.rows.length, want);
+  assert.ok(sports.rows.some((r) => r.name === "Tom Fornelli" && r.hitRate === "Not ranked yet"));
+  assert.equal(sports.boardCapped, false);
+  assert.match(sports.resultCount, /ranked · \d+ not ranked yet$/);
+  assert.equal(sports.pickRows.length, boards.pick_record.filter((r) => r.kind !== "model").length);
+  const all = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
+  const sec = all.boardSections.find((x) => x.domain === "Sports");
+  assert.equal(sec.rows.length, want);
+});
+
+test("person page: miss rate = 100 - half-up hit, In review label inputs", () => {
+  const vals = buildVals({ view: "profile", speakerId: "cbs-chris-hummer", cat: "All", q: "" }, actions, data);
+  const p = vals.p;
+  assert.ok(p.n_resolved > 0);
+  assert.equal(parseInt(p.hit_rate) + parseInt(p.miss_rate), 100);
+  assert.equal(p.n_hit + p.n_miss, p.n_resolved);
+  const fbs = p.divisionBoards.find((d) => d.division === "NCAA FBS");
+  assert.equal(fbs.n_resolved, p.n_resolved);
 });
 
 test("home exposes featured claim and recent resolved list", () => {

@@ -24,7 +24,13 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
           <span>Hit rate</span>
           <span>Pending</span>
         </div>
-        {rows.map((r) => (
+        {rows.map((r, i) => (
+          <div key={r.speakerId + "|" + i}>
+          {r.ranked === false && (i === 0 || rows[i - 1].ranked !== false) ? (
+            <div style={css("padding:8px 16px;border-bottom:1px solid var(--hair);font-size:12px;color:var(--muted);background:var(--paper);")}>
+              Not ranked yet · {rows.filter((x) => x.ranked === false).length} below the 10-resolved minimum
+            </div>
+          ) : null}
           <Hover
             key={r.speakerId}
             onClick={r.open}
@@ -46,6 +52,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (r.ranked === false ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{r.hitRate}</span>
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
           </Hover>
+          </div>
         ))}
         {empty && (
           <div style={css("padding:28px 20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{emptyLabel}</div>
@@ -166,7 +173,7 @@ export default function Home({ vals, openClaim }) {
             <div key={sec.domain} style={css(i ? "margin-top:28px;" : "")}>
               <Scoreboard
                 title={sec.title}
-                resultCount={sec.rows.length + (sec.rows.length === 1 ? " speaker" : " speakers") + (sec.total > sec.rows.length ? " (top " + sec.rows.length + ")" : "")}
+                resultCount={sec.countLabel}
                 rankNote={vals.rankNote}
                 rows={sec.rows}
                 empty={false}
@@ -213,7 +220,7 @@ export default function Home({ vals, openClaim }) {
         <div style={css("margin-top:28px;")}>
           <Scoreboard
             title={vals.pickTitle}
-            resultCount={vals.pickRows.length + (vals.pickRows.length === 1 ? " speaker" : " speakers")}
+            resultCount={vals.pickCount}
             rankNote={vals.pickNote}
             rows={vals.pickRows}
             empty={false}
