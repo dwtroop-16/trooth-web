@@ -40,6 +40,11 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
       </div>
 
       <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "16px" : "19px") + ";font-weight:500;line-height:1.35;color:var(--ink);margin-top:8px;" + (compact ? "display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;" : ""))}>{rendered.claimText}</div>
+      {card.isWinnerPick ? (
+        <div style={css("font-size:13px;color:var(--body);margin-top:4px;")}>
+          <span style={css("color:var(--faint);")}>Pick · </span>{card.pickedTeam || "In review"}
+        </div>
+      ) : null}
 
       <div style={css(`margin-top:8px;font-size:${metaSize};color:var(--body);line-height:1.65;display:flex;flex-wrap:wrap;gap:0 14px;`)}>
         <span style={metaWrap}>

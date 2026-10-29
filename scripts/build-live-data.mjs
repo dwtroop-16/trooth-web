@@ -228,6 +228,9 @@ function mapScore(row) {
     ape: row.ape == null ? null : Number(row.ape),
     brier: row.brier == null ? null : Number(row.brier),
     scored_at: row.scored_at,
+    actual_value: row.actual_value ?? null,
+    comparison_method: row.comparison_method ?? null,
+    winner_slug: row.winner_slug ?? null,
   };
 }
 
@@ -486,6 +489,47 @@ export const DATA_SOURCE = live.source || "live";
   for (const [slug, meta] of Object.entries(fbsTeams.teams || {})) {
     teamLabels.fbs[slug] = (meta && meta.label) || slug;
   }
+  // Rubric v1.3.9 boards from Scorer: exact-score people board, winner pick record, models board.
+  // Kept in their own file so exact-score rankings, winner picks and models never mix.
+  // Join key is speaker_id (pagemap v1.2.0). Until Scorer emits it, fall back to name + org and warn.
+  const regList = registry.speakers || [];
+  const idByNameOrg = new Map(speakers.map((sp) => [sp.name + "|" + (sp.org || ""), sp.id]));
+  const idByName = new Map(speakers.map((sp) => [sp.name, sp.id]));
+  for (const r of regList) {
+    if (!idByNameOrg.has(r.name + "|" + (r.org || ""))) idByNameOrg.set(r.name + "|" + (r.org || ""), r.id);
+    if (!idByName.has(r.name)) idByName.set(r.name, r.id);
+  }
+  const fallbackNames = new Set();
+  const unjoinedNames = new Set();
+  const joinRow = (row) => {
+    if (row.speaker_id) return row;
+    const id = idByNameOrg.get(row.speaker + "|" + (row.org || "")) || idByName.get(row.speaker) || null;
+    (id ? fallbackNames : unjoinedNames).add(`${row.speaker} (${row.org || "no org"})`);
+    return { ...row, speaker_id: id, speaker_id_fallback: true };
+  };
+  const boardsOut = {};
+  for (const [key, file] of [["people_board", "people_board.json"], ["pick_record", "pick_record.json"], ["models_board", "models_board.json"]]) {
+    const b = readJson(join(ROOT, "scorer/out", file));
+    if (b.rubric !== "1.3.9" || b.min_resolved !== 10) throw new Error(`${file}: expected rubric 1.3.9, min_resolved 10`);
+    const v = b[key];
+    boardsOut[key] = Array.isArray(v)
+      ? v.map(joinRow)
+      : Object.fromEntries(Object.entries(v || {}).map(([k, rows]) => [k, (rows || []).map(joinRow)]));
+    boardsOut.rubric = b.rubric;
+    boardsOut.min_resolved = b.min_resolved;
+  }
+  if (fallbackNames.size || unjoinedNames.size) {
+    console.warn(
+      `WARNING: ${fallbackNames.size + unjoinedNames.size} Scorer board speakers have speaker_id null; ` +
+        `name + org fallback joined ${fallbackNames.size}, ${unjoinedNames.size} unjoined.\n` +
+        `  fallback: ${[...fallbackNames].sort().join("; ")}\n  unjoined: ${[...unjoinedNames].sort().join("; ")}`,
+    );
+  }
+  writeFileSync(join(SITE, "src/generated/boards.json"), JSON.stringify(boardsOut, null, 2) + "\n");
+  // speakers-v1.json 1.5.0: kind person | model | outlet_feed. Only person ranks on people boards.
+  const speakerKinds = Object.fromEntries(regList.map((r) => [r.id, r.kind || "person"]));
+  writeFileSync(join(SITE, "src/generated/speakerKinds.json"), JSON.stringify(speakerKinds, null, 2) + "\n");
+
   writeFileSync(join(SITE, "src/generated/teamLabels.json"), JSON.stringify(teamLabels, null, 2) + "\n");
 
   // Changelog days into site working copy
