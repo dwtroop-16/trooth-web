@@ -24,7 +24,13 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
           <span>Hit rate</span>
           <span>Pending</span>
         </div>
-        {rows.map((r) => (
+        {rows.map((r, i) => (
+          <div key={r.speakerId + "|" + i}>
+          {r.ranked === false && (i === 0 || rows[i - 1].ranked !== false) ? (
+            <div style={css("padding:8px 16px;border-bottom:1px solid var(--hair);font-size:12px;color:var(--muted);background:var(--paper);")}>
+              Not ranked yet · {rows.filter((x) => x.ranked === false).length} below the 10-resolved minimum
+            </div>
+          ) : null}
           <Hover
             key={r.speakerId}
             onClick={r.open}
@@ -35,7 +41,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
             <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
               <span style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
               <div style={css("min-width:0;")}>
-                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.name}</div>
+                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.rank != null ? <span style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-right:6px;")}>#{r.rank}</span> : null}{r.name}</div>
                 <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
               </div>
             </div>
@@ -43,9 +49,10 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
               <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
             ) : null}
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600;color:var(--ink);")}>{r.hitRate}</span>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (r.ranked === false ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{r.hitRate}{r.ranked !== false && r.rateDetail ? <span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{r.rateDetail}</span> : null}</span>
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
           </Hover>
+          </div>
         ))}
         {empty && (
           <div style={css("padding:28px 20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{emptyLabel}</div>
@@ -160,6 +167,36 @@ export default function Home({ vals, openClaim }) {
         </div>
       ) : null}
 
+      {vals.boardSections ? (
+        vals.boardSections.length ? (
+          vals.boardSections.map((sec, i) => (
+            <div key={sec.domain} style={css(i ? "margin-top:28px;" : "")}>
+              <Scoreboard
+                title={sec.title}
+                resultCount={sec.countLabel}
+                rankNote={vals.rankNote}
+                rows={sec.rows}
+                empty={false}
+                showDomain={false}
+              />
+            </div>
+          ))
+        ) : (
+          <Scoreboard
+        title={vals.boardTitle}
+        resultCount={vals.resultCount}
+        rankNote={vals.rankNote}
+        rows={vals.rows}
+        empty={vals.noResults}
+        emptyLabel={
+          q
+            ? `No speakers match “${q}” in this tab. Claim matches above still search all domains.`
+            : "No speakers yet"
+        }
+        showDomain={showDomain}
+      />
+        )
+      ) : (
       <Scoreboard
         title={vals.boardTitle}
         resultCount={vals.resultCount}
@@ -173,6 +210,24 @@ export default function Home({ vals, openClaim }) {
         }
         showDomain={showDomain}
       />
+      )}
+      {vals.showModelsLink ? (
+        <div style={css("margin-top:10px;")}>
+          <Hover as="button" onClick={() => vals.goModels()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Computer models</Hover>
+        </div>
+      ) : null}
+      {vals.pickRows && vals.pickRows.length ? (
+        <div style={css("margin-top:28px;")}>
+          <Scoreboard
+            title={vals.pickTitle}
+            resultCount={vals.pickCount}
+            rankNote={vals.pickNote}
+            rows={vals.pickRows}
+            empty={false}
+            showDomain={false}
+          />
+        </div>
+      ) : null}
       <div style={css("margin-top:10px;")}>
         <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>
       </div>

@@ -26,9 +26,15 @@ export function formatWhen(iso) {
   });
 }
 
+// Rubric v1.3.2: displayed hit rate rounds half up to a whole percent (miss = 100 − displayed hit).
+// Never a decimal. Prefer pctFromCounts (exact integer math) when counts are known.
 export function formatPct(rate) {
   if (rate == null || Number.isNaN(rate)) return "—";
-  return Math.round(rate * 1000) / 10 + "%";
+  return Math.floor(rate * 100 + 0.5 + 1e-9) + "%";
+}
+export function pctFromCounts(nHit, nResolved) {
+  if (!nResolved) return "—";
+  return Math.floor((nHit * 200 + nResolved) / (2 * nResolved)) + "%";
 }
 
 export function formatMetric(n, digits) {

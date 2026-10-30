@@ -48,13 +48,13 @@ export default function Profile({ vals, openClaim }) {
     ["Resolved", p.n_resolved],
     ["Pending", p.n_pending],
     ["Unscorable", p.n_unscorable],
-    ["Void", p.n_void],
+    ["In review", p.n_void],
   ];
   const divisionRows = (p.divisionBoards || []).map((row) => ({
     key: row.division,
     label: row.division,
     n_resolved: row.n_resolved,
-    hit_rate: row.hit_rate,
+    hit_rate: row.n_resolved ? row.hit_rate + " · " + row.rate_detail : row.hit_rate,
     n_pending: row.n_pending,
   }));
   const teamRows = (p.teamBoards || []).map((row) => ({
@@ -62,7 +62,7 @@ export default function Profile({ vals, openClaim }) {
     label: row.teamLabel,
     division: row.division,
     n_resolved: row.n_resolved,
-    hit_rate: row.hit_rate,
+    hit_rate: row.n_resolved ? row.hit_rate + " · " + row.rate_detail : row.hit_rate,
     n_pending: row.n_pending,
   }));
   const showTeamSection = (p.teamBoards && p.teamBoards.length > 0) || p.hasSports;
@@ -74,7 +74,7 @@ export default function Profile({ vals, openClaim }) {
         <span style={css(`width:40px;height:40px;border-radius:50%;background:${p.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:16px;font-weight:600;flex-shrink:0;`)}>{p.initials}</span>
         <div>
           <h1 style={css("font-family:Newsreader,serif;font-size:28px;font-weight:600;letter-spacing:-0.01em;margin:0;color:var(--ink);")}>{p.name}</h1>
-          <div style={css("font-size:13.5px;color:var(--muted);margin-top:2px;")}>{p.org || "—"}</div>
+          <div style={css("font-size:13.5px;color:var(--muted);margin-top:2px;")}>{p.kindLabel ? <span style={css("font-size:11px;font-weight:700;border:1px solid var(--hair);border-radius:999px;padding:1px 7px;margin-right:6px;")}>{p.kindLabel}</span> : null}{p.org || "—"}</div>
           <div style={css("font-size:13px;color:var(--body);margin-top:6px;")}>
             Source accounts · {p.accounts.length ? p.accounts.join(" · ") : "none listed"}
           </div>
@@ -85,7 +85,12 @@ export default function Profile({ vals, openClaim }) {
       <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;")}>
         <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
           <span style={css("font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;line-height:1;color:var(--ink);")}>{p.hit_rate}</span>
-          <span style={css("font-size:13px;color:var(--muted);")}>hit rate · n_hit / n_resolved (pending excluded)</span>
+          <span style={css("font-size:13px;color:var(--muted);")}>hit rate{p.n_resolved ? ` · ${p.n_hit} of ${p.n_resolved} resolved` : ""}</span>
+          <span style={css("font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;line-height:1;color:var(--ink);margin-left:12px;")}>{p.miss_rate}</span>
+          <span style={css("font-size:13px;color:var(--muted);")}>
+            miss rate{p.n_resolved ? ` · ${p.n_miss} of ${p.n_resolved} resolved` : ""} · pending, unscorable and in review excluded ·{" "}
+            <a href="/method" onClick={(e) => { e.preventDefault(); vals.goMethod && vals.goMethod(); }} style={css("color:var(--forest);")}>How we score</a>
+          </span>
         </div>
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
           {counts.map(([label, n]) => (
@@ -101,6 +106,18 @@ export default function Profile({ vals, openClaim }) {
           <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.brier}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>Mean Brier (where defined)</div></div>
         </div>
       </div>
+
+      {p.pickRecord ? (
+        <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;margin-top:16px;")}>
+          <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;line-height:1;color:var(--ink);")}>{p.pickRecord.eligible ? p.pickRecord.hit_rate : "Not ranked yet"}</span>
+            <span style={css("font-size:13px;color:var(--muted);")}>pick record · winner-only picks, separate from the exact-score hit rate above</span>
+          </div>
+          <div style={css("font-size:13px;color:var(--body);margin-top:10px;")}>
+            {p.pickRecord.eligible ? `${p.pickRecord.n_hit} of ${p.pickRecord.n_resolved} resolved` : `${p.pickRecord.n_resolved} of ${p.pickRecord.min} resolved`} · {p.pickRecord.n_pending} pending
+          </div>
+        </div>
+      ) : null}
 
       {divisionRows.length > 0 ? (
         <div style={css("margin-top:28px;")}>

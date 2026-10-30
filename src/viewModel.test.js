@@ -1,3 +1,4 @@
+import boards from "./generated/boards.json" with { type: "json" };
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DOMAINS, SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
@@ -21,46 +22,74 @@ const actions = {
 
 const data = { speakers: SPEAKERS, forecasts: FORECASTS, actuals: ACTUALS, scores: SCORES, CATCOLORS };
 
-test("All tab uses one capped board sorted by n_resolved then hit_rate", () => {
+test("All tab: one capped board in Scorer order (ranked by rank, then unranked by resolved)", () => {
   const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
   assert.equal(vals.boardShowDomain, true);
-  assert.ok(vals.rows.length <= 12);
   assert.ok(!("categoryBoards" in vals));
   assert.ok(!("showAllBoards" in vals));
-  for (let i = 1; i < vals.rows.length; i++) {
-    const prev = vals.rows[i - 1];
-    const cur = vals.rows[i];
-    assert.ok(
-      prev.nResolved > cur.nResolved ||
-        (prev.nResolved === cur.nResolved &&
-          (Number.parseFloat(prev.hitRate) || -1) >= (Number.parseFloat(cur.hitRate) || -1)),
-      `row ${i} out of order: ${prev.nResolved}/${prev.hitRate} vs ${cur.nResolved}/${cur.hitRate}`
-    );
+  let seenUnranked = false;
+  for (const r of vals.rows) {
+    if (!r.ranked) seenUnranked = true;
+    else assert.ok(!seenUnranked, "ranked row after an unranked row");
+    if (!r.ranked) {
+      assert.equal(r.hitRate, "Not ranked yet");
+      assert.equal(r.rank, null);
+    }
+    assert.ok(!String(r.hitRate).includes("*"));
   }
 });
 
-test("single domain tab scopes one board to that domain", () => {
+test("All tab: domain sections with their own Scorer ranks, no mixed ranks", () => {
+  const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
+  assert.ok(vals.boardSections.length > 0);
+  const order = ["Sports", "Weather", "Finance", "Politics"];
+  let last = -1;
+  for (const sec of vals.boardSections) {
+    assert.ok(order.indexOf(sec.domain) > last);
+    last = order.indexOf(sec.domain);
+    assert.ok(sec.rows.length > 0);
+    assert.ok(sec.rows.every((r) => r.domain === sec.domain));
+    const ranks = sec.rows.filter((r) => r.rank != null).map((r) => r.rank);
+    assert.equal(new Set(ranks).size, ranks.length, sec.domain + " has duplicate ranks");
+  }
+  const single = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
+  assert.equal(single.boardSections, null);
+});
+
+test("single domain tab scopes one board to that domain, from people_board", () => {
   const vals = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
   assert.equal(vals.boardShowDomain, false);
   assert.equal(vals.boardTitle, "Sports scorecard");
   assert.ok(vals.rows.length > 0);
   assert.ok(vals.rows.every((r) => r.domain === "Sports"));
-  const domainForecasts = FORECASTS.filter((f) => f.domain === "sports");
-  for (const row of vals.rows) {
-    const sp = SPEAKERS.find((s) => s.id === row.speakerId);
-    const st = speakerStats(sp, domainForecasts, SCORES);
-    assert.equal(row.nResolved, st.n_resolved);
-    assert.equal(row.pending, st.n_pending);
-  }
+  assert.equal(vals.pickTitle, "Pick record: who picked the winner");
+  assert.ok(vals.pickRows.length > 0 && vals.showModelsLink);
+  const home = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
+  assert.equal(home.pickRows.length, 0);
+  assert.equal(home.showModelsLink, false);
 });
 
-test("board cap is 12 when more speakers exist", () => {
-  const vals = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
-  assert.ok(vals.rows.length <= 12);
-  if (SPEAKERS.length > 12) {
-    assert.equal(vals.rows.length, 12);
-    assert.equal(vals.boardCapped, true);
-  }
+test("no cap: every Not ranked yet speaker is listed (Sports, Pick record, All sections)", () => {
+  const sports = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
+  const want = boards.people_board.filter((r) => r.domain === "sports" && r.kind !== "model").length;
+  assert.equal(sports.rows.length, want);
+  assert.ok(sports.rows.some((r) => r.name === "Tom Fornelli" && r.hitRate === "Not ranked yet"));
+  assert.equal(sports.boardCapped, false);
+  assert.match(sports.resultCount, /ranked · \d+ not ranked yet$/);
+  assert.equal(sports.pickRows.length, boards.pick_record.filter((r) => r.kind !== "model").length);
+  const all = buildVals({ view: "home", cat: "All", q: "" }, actions, data);
+  const sec = all.boardSections.find((x) => x.domain === "Sports");
+  assert.equal(sec.rows.length, want);
+});
+
+test("person page: miss rate = 100 - half-up hit, In review label inputs", () => {
+  const vals = buildVals({ view: "profile", speakerId: "cbs-chris-hummer", cat: "All", q: "" }, actions, data);
+  const p = vals.p;
+  assert.ok(p.n_resolved > 0);
+  assert.equal(parseInt(p.hit_rate) + parseInt(p.miss_rate), 100);
+  assert.equal(p.n_hit + p.n_miss, p.n_resolved);
+  const fbs = p.divisionBoards.find((d) => d.division === "NCAA FBS");
+  assert.equal(fbs.n_resolved, p.n_resolved);
 });
 
 test("home exposes featured claim and recent resolved list", () => {
@@ -151,4 +180,24 @@ test("cards show the firm as of the claim date (forecast row speaker.org), not t
     assert.equal(toPublicClaimCard(f, byId[f.speaker_id], null, null).speakerOrg, "Piper Sandler");
   }
   assert.ok(differing >= 2);
+});
+
+test("no rendered rate has a decimal (boards, pick record, All sections, person pages)", () => {
+  const dec = /\d\.\d+\s*%/;
+  const seen = [];
+  for (const cat of ["All", "Sports", "Weather", "Finance", "Politics"]) {
+    const v = buildVals({ view: "home", cat, q: "" }, actions, data);
+    for (const r of [...v.rows, ...(v.pickRows || []), ...(v.boardSections || []).flatMap((x) => x.rows)]) seen.push(r.hitRate);
+  }
+  for (const sp of SPEAKERS) {
+    const p = buildVals({ view: "profile", speakerId: sp.id, cat: "All", q: "" }, actions, data).p;
+    if (!p) continue;
+    seen.push(p.hit_rate, p.miss_rate, p.pickRecord?.hit_rate);
+    for (const b of [...p.divisionBoards, ...p.teamBoards]) seen.push(b.hit_rate);
+  }
+  const bad = seen.filter((x) => x != null && dec.test(String(x)));
+  assert.deepEqual(bad, []);
+  const hum = buildVals({ view: "profile", speakerId: "cbs-chris-hummer", cat: "All", q: "" }, actions, data).p;
+  const row = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data).rows.find((r) => r.speakerId === "cbs-chris-hummer");
+  assert.equal(row.hitRate, hum.hit_rate);
 });
