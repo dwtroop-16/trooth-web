@@ -368,6 +368,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     speakerOrg: forecast.speaker?.org || (speaker && speaker.org) || null,
     claimText: forecast.claim.text,
     sourceUrl: forecast.source.url,
+    // Cite-only hosts (linkPolicy): title/date from data fields only, never fetched.
+    sourceTitle: forecast.source?.title ?? forecast.source_title ?? null,
+    sourceDate: forecast.source?.published_at ?? forecast.source?.date ?? null,
     sourceHost: hostnameFromUrl(forecast.source.url),
     publishedAt: forecast.published_at,
     // kickoff_status pending: the horizon is a placeholder; keep it off the card entirely.

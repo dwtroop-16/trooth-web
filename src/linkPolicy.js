@@ -15,7 +15,6 @@
 //     Grades are unaffected.
 //     fred.stlouisfed.org (Architect 2026-10-02): "FRED (<full URL> ; not linked)", never an href.
 //
-//     foxsports.com (Legal 05bh) and si.com (Legal 05bi), 2026-10-29: plain-text cite, never an href.
 //
 // Every other host (NWS, ...) is returned unchanged.
 
@@ -31,10 +30,35 @@ export const HOME_ONLY_LINK_DOMAINS = {
 export const PLAIN_TEXT_LINK_DOMAINS = {
   "ncaa.com": { name: "NCAA.com", note: "not linked" },
   "fred.stlouisfed.org": { name: "FRED", note: "not linked" },
-  // Legal-Ops 05bh (FOX Sports) and 05bi (Sports Illustrated), 2026-10-29: plain-text cite, no hyperlink.
-  "foxsports.com": { name: "FOX Sports", note: "not linked" },
-  "si.com": { name: "Sports Illustrated", note: "not linked" },
 };
+
+// (4) CITE-ONLY domains (Legal-Ops 05bh FOX Sports, 05bi Sports Illustrated, 2026-10-29; wording update
+//     2026-10-30; club sites per PR #95): never an href and the URL is never shown. The card renders
+//     'Source: <Outlet>, “<title>”, <Mon D, YYYY>' (or 'Source: <Outlet>, <date>' when no title field
+//     exists). The URL stays in data only. Titles come from data fields only; nothing is fetched.
+export const CITE_ONLY_LINK_DOMAINS = {
+  "si.com": { name: "Sports Illustrated" },
+  "foxsports.com": { name: "FOX Sports" },
+  "chicagobears.com": { name: "Chicago Bears" },
+  "49ers.com": { name: "San Francisco 49ers" },
+};
+
+const CITE_DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/New_York" });
+
+export function formatCiteDate(iso) {
+  const d = iso ? new Date(iso) : null;
+  return d && !Number.isNaN(d.getTime()) ? CITE_DATE.format(d) : null;
+}
+
+/** 'Source: <Outlet>, “<title>”, <Mon D, YYYY>'; title/date omitted when absent. */
+export function citeText(name, title, dateIso) {
+  const bits = [name];
+  const t = title == null ? "" : String(title).trim();
+  if (t) bits.push(`\u201C${t}\u201D`);
+  const d = formatCiteDate(dateIso);
+  if (d) bits.push(d);
+  return `Source: ${bits.join(", ")}`;
+}
 
 export function hostOf(url) {
   try {
@@ -60,6 +84,10 @@ export function homeOnlyRuleFor(url) {
   return ruleFor(HOME_ONLY_LINK_DOMAINS, hostOf(url));
 }
 
+export function citeOnlyRuleFor(url) {
+  return ruleFor(CITE_ONLY_LINK_DOMAINS, hostOf(url));
+}
+
 export function plainTextRuleFor(url) {
   return ruleFor(PLAIN_TEXT_LINK_DOMAINS, hostOf(url));
 }
@@ -68,6 +96,7 @@ export function plainTextRuleFor(url) {
 export function isAllowedHref(url) {
   if (blockedRuleFor(url)) return false;
   if (plainTextRuleFor(url)) return false;
+  if (citeOnlyRuleFor(url)) return false;
   const home = homeOnlyRuleFor(url);
   if (home) return String(url).trim() === home.home;
   return true;
@@ -77,7 +106,9 @@ export function isAllowedHref(url) {
  * Source line as ordered parts: { kind: "link", href, text } | { kind: "text", role, text }.
  * `text` is the link text to use when the URL is not subject to a rule.
  */
-export function sourceLinkParts(url, text) {
+export function sourceLinkParts(url, text, cite = {}) {
+  const citeRule = citeOnlyRuleFor(url);
+  if (citeRule) return [{ kind: "text", role: "cite", text: citeText(citeRule.name, cite.title, cite.date) }];
   const blocked = blockedRuleFor(url);
   if (blocked) return [{ kind: "text", role: "blocked_credit", text: blocked.credit }];
   const plain = plainTextRuleFor(url);
