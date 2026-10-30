@@ -45,9 +45,15 @@ export const CITE_ONLY_LINK_DOMAINS = {
 
 const CITE_DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/New_York" });
 
+const CITE_DATE_UTC = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
 export function formatCiteDate(iso) {
-  const d = iso ? new Date(iso) : null;
-  return d && !Number.isNaN(d.getTime()) ? CITE_DATE.format(d) : null;
+  if (!iso) return null;
+  // A date-only value (YYYY-MM-DD) is a calendar date: format it as-is, never shifted by time zone.
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(String(iso).trim());
+  const d = new Date(dateOnly ? `${String(iso).trim()}T00:00:00Z` : iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return (dateOnly ? CITE_DATE_UTC : CITE_DATE).format(d);
 }
 
 /** 'Source: <Outlet>, “<title>”, <Mon D, YYYY>'; title/date omitted when absent. */

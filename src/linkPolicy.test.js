@@ -11,7 +11,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
 import { toPublicClaimCard } from "./viewModel.js";
 import { renderPublicClaimCard } from "./claimCard.js";
-import { sourceLinkParts, isAllowedHref, hostOf } from "./linkPolicy.js";
+import { sourceLinkParts, isAllowedHref, hostOf, formatCiteDate } from "./linkPolicy.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const NFL_HOME = "https://www.nfl.com/";
@@ -177,9 +177,15 @@ test("SI/FOX cards cite title and source published_at from data; null title drop
   for (const c of cite) {
     const [p] = renderPublicClaimCard(c).sourceParts;
     assert.ok(c.sourceDate, c.id);
-    const d = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/New_York" }).format(new Date(c.sourceDate));
+    const d = formatCiteDate(c.sourceDate);
     if (c.sourceTitle) { titled++; assert.ok(p.text.endsWith(`, \u201C${c.sourceTitle}\u201D, ${d}`), c.id); }
     else assert.ok(!p.text.includes("\u201C") && p.text.endsWith(`, ${d}`), c.id);
   }
   assert.equal(titled, 133);
+});
+
+test("formatCiteDate: date-only values are not shifted a day by time zone", () => {
+  assert.equal(formatCiteDate("2026-10-28"), "Oct 28, 2026");
+  assert.equal(formatCiteDate("2026-02-07"), "Feb 7, 2026");
+  assert.equal(formatCiteDate("2026-10-29T03:00:00Z"), "Oct 28, 2026");
 });
