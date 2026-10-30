@@ -169,3 +169,17 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
   }
   assert.ok(foxLinks > 0, "si/fox cards exist");
 });
+
+test("SI/FOX cards cite title and source published_at from data; null title drops the quotes", () => {
+  const cite = cards.filter((c) => /(^|\.)(si|foxsports)\.com$/.test(hostOf(c.sourceUrl)));
+  assert.equal(cite.length, 140);
+  let titled = 0;
+  for (const c of cite) {
+    const [p] = renderPublicClaimCard(c).sourceParts;
+    assert.ok(c.sourceDate, c.id);
+    const d = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/New_York" }).format(new Date(c.sourceDate));
+    if (c.sourceTitle) { titled++; assert.ok(p.text.endsWith(`, \u201C${c.sourceTitle}\u201D, ${d}`), c.id); }
+    else assert.ok(!p.text.includes("\u201C") && p.text.endsWith(`, ${d}`), c.id);
+  }
+  assert.equal(titled, 133);
+});

@@ -358,6 +358,9 @@ function build() {
         type: f.source?.type,
         url: f.source?.url,
         account: f.source?.account ?? null,
+        // Cite-only hosts (Legal 05bh/05bi/05ay): article title and date, from Ingest data only.
+        ...(f.source?.title !== undefined ? { title: f.source.title } : {}),
+        ...(f.source?.published_at ? { published_at: f.source.published_at } : {}),
       },
       speaker: {
         name: f.speaker?.name,
