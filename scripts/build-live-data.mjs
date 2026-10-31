@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } fro
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { publicChangelogDay } from "../src/changelogPublic.js";
+import { initialsFromName } from "../src/initials.js";
 import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -114,18 +115,6 @@ function kebabCase(name) {
     .replace(/-{2,}/g, "-");
 }
 
-function initialsFromName(name) {
-  const parts = String(name || "")
-    .replace(/\(.*?\)/g, " ")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-  if (parts.length === 0) return "?";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  const first = parts[0][0] || "";
-  const last = parts[parts.length - 1][0] || "";
-  return (first + last).toUpperCase();
-}
 
 /** America/New_York calendar date from ISO horizon_end (UTC). */
 function nyDateFromIso(iso) {
@@ -325,7 +314,8 @@ function build() {
       accounts: [...meta.accounts].sort(),
       domain,
       avatar,
-      initials: initialsFromName(name),
+      initials: initialsFromName(name, reg?.initials),
+      ...(reg?.initials ? { initials_override: reg.initials } : {}),
       bio: "",
     });
     speakerIdByName.set(name, id);

@@ -93,6 +93,7 @@ export default function Profile({ vals, openClaim }) {
           </span>
         </div>
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
+          <div style={css("flex-basis:100%;font-size:12px;color:var(--muted);")}>Exact-score claims{p.n_picks ? ` · ${p.n_picks} winner ${p.n_picks === 1 ? "pick" : "picks"} counted in the Pick record` : ""}</div>
           {counts.map(([label, n]) => (
             <div key={label} style={css("min-width:72px;")}>
               <div style={css("font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:var(--ink);")}>{n}</div>
@@ -114,7 +115,7 @@ export default function Profile({ vals, openClaim }) {
             <span style={css("font-size:13px;color:var(--muted);")}>pick record · winner-only picks, separate from the exact-score hit rate above</span>
           </div>
           <div style={css("font-size:13px;color:var(--body);margin-top:10px;")}>
-            {p.pickRecord.eligible ? `${p.pickRecord.n_hit} of ${p.pickRecord.n_resolved} resolved` : `${p.pickRecord.n_resolved} of ${p.pickRecord.min} resolved`} · {p.pickRecord.n_pending} pending
+            {p.pickRecord.eligible ? `${p.pickRecord.n_hit} of ${p.pickRecord.n_resolved} resolved` : `${p.pickRecord.n_resolved} resolved`} · {p.pickRecord.n_pending} pending{p.pickRecord.eligible ? "" : ` · ranked at ${p.pickRecord.min} resolved`}
           </div>
         </div>
       ) : null}

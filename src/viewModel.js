@@ -1,5 +1,6 @@
 import { avatarFor } from "./avatar.js";
 import { formatWhen, formatPct, pctFromCounts, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
+import { initialsFromName } from "./initials.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { displayedPcts } from "./missRate.js";
 import { horizonDisplay } from "./kickoffStatus.js";
@@ -136,7 +137,7 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
         name: sp?.name || r.speaker,
         org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + (r.org || sp?.org || ""),
         kindLabel: (r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency" : null,
-        initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
+        initials: initialsFromName(sp?.name || r.speaker, sp?.initials_override),
         avatar: sp ? avatarFor(sp.id) : "#6B7280",
         domain: domainLabel,
         nResolved: ranked ? r.n_resolved : `${r.n_resolved} of ${minResolved} resolved`,
@@ -692,14 +693,16 @@ export function buildVals(state, actions, data) {
         name: sp.name,
         org: sp.org,
         accounts: sp.accounts || [],
-        initials: sp.initials,
+        initials: initialsFromName(sp.name, sp.initials_override),
         avatar: avatarFor(sp.id),
         bio: sp.bio,
         domain: domainLabel,
         catColor: cm.color,
         catTint: cm.tint,
-        n_captured: all.n_captured,
-        n_scorable: all.n_scorable,
+        // Tiles count exact-score claims only; winner picks live in the Pick record (Card QA P3).
+        n_captured: st.n_captured,
+        n_scorable: st.n_scorable,
+        n_picks: pk.n_captured,
         n_resolved: st.n_resolved,
         n_pending: st.n_pending,
         n_unscorable: st.n_unscorable,
@@ -819,6 +822,8 @@ export function buildVals(state, actions, data) {
     pickTitle: "Pick record: who picked the winner",
     get pickCount() { return boardCountLabel(this.pickRows); },
     pickNote: "winner picks only · ranked at " + (scorerBoards.min_resolved || 10) + " resolved",
+    pickEmptyLabel: "No winner picks yet",
+    showPickBoard: cat === "Sports",
     showModelsLink: cat === "Sports",
     goModels: () => (typeof actions.goModels === "function" ? actions.goModels() : undefined),
     isModels: s.view === "models",

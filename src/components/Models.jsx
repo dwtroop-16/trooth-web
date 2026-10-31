@@ -7,7 +7,7 @@ export default function Models({ vals, openClaim }) {
   const m = vals.models || { models: [] };
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;")}>
-      <Hover as="button" onClick={() => { vals.goHome(); if (vals.categories) { const s = vals.categories.find((c) => c.label === "Sports"); if (s) s.onClick(); } }} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;" hover="color:var(--forest);">← Sports</Hover>
+      <Hover as="button" onClick={() => { vals.goHome(); if (vals.categories) { const s = vals.categories.find((c) => c.label === "Sports"); if (s) s.onClick(); } }} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;" hover="color:var(--forest);">← Sports scorecard</Hover>
       <h1 style={css("font-family:Newsreader,serif;font-size:28px;font-weight:600;margin:0 0 6px;color:var(--ink);")}>Computer models</h1>
       <p style={css("font-size:14px;color:var(--body);margin:0 0 22px;max-width:620px;line-height:1.5;")}>
         Published models and sites, credited to the site by name. Models are scored like everyone else but are never ranked against people.
