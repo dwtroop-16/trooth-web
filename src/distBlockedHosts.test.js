@@ -64,3 +64,39 @@ test("built dist/ has no href to 247wallst", { timeout: 120000 }, async () => {
   const bad = files.filter((p) => HREF_247.test(readFileSync(p, "utf8")));
   assert.deepEqual(bad, []);
 });
+
+// Legal 05bh (foxsports.com) / 05bi (si.com): plain-text cite only. No href to either host anywhere
+// in the built output (cards, claim pages, person pages, search, changelog).
+export const HREF_SI_FOX = /href\s*[=:]\s*["'`]?\s*(https?:)?\/\/([a-z0-9-]+\.)*(si|foxsports|chicagobears|49ers)\.com/i;
+
+test("HREF_SI_FOX matches hrefs, not plain-text mentions", () => {
+  assert.ok(HREF_SI_FOX.test('<a href="https://www.si.com/x">'));
+  assert.ok(HREF_SI_FOX.test('{href:"https://www.foxsports.com/x"}'));
+  assert.ok(!HREF_SI_FOX.test('{source_url:"https://www.si.com/x"}'));
+  assert.ok(!HREF_SI_FOX.test('<a href="https://www.notsi.com/">'));
+});
+
+test("built dist/ has no href to si.com or foxsports.com", { timeout: 120000 }, async () => {
+  const { build } = await import("vite");
+  const outDir = mkdtempSync(join(tmpdir(), "trooth-dist-"));
+  await build({ root: SITE, logLevel: "silent", build: { outDir, emptyOutDir: true } });
+  const files = [];
+  const walk = (d) => { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.(html|js)$/.test(e.name)) files.push(p); } };
+  walk(outDir);
+  const bad = files.filter((p) => HREF_SI_FOX.test(readFileSync(p, "utf8")));
+  assert.deepEqual(bad, []);
+});
+
+// Legal 2026-10-30 wording update: emitted HTML never carries cite-only host URL text. (The JS data
+// bundle still holds source URLs as data strings, per "keep URL in data only"; the href scan above
+// and the rendered-card scan in linkPolicy.test.js cover what is displayed.)
+test("built dist/ HTML has no si.com / foxsports.com / chicagobears.com / 49ers.com URL text", { timeout: 120000 }, async () => {
+  const { build } = await import("vite");
+  const outDir = mkdtempSync(join(tmpdir(), "trooth-dist-"));
+  await build({ root: SITE, logLevel: "silent", build: { outDir, emptyOutDir: true } });
+  const files = [];
+  const walk = (d) => { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.html$/.test(e.name)) files.push(p); } };
+  walk(outDir);
+  const bad = files.filter((p) => /(foxsports|chicagobears|49ers)\.com|\/\/(www\.)?si\.com/i.test(readFileSync(p, "utf8")));
+  assert.deepEqual(bad, []);
+});

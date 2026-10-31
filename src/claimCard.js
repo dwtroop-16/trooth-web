@@ -74,7 +74,10 @@ function hostOf(url) {
 
 /** Claim-source line as ordered parts (link text is the source host), after the link rules. */
 export function claimSourceParts(card) {
-  return sourceLinkParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl);
+  return sourceLinkParts(card.sourceUrl, hostOf(card.sourceUrl) || card.sourceUrl, {
+    title: card.sourceTitle ?? null,
+    date: card.sourceDate || card.publishedAt,
+  });
 }
 
 /**
@@ -89,7 +92,10 @@ export function actualSourceParts(card) {
   const isNws = /(^|\.)weather\.gov$/.test(host);
   // Legal-Ops link rules (linkPolicy.js): blocked domains render as plain-text credit;
   // home-only domains (nfl.com) link the home page and show the specific URL as plain text.
-  const parts = sourceLinkParts(card.actualSourceUrl, (isNws ? card.actualSourceName : host) || card.actualSourceName);
+  const parts = sourceLinkParts(card.actualSourceUrl, (isNws ? card.actualSourceName : host) || card.actualSourceName, {
+    title: card.actualSourceTitle ?? null,
+    date: card.actualObservedAt || null,
+  });
   if (card.actualRetentionNote) {
     if (card.actualObservationRef) parts.push({ kind: "text", role: "observation_ref", text: card.actualObservationRef });
     if (card.actualObservedAt) parts.push({ kind: "text", role: "observed_at", text: `observed ${card.actualObservedAt}` });

@@ -3,6 +3,7 @@
  * Build live site bundle from Trooth ingest + scorer + actuals (read-only sources).
  * Does not invent forecasts, actuals, or grades. Does not scrape.
  */
+import { avatarFor } from "../src/avatar.js";
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -86,33 +87,6 @@ const SUBJECTS_FILES = [
   "games-2026-nfl.json",
 ];
 
-const AVATAR_PALETTE = [
-  "#1F6F5C",
-  "#B4571F",
-  "#2E6BA6",
-  "#9A3B5A",
-  "#3C6E4F",
-  "#C2703A",
-  "#35618C",
-  "#8A4A6B",
-  "#237A6B",
-  "#A85A2E",
-  "#6B4E9E",
-  "#4A7C59",
-  "#C45C26",
-  "#2F5D8C",
-  "#7A3E5C",
-  "#1A6B5A",
-  "#B86B2E",
-  "#3E6FA0",
-  "#8B4F6A",
-  "#2C7A6E",
-  "#A05A35",
-  "#4A6490",
-  "#9A4560",
-  "#347A58",
-  "#B55E28",
-];
 
 function readJsonl(path) {
   const text = readFileSync(path, "utf8");
@@ -329,7 +303,6 @@ function build() {
 
   const speakers = [];
   const speakerIdByName = new Map();
-  let paletteIdx = 0;
   const sortedNames = [...speakerMeta.keys()].sort((a, b) => a.localeCompare(b));
   for (const name of sortedNames) {
     const meta = speakerMeta.get(name);
@@ -344,8 +317,7 @@ function build() {
         domain = d;
       }
     }
-    const avatar = AVATAR_PALETTE[paletteIdx % AVATAR_PALETTE.length];
-    paletteIdx += 1;
+    const avatar = avatarFor(id);
     speakers.push({
       id,
       name,
@@ -386,6 +358,9 @@ function build() {
         type: f.source?.type,
         url: f.source?.url,
         account: f.source?.account ?? null,
+        // Cite-only hosts (Legal 05bh/05bi/05ay): article title and date, from Ingest data only.
+        ...(f.source?.title !== undefined ? { title: f.source.title } : {}),
+        ...(f.source?.published_at ? { published_at: f.source.published_at } : {}),
       },
       speaker: {
         name: f.speaker?.name,

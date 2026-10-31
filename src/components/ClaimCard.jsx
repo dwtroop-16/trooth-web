@@ -4,7 +4,7 @@ import Hover from "./Hover.jsx";
 import { trackSourceLinkClicked } from "../analytics.js";
 
 // Plain-text parts produced by the Legal-Ops link rules (linkPolicy.js), shown inline beside the link.
-const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_url"]);
+const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_url", "cite"]);
 
 export default function ClaimCard({ card, compact, quiet, onOpen }) {
   const rendered = renderPublicClaimCard(card);
@@ -48,7 +48,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
 
       <div style={css(`margin-top:8px;font-size:${metaSize};color:var(--body);line-height:1.65;display:flex;flex-wrap:wrap;gap:0 14px;`)}>
         <span style={metaWrap}>
-          <span style={faint}>Source · </span>
+          {rendered.sourceParts[0]?.role === "cite" ? null : <span style={faint}>Source · </span>}
           {rendered.sourceParts.map((part, i) =>
             part.kind === "link" ? (
               <a
