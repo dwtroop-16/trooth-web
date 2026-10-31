@@ -41,6 +41,8 @@ export const CITE_ONLY_LINK_DOMAINS = {
   "foxsports.com": { name: "FOX Sports" },
   "chicagobears.com": { name: "Chicago Bears" },
   "49ers.com": { name: "San Francisco 49ers" },
+  // Legal 05bn / pagemap v1.2.1 item 3 (2026-10-31): packers.com and subdomains.
+  "packers.com": { name: "Green Bay Packers" },
 };
 
 const CITE_DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/New_York" });
