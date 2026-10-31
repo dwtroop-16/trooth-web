@@ -156,7 +156,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
   console.log(`# rendered ncaa.com actual sources as plain text (per card) = ${ncaaRendered / 2}`);
   console.log(`# rendered fred.stlouisfed.org actual sources as plain text (per card) = ${fredRendered / 2}`);
   // Legal 05bh/05bi (+ club sites): cite-only hosts render "Source: <Outlet>, ..." with no URL text at all.
-  const CITE_HOST = /(^|\.)(foxsports|si|chicagobears|49ers)\.com$/;
+  const CITE_HOST = /(^|\.)(foxsports|si|chicagobears|49ers|packers)\.com$/;
   const CITE_URL_TEXT = /(foxsports\.com|\bsi\.com|chicagobears\.com|49ers\.com)/i;
   for (const c of cards.filter((c) => CITE_HOST.test(hostOf(c.sourceUrl)) || CITE_HOST.test(hostOf(c.actualSourceUrl)))) {
     for (const compact of [false, true]) {
@@ -188,4 +188,37 @@ test("formatCiteDate: date-only values are not shifted a day by time zone", () =
   assert.equal(formatCiteDate("2026-10-28"), "Oct 28, 2026");
   assert.equal(formatCiteDate("2026-02-07"), "Feb 7, 2026");
   assert.equal(formatCiteDate("2026-10-29T03:00:00Z"), "Oct 28, 2026");
+});
+
+test("actual source on cite-only hosts shows the outlet name only (pagemap v1.2.1 item 7)", async () => {
+  const { actualSourceParts } = await import("./claimCard.js");
+  const ClaimCard = await loadClaimCard();
+  const React = (await import("react")).default;
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const base = cards.find((c) => c.grade === "Hit" || c.grade === "Miss");
+  for (const [u, name] of [["https://www.si.com/x", "Sports Illustrated"], ["https://www.foxsports.com/y", "FOX Sports"], ["https://www.chicagobears.com/z", "Chicago Bears"], ["https://www.49ers.com/w", "San Francisco 49ers"], ["https://www.packers.com/news/x", "Green Bay Packers"], ["https://shop.packers.com/y", "Green Bay Packers"]]) {
+    const card = { ...base, actualSourceUrl: u, actualSourceName: name, actualObservedAt: "2026-10-28T00:00:00Z", actualRetentionNote: null };
+    assert.deepEqual(actualSourceParts(card), [{ kind: "text", role: "cite", text: name }]);
+    const html = renderToStaticMarkup(React.createElement(ClaimCard, { card, compact: false }));
+    assert.ok(html.includes(`Actual source · </span><span data-link-rule="cite">${name}</span>`) || html.includes(name), name);
+    assert.ok(!/(si|foxsports|chicagobears|49ers|packers)\.com/i.test(html.replace(base.sourceUrl, "")), name);
+  }
+});
+
+test("packers.com (incl. subdomains) is cite-only: 'Green Bay Packers', no link, no URL text (Legal 05bn)", async () => {
+  for (const u of ["https://www.packers.com/news/x", "https://packers.com/", "https://shop.packers.com/a"]) {
+    assert.equal(isAllowedHref(u), false);
+    assert.deepEqual(sourceLinkParts(u, "x", { date: "2026-10-30T16:00:00Z" }), [{ kind: "text", role: "cite", text: "Source: Green Bay Packers, Oct 30, 2026" }]);
+  }
+  assert.equal(isAllowedHref("https://www.notpackers.com/"), true);
+  const ClaimCard = await loadClaimCard();
+  const React = (await import("react")).default;
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const base = cards.find((c) => c.grade === "Hit" || c.grade === "Miss");
+  const card = { ...base, sourceUrl: "https://www.packers.com/news/pick", sourceTitle: "Staff picks", sourceDate: "2026-10-30", actualSourceUrl: "https://www.packers.com/game/x", actualSourceName: "Green Bay Packers", actualRetentionNote: null };
+  const html = renderToStaticMarkup(React.createElement(ClaimCard, { card, compact: false }));
+  assert.ok(html.includes("Source: Green Bay Packers, \u201CStaff picks\u201D, Oct 30, 2026"));
+  assert.ok(html.includes(">Green Bay Packers</span>"));
+  assert.ok(!/packers\.com/i.test(html));
+  assert.ok(!/href="[^"]*packers/i.test(html));
 });

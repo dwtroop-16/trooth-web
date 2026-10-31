@@ -111,6 +111,17 @@ export function winnerTeamLabel(slug, division) {
  * Joins on speaker_id (build attaches a name + org fallback until Scorer emits it).
  * People boards drop kind model / outlet_feed (speakers-v1.json 1.5.0).
  */
+/**
+ * Architect "Boards group by speaker": Scorer's people_board has one row per speaker_id (all firms).
+ * The board shows the speaker's CURRENT firm from the registry, plus the show name when the registry
+ * carries one (e.g. "FOX Sports (Big Noon Kickoff)"). Cards keep the firm as of the claim date.
+ */
+export function boardOrg(sp, row) {
+  const base = String(sp?.org || row?.org || "");
+  const show = sp?.show ? String(sp.show) : "";
+  return show && base && !base.includes(`(${show})`) ? `${base} (${show})` : base;
+}
+
 export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, { people = true } = {}) {
   const byId = new Map(speakers.map((sp) => [sp.id, sp]));
   return [...(list || [])]
@@ -134,7 +145,7 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
         ranked,
         speakerId: sp?.id || r.speaker_id || "name:" + r.speaker + "|" + (r.org || ""),
         name: sp?.name || r.speaker,
-        org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + (r.org || sp?.org || ""),
+        org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + boardOrg(sp, r),
         kindLabel: (r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency" : null,
         initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
         avatar: sp ? avatarFor(sp.id) : "#6B7280",
