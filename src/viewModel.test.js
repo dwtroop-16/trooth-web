@@ -202,31 +202,17 @@ test("no rendered rate has a decimal (boards, pick record, All sections, person 
   assert.equal(row.hitRate, hum.hit_rate);
 });
 
-test("boards: one row per speaker_id with current firm; split Scorer rows merge when counts sum exactly", async () => {
-  const { mergeBoardRowsBySpeaker, scorerBoardRows } = await import("./viewModel.js");
-  const a = { speaker_id: "harsh-kumar", speaker: "Harsh Kumar", org: "BMO Capital Markets", kind: "person", domain: "finance", n_resolved: 2, n_hit: 1, n_miss: 1, n_pending: 1, n_unscorable: 1, n_void: 0, eligible: false, rank: null };
-  const b = { ...a, org: "Piper Sandler", n_resolved: 3, n_hit: 2, n_miss: 1 };
-  const m = mergeBoardRowsBySpeaker([a, b], 10);
-  assert.equal(m.length, 1);
-  assert.equal(m[0].n_resolved, 5); assert.equal(m[0].n_hit, 3); assert.equal(m[0].n_pending, 2);
-  // Ranked parts are not re-ranked here: left as sent.
-  assert.equal(mergeBoardRowsBySpeaker([{ ...a, eligible: true, rank: 3 }, b], 10).length, 2);
-  // Combined total reaching the minimum would need a rank: left as sent.
-  assert.equal(mergeBoardRowsBySpeaker([{ ...a, n_resolved: 6 }, { ...b, n_resolved: 5 }], 10).length, 2);
-  const rows = scorerBoardRows([a, b], SPEAKERS, () => {}, 10);
+test("boards: Scorer's single per-speaker row passes through with current firm and show name", async () => {
+  const { scorerBoardRows } = await import("./viewModel.js");
+  const kumar = { speaker_id: "harsh-kumar", speaker: "Harsh Kumar", org: "BMO Capital Markets", kind: "person", domain: "finance", n_resolved: 0, n_hit: 0, n_miss: 0, n_pending: 2, n_unscorable: 2, n_void: 0, eligible: false, rank: null };
+  const rows = scorerBoardRows([kumar], SPEAKERS, () => {}, 10);
   assert.equal(rows.length, 1);
-  assert.equal(rows[0].org, SPEAKERS.find((s) => s.id === "harsh-kumar").org);
-  assert.equal(rows[0].nResolved, "5 of 10 resolved");
-});
-
-test("Home finance board has exactly one Harsh Kumar row", () => {
-  const data = { speakers: SPEAKERS, forecasts: FORECASTS, actuals: ACTUALS, scores: SCORES, CATCOLORS, source: "live" };
-  for (const cat of ["Finance", "All"]) {
-    const v = buildVals({ view: "home", cat, q: "" }, new Proxy({}, { get: () => () => {} }), data);
-    const all = [...(v.rows || []), ...(v.boardSections || []).flatMap((x) => x.rows)];
-    const k = (v.rows || []).filter((r) => r.speakerId === "harsh-kumar");
-    assert.ok(k.length <= 1, cat);
-    for (const sec of v.boardSections || []) assert.ok(sec.rows.filter((r) => r.speakerId === "harsh-kumar").length <= 1, cat + " " + sec.domain);
-    void all;
+  assert.equal(rows[0].org, "BMO Capital Markets");
+  for (const id of ["fox-brady-quinn", "fox-mark-ingram", "fox-matt-leinart", "fox-urban-meyer"]) {
+    const sp = SPEAKERS.find((s) => s.id === id);
+    assert.equal(sp.show, "Big Noon Kickoff", id);
+    const r = scorerBoardRows([{ ...kumar, speaker_id: id, speaker: sp.name, org: "FOX Sports", domain: "sports" }], SPEAKERS, () => {}, 10);
+    assert.equal(r.length, 1);
+    assert.equal(r[0].org, "FOX Sports (Big Noon Kickoff)", id);
   }
 });

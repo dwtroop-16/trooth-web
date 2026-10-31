@@ -112,34 +112,19 @@ export function winnerTeamLabel(slug, division) {
  * People boards drop kind model / outlet_feed (speakers-v1.json 1.5.0).
  */
 /**
- * Architect "Boards group by speaker": one row per speaker_id per domain. Scorer's people_board can
- * split a speaker by org (e.g. Harsh Kumar: Piper Sandler + BMO). Split rows are merged here only
- * when the counts sum exactly and no rank has to be recomputed (no part ranked, combined total still
- * below the minimum); otherwise the rows are left as Scorer sent them.
+ * Architect "Boards group by speaker": Scorer's people_board has one row per speaker_id (all firms).
+ * The board shows the speaker's CURRENT firm from the registry, plus the show name when the registry
+ * carries one (e.g. "FOX Sports (Big Noon Kickoff)"). Cards keep the firm as of the claim date.
  */
-const COUNT_KEYS = ["n_resolved", "n_hit", "n_miss", "n_pending", "n_unscorable", "n_void"];
-export function mergeBoardRowsBySpeaker(list, minResolved = 10) {
-  const groups = new Map();
-  const order = [];
-  for (const r of list || []) {
-    const key = r.speaker_id ? `${r.speaker_id}|${r.domain || ""}` : null;
-    if (!key) { order.push([r]); continue; }
-    if (!groups.has(key)) { groups.set(key, []); order.push(groups.get(key)); }
-    groups.get(key).push(r);
-  }
-  return order.flatMap((rows) => {
-    if (rows.length === 1) return rows;
-    const summable = rows.every((r) => COUNT_KEYS.every((k) => r[k] == null || Number.isInteger(r[k])));
-    const unranked = rows.every((r) => !r.eligible && r.rank == null);
-    const sum = Object.fromEntries(COUNT_KEYS.map((k) => [k, rows.reduce((a, r) => a + (r[k] || 0), 0)]));
-    if (!summable || !unranked || sum.n_resolved >= minResolved) return rows;
-    return [{ ...rows[0], ...sum, org: null, hit_rate: sum.n_resolved ? sum.n_hit / sum.n_resolved : null, eligible: false, rank: null }];
-  });
+export function boardOrg(sp, row) {
+  const base = String(sp?.org || row?.org || "");
+  const show = sp?.show ? String(sp.show) : "";
+  return show && base && !base.includes(`(${show})`) ? `${base} (${show})` : base;
 }
 
 export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, { people = true } = {}) {
   const byId = new Map(speakers.map((sp) => [sp.id, sp]));
-  return mergeBoardRowsBySpeaker(list, minResolved)
+  return [...(list || [])]
     // People boards drop only kind model (models live on /models). outlet_feed stays, labeled "Agency".
     .filter((r) => !people || (r.kind || speakerKindOf({ id: r.speaker_id })) !== "model")
     .sort((a, b) => {
@@ -160,7 +145,7 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
         ranked,
         speakerId: sp?.id || r.speaker_id || "name:" + r.speaker + "|" + (r.org || ""),
         name: sp?.name || r.speaker,
-        org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + (sp?.org || r.org || ""),
+        org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + boardOrg(sp, r),
         kindLabel: (r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency" : null,
         initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
         avatar: sp ? avatarFor(sp.id) : "#6B7280",

@@ -204,7 +204,8 @@
       "domain": "sports",
       "avatar": "#B86B2E",
       "initials": "BQ",
-      "bio": ""
+      "bio": "",
+      "show": "Big Noon Kickoff"
     },
     {
       "id": "cbs-brandon-marcello",
@@ -1097,7 +1098,8 @@
       "domain": "sports",
       "avatar": "#1A6B5A",
       "initials": "MI",
-      "bio": ""
+      "bio": "",
+      "show": "Big Noon Kickoff"
     },
     {
       "id": "evercore-mark-lipacis",
@@ -1133,7 +1135,8 @@
       "domain": "sports",
       "avatar": "#8B4F6A",
       "initials": "ML",
-      "bio": ""
+      "bio": "",
+      "show": "Big Noon Kickoff"
     },
     {
       "id": "matt-miller",
@@ -1736,7 +1739,8 @@
       "domain": "sports",
       "avatar": "#8B4F6A",
       "initials": "UM",
-      "bio": ""
+      "bio": "",
+      "show": "Big Noon Kickoff"
     },
     {
       "id": "bofa-vivek-arya",
