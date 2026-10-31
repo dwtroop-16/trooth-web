@@ -11,7 +11,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
 import { toPublicClaimCard } from "./viewModel.js";
 import { renderPublicClaimCard } from "./claimCard.js";
-import { sourceLinkParts, isAllowedHref, hostOf } from "./linkPolicy.js";
+import { sourceLinkParts, isAllowedHref, hostOf, formatCiteDate } from "./linkPolicy.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const NFL_HOME = "https://www.nfl.com/";
@@ -77,9 +77,16 @@ test("linkPolicy: fred.stlouisfed.org is plain text, never a link (Architect 202
   assert.equal(isAllowedHref("https://www.stlouisfed.org/"), true);
 });
 
-test("linkPolicy: other hosts (FOX Sports etc.) are unchanged", () => {
+test("linkPolicy: cite-only hosts render 'Source: Outlet, “title”, date', never a link or URL (Legal 05bh/05bi)", () => {
   const fox = "https://www.foxsports.com/stories/nfl/some-story";
-  assert.deepEqual(sourceLinkParts(fox, "www.foxsports.com"), [{ kind: "link", href: fox, text: "www.foxsports.com" }]);
+  const si = "https://www.si.com/betting/x";
+  assert.deepEqual(sourceLinkParts(fox, "x", { title: "Week 9 picks", date: "2026-10-29T11:00:59Z" }), [{ kind: "text", role: "cite", text: "Source: FOX Sports, \u201CWeek 9 picks\u201D, Oct 29, 2026" }]);
+  assert.deepEqual(sourceLinkParts(si, "x", { date: "2026-10-28T15:04:30Z" }), [{ kind: "text", role: "cite", text: "Source: Sports Illustrated, Oct 28, 2026" }]);
+  assert.equal(sourceLinkParts("https://www.chicagobears.com/news/a", "x", { date: "2026-10-01T16:00:00Z" })[0].text, "Source: Chicago Bears, Oct 1, 2026");
+  assert.equal(sourceLinkParts("https://www.49ers.com/news/a", "x", {})[0].text, "Source: San Francisco 49ers");
+  for (const u of [fox, si, "https://si.com/", "https://foxsports.com/", "https://www.chicagobears.com/", "https://www.49ers.com/x"]) assert.equal(isAllowedHref(u), false);
+  assert.equal(isAllowedHref("https://www.weather.gov/okx/"), true);
+  assert.equal(isAllowedHref("https://www.notsi.com/"), true);
 });
 
 test("every card's link parts obey the rules (view-model scan of all cards)", () => {
@@ -127,7 +134,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         if (isNfl(href) && href !== NFL_HOME) bad.push(`${card.id} nfl ${href}`);
         if (/ncaa\.com/i.test(href)) bad.push(`${card.id} ncaa ${href}`);
         if (/stlouisfed\.org/i.test(href)) bad.push(`${card.id} fred ${href}`);
-        if (/(^|\.)foxsports\.com$/.test(hostOf(href))) foxLinks++;
+        if (/(^|\.)(foxsports|si)\.com$/.test(hostOf(href))) bad.push(`${card.id} si/fox ${href}`);
       }
       if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_CREDIT), card.id);
       if ((card.grade === "Hit" || card.grade === "Miss") && isFred(card.actualSourceUrl)) {
@@ -148,7 +155,37 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
   assert.ok(anchors > 0, "cards render links");
   console.log(`# rendered ncaa.com actual sources as plain text (per card) = ${ncaaRendered / 2}`);
   console.log(`# rendered fred.stlouisfed.org actual sources as plain text (per card) = ${fredRendered / 2}`);
-  // FOX Sports links are untouched: every FOX source still renders as its own href.
-  const foxCards = cards.filter((c) => /(^|\.)foxsports\.com$/.test(hostOf(c.sourceUrl)));
-  assert.ok(foxLinks >= foxCards.length * 2);
+  // Legal 05bh/05bi (+ club sites): cite-only hosts render "Source: <Outlet>, ..." with no URL text at all.
+  const CITE_HOST = /(^|\.)(foxsports|si|chicagobears|49ers)\.com$/;
+  const CITE_URL_TEXT = /(foxsports\.com|\bsi\.com|chicagobears\.com|49ers\.com)/i;
+  for (const c of cards.filter((c) => CITE_HOST.test(hostOf(c.sourceUrl)) || CITE_HOST.test(hostOf(c.actualSourceUrl)))) {
+    for (const compact of [false, true]) {
+      const html = unescape(renderToStaticMarkup(React.createElement(ClaimCard, { card: c, compact })));
+      assert.ok(!CITE_URL_TEXT.test(html), `${c.id} shows a cite-only host URL`);
+      assert.ok(!html.includes("; not linked)") || !CITE_HOST.test(hostOf(c.sourceUrl)) || /ncaa|FRED|NFL/.test(html), c.id);
+      if (CITE_HOST.test(hostOf(c.sourceUrl))) assert.ok(/Source: (Sports Illustrated|FOX Sports|Chicago Bears|San Francisco 49ers)(, \u201C[^\u201D]+\u201D)?, [A-Z][a-z]{2} \d{1,2}, \d{4}/.test(html), c.id);
+    }
+    foxLinks++;
+  }
+  assert.ok(foxLinks > 0, "si/fox cards exist");
+});
+
+test("SI/FOX cards cite title and source published_at from data; null title drops the quotes", () => {
+  const cite = cards.filter((c) => /(^|\.)(si|foxsports)\.com$/.test(hostOf(c.sourceUrl)));
+  assert.equal(cite.length, 140);
+  let titled = 0;
+  for (const c of cite) {
+    const [p] = renderPublicClaimCard(c).sourceParts;
+    assert.ok(c.sourceDate, c.id);
+    const d = formatCiteDate(c.sourceDate);
+    if (c.sourceTitle) { titled++; assert.ok(p.text.endsWith(`, \u201C${c.sourceTitle}\u201D, ${d}`), c.id); }
+    else assert.ok(!p.text.includes("\u201C") && p.text.endsWith(`, ${d}`), c.id);
+  }
+  assert.equal(titled, 133);
+});
+
+test("formatCiteDate: date-only values are not shifted a day by time zone", () => {
+  assert.equal(formatCiteDate("2026-10-28"), "Oct 28, 2026");
+  assert.equal(formatCiteDate("2026-02-07"), "Feb 7, 2026");
+  assert.equal(formatCiteDate("2026-10-29T03:00:00Z"), "Oct 28, 2026");
 });

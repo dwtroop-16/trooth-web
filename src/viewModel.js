@@ -1,3 +1,4 @@
+import { avatarFor } from "./avatar.js";
 import { formatWhen, formatPct, pctFromCounts, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
 import { initialsFromName } from "./initials.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
@@ -137,7 +138,7 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
         org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + (r.org || sp?.org || ""),
         kindLabel: (r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency" : null,
         initials: initialsFromName(sp?.name || r.speaker, sp?.initials_override),
-        avatar: sp?.avatar || "#6B7280",
+        avatar: sp ? avatarFor(sp.id) : "#6B7280",
         domain: domainLabel,
         nResolved: ranked ? r.n_resolved : `${r.n_resolved} of ${minResolved} resolved`,
         hitRate: ranked ? pctFromCounts(r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved), r.n_resolved) : "Not ranked yet",
@@ -363,9 +364,14 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     id: forecast.id,
     speakerId: speaker?.id || forecast.speaker_id,
     speakerName: (speaker && speaker.name) || forecast.speaker.name,
-    speakerOrg: (speaker && speaker.org) || forecast.speaker.org,
+    // Firm as of the claim date: the forecast row's own speaker.org wins over the registry's current org
+    // (Card QA P1, ruling 05ac: e.g. Harsh Kumar was at Piper Sandler before moving to BMO 2026-07-13).
+    speakerOrg: forecast.speaker?.org || (speaker && speaker.org) || null,
     claimText: forecast.claim.text,
     sourceUrl: forecast.source.url,
+    // Cite-only hosts (linkPolicy): title/date from data fields only, never fetched.
+    sourceTitle: forecast.source?.title ?? forecast.source_title ?? null,
+    sourceDate: forecast.source?.published_at ?? forecast.source?.date ?? null,
     sourceHost: hostnameFromUrl(forecast.source.url),
     publishedAt: forecast.published_at,
     // kickoff_status pending: the horizon is a placeholder; keep it off the card entirely.
@@ -688,7 +694,7 @@ export function buildVals(state, actions, data) {
         org: sp.org,
         accounts: sp.accounts || [],
         initials: initialsFromName(sp.name, sp.initials_override),
-        avatar: sp.avatar,
+        avatar: avatarFor(sp.id),
         bio: sp.bio,
         domain: domainLabel,
         catColor: cm.color,

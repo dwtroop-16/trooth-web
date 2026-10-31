@@ -165,6 +165,23 @@ test("claims view filters by grade and exposes match metadata", () => {
   assert.ok(Array.isArray(vals.searchSuggestions));
 });
 
+test("cards show the firm as of the claim date (forecast row speaker.org), not the registry's current org", () => {
+  const byId = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
+  let differing = 0;
+  for (const f of FORECASTS) {
+    const sp = byId[f.speaker_id];
+    const card = toPublicClaimCard(f, sp, null, null);
+    if (f.speaker?.org) assert.equal(card.speakerOrg, f.speaker.org, f.id);
+    if (sp && f.speaker?.org && f.speaker.org !== sp.org) differing++;
+  }
+  for (const id of ["fct_01M36VSXRDWH8QDWTD9QB5BNA7", "fct_01M36VSXRDT8BCT4D33FVKVEWH"]) {
+    const f = FORECASTS.find((x) => x.id === id);
+    assert.ok(f, id);
+    assert.equal(toPublicClaimCard(f, byId[f.speaker_id], null, null).speakerOrg, "Piper Sandler");
+  }
+  assert.ok(differing >= 2);
+});
+
 test("no rendered rate has a decimal (boards, pick record, All sections, person pages)", () => {
   const dec = /\d\.\d+\s*%/;
   const seen = [];
