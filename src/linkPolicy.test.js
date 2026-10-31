@@ -189,3 +189,18 @@ test("formatCiteDate: date-only values are not shifted a day by time zone", () =
   assert.equal(formatCiteDate("2026-02-07"), "Feb 7, 2026");
   assert.equal(formatCiteDate("2026-10-29T03:00:00Z"), "Oct 28, 2026");
 });
+
+test("actual source on cite-only hosts shows the outlet name only (pagemap v1.2.1 item 7)", async () => {
+  const { actualSourceParts } = await import("./claimCard.js");
+  const ClaimCard = await loadClaimCard();
+  const React = (await import("react")).default;
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const base = cards.find((c) => c.grade === "Hit" || c.grade === "Miss");
+  for (const [u, name] of [["https://www.si.com/x", "Sports Illustrated"], ["https://www.foxsports.com/y", "FOX Sports"], ["https://www.chicagobears.com/z", "Chicago Bears"], ["https://www.49ers.com/w", "San Francisco 49ers"]]) {
+    const card = { ...base, actualSourceUrl: u, actualSourceName: name, actualObservedAt: "2026-10-28T00:00:00Z", actualRetentionNote: null };
+    assert.deepEqual(actualSourceParts(card), [{ kind: "text", role: "cite", text: name }]);
+    const html = renderToStaticMarkup(React.createElement(ClaimCard, { card, compact: false }));
+    assert.ok(html.includes(`Actual source · </span><span data-link-rule="cite">${name}</span>`) || html.includes(name), name);
+    assert.ok(!/(si|foxsports|chicagobears|49ers)\.com/i.test(html.replace(base.sourceUrl, "")), name);
+  }
+});
