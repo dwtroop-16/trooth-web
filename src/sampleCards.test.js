@@ -7,6 +7,7 @@ import { renderPublicClaimCard, PUBLIC_GRADES } from "./claimCard.js";
 const speakerBy = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
 const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
 const actualBy = Object.fromEntries(ACTUALS.map((a) => [a.match_key, a]));
+const actualById = Object.fromEntries(ACTUALS.map((a) => [a.id, a]));
 
 test("every live forecast renders a complete public card", () => {
   assert.ok(FORECASTS.length > 0);
@@ -29,7 +30,8 @@ test("hit/miss rows have resolved actuals when scores say so", () => {
   let resolvedHitsMisses = 0;
   for (const s of SCORES) {
     if (s.status !== "hit" && s.status !== "miss") continue;
-    const actual = actualBy[s.match_key];
+    // Same join as viewModel: score.actual_id first (winner keys end |winner, the actual |score).
+    const actual = (s.actual_id && actualById[s.actual_id]) || actualBy[s.match_key];
     assert.ok(actual, `missing ACTUALS row for scored match_key ${s.match_key} (${s.id})`);
     assert.equal(actual.status, "resolved");
     assert.ok(actual.value !== undefined && actual.value !== null && actual.value !== "");
