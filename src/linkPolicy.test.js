@@ -222,3 +222,20 @@ test("packers.com (incl. subdomains) is cite-only: 'Green Bay Packers', no link,
   assert.ok(!/packers\.com/i.test(html));
   assert.ok(!/href="[^"]*packers/i.test(html));
 });
+
+test("Legal 05bq: dailykos.com cite-only; heathstory.substack.com exact host only; other Substacks still link", () => {
+  for (const u of ["https://www.dailykos.com/stories/2026/10/30/x", "https://dailykos.com/"]) {
+    assert.equal(isAllowedHref(u), false);
+    assert.deepEqual(sourceLinkParts(u, "x", { title: "It\u2019s finally time for Senate predictions", date: "2026-10-30" }), [{ kind: "text", role: "cite", text: "Source: Daily Kos, \u201CIt\u2019s finally time for Senate predictions\u201D, Oct 30, 2026" }]);
+  }
+  const heath = "https://heathstory.substack.com/p/jim-heaths-2026-midterm-scoreboard-e20";
+  assert.equal(isAllowedHref(heath), false);
+  const [p] = sourceLinkParts(heath, "x", { date: "2026-11-01" });
+  assert.equal(p.role, "cite");
+  assert.ok(!/substack\.com/i.test(p.text));
+  const sabato = "https://sabatoscrystalball.substack.com/p/some-post";
+  assert.equal(isAllowedHref(sabato), true);
+  assert.deepEqual(sourceLinkParts(sabato, "sabatoscrystalball.substack.com"), [{ kind: "link", href: sabato, text: "sabatoscrystalball.substack.com" }]);
+  assert.equal(isAllowedHref("https://substack.com/@heathstory"), true);
+  assert.equal(isAllowedHref("https://x.heathstory.substack.com/"), true);
+});

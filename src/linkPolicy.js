@@ -43,6 +43,13 @@ export const CITE_ONLY_LINK_DOMAINS = {
   "49ers.com": { name: "San Francisco 49ers" },
   // Legal 05bn / pagemap v1.2.1 item 3 (2026-10-31): packers.com and subdomains.
   "packers.com": { name: "Green Bay Packers" },
+  // Legal 05bq (2026-11-02): plain-text cite, no link pending Architect.
+  "dailykos.com": { name: "Daily Kos" },
+  // Legal 05bq: EXACT host only, pending an Architect/Legal decision on Substack as a whole.
+  // Other Substack publications (e.g. sabatoscrystalball.substack.com) keep their current link
+  // behaviour. Outlet name: no publication name in 05bq or the ingest rows (speaker Jim Heath,
+  // account "heathstory"), so the account handle is used until Legal confirms the outlet name.
+  "heathstory.substack.com": { name: "heathstory (Substack)", exact: true },
 };
 
 const CITE_DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/New_York" });
@@ -79,7 +86,7 @@ export function hostOf(url) {
 function ruleFor(table, host) {
   if (!host) return null;
   for (const [domain, rule] of Object.entries(table)) {
-    if (host === domain || host.endsWith("." + domain)) return { domain, ...rule };
+    if (host === domain || (!rule.exact && host.endsWith("." + domain))) return { domain, ...rule };
   }
   return null;
 }

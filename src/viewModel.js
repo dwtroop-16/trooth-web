@@ -202,13 +202,13 @@ export function winnerResultLine(forecast, score, actual, division) {
   if (score && "winner_slug" in score && pts) {
     const [a, h] = pts;
     if (score.winner_slug == null) return a === h ? `Tie, ${a}–${h}` : null;
-    if (ALL_TEAM_SLUGS.has(score.winner_slug)) return `${teamLabelFor(score.winner_slug, division)} won, ${a}–${h}`;
+    if (ALL_TEAM_SLUGS.has(score.winner_slug)) return `${teamLabelFor(score.winner_slug, division)} won, ${Math.max(a, h)}–${Math.min(a, h)}`;
   }
   if (pts && game) {
     const [a, h] = pts;
     if (a === h) return `Tie, ${a}–${h}`;
     const won = a > h ? game.away : game.home;
-    return `${teamLabelFor(won, division)} won, ${a}–${h}`;
+    return `${teamLabelFor(won, division)} won, ${Math.max(a, h)}–${Math.min(a, h)}`;
   }
   return null;
 }
@@ -367,7 +367,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const teamLabels = teams.map((t) => teamLabelFor(t.teamSlug, t.division));
   const winner = isWinnerPick(forecast);
   const pickedTeam = winner ? winnerTeamLabel(forecast.claim.value, division) : null;
-  // Winner rows graded winner_from_score (pagemap v1.2.0): "{Winner} won, {away}–{home}"; tie "Tie, x–x".
+  // Winner rows graded winner_from_score (pagemap v1.2.0): "{Winner} won, {winner score}–{loser score}" (Card QA P3, 2026-11-02; pagemap v1.2.0 said away–home, pending Architect); tie "Tie, x–x".
   let actualDisplay = actualValue;
   if (winner && graded) actualDisplay = winnerResultLine(forecast, score, shown, division) ?? actualValue;
   const card = {
