@@ -9,7 +9,7 @@ import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), "..");
-const CITE_HOST_TEXT = /(foxsports|chicagobears|49ers)\.com|(^|[^a-z0-9.-])(www\.)?si\.com/i;
+const CITE_HOST_TEXT = /(foxsports|chicagobears|49ers|packers)\.com|(^|[^a-z0-9.-])(www\.)?si\.com/i;
 const CLAIMS = ["fct_01M63VTAZH9A99PRYJXRNK9HBZ", "fct_01M63VTA6F0ARYWCC4WXEETR6S"];
 
 test("SI and FOX claim pages: rendered body, document title and <head> carry no cite-only host URL", { timeout: 120000 }, async () => {

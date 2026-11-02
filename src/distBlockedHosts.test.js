@@ -67,7 +67,7 @@ test("built dist/ has no href to 247wallst", { timeout: 120000 }, async () => {
 
 // Legal 05bh (foxsports.com) / 05bi (si.com): plain-text cite only. No href to either host anywhere
 // in the built output (cards, claim pages, person pages, search, changelog).
-export const HREF_SI_FOX = /href\s*[=:]\s*["'`]?\s*(https?:)?\/\/([a-z0-9-]+\.)*(si|foxsports|chicagobears|49ers)\.com/i;
+export const HREF_SI_FOX = /href\s*[=:]\s*["'`]?\s*(https?:)?\/\/([a-z0-9-]+\.)*(si|foxsports|chicagobears|49ers|packers)\.com/i;
 
 test("HREF_SI_FOX matches hrefs, not plain-text mentions", () => {
   assert.ok(HREF_SI_FOX.test('<a href="https://www.si.com/x">'));
@@ -97,6 +97,6 @@ test("built dist/ HTML has no si.com / foxsports.com / chicagobears.com / 49ers.
   const files = [];
   const walk = (d) => { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.html$/.test(e.name)) files.push(p); } };
   walk(outDir);
-  const bad = files.filter((p) => /(foxsports|chicagobears|49ers)\.com|\/\/(www\.)?si\.com/i.test(readFileSync(p, "utf8")));
+  const bad = files.filter((p) => /(foxsports|chicagobears|49ers|packers)\.com|\/\/(www\.)?si\.com/i.test(readFileSync(p, "utf8")));
   assert.deepEqual(bad, []);
 });

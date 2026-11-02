@@ -34,7 +34,7 @@ test("graded winner_from_score: away win, home win, tie (Scorer mapping '{away}-
   assert.equal(aw.actual, `${winnerTeamLabel(away)} won, 24–17`);
   assert.equal(aw.comparisonMethod, "winner_from_score");
   const hm = mk("miss", "20-24");
-  assert.equal(hm.actual, `${winnerTeamLabel(home)} won, 20–24`);
+  assert.equal(hm.actual, `${winnerTeamLabel(home)} won, 24–20`);
   const tie = mk("miss", "20-20");
   assert.equal(tie.actual, "Tie, 20–20");
   assert.equal(tie.grade, "Miss");
@@ -48,7 +48,7 @@ test("winner card joins its actual on actual_id, not match_key", () => {
   const vals = buildVals({ view: "prediction", forecastId: f.id, cat: "All", q: "" }, {}, { speakers: SPEAKERS, forecasts: FORECASTS, actuals: [actual], scores: [score], CATCOLORS });
   const card = vals.claimList?.find?.((c) => c.id === f.id) || vals.d;
   assert.ok(card);
-  assert.match(String(card.actual || vals.d?.actual), / won, 10–31$/);
+  assert.match(String(card.actual || vals.d?.actual), / won, 31–10$/);
 });
 
 test("exact-score stats exclude winner picks; pick record counts only them", () => {

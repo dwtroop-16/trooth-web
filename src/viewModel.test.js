@@ -201,3 +201,18 @@ test("no rendered rate has a decimal (boards, pick record, All sections, person 
   const row = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data).rows.find((r) => r.speakerId === "cbs-chris-hummer");
   assert.equal(row.hitRate, hum.hit_rate);
 });
+
+test("boards: Scorer's single per-speaker row passes through with current firm and show name", async () => {
+  const { scorerBoardRows } = await import("./viewModel.js");
+  const kumar = { speaker_id: "harsh-kumar", speaker: "Harsh Kumar", org: "BMO Capital Markets", kind: "person", domain: "finance", n_resolved: 0, n_hit: 0, n_miss: 0, n_pending: 2, n_unscorable: 2, n_void: 0, eligible: false, rank: null };
+  const rows = scorerBoardRows([kumar], SPEAKERS, () => {}, 10);
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].org, "BMO Capital Markets");
+  for (const id of ["fox-brady-quinn", "fox-mark-ingram", "fox-matt-leinart", "fox-urban-meyer"]) {
+    const sp = SPEAKERS.find((s) => s.id === id);
+    assert.equal(sp.show, "Big Noon Kickoff", id);
+    const r = scorerBoardRows([{ ...kumar, speaker_id: id, speaker: sp.name, org: "FOX Sports", domain: "sports" }], SPEAKERS, () => {}, 10);
+    assert.equal(r.length, 1);
+    assert.equal(r[0].org, "FOX Sports (Big Noon Kickoff)", id);
+  }
+});

@@ -322,6 +322,7 @@ function build() {
       id,
       name,
       org: meta.org || reg?.org || "",
+      ...(reg?.show ? { show: reg.show } : {}),
       accounts: [...meta.accounts].sort(),
       domain,
       avatar,
