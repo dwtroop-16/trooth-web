@@ -45,11 +45,10 @@ export const CITE_ONLY_LINK_DOMAINS = {
   "packers.com": { name: "Green Bay Packers" },
   // Legal 05bq (2026-11-02): plain-text cite, no link pending Architect.
   "dailykos.com": { name: "Daily Kos" },
-  // Legal 05bq: EXACT host only, pending an Architect/Legal decision on Substack as a whole.
-  // Other Substack publications (e.g. sabatoscrystalball.substack.com) keep their current link
-  // behaviour. Outlet name: no publication name in 05bq or the ingest rows (speaker Jim Heath,
-  // account "heathstory"), so the account handle is used until Legal confirms the outlet name.
-  "heathstory.substack.com": { name: "heathstory (Substack)", exact: true },
+  // Legal 05bq: EXACT host only. Other Substack publications (e.g. sabatoscrystalball.substack.com)
+  // keep their current link behaviour. Outlet name per Architect (pagemap v1, 2026-11-02): the
+  // publication name printed on the captured page ("HEATHSTORY by Jim Heath").
+  "heathstory.substack.com": { name: "HEATHSTORY", exact: true },
 };
 
 const CITE_DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "America/New_York" });

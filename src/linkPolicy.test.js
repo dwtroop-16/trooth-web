@@ -233,6 +233,8 @@ test("Legal 05bq: dailykos.com cite-only; heathstory.substack.com exact host onl
   const [p] = sourceLinkParts(heath, "x", { date: "2026-11-01" });
   assert.equal(p.role, "cite");
   assert.ok(!/substack\.com/i.test(p.text));
+  assert.equal(p.text, "Source: HEATHSTORY, Nov 1, 2026");
+  assert.deepEqual(sourceLinkParts(heath, "x", { title: "Jim Heath\u2019s 2026 Midterm Scoreboard", date: "2026-11-01" }), [{ kind: "text", role: "cite", text: "Source: HEATHSTORY, \u201CJim Heath\u2019s 2026 Midterm Scoreboard\u201D, Nov 1, 2026" }]);
   const sabato = "https://sabatoscrystalball.substack.com/p/some-post";
   assert.equal(isAllowedHref(sabato), true);
   assert.deepEqual(sourceLinkParts(sabato, "sabatoscrystalball.substack.com"), [{ kind: "link", href: sabato, text: "sabatoscrystalball.substack.com" }]);
