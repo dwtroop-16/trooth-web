@@ -3,6 +3,8 @@ import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
+import { CATCOLORS } from "../data.js";
+import GaugeMark from "./GaugeMark.jsx";
 
 function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
@@ -49,7 +51,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
               <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
             ) : null}
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (r.ranked === false ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{r.hitRate}{r.ranked !== false && r.rateDetail ? <span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{r.rateDetail}</span> : null}</span>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (r.ranked === false ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{r.hitRate}{r.ranked !== false && r.rateDetail ? <span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{r.rateDetail}</span> : null}{(() => { const pct = parseFloat(String(r.hitRate)); return r.ranked !== false && Number.isFinite(pct) ? (<span style={css("display:block;width:64px;height:5px;border-radius:999px;background:var(--row);margin-top:5px;overflow:hidden;")}><span style={css("display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#06380F,#0E9F2E,#46D62E);width:" + Math.max(3, Math.min(100, pct)) + "%;")} /></span>) : null; })()}</span>
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
           </Hover>
           </div>
@@ -98,11 +100,49 @@ export default function Home({ vals, openClaim }) {
       status: card.grade,
     });
 
+  const heroRows = vals.boardSections ? vals.boardSections.flatMap((s) => s.rows || []) : vals.rows || [];
+  const heroStats = [
+    { label: "Speakers tracked", value: heroRows.length },
+    { label: "Forecasts resolved", value: heroRows.reduce((a, r) => a + (Number(r.nResolved) || 0), 0) },
+    { label: "Pending now", value: heroRows.reduce((a, r) => a + (Number(r.pending) || 0), 0) },
+  ];
+  const entryTabs = (vals.categories || []).filter((tab) => tab.label !== "All");
+
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;")}>
-      <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--forest);margin:0 0 18px;")}>
-        Public forecasts vs official prints · pending is not a miss
-      </div>
+      {!q && (
+        <section style={css("text-align:center;padding:18px 0 26px;")}>
+          <div style={css("display:flex;justify-content:center;")}><GaugeMark height={104} /></div>
+          <div style={css("font-family:Archivo,sans-serif;font-style:italic;font-weight:800;font-size:clamp(44px,7vw,64px);letter-spacing:-0.02em;color:var(--ink);line-height:1.05;margin-top:6px;")}>Trooth<span style={css("color:var(--forest);font-style:normal;")}>.app</span></div>
+          <div style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.16em;color:var(--muted);margin-top:10px;")}>SPORTS&nbsp;&nbsp;|&nbsp;&nbsp;FINANCE&nbsp;&nbsp;|&nbsp;&nbsp;WEATHER</div>
+          <p style={css("font-size:clamp(20px,3.4vw,30px);font-weight:700;color:var(--ink);letter-spacing:-0.01em;margin:20px auto 0;max-width:640px;line-height:1.25;")}>
+            Public forecasts, scored against official prints.
+          </p>
+          <div style={css("margin:20px auto 0;max-width:680px;display:flex;align-items:center;gap:10px;justify-content:center;background:var(--surface);border:1px solid #BFE8B4;border-radius:999px;padding:9px 18px;")}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F2E" strokeWidth="3" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
+            <span style={css("font-size:13.5px;color:var(--forest-deep);")}><strong>Pending is not a miss</strong> \u2014 pending forecasts are never counted as misses and never folded into hit rate.</span>
+          </div>
+          <div style={css("display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px;")}>
+            {entryTabs.map((tab) => {
+              const cc = CATCOLORS[tab.label] || { color: "var(--forest-deep)", tint: "var(--surface)" };
+              return (
+                <Hover key={tab.label} as="button" onClick={tab.onClick} style={"background:none;border:none;cursor:pointer;padding:0;display:flex;flex-direction:column;align-items:center;gap:7px;"} hover="">
+                  <span style={css("width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:21px;background:" + cc.tint + ";color:" + cc.color + ";border:2px solid " + (tab.active ? cc.color : "transparent") + ";")}>{tab.label.slice(0, 1)}</span>
+                  <span style={css("font-size:12.5px;font-weight:600;color:var(--body);")}>{tab.label}</span>
+                </Hover>
+              );
+            })}
+          </div>
+          <div style={css("display:flex;flex-wrap:wrap;gap:10px 34px;justify-content:center;margin-top:24px;")}>
+            {heroStats.map((s) => (
+              <div key={s.label} style={css("text-align:center;")}>
+                <div style={css("font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;color:var(--ink);")}>{s.value}</div>
+                <div style={css("font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:2px;")}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div style={css("display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;")}>
         {vals.categories.map((tab) => (

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
+import GaugeMark from "./GaugeMark.jsx";
 
 export default function Header({ vals }) {
   const [open, setOpen] = useState(false);
@@ -49,11 +50,11 @@ export default function Header({ vals }) {
   );
 
   return (
-    <header style={css("position:sticky;top:0;z-index:20;background:rgba(244,240,232,0.92);backdrop-filter:blur(10px);border-bottom:1px solid #E3DCCD;")}>
+    <header style={css("position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);")}>
       <div className="trooth-header-inner" style={css("max-width:1180px;margin:0 auto;padding:0 20px;min-height:56px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;")}>
         <button onClick={vals.goHome} style={css("display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;")}>
-          <span style={css("width:28px;height:28px;border-radius:7px;background:#15503A;display:flex;align-items:center;justify-content:center;color:#F4F0E8;font-weight:700;font-size:16px;")}>T</span>
-          <span style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;letter-spacing:-0.01em;")}>Trooth</span>
+          <GaugeMark height={30} />
+          <span style={css("font-family:Archivo,sans-serif;font-style:italic;font-size:23px;font-weight:800;letter-spacing:-0.01em;color:var(--ink);")}>Trooth<span style={css("color:var(--forest);font-style:normal;")}>.app</span></span>
         </button>
 
         <nav className="trooth-header-nav" style={css("display:flex;align-items:center;gap:14px;flex-shrink:0;")}>
@@ -65,8 +66,8 @@ export default function Header({ vals }) {
         <div className="trooth-header-spacer" style={css("flex:1;min-width:8px;")} />
 
         <div ref={wrapRef} className="trooth-header-search" style={css("position:relative;width:min(340px,100%);flex:1 1 200px;max-width:340px;")}>
-          <div style={css("display:flex;align-items:center;gap:8px;background:#FBF9F4;border:1px solid #E3DCCD;border-radius:9px;padding:7px 11px;width:100%;")}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#A79E8C" strokeWidth="2.2" aria-hidden="true">
+          <div style={css("display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--hair);border-radius:9px;padding:7px 11px;width:100%;")}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9DBFA0" strokeWidth="2.2" aria-hidden="true">
               <circle cx="11" cy="11" r="7"></circle>
               <path d="M21 21l-4.3-4.3"></path>
             </svg>
@@ -81,7 +82,7 @@ export default function Header({ vals }) {
               onKeyDown={onKeyDown}
               placeholder="Search speakers or claims"
               aria-label="Search speakers or claims"
-              style={css("border:none;background:none;outline:none;font-size:14px;color:#1A1712;width:100%;min-width:0;")}
+              style={css("border:none;background:none;outline:none;font-size:14px;color:var(--ink);width:100%;min-width:0;")}
             />
             {q ? (
               <button
@@ -101,7 +102,7 @@ export default function Header({ vals }) {
           {showDropdown ? (
             <div
               role="listbox"
-              style={css("position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);box-shadow:0 10px 28px rgba(26,23,18,0.08);overflow:hidden;z-index:30;")}
+              style={css("position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);box-shadow:0 10px 28px rgba(0,42,13,0.10);overflow:hidden;z-index:30;")}
             >
               {suggestions.map((row) => (
                 <Hover

@@ -8,8 +8,8 @@ export default function AccountModal({ vals }) {
   const a = vals.account;
 
   return (
-    <div onClick={a.close} style={css("position:fixed;inset:0;z-index:40;background:rgba(26,23,18,0.42);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;animation:vScrimIn .2s ease;")}>
-      <div onClick={vals.stop} style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;width:100%;max-width:420px;box-shadow:0 24px 56px -28px rgba(26,23,18,0.55);animation:vFadeUp .26s ease;")}>
+    <div onClick={a.close} style={css("position:fixed;inset:0;z-index:40;background:rgba(0,42,13,0.42);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:24px;animation:vScrimIn .2s ease;")}>
+      <div onClick={vals.stop} style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:22px;width:100%;max-width:420px;box-shadow:0 24px 56px -28px rgba(0,42,13,0.55);animation:vFadeUp .26s ease;")}>
         <div style={css("display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;")}>
           <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);")}>
             {a.isRegistered ? "Your account" : "Save your account"}
