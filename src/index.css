@@ -1,18 +1,18 @@
 * { box-sizing: border-box; }
 
 :root {
-  --paper: #F4F0E8;
-  --surface: #FBF9F4;
-  --ink: #1A1712;
-  --body: #4A4438;
-  --muted: #77705F;
-  --faint: #A79E8C;
-  --forest: #15503A;
-  --forest-deep: #0E3A29;
-  --hair: #E3DCCD;
-  --row: #EDE7DA;
-  --radius: 9px;
-  --radius-sm: 7px;
+  --paper: #FFFFFF;
+  --surface: #F2F9F0;
+  --ink: #002A0D;
+  --body: #33503C;
+  --muted: #5A665C;
+  --faint: #9DBFA0;
+  --forest: #0E9F2E;
+  --forest-deep: #06380F;
+  --hair: #D9EAD3;
+  --row: #E7F5E1;
+  --radius: 14px;
+  --radius-sm: 9px;
 }
 
 body {

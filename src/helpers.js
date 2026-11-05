@@ -7,11 +7,11 @@ export function hexA(hex, a) {
 }
 
 export function statusMeta(status) {
-  if (status === "hit") return { label: "Hit", color: "#1B7A4B", tint: "#E6F1EA", border: "#BEDDCB", icon: "M20 6L9 17l-5-5" };
+  if (status === "hit") return { label: "Hit", color: "#0E9F2E", tint: "#E7F5E1", border: "#BFE8B4", icon: "M20 6L9 17l-5-5" };
   if (status === "miss") return { label: "Miss", color: "#BC2E29", tint: "#F6E4E2", border: "#E6C3BF", icon: "M18 6L6 18M6 6l12 12" };
-  if (status === "unscorable") return { label: "Unscorable", color: "#8A8375", tint: "#F0ECE1", border: "#DED6C6", icon: "M12 7v5l3 2" };
+  if (status === "unscorable") return { label: "Unscorable", color: "#5A665C", tint: "#EEF1EE", border: "#D8DED8", icon: "M12 7v5l3 2" };
   if (status === "void") return { label: "In review", color: "#6B4E9E", tint: "#EFE8F6", border: "#D4C6E4", icon: "M12 8v4m0 4h.01" };
-  return { label: "Pending", color: "#8A8375", tint: "#F0ECE1", border: "#DED6C6", icon: "M12 7v5l3 2" };
+  return { label: "Pending", color: "#9A6A00", tint: "#FFF3D6", border: "#EBD9A8", icon: "M12 7v5l3 2" };
 }
 
 export function formatWhen(iso) {
