@@ -1057,22 +1057,6 @@
       "rank": null
     },
     {
-      "speaker_id": "heathstory-jim-heath",
-      "speaker": "Jim Heath",
-      "org": "heathstory.substack.com",
-      "kind": "person",
-      "n_resolved": 0,
-      "n_hit": 0,
-      "n_miss": 0,
-      "n_pending": 10,
-      "n_unscorable": 0,
-      "n_void": 0,
-      "hit_rate": null,
-      "eligible": false,
-      "domain": "politics",
-      "rank": null
-    },
-    {
       "speaker_id": "henry-olsen",
       "speaker": "Henry Olsen",
       "org": "Ethics & Public Policy Center",
@@ -1816,7 +1800,7 @@
       "n_resolved": 192,
       "n_hit": 29,
       "n_miss": 163,
-      "n_pending": 238,
+      "n_pending": 247,
       "n_unscorable": 0,
       "n_void": 0,
       "hit_rate": 0.15104166666666666,
@@ -2254,6 +2238,23 @@
       "hit_rate": 0,
       "eligible": false,
       "domain": "sports",
+      "rank": null,
+      "speaker_id_fallback": true
+    },
+    {
+      "speaker_id": "heathstory-jim-heath",
+      "speaker": "Jim Heath",
+      "org": "heathstory.substack.com",
+      "kind": "person",
+      "n_resolved": 0,
+      "n_hit": 0,
+      "n_miss": 0,
+      "n_pending": 10,
+      "n_unscorable": 0,
+      "n_void": 0,
+      "hit_rate": null,
+      "eligible": false,
+      "domain": "politics",
       "rank": null,
       "speaker_id_fallback": true
     }
