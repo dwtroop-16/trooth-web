@@ -2,7 +2,8 @@ import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
-// /models (pagemap v1.2.0): computer models and sites, never ranked against people.
+// /models (pagemap v1.2.0): computer models and sites, never ranked.
+// Do not render a rank. eligible:true on a model is not permission to rank it.
 export default function Models({ vals, openClaim }) {
   const m = vals.models || { models: [] };
   return (

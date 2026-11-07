@@ -12,6 +12,14 @@ import {
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 import scorerBoards from "./generated/boards.json" with { type: "json" };
 import speakerKinds from "./generated/speakerKinds.json" with { type: "json" };
+import {
+  RANKING_MIN_RESOLVED,
+  boardRowIsRanked,
+  displayRankingMin,
+  pickRecordIsRanked,
+  rowIsModel,
+  unresolvedLabel,
+} from "./rankingContract.js";
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -106,10 +114,13 @@ export function winnerTeamLabel(slug, division) {
 }
 
 /**
- * Scorer board rows (rubric 1.3.9, pagemap v1.2.0) -> display rows. Uses Scorer's rank and
- * eligible. Below the minimum: listed, no rank, no hit rate, "Not ranked yet", "N of 10 resolved".
+ * Scorer board rows (rubric 1.3.10 ranking minimum, pagemap v1.2.0) -> display rows.
+ * People boards use Scorer's rank only when eligible and rank are both set.
+ * eligible:true is not a rank. Models are never ranked (dropped from people boards;
+ * kept on the models board with rank null). Below the minimum: no rank, no hit rate,
+ * "Not ranked yet", "N of 3 resolved" (or the snapshot minimum when the file is older).
  * Joins on speaker_id (build attaches a name + org fallback until Scorer emits it).
- * People boards drop kind model / outlet_feed (speakers-v1.json 1.5.0).
+ * outlet_feed stays on people boards, labeled "Agency".
  */
 /**
  * Architect "Boards group by speaker": Scorer's people_board has one row per speaker_id (all firms).
@@ -122,14 +133,20 @@ export function boardOrg(sp, row) {
   return show && base && !base.includes(`(${show})`) ? `${base} (${show})` : base;
 }
 
-export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, { people = true } = {}) {
+function joinedModel(row, sp) {
+  return rowIsModel(row, sp?.kind || speakerKindOf(sp || { id: row?.speaker_id }));
+}
+
+export function scorerBoardRows(list, speakers, openSpeaker, minResolved = RANKING_MIN_RESOLVED, { people = true } = {}) {
   const byId = new Map(speakers.map((sp) => [sp.id, sp]));
+  const modelOf = (row) => joinedModel(row, (row.speaker_id && byId.get(row.speaker_id)) || null);
   return [...(list || [])]
-    // People boards drop only kind model (models live on /models). outlet_feed stays, labeled "Agency".
-    .filter((r) => !people || (r.kind || speakerKindOf({ id: r.speaker_id })) !== "model")
+    // People boards drop kind model (models live on /models). outlet_feed stays, labeled "Agency".
+    // Registry kind wins if Scorer labeled a model as a person.
+    .filter((r) => !people || !modelOf(r))
     .sort((a, b) => {
-      const ar = a.eligible && a.rank != null;
-      const br = b.eligible && b.rank != null;
+      const ar = boardRowIsRanked(a, { model: modelOf(a), people });
+      const br = boardRowIsRanked(b, { model: modelOf(b), people });
       if (ar && br) return a.rank - b.rank || String(a.domain || "").localeCompare(String(b.domain || ""));
       if (ar) return -1;
       if (br) return 1;
@@ -138,19 +155,22 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
     })
     .map((r) => {
       const sp = (r.speaker_id && byId.get(r.speaker_id)) || null;
-      const ranked = !!r.eligible && r.rank != null;
+      const model = modelOf(r);
+      const ranked = boardRowIsRanked(r, { model, people });
+      const kind = r.kind || sp?.kind || speakerKindOf(sp || { id: r.speaker_id });
       const domainLabel = r.domain ? (r.domain === "finance" ? "Finance" : r.domain[0].toUpperCase() + r.domain.slice(1)) : "Sports";
       return {
         rank: ranked ? r.rank : null,
         ranked,
+        model,
         speakerId: sp?.id || r.speaker_id || "name:" + r.speaker + "|" + (r.org || ""),
         name: sp?.name || r.speaker,
-        org: ((r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency · " : "") + boardOrg(sp, r),
-        kindLabel: (r.kind || speakerKindOf({ id: r.speaker_id })) === "outlet_feed" ? "Agency" : null,
+        org: (kind === "outlet_feed" ? "Agency · " : "") + boardOrg(sp, r),
+        kindLabel: kind === "outlet_feed" ? "Agency" : model ? "Model" : null,
         initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
         avatar: sp ? avatarFor(sp.id) : "#6B7280",
         domain: domainLabel,
-        nResolved: ranked ? r.n_resolved : `${r.n_resolved} of ${minResolved} resolved`,
+        nResolved: ranked ? r.n_resolved : unresolvedLabel(r.n_resolved, minResolved),
         hitRate: ranked ? pctFromCounts(r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved), r.n_resolved) : "Not ranked yet",
         rateDetail: `${r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved)} of ${r.n_resolved} resolved`,
         pending: r.n_pending,
@@ -159,23 +179,26 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
     });
 }
 
-/** /models: kind "model" speakers, person scorecard layout, never ranked against people. */
+/** /models: kind "model" speakers, scorecard layout, never ranked. eligible on a model is not a rank. */
 export function buildModelsView(speakers, forecasts, scores, cards, boards, openSpeaker) {
   const models = speakers.filter(isModelSpeaker);
-  const min = boards?.min_resolved || 10;
+  const min = displayRankingMin(boards);
   return {
     models: models.map((sp) => {
       const ex = speakerStats(sp, forecasts, scores);
       const pk = speakerStats(sp, forecasts, scores, "pick");
+      const scoreLine = (st) =>
+        st.n_resolved ? pctFromCounts(st.n_hit, st.n_resolved) + ` · ${st.n_hit} of ${st.n_resolved} resolved` : "— no resolved yet";
       return {
         id: sp.id,
         name: sp.name,
         credit: sp.org || sp.name,
         label: "Model",
-        exact: { n_resolved: ex.n_resolved, n_pending: ex.n_pending, hit_rate: ex.n_resolved >= min ? pctFromCounts(ex.n_hit, ex.n_resolved) + ` · ${ex.n_hit} of ${ex.n_resolved} resolved` : "Not ranked yet" },
-        pick: { n_resolved: pk.n_resolved, n_pending: pk.n_pending, hit_rate: pk.n_resolved >= min ? pctFromCounts(pk.n_hit, pk.n_resolved) + ` · ${pk.n_hit} of ${pk.n_resolved} resolved` : "Not ranked yet" },
+        rank: null,
+        exact: { n_resolved: ex.n_resolved, n_pending: ex.n_pending, hit_rate: scoreLine(ex), rank: null },
+        pick: { n_resolved: pk.n_resolved, n_pending: pk.n_pending, hit_rate: scoreLine(pk), rank: null },
         track: cards.filter((c) => c.speakerId === sp.id),
-        open: () => (openSpeaker ? openSpeaker(sp.id, { entry: "models" }) : undefined),
+        open: () => (openSpeaker ? openSpeaker(sp.id, { entry: "models", rank: null }) : undefined),
       };
     }),
     exactRows: scorerBoardRows(boards?.models_board?.exact, speakers, openSpeaker, min, { people: false }),
@@ -420,7 +443,7 @@ export function isWinnerPick(forecast) {
   return forecast?.claim?.unit === "winner";
 }
 
-/** Rubric v1.3.9: models/sites are listed on a separate Models board, never ranked against people. */
+/** Models/sites are listed on a separate Models board and are never given a rank. eligible does not rank them. */
 export function speakerKindOf(speaker) {
   return speaker?.kind || (speaker?.id && speakerKinds[speaker.id]) || "person";
 }
@@ -557,7 +580,7 @@ export function buildVals(state, actions, data) {
     const list = (scorerBoards.people_board || []).filter(
       (r) => (!domainKey || r.domain === domainKey) && (!domainKey ? scope.map((x) => x.toLowerCase()).includes(r.domain) : true),
     );
-    return scorerBoardRows(list, speakers, openSpeaker, scorerBoards.min_resolved).filter((row) => {
+    return scorerBoardRows(list, speakers, openSpeaker, displayRankingMin(scorerBoards)).filter((row) => {
       const sp = speakerBy[row.speakerId];
       return sp ? matchesQuery(sp) : matchesQuery({ name: row.name, org: row.org });
     });
@@ -697,7 +720,15 @@ export function buildVals(state, actions, data) {
         isModel: isModelSpeaker(sp),
         kindLabel: isModelSpeaker(sp) ? "Model" : speakerKindOf(sp) === "outlet_feed" ? "Agency" : null,
         pickRecord: pk.n_captured
-          ? { n_resolved: pk.n_resolved, n_hit: pk.n_hit, n_pending: pk.n_pending, hit_rate: pctFromCounts(pk.n_hit, pk.n_resolved), eligible: pk.n_resolved >= (scorerBoards.min_resolved || 10), min: scorerBoards.min_resolved || 10 }
+          ? {
+              n_resolved: pk.n_resolved,
+              n_hit: pk.n_hit,
+              n_pending: pk.n_pending,
+              hit_rate: pctFromCounts(pk.n_hit, pk.n_resolved),
+              // Models stay unranked at any count. eligible:true from Scorer is not consulted here.
+              eligible: pickRecordIsRanked(sp, pk.n_resolved, displayRankingMin(scorerBoards)),
+              min: displayRankingMin(scorerBoards),
+            }
           : null,
         id: sp.id,
         name: sp.name,
@@ -824,12 +855,13 @@ export function buildVals(state, actions, data) {
     },
     boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
     resultCount: boardCountLabel(rows),
-    rankNote: "ranked at " + (scorerBoards.min_resolved || 10) + " resolved · pending is not a miss",
+    rankMin: displayRankingMin(scorerBoards),
+    rankNote: "ranked at " + displayRankingMin(scorerBoards) + " resolved · pending is not a miss",
     // Pick record: Sports tab only, below the Score board (pagemap v1.2.0). Not on home.
-    pickRows: cat === "Sports" ? scorerBoardRows(scorerBoards.pick_record, speakers, openSpeaker, scorerBoards.min_resolved).filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : [],
+    pickRows: cat === "Sports" ? scorerBoardRows(scorerBoards.pick_record, speakers, openSpeaker, displayRankingMin(scorerBoards)).filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : [],
     pickTitle: "Pick record: who picked the winner",
     get pickCount() { return boardCountLabel(this.pickRows); },
-    pickNote: "winner picks only · ranked at " + (scorerBoards.min_resolved || 10) + " resolved",
+    pickNote: "winner picks only · ranked at " + displayRankingMin(scorerBoards) + " resolved",
     showModelsLink: cat === "Sports",
     goModels: () => (typeof actions.goModels === "function" ? actions.goModels() : undefined),
     isModels: s.view === "models",

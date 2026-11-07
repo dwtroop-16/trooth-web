@@ -24,5 +24,8 @@ The claim has to match the official print exactly, after using the print’s own
 ## What you see on a card
 Speaker, the exact words, the source link, the date said, the horizon, the official actual (or Pending), the actual’s source, and the grade: Hit, Miss, Pending, Unscorable, or In review.
 
+## Who is ranked
+A person is ranked on a board after 3 resolved forecasts on that same board. Resolved means Hit or Miss. Pending, In review, and Unscorable do not count, and they are not misses. A count on one board is not added to another board. Models are not ranked, even when a model row is marked eligible.
+
 ## What we do not do
 We do not invent results. We do not let a community vote replace an official print. We do not grade guest “log a prediction” submissions. Corrections live on `/changelog`.

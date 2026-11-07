@@ -4,6 +4,7 @@ import { buildVals, parseGameTeams, speakerStats, toPublicClaimCard, isWinnerPic
 import { renderPublicClaimCard } from "./claimCard.js";
 import { FORECASTS, SPEAKERS, CATCOLORS } from "./data.js";
 import boards from "./generated/boards.json" with { type: "json" };
+import { shippedBoardSnapshotStatus } from "./rankingContract.js";
 
 const winners = FORECASTS.filter(isWinnerPick);
 
@@ -59,29 +60,43 @@ test("exact-score stats exclude winner picks; pick record counts only them", () 
   assert.equal(speakerStats(sp, [f], scores, "pick").n_hit, 1);
 });
 
-test("scorer boards are rubric 1.3.9 / min 10, models separate from people", () => {
-  assert.equal(boards.rubric, "1.3.9");
-  assert.equal(boards.min_resolved, 10);
+test("shipped board snapshot is not a min-3 publication until scorer files are ingested", () => {
+  const status = shippedBoardSnapshotStatus(boards);
   assert.ok(Array.isArray(boards.people_board) && Array.isArray(boards.pick_record));
   assert.ok(boards.models_board && "exact" in boards.models_board && "pick" in boards.models_board);
-  const rows = scorerBoardRows(boards.pick_record, SPEAKERS, null);
+  const rows = scorerBoardRows(boards.pick_record, SPEAKERS, null, boards.min_resolved);
   assert.equal(rows.length, boards.pick_record.length);
   assert.equal(winnerTeamLabel("not-a-team"), null);
+  if (status.ok) {
+    assert.equal(boards.rubric, "1.3.10");
+    assert.equal(boards.min_resolved, 3);
+    assert.equal(boards.provenance.models_ranked, false);
+    assert.equal(boards.provenance.inputs.length, 3);
+  } else {
+    // The committed file is still the min-10 scorer copy. Do not relabel it.
+    assert.equal(status.blocker, "scorer-min3-output-not-in-repo");
+    assert.equal(boards.rubric, "1.3.9");
+    assert.equal(boards.min_resolved, 10);
+    assert.equal(boards.provenance, undefined);
+    const sports = buildVals({ view: "home", cat: "Sports", q: "" }, { setState() {}, openSpeaker() {}, openClaim() {}, goHome() {}, setCat() {}, goMethod() {}, goChangelog() {}, goClaims() {}, submit() {}, account: null, openModal() {} }, { speakers: SPEAKERS, forecasts: FORECASTS, actuals: [], scores: [], CATCOLORS });
+    assert.equal(sports.rankMin, 10);
+    assert.match(sports.rankNote, /ranked at 10 resolved/);
+  }
 });
 
-test("below-minimum rows: no rank, no hit rate, 'Not ranked yet', 'N of 10 resolved'; no '*'", () => {
-  const rows = scorerBoardRows(
-    [
-      { speaker_id: "x", speaker: "X", org: "", n_resolved: 7, n_pending: 1, hit_rate: 0.5, eligible: false, rank: null, domain: "sports" },
-      { speaker_id: "y", speaker: "Y", org: "", n_resolved: 12, n_pending: 0, hit_rate: 0.25, eligible: true, rank: 1, domain: "sports" },
-    ],
-    [], null, 10,
-  );
+test("below-minimum label defaults to 'N of 3 resolved'; an older snapshot minimum is not relabeled", () => {
+  const below = { speaker_id: "x", speaker: "X", org: "", kind: "person", n_resolved: 2, n_pending: 1, n_hit: 1, hit_rate: 0.5, eligible: false, rank: null, domain: "sports" };
+  const above = { speaker_id: "y", speaker: "Y", org: "", kind: "person", n_resolved: 3, n_pending: 0, n_hit: 1, hit_rate: 1 / 3, eligible: true, rank: 1, domain: "sports" };
+  const rows = scorerBoardRows([below, above], [], null);
   assert.equal(rows[0].rank, 1);
+  assert.equal(rows[0].nResolved, 3);
   assert.equal(rows[1].rank, null);
   assert.equal(rows[1].hitRate, "Not ranked yet");
-  assert.equal(rows[1].nResolved, "7 of 10 resolved");
+  assert.equal(rows[1].nResolved, "2 of 3 resolved");
   assert.ok(rows.every((r) => !String(r.hitRate).includes("*")));
+  const legacy = scorerBoardRows([{ ...below, n_resolved: 7 }], [], null, 10);
+  assert.equal(legacy[0].nResolved, "7 of 10 resolved");
+  assert.equal(legacy[0].hitRate, "Not ranked yet");
 });
 
 test("people boards drop kind model only; outlet_feed stays labeled Agency", () => {
