@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { publicChangelogDay } from "../src/changelogPublic.js";
 import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus.js";
+import { loadScorerBoardFiles } from "../src/boardProvenance.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -465,8 +466,12 @@ export const DATA_SOURCE = live.source || "live";
   for (const [slug, meta] of Object.entries(fbsTeams.teams || {})) {
     teamLabels.fbs[slug] = (meta && meta.label) || slug;
   }
-  // Rubric v1.3.9 boards from Scorer: exact-score people board, winner pick record, models board.
+  // Rubric v1.3.10 boards from Scorer: exact-score people board, winner pick record, models board.
   // Kept in their own file so exact-score rankings, winner picks and models never mix.
+  // This script only reads scorer board files and writes src/generated/boards.json.
+  // It does not write scorer/out. TROOTH_BOARD_DIR selects the input directory
+  // (default scorer/out; the unpublished min-3 preview is scorer/preview-2026-11-06-min3).
+  // There is no fallback: rubric must be 1.3.10 and min_resolved must be 3, or the build throws.
   // Join key is speaker_id (pagemap v1.2.0). Until Scorer emits it, fall back to name + org and warn.
   const regList = registry.speakers || [];
   const idByNameOrg = new Map(speakers.map((sp) => [sp.name + "|" + (sp.org || ""), sp.id]));
@@ -483,17 +488,18 @@ export const DATA_SOURCE = live.source || "live";
     (id ? fallbackNames : unjoinedNames).add(`${row.speaker} (${row.org || "no org"})`);
     return { ...row, speaker_id: id, speaker_id_fallback: true };
   };
+  const boardDirRel = process.env.TROOTH_BOARD_DIR || "scorer/out";
+  const loadedBoards = loadScorerBoardFiles(join(ROOT, boardDirRel), boardDirRel);
   const boardsOut = {};
-  for (const [key, file] of [["people_board", "people_board.json"], ["pick_record", "pick_record.json"], ["models_board", "models_board.json"]]) {
-    const b = readJson(join(ROOT, "scorer/out", file));
-    if (b.rubric !== "1.3.9" || b.min_resolved !== 10) throw new Error(`${file}: expected rubric 1.3.9, min_resolved 10`);
-    const v = b[key];
-    boardsOut[key] = Array.isArray(v)
+  for (const item of loadedBoards.files) {
+    const v = item.board[item.key];
+    boardsOut[item.key] = Array.isArray(v)
       ? v.map(joinRow)
       : Object.fromEntries(Object.entries(v || {}).map(([k, rows]) => [k, (rows || []).map(joinRow)]));
-    boardsOut.rubric = b.rubric;
-    boardsOut.min_resolved = b.min_resolved;
   }
+  boardsOut.rubric = loadedBoards.rubric;
+  boardsOut.min_resolved = loadedBoards.min_resolved;
+  boardsOut.provenance = loadedBoards.provenance;
   if (fallbackNames.size || unjoinedNames.size) {
     console.warn(
       `WARNING: ${fallbackNames.size + unjoinedNames.size} Scorer board speakers have speaker_id null; ` +

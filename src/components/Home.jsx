@@ -5,9 +5,11 @@ import ClaimCard from "./ClaimCard.jsx";
 import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
 import { CATCOLORS } from "../data.js";
 import GaugeMark from "./GaugeMark.jsx";
+import { visibleBoardRank, unresolvedLabel } from "../rankingContract.js";
 
-function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
+function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain, rankMin = 3 }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
+  const unrankedCount = rows.filter((x) => visibleBoardRank(x) == null).length;
   return (
     <div>
       <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;")}>
@@ -26,11 +28,17 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
           <span>Hit rate</span>
           <span>Pending</span>
         </div>
-        {rows.map((r, i) => (
+        {rows.map((r, i) => {
+          const rankNumber = visibleBoardRank(r);
+          const ranked = rankNumber != null;
+          const prevRanked = i > 0 && visibleBoardRank(rows[i - 1]) != null;
+          const resolvedCell = ranked ? r.nResolved : (typeof r.nResolved === "string" ? r.nResolved : unresolvedLabel(r.nResolved, rankMin));
+          const rateCell = ranked ? r.hitRate : "Not ranked yet";
+          return (
           <div key={r.speakerId + "|" + i}>
-          {r.ranked === false && (i === 0 || rows[i - 1].ranked !== false) ? (
+          {!ranked && (i === 0 || prevRanked) ? (
             <div style={css("padding:8px 16px;border-bottom:1px solid var(--hair);font-size:12px;color:var(--muted);background:var(--paper);")}>
-              Not ranked yet · {rows.filter((x) => x.ranked === false).length} below the 10-resolved minimum
+              Not ranked yet · {unrankedCount} below the {rankMin}-resolved minimum
             </div>
           ) : null}
           <Hover
@@ -43,19 +51,20 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
             <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
               <span style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
               <div style={css("min-width:0;")}>
-                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.rank != null ? <span style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-right:6px;")}>#{r.rank}</span> : null}{r.name}</div>
+                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{rankNumber != null ? <span style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-right:6px;")}>#{rankNumber}</span> : null}{r.name}</div>
                 <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
               </div>
             </div>
             {showDomain ? (
               <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
             ) : null}
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.nResolved}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (r.ranked === false ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{r.hitRate}{r.ranked !== false && r.rateDetail ? <span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{r.rateDetail}</span> : null}{(() => { const pct = parseFloat(String(r.hitRate)); return r.ranked !== false && Number.isFinite(pct) ? (<span style={css("display:block;width:64px;height:5px;border-radius:999px;background:var(--row);margin-top:5px;overflow:hidden;")}><span style={css("display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#06380F,#0E9F2E,#46D62E);width:" + Math.max(3, Math.min(100, pct)) + "%;")} /></span>) : null; })()}</span>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{resolvedCell}</span>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (!ranked ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{rateCell}{ranked && r.rateDetail ? <span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{r.rateDetail}</span> : null}{(() => { const pct = parseFloat(String(rateCell)); return ranked && Number.isFinite(pct) ? (<span style={css("display:block;width:64px;height:5px;border-radius:999px;background:var(--row);margin-top:5px;overflow:hidden;")}><span style={css("display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#06380F,#0E9F2E,#46D62E);width:" + Math.max(3, Math.min(100, pct)) + "%;")} /></span>) : null; })()}</span>
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
           </Hover>
           </div>
-        ))}
+          );
+        })}
         {empty && (
           <div style={css("padding:28px 20px;text-align:center;color:var(--muted);font-size:14px;line-height:1.5;")}>{emptyLabel}</div>
         )}
@@ -215,6 +224,7 @@ export default function Home({ vals, openClaim }) {
                 title={sec.title}
                 resultCount={sec.countLabel}
                 rankNote={vals.rankNote}
+                rankMin={vals.rankMin}
                 rows={sec.rows}
                 empty={false}
                 showDomain={false}
@@ -226,6 +236,7 @@ export default function Home({ vals, openClaim }) {
         title={vals.boardTitle}
         resultCount={vals.resultCount}
         rankNote={vals.rankNote}
+        rankMin={vals.rankMin}
         rows={vals.rows}
         empty={vals.noResults}
         emptyLabel={
@@ -241,6 +252,7 @@ export default function Home({ vals, openClaim }) {
         title={vals.boardTitle}
         resultCount={vals.resultCount}
         rankNote={vals.rankNote}
+        rankMin={vals.rankMin}
         rows={vals.rows}
         empty={vals.noResults}
         emptyLabel={
@@ -262,6 +274,7 @@ export default function Home({ vals, openClaim }) {
             title={vals.pickTitle}
             resultCount={vals.pickCount}
             rankNote={vals.pickNote}
+            rankMin={vals.rankMin}
             rows={vals.pickRows}
             empty={false}
             showDomain={false}

@@ -1,4 +1,5 @@
 node_modules/
+.tmp-rank-render-*/
 dist/
 .env
 .env.*

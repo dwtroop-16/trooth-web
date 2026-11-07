@@ -18,6 +18,8 @@ Kickoff status (schema-v1.md v1.3.2): a game whose `kickoff_status` is `pending`
 
 Public grades: Hit / Miss / Pending / Unscorable / In review. No Partial. No community verified. Pending is not a miss and is not folded into hit rate.
 
+Ranking (rubric v1.3.10): a person is ranked on one board after 3 Hit or Miss results on that board. Pending, In review, and Unscorable do not count. Boards are not pooled. Models are never ranked; `eligible: true` on a model is not a rank. `npm run build:live-data` reads Scorer board files (default `scorer/out`, override `TROOTH_BOARD_DIR`) and writes only `src/generated/boards.json`. It accepts rubric `1.3.10` and `min_resolved` 3, stores sha256 of each input, and refuses a min-10 file. It does not write `scorer/out`. The committed snapshot stays on the last ingested file until that command is run against the corrected outputs.
+
 Politics actuals: certified SOS / FEC / congress.gov only. Never AP called, 538, Wikipedia, betting, polls, or community votes.
 
 Tip a source is not ingest and is never scored.

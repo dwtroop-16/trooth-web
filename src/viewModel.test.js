@@ -73,7 +73,11 @@ test("no cap: every Not ranked yet speaker is listed (Sports, Pick record, All s
   const sports = buildVals({ view: "home", cat: "Sports", q: "" }, actions, data);
   const want = boards.people_board.filter((r) => r.domain === "sports" && r.kind !== "model").length;
   assert.equal(sports.rows.length, want);
-  assert.ok(sports.rows.some((r) => r.name === "Tom Fornelli" && r.hitRate === "Not ranked yet"));
+  assert.ok(sports.rows.some((r) => r.name === "Tom Fornelli" && r.ranked && r.rank != null));
+  const below = sports.rows.find((r) => r.name === "Stephen A. Smith");
+  assert.equal(below.hitRate, "Not ranked yet");
+  assert.equal(below.nResolved, "2 of 3 resolved");
+  assert.equal(below.rank, null);
   assert.equal(sports.boardCapped, false);
   assert.match(sports.resultCount, /ranked · \d+ not ranked yet$/);
   assert.equal(sports.pickRows.length, boards.pick_record.filter((r) => r.kind !== "model").length);
