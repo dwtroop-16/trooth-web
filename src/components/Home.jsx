@@ -5,8 +5,9 @@ import ClaimCard from "./ClaimCard.jsx";
 import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
 import { CATCOLORS } from "../data.js";
 import GaugeMark from "./GaugeMark.jsx";
+import { boardScopeTotals, EXACT_MATCH_RATE, WINNER_RATE, SPORTS_MIX_NOTE, BOARD_SCOPE_NOTE } from "../metricLabels.js";
 
-function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
+function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain, rateLabel = EXACT_MATCH_RATE, scopeNote }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
   return (
     <div>
@@ -23,9 +24,12 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
           <span>Speaker</span>
           {showDomain ? <span className="trooth-board-domain">Domain</span> : null}
           <span>Resolved</span>
-          <span>Hit rate</span>
+          <span>{rateLabel}</span>
           <span>Pending</span>
         </div>
+        {scopeNote ? (
+          <div style={css("padding:8px 16px;border-bottom:1px solid var(--hair);font-size:12.5px;line-height:1.45;color:var(--muted);background:var(--paper);")}>{scopeNote}</div>
+        ) : null}
         {rows.map((r, i) => (
           <div key={r.speakerId + "|" + i}>
           {r.ranked === false && (i === 0 || rows[i - 1].ranked !== false) ? (
@@ -101,10 +105,11 @@ export default function Home({ vals, openClaim }) {
     });
 
   const heroRows = vals.boardSections ? vals.boardSections.flatMap((s) => s.rows || []) : vals.rows || [];
+  const scope = boardScopeTotals(heroRows);
   const heroStats = [
-    { label: "Speakers tracked", value: heroRows.length },
-    { label: "Forecasts resolved", value: heroRows.reduce((a, r) => a + (Number(r.nResolved) || 0), 0) },
-    { label: "Pending now", value: heroRows.reduce((a, r) => a + (Number(r.pending) || 0), 0) },
+    { label: "Forecasters listed", value: scope.forecasters },
+    { label: "Exact-match resolved", value: scope.resolved },
+    { label: "Pending on these boards", value: scope.pending },
   ];
   const entryTabs = (vals.categories || []).filter((tab) => tab.label !== "All");
 
@@ -114,13 +119,13 @@ export default function Home({ vals, openClaim }) {
         <section style={css("text-align:center;padding:18px 0 26px;")}>
           <div style={css("display:flex;justify-content:center;")}><GaugeMark height={104} /></div>
           <div style={css("font-family:Archivo,sans-serif;font-style:italic;font-weight:800;font-size:clamp(44px,7vw,64px);letter-spacing:-0.02em;color:var(--ink);line-height:1.05;margin-top:6px;")}>Trooth<span style={css("color:var(--forest);font-style:normal;")}>.app</span></div>
-          <div style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.16em;color:var(--muted);margin-top:10px;")}>SPORTS&nbsp;&nbsp;|&nbsp;&nbsp;FINANCE&nbsp;&nbsp;|&nbsp;&nbsp;WEATHER</div>
+          <div style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.16em;color:var(--muted);margin-top:10px;")}>SPORTS&nbsp;&nbsp;|&nbsp;&nbsp;FINANCE&nbsp;&nbsp;|&nbsp;&nbsp;WEATHER&nbsp;&nbsp;|&nbsp;&nbsp;POLITICS</div>
           <p style={css("font-size:clamp(20px,3.4vw,30px);font-weight:700;color:var(--ink);letter-spacing:-0.01em;margin:20px auto 0;max-width:640px;line-height:1.25;")}>
-            Public forecasts, scored against official prints.
+            Public forecasts, compared with verified results.
           </p>
           <div style={css("margin:20px auto 0;max-width:680px;display:flex;align-items:center;gap:10px;justify-content:center;background:var(--surface);border:1px solid #BFE8B4;border-radius:999px;padding:9px 18px;")}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F2E" strokeWidth="3" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
-            <span style={css("font-size:13.5px;color:var(--forest-deep);")}><strong>Pending is not a miss</strong> \u2014 pending forecasts are never counted as misses and never folded into hit rate.</span>
+            <span style={css("font-size:13.5px;color:var(--forest-deep);")}><strong>Pending is not a miss</strong> — pending forecasts are never counted as misses and never folded into the hit rate.</span>
           </div>
           <div style={css("display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px;")}>
             {entryTabs.map((tab) => {
@@ -141,6 +146,7 @@ export default function Home({ vals, openClaim }) {
               </div>
             ))}
           </div>
+          <p style={css("margin:14px auto 0;max-width:640px;font-size:12.5px;line-height:1.45;color:var(--muted);")}>{BOARD_SCOPE_NOTE}</p>
         </section>
       )}
 
@@ -218,6 +224,8 @@ export default function Home({ vals, openClaim }) {
                 rows={sec.rows}
                 empty={false}
                 showDomain={false}
+                rateLabel={EXACT_MATCH_RATE}
+                scopeNote={sec.domain === "Sports" ? SPORTS_MIX_NOTE : null}
               />
             </div>
           ))
@@ -230,10 +238,12 @@ export default function Home({ vals, openClaim }) {
         empty={vals.noResults}
         emptyLabel={
           q
-            ? `No speakers match “${q}” in this tab. Claim matches above still search all domains.`
-            : "No speakers yet"
+            ? `No forecasters match “${q}” in this tab. Claim matches above still search all domains.`
+            : "No forecasters yet"
         }
         showDomain={showDomain}
+        rateLabel={EXACT_MATCH_RATE}
+        scopeNote={(vals.categories || []).find((tab) => tab.active)?.label === "Sports" ? SPORTS_MIX_NOTE : null}
       />
         )
       ) : (
@@ -245,10 +255,12 @@ export default function Home({ vals, openClaim }) {
         empty={vals.noResults}
         emptyLabel={
           q
-            ? `No speakers match “${q}” in this tab. Claim matches above still search all domains.`
-            : "No speakers yet"
+            ? `No forecasters match “${q}” in this tab. Claim matches above still search all domains.`
+            : "No forecasters yet"
         }
         showDomain={showDomain}
+        rateLabel={EXACT_MATCH_RATE}
+        scopeNote={(vals.categories || []).find((tab) => tab.active)?.label === "Sports" ? SPORTS_MIX_NOTE : null}
       />
       )}
       {vals.showModelsLink ? (
@@ -265,6 +277,8 @@ export default function Home({ vals, openClaim }) {
             rows={vals.pickRows}
             empty={false}
             showDomain={false}
+            rateLabel={WINNER_RATE}
+            scopeNote="Winner-only picks. Not included in the exact-match rates above."
           />
         </div>
       ) : null}

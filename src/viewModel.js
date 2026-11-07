@@ -5,6 +5,7 @@ import { displayedPcts } from "./missRate.js";
 import { horizonDisplay } from "./kickoffStatus.js";
 import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
 import { pathFor, normalizeDomain } from "./router.js";
+import { exactMatchParts } from "./metricLabels.js";
 import {
   trackSearchPerformed,
   markSuggestionClick,
@@ -150,6 +151,7 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = 10, {
         initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
         avatar: sp ? avatarFor(sp.id) : "#6B7280",
         domain: domainLabel,
+        resolvedCount: r.n_resolved,
         nResolved: ranked ? r.n_resolved : `${r.n_resolved} of ${minResolved} resolved`,
         hitRate: ranked ? pctFromCounts(r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved), r.n_resolved) : "Not ranked yet",
         rateDetail: `${r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved)} of ${r.n_resolved} resolved`,
@@ -669,7 +671,7 @@ export function buildVals(state, actions, data) {
   claimList = sortClaimList(claimList);
 
   const speakerOptions = [
-    { id: "All", name: "All speakers" },
+    { id: "All", name: "All forecasters" },
     ...speakers
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -715,6 +717,8 @@ export function buildVals(state, actions, data) {
         n_pending: st.n_pending,
         n_unscorable: st.n_unscorable,
         n_void: st.n_void,
+        rateLabel: "Exact-match hit rate",
+        exactMatchParts: exactMatchParts(sp.id, forecasts, scores),
         hit_rate: st.n_resolved ? displayedPcts({ n_hit: st.n_hit, n_resolved: st.n_resolved }).hit + "%" : "— no resolved yet",
         miss_rate: st.n_resolved ? displayedPcts({ n_hit: st.n_hit, n_resolved: st.n_resolved }).miss + "%" : "— no resolved yet",
         n_hit: st.n_hit,

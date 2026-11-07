@@ -71,7 +71,7 @@ export default function Claims({ vals, openClaim }) {
       <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--forest);margin-bottom:10px;")}>CLAIMS</div>
       <h1 style={css("font-family:Newsreader,serif;font-size:32px;font-weight:600;margin:0 0 8px;color:var(--ink);letter-spacing:-0.015em;")}>All claims</h1>
       <p style={css("margin:0 0 20px;font-size:14px;color:var(--muted);line-height:1.45;max-width:42rem;")}>
-        Filter by domain, grade, speaker, and horizon. Share the URL to restore the same view.
+        Filter by domain, grade, forecaster, and horizon. Share the URL to restore the same view.
       </p>
 
       {q ? (
@@ -115,7 +115,7 @@ export default function Claims({ vals, openClaim }) {
             ))}
           </div>
           <label style={css("font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;margin-left:auto;")}>
-            Speaker
+            Forecaster
             <select
               value={vals.claimSpeaker}
               onChange={(e) => vals.setClaimSpeaker(e.target.value)}
