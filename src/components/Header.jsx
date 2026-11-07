@@ -80,8 +80,8 @@ export default function Header({ vals }) {
               }}
               onFocus={() => setOpen(true)}
               onKeyDown={onKeyDown}
-              placeholder="Search speakers or claims"
-              aria-label="Search speakers or claims"
+              placeholder="Search forecasters or claims"
+              aria-label="Search forecasters or claims"
               style={css("border:none;background:none;outline:none;font-size:14px;color:var(--ink);width:100%;min-width:0;")}
             />
             {q ? (
@@ -117,7 +117,7 @@ export default function Header({ vals }) {
                 >
                   {row.kind === "speaker" ? (
                     <>
-                      <div style={css("font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;")}>Speaker</div>
+                      <div style={css("font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;")}>Forecaster</div>
                       <div style={css("font-family:Newsreader,serif;font-size:15px;font-weight:600;color:var(--ink);")}>{row.name}</div>
                       {row.org ? <div style={css("font-size:12px;color:var(--muted);")}>{row.org}</div> : null}
                     </>

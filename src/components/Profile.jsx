@@ -68,7 +68,7 @@ export default function Profile({ vals, openClaim }) {
   const showTeamSection = (p.teamBoards && p.teamBoards.length > 0) || p.hasSports;
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;animation:vFadeUp .28s ease;")}>
-      <Hover as="button" onClick={vals.goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;" hover="color:var(--forest);">← All speakers</Hover>
+      <Hover as="button" onClick={vals.goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;" hover="color:var(--forest);">← All forecasters</Hover>
 
       <div style={css("display:flex;align-items:center;gap:14px;margin-bottom:22px;")}>
         <span style={css(`width:40px;height:40px;border-radius:50%;background:${p.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:16px;font-weight:600;flex-shrink:0;`)}>{p.initials}</span>
@@ -85,13 +85,18 @@ export default function Profile({ vals, openClaim }) {
       <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;")}>
         <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
           <span style={css("font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;line-height:1;color:var(--ink);")}>{p.hit_rate}</span>
-          <span style={css("font-size:13px;color:var(--muted);")}>hit rate{p.n_resolved ? ` · ${p.n_hit} of ${p.n_resolved} resolved` : ""}</span>
+          <span style={css("font-size:13px;color:var(--muted);")}>{p.rateLabel || "Exact-match hit rate"}{p.n_resolved ? ` · ${p.n_hit} of ${p.n_resolved} resolved` : ""}</span>
           <span style={css("font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;line-height:1;color:var(--ink);margin-left:12px;")}>{p.miss_rate}</span>
           <span style={css("font-size:13px;color:var(--muted);")}>
             miss rate{p.n_resolved ? ` · ${p.n_miss} of ${p.n_resolved} resolved` : ""} · pending, unscorable and in review excluded ·{" "}
             <a href="/method" onClick={(e) => { e.preventDefault(); vals.goMethod && vals.goMethod(); }} style={css("color:var(--forest);")}>How we score</a>
           </span>
         </div>
+        {p.exactMatchParts && p.exactMatchParts.length > 1 ? (
+          <div style={css("font-size:13px;color:var(--body);margin-top:10px;")}>
+            {p.exactMatchParts.map((part) => `${part.label} ${part.n_hit} of ${part.n_resolved}`).join(" · ")}
+          </div>
+        ) : null}
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
           {counts.map(([label, n]) => (
             <div key={label} style={css("min-width:72px;")}>
@@ -100,18 +105,28 @@ export default function Profile({ vals, openClaim }) {
             </div>
           ))}
         </div>
-        <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;")}>
-          <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.mae}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>MAE (where defined)</div></div>
-          <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.ape}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>Mean APE (where defined)</div></div>
-          <div style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{p.brier}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>Mean Brier (where defined)</div></div>
-        </div>
+        {[
+          [p.mae, "Mean absolute error, where the claim is a number"],
+          [p.ape, "Mean absolute percent error, where defined"],
+          [p.brier, "Mean Brier score, where a probability was recorded"],
+        ].some(([value]) => value && value !== "—") ? (
+          <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;")}>
+            {[
+              [p.mae, "Mean absolute error, where the claim is a number"],
+              [p.ape, "Mean absolute percent error, where defined"],
+              [p.brier, "Mean Brier score, where a probability was recorded"],
+            ].filter(([value]) => value && value !== "—").map(([value, label]) => (
+              <div key={label} style={css("min-width:100px;")}><div style={css("font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;color:var(--ink);")}>{value}</div><div style={css("font-size:12px;color:var(--muted);margin-top:2px;")}>{label}</div></div>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       {p.pickRecord ? (
         <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;margin-top:16px;")}>
           <div style={css("display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;")}>
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;line-height:1;color:var(--ink);")}>{p.pickRecord.eligible ? p.pickRecord.hit_rate : "Not ranked yet"}</span>
-            <span style={css("font-size:13px;color:var(--muted);")}>pick record · winner-only picks, separate from the exact-score hit rate above</span>
+            <span style={css("font-size:13px;color:var(--muted);")}>Winner hit rate · winner-only picks, separate from the exact-match record above</span>
           </div>
           <div style={css("font-size:13px;color:var(--body);margin-top:10px;")}>
             {p.pickRecord.eligible ? `${p.pickRecord.n_hit} of ${p.pickRecord.n_resolved} resolved` : `${p.pickRecord.n_resolved} of ${p.pickRecord.min} resolved`} · {p.pickRecord.n_pending} pending
@@ -126,7 +141,7 @@ export default function Profile({ vals, openClaim }) {
             columns={[
               { key: "label", label: "Division" },
               { key: "n_resolved", label: "Resolved" },
-              { key: "hit_rate", label: "Hit rate" },
+              { key: "hit_rate", label: "Exact-match" },
               { key: "n_pending", label: "Pending" },
             ]}
             rows={divisionRows}
@@ -142,7 +157,7 @@ export default function Profile({ vals, openClaim }) {
               { key: "label", label: "Team" },
               { key: "division", label: "Division" },
               { key: "n_resolved", label: "Resolved" },
-              { key: "hit_rate", label: "Hit rate" },
+              { key: "hit_rate", label: "Exact-match" },
               { key: "n_pending", label: "Pending" },
             ]}
             rows={teamRows}
@@ -153,7 +168,7 @@ export default function Profile({ vals, openClaim }) {
 
       <h3 style={css("font-family:Newsreader,serif;font-size:20px;font-weight:600;margin:28px 0 12px;color:var(--ink);")}>Track record</h3>
       {p.track.length === 0 ? (
-        <div style={css("color:var(--muted);font-size:14px;")}>No captured forecasts for this speaker.</div>
+        <div style={css("color:var(--muted);font-size:14px;")}>No captured forecasts for this forecaster.</div>
       ) : (
         <div style={css("display:flex;flex-direction:column;gap:10px;")}>
           {p.track.map((card) => (
