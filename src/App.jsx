@@ -4,6 +4,7 @@ import { loadData, submitSourceTip } from "./dataSource.js";
 import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
+import { applyRouteHead, routeHead } from "./siteNav.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import Models from "./components/Models.jsx";
@@ -457,18 +458,29 @@ export default function App() {
   );
 
   useEffect(() => {
-    let title = "Trooth";
-    if (vals.isNotFound) title = "Not found · Trooth";
-    else if (vals.isClaims) title = "Claims · Trooth";
-    else if (vals.isModels) title = "Computer models · Trooth";
-    else if (vals.isMethod) title = "Method · Trooth";
-    else if (vals.isChangelog) title = "Changelog · Trooth";
-    else if (vals.isProfile && vals.p) title = vals.p.name + " · Trooth";
-    else if (vals.isPrediction && vals.d) {
-      const claim = String(vals.d.claimText || "");
-      title = (claim.length > 48 ? claim.slice(0, 48) : claim) + " · Trooth";
-    }
-    document.title = title;
+    const view = vals.isNotFound
+      ? "notfound"
+      : vals.isClaims
+        ? "claims"
+        : vals.isModels
+          ? "models"
+          : vals.isMethod
+            ? "method"
+            : vals.isChangelog
+              ? "changelog"
+              : vals.isProfile
+                ? "profile"
+                : vals.isPrediction
+                  ? "prediction"
+                  : "home";
+    applyRouteHead(routeHead({
+      view,
+      speakerId: vals.p?.id,
+      forecastId: vals.d?.id,
+      name: vals.p?.name,
+      grade: vals.d?.grade,
+      claimText: vals.d?.claimText,
+    }));
   }, [vals.isHome, vals.isClaims, vals.isModels, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.p, vals.d]);
 
   return (

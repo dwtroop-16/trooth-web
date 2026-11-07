@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { css } from "../helpers.js";
+import { onSpaClick } from "../siteNav.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 import { trackSearchNoResults } from "../analytics.js";
@@ -67,7 +68,7 @@ export default function Claims({ vals, openClaim }) {
 
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;animation:vFadeUp .28s ease;")}>
-      <Hover as="button" onClick={vals.goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:18px;" hover="color:var(--forest);">← Home</Hover>
+      <Hover as="a" href="/" onClick={(e) => onSpaClick(e, vals.goHome)} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:18px;text-decoration:none;" hover="color:var(--forest);">← Home</Hover>
       <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--forest);margin-bottom:10px;")}>CLAIMS</div>
       <h1 style={css("font-family:Newsreader,serif;font-size:32px;font-weight:600;margin:0 0 8px;color:var(--ink);letter-spacing:-0.015em;")}>All claims</h1>
       <p style={css("margin:0 0 20px;font-size:14px;color:var(--muted);line-height:1.45;max-width:42rem;")}>

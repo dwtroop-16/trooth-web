@@ -44,11 +44,25 @@ test("no source writes head meta, JSON-LD, sitemaps, feeds or share text from so
   const files = [];
   const walk = (d) => { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.name === "node_modules" || e.name === "generated" || e.name === ".git" || e.name === "dist") continue; if (e.isDirectory()) walk(p); else if (/\.(jsx?|mjs|html|xml|txt|toml)$/.test(e.name) && !/\.test\.js$/.test(e.name)) files.push(p); } };
   for (const d of ["src", "public", "scripts"]) walk(join(SITE, d));
-  files.push(join(SITE, "index.html"), join(SITE, "netlify.toml"));
+  files.push(join(SITE, "index.html"), join(SITE, "netlify.toml"), join(SITE, "vite.config.js"));
+  // These files are the public discovery path. They may mention sitemap/canonical/meta.
+  // Their bytes still must not carry a cite-only host.
+  const allowed = new Set([
+    relative(SITE, join(SITE, "src/siteNav.js")),
+    relative(SITE, join(SITE, "src/App.jsx")),
+    relative(SITE, join(SITE, "vite.config.js")),
+    relative(SITE, join(SITE, "public/robots.txt")),
+  ]);
   const bad = [];
+  const cite = /(foxsports|chicagobears|49ers|packers)\.com|(^|[^a-z0-9.-])(www\.)?si\.com/i;
   for (const f of files) {
     const s = readFileSync(f, "utf8");
-    if (/\bog:|twitter:card|application\/ld\+json|sitemap|<rss|application\/atom|navigator\.share|clipboard\.writeText|rel=["']canonical|rel=["']prefetch|createElement\(["']meta/i.test(s)) bad.push(relative(SITE, f));
+    const rel = relative(SITE, f);
+    if (allowed.has(rel)) {
+      if (cite.test(s)) bad.push(rel + " cite-only host");
+      continue;
+    }
+    if (/\bog:|twitter:card|application\/ld\+json|sitemap|<rss|application\/atom|navigator\.share|clipboard\.writeText|rel=["']canonical|rel=["']prefetch|createElement\(["']meta/i.test(s)) bad.push(rel);
   }
   assert.deepEqual(bad, [], "a head/meta/feed/share path now exists: extend the cite-only host checks to it");
 });
@@ -61,6 +75,14 @@ test("built dist/: no sitemap/feed files, and no cite-only host text in any non-
   const walk = (d) => { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) walk(p); else files.push(p); } };
   walk(outDir);
   const rel = files.map((p) => relative(outDir, p));
+  assert.ok(rel.includes("sitemap.xml"), "build emits sitemap.xml");
+  assert.ok(rel.includes("robots.txt"), "build copies robots.txt");
+  const sitemap = readFileSync(join(outDir, "sitemap.xml"), "utf8");
+  const robots = readFileSync(join(outDir, "robots.txt"), "utf8");
+  assert.match(sitemap, /^<\?xml/);
+  assert.match(robots, /^User-agent:/);
+  assert.equal(sitemap.includes("<html"), false);
+  assert.equal(robots.includes("<html"), false);
   for (const r of rel) if (/sitemap|rss|feed|atom/i.test(r)) assert.ok(!CITE_HOST_TEXT.test(readFileSync(join(outDir, r), "utf8")), r);
   const bad = rel.filter((r) => /\.(html|xml|txt|json|webmanifest)$/.test(r) && CITE_HOST_TEXT.test(readFileSync(join(outDir, r), "utf8")));
   assert.deepEqual(bad, []);

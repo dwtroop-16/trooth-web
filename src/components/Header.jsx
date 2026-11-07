@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import GaugeMark from "./GaugeMark.jsx";
+import { onSpaClick } from "../siteNav.js";
 
 export default function Header({ vals }) {
   const [open, setOpen] = useState(false);
@@ -35,12 +36,13 @@ export default function Header({ vals }) {
     }
   };
 
-  const navLink = (label, onClick, active) => (
+  const navLink = (label, href, onClick, active) => (
     <Hover
-      as="button"
-      onClick={onClick}
+      as="a"
+      href={href}
+      onClick={(e) => onSpaClick(e, onClick)}
       style={
-        "background:none;border:none;cursor:pointer;padding:0;font-size:13px;white-space:nowrap;flex-shrink:0;" +
+        "background:none;border:none;cursor:pointer;padding:0;font-size:13px;white-space:nowrap;flex-shrink:0;text-decoration:none;" +
         (active ? "color:var(--forest);font-weight:600;" : "color:var(--muted);")
       }
       hover="color:var(--forest);"
@@ -52,15 +54,15 @@ export default function Header({ vals }) {
   return (
     <header style={css("position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);")}>
       <div className="trooth-header-inner" style={css("max-width:1180px;margin:0 auto;padding:0 20px;min-height:56px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;")}>
-        <button onClick={vals.goHome} style={css("display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;")}>
+        <a href="/" onClick={(e) => onSpaClick(e, vals.goHome)} style={css("display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;text-decoration:none;color:inherit;")}>
           <GaugeMark height={30} />
           <span style={css("font-family:Archivo,sans-serif;font-style:italic;font-size:23px;font-weight:800;letter-spacing:-0.01em;color:var(--ink);")}>Trooth<span style={css("color:var(--forest);font-style:normal;")}>.app</span></span>
-        </button>
+        </a>
 
         <nav className="trooth-header-nav" style={css("display:flex;align-items:center;gap:14px;flex-shrink:0;")}>
-          {navLink("Claims", vals.goClaims, vals.isClaims)}
-          {navLink("Method", vals.goMethod, vals.isMethod)}
-          {navLink("Changelog", vals.goChangelog, vals.isChangelog)}
+          {navLink("Claims", "/claims", vals.goClaims, vals.isClaims)}
+          {navLink("Method", "/method", vals.goMethod, vals.isMethod)}
+          {navLink("Changelog", "/changelog", vals.goChangelog, vals.isChangelog)}
         </nav>
 
         <div className="trooth-header-spacer" style={css("flex:1;min-width:8px;")} />
@@ -107,12 +109,13 @@ export default function Header({ vals }) {
               {suggestions.map((row) => (
                 <Hover
                   key={row.kind + ":" + row.id}
-                  as="button"
-                  onClick={() => {
+                  as="a"
+                  href={row.href}
+                  onClick={(e) => {
                     setOpen(false);
-                    row.open?.();
+                    onSpaClick(e, row.open);
                   }}
-                  style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--row);cursor:pointer;padding:10px 12px;"
+                  style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--row);cursor:pointer;padding:10px 12px;text-decoration:none;color:inherit;"
                   hover="background:#FFFFFF;"
                 >
                   {row.kind === "speaker" ? (
@@ -134,12 +137,13 @@ export default function Header({ vals }) {
                 </Hover>
               ))}
               <Hover
-                as="button"
-                onClick={() => {
+                as="a"
+                href="/claims"
+                onClick={(e) => {
                   setOpen(false);
-                  vals.seeAllResults?.();
+                  onSpaClick(e, vals.seeAllResults);
                 }}
-                style="display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:10px 12px;font-size:13px;font-weight:600;color:var(--forest);"
+                style="display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:10px 12px;font-size:13px;font-weight:600;color:var(--forest);text-decoration:none;"
                 hover="background:#FFFFFF;"
               >
                 See all results

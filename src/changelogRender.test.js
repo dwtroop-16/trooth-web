@@ -36,6 +36,7 @@ export function loadPublicChangelog() {
   const { transformSync } = await import("esbuild");
   const src = readFileSync(join(HERE, "components/Changelog.jsx"), "utf8")
     .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
+    .replace('"../siteNav.js"', JSON.stringify(pathToFileURL(join(HERE, "siteNav.js")).href))
     .replace('"../loadChangelog.js"', JSON.stringify(pathToFileURL(loader).href))
     .replace('"../analytics.js"', JSON.stringify("data:text/javascript,export function trackSourceLinkClicked(){}"))
     .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));

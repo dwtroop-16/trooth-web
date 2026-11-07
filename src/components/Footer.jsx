@@ -1,6 +1,7 @@
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import GaugeMark from "./GaugeMark.jsx";
+import { onSpaClick } from "../siteNav.js";
 
 export default function Footer({ vals }) {
   return (
@@ -11,9 +12,9 @@ export default function Footer({ vals }) {
       </span>
       <span style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;color:var(--muted);")}>SPORTS | FINANCE | WEATHER</span>
       <span style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;font-weight:600;color:var(--forest-deep);")}>HONEST. ACCURATE. RELIABLE.</span>
-      <Hover as="button" onClick={vals.goMethod} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Method</Hover>
-      <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Claims</Hover>
-      <Hover as="button" onClick={vals.goChangelog} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Changelog</Hover>
+      <Hover as="a" href="/method" onClick={(e) => onSpaClick(e, vals.goMethod)} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);text-decoration:none;" hover="color:var(--forest);">Method</Hover>
+      <Hover as="a" href="/claims" onClick={(e) => onSpaClick(e, vals.goClaims)} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);text-decoration:none;" hover="color:var(--forest);">Claims</Hover>
+      <Hover as="a" href="/changelog" onClick={(e) => onSpaClick(e, vals.goChangelog)} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);text-decoration:none;" hover="color:var(--forest);">Changelog</Hover>
       <Hover as="button" onClick={vals.openModal} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Suggest a source</Hover>
       <span style={css("margin-left:auto;")}>Hit / Miss / Pending · pending is not a miss</span>
     </footer>
