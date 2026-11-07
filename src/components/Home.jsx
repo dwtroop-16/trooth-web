@@ -5,6 +5,8 @@ import ClaimCard from "./ClaimCard.jsx";
 import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
 import { CATCOLORS } from "../data.js";
 import GaugeMark from "./GaugeMark.jsx";
+import { pathFor } from "../router.js";
+import { onSpaClick } from "../siteNav.js";
 
 function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
@@ -43,7 +45,7 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
             <div style={css("display:flex;align-items:center;gap:10px;min-width:0;")}>
               <span style={css(`width:32px;height:32px;border-radius:50%;background:${r.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:13px;font-weight:600;flex-shrink:0;`)}>{r.initials}</span>
               <div style={css("min-width:0;")}>
-                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.rank != null ? <span style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-right:6px;")}>#{r.rank}</span> : null}{r.name}</div>
+                <div style={css("font-family:Newsreader,serif;font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);")}>{r.rank != null ? <span style={css("font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint);margin-right:6px;")}>#{r.rank}</span> : null}<a href={pathFor("profile", r.speakerId)} onClick={(e) => { e.stopPropagation(); onSpaClick(e, r.open); }} style={css("color:inherit;text-decoration:none;")}>{r.name}</a></div>
                 <div style={css("font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.org}</div>
               </div>
             </div>
@@ -253,7 +255,7 @@ export default function Home({ vals, openClaim }) {
       )}
       {vals.showModelsLink ? (
         <div style={css("margin-top:10px;")}>
-          <Hover as="button" onClick={() => vals.goModels()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Computer models</Hover>
+          <Hover as="a" href="/models" onClick={(e) => onSpaClick(e, vals.goModels)} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);text-decoration:none;" hover="color:var(--forest);">Computer models</Hover>
         </div>
       ) : null}
       {vals.pickRows && vals.pickRows.length ? (
@@ -269,14 +271,14 @@ export default function Home({ vals, openClaim }) {
         </div>
       ) : null}
       <div style={css("margin-top:10px;")}>
-        <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>
+        <Hover as="a" href="/claims" onClick={(e) => onSpaClick(e, vals.goClaims)} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);text-decoration:none;" hover="color:var(--forest);">Browse all claims</Hover>
       </div>
 
       {!q && (
         <div style={css("margin-top:36px;")}>
           <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px;")}>
             <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>Claims</h2>
-            <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">See all</Hover>
+            <Hover as="a" href="/claims" onClick={(e) => onSpaClick(e, vals.goClaims)} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);text-decoration:none;" hover="color:var(--forest);">See all</Hover>
           </div>
           <div style={css("display:flex;flex-direction:column;gap:10px;")}>
             {vals.featuredClaim ? (

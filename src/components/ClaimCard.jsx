@@ -2,6 +2,8 @@ import { renderPublicClaimCard } from "../claimCard.js";
 import { formatWhen, statusMeta, css, hostnameFromUrl } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import { trackSourceLinkClicked } from "../analytics.js";
+import { pathFor } from "../router.js";
+import { onSpaClick } from "../siteNav.js";
 
 // Plain-text parts produced by the Legal-Ops link rules (linkPolicy.js), shown inline beside the link.
 const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_url", "cite"]);
@@ -31,7 +33,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
     <>
       <div style={css("display:flex;align-items:flex-start;justify-content:space-between;gap:12px;")}>
         <div style={css("min-width:0;")}>
-          <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "17px" : "20px") + ";font-weight:600;color:var(--ink);line-height:1.25;")}>{rendered.speakerName}</div>
+          <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "17px" : "20px") + ";font-weight:600;color:var(--ink);line-height:1.25;")}>{card.id ? <a href={pathFor("prediction", card.id)} onClick={(e) => { e.stopPropagation(); if (onOpen) onSpaClick(e, onOpen); }} style={css("color:inherit;text-decoration:none;")}>{rendered.speakerName}</a> : rendered.speakerName}</div>
           {rendered.speakerOrg ? (
             <div style={css("font-size:12.5px;color:var(--muted);margin-top:2px;")}>{rendered.speakerOrg}</div>
           ) : null}

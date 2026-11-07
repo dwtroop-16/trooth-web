@@ -1,4 +1,5 @@
 import { css } from "../helpers.js";
+import { onSpaClick } from "../siteNav.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
@@ -68,7 +69,7 @@ export default function Profile({ vals, openClaim }) {
   const showTeamSection = (p.teamBoards && p.teamBoards.length > 0) || p.hasSports;
   return (
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;animation:vFadeUp .28s ease;")}>
-      <Hover as="button" onClick={vals.goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;" hover="color:var(--forest);">← All speakers</Hover>
+      <Hover as="a" href="/" onClick={(e) => onSpaClick(e, vals.goHome)} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;text-decoration:none;" hover="color:var(--forest);">← All speakers</Hover>
 
       <div style={css("display:flex;align-items:center;gap:14px;margin-bottom:22px;")}>
         <span style={css(`width:40px;height:40px;border-radius:50%;background:${p.avatar};color:#fff;display:flex;align-items:center;justify-content:center;font-family:Newsreader,serif;font-size:16px;font-weight:600;flex-shrink:0;`)}>{p.initials}</span>

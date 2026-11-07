@@ -1,4 +1,5 @@
 import { css } from "../helpers.js";
+import { onSpaClick } from "../siteNav.js";
 import Hover from "./Hover.jsx";
 import copySrc from "../method-copy-v1.md?raw";
 
@@ -96,7 +97,7 @@ function Blocks({ md, goChangelog }) {
 export default function Method({ goHome, goChangelog }) {
   return (
     <main style={css("max-width:760px;margin:0 auto;padding:28px 20px 48px;animation:vFadeUp .28s ease;")}>
-      <Hover as="button" onClick={goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;" hover="color:var(--forest);">← Home</Hover>
+      <Hover as="a" href="/" onClick={(e) => onSpaClick(e, goHome)} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;text-decoration:none;" hover="color:var(--forest);">← Home</Hover>
       <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--forest);margin-bottom:10px;")}>METHODOLOGY · PUBLIC COPY V1.0.0</div>
       <h1 style={css("font-family:Newsreader,serif;font-size:30px;font-weight:600;margin:0 0 16px;color:var(--ink);")}>How Trooth scores a forecast</h1>
       <Blocks md={copySrc} goChangelog={goChangelog} />

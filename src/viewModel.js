@@ -616,6 +616,7 @@ export function buildVals(state, actions, data) {
           name: sp.name,
           org: sp.org,
           kind: "speaker",
+          href: pathFor("profile", sp.id),
           open: () => {
             markSuggestionClick();
             openSpeaker(sp.id, { entry: "search", domain: domainLabelOf(sp.domain) });
@@ -637,6 +638,7 @@ export function buildVals(state, actions, data) {
       grade: c.grade,
       domain: c.domain,
       kind: "claim",
+      href: pathFor("prediction", c.id),
       open: () => {
         markSuggestionClick();
         openClaim(c.id, {

@@ -3,6 +3,8 @@ import { css, formatMetric } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 import { attachScrollDepth } from "../analytics.js";
+import { pathFor } from "../router.js";
+import { onSpaClick } from "../siteNav.js";
 
 export default function PredictionDetail({ vals }) {
   const d = vals.d;
@@ -19,7 +21,7 @@ export default function PredictionDetail({ vals }) {
   );
   return (
     <main style={css("max-width:760px;margin:0 auto;padding:28px 20px 48px;animation:vFadeUp .28s ease;")}>
-      <Hover as="button" onClick={d.backToProfile} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;" hover="color:var(--forest);">← Back to {d.speakerName}</Hover>
+      <Hover as="a" href={pathFor("profile", d.speakerId)} onClick={(e) => onSpaClick(e, d.backToProfile)} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;text-decoration:none;" hover="color:var(--forest);">← Back to {d.speakerName}</Hover>
 
       <div style={css("font-size:13px;color:var(--muted);margin-bottom:14px;")}>{d.subjectLabel}</div>
 

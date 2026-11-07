@@ -23,6 +23,8 @@ async function loadClaimCard() {
   const src = readFileSync(join(HERE, "components/ClaimCard.jsx"), "utf8")
     .replace('"../claimCard.js"', JSON.stringify(pathToFileURL(join(HERE, "claimCard.js")).href))
     .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(HERE, "helpers.js")).href))
+    .replace('"../router.js"', JSON.stringify(pathToFileURL(join(HERE, "router.js")).href))
+    .replace('"../siteNav.js"', JSON.stringify(pathToFileURL(join(HERE, "siteNav.js")).href))
     .replace('"../analytics.js"', JSON.stringify("data:text/javascript,export function trackSourceLinkClicked(){}"))
     .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
   const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
