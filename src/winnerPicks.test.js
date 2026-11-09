@@ -13,7 +13,7 @@ const PREVIEW_INPUT_SHA256 = {
   "pick_record.json": "a43960d4bf3b7b2bd1cde5d75683f37e1549bf23e90767969edd5a664aeb52fd",
 };
 // Identity of the committed score rows only. Not a pre-Nov 6 snapshot.
-const SCORE_IDENTITY_SHA256 = "e0d6313b22b1d43dea0457d283677946a2742d5986904493860f31170d4a5eff";
+const SCORE_IDENTITY_SHA256 = "2a4a8d8618ed5ed0071e85da04599a9055328b222dc1c05a0ab7620fb2f98961";
 
 const winners = FORECASTS.filter(isWinnerPick);
 
@@ -95,7 +95,7 @@ test("shipped boards are the min-3 preview, with pinned input hashes", () => {
   assert.match(sports.rankNote, /ranked at 3 resolved/);
   assert.match(sports.pickNote, /ranked at 3 resolved/);
   assert.equal(FORECASTS.length, 2519);
-  assert.equal(SCORES.length, 2506);
+  assert.equal(SCORES.length, 2519);
   const identity = createHash("sha256").update(SCORES.map((s) => `${s.forecast_id}\t${s.status}\t${s.actual_value ?? ""}`).sort().join("\n")).digest("hex");
   assert.equal(identity, SCORE_IDENTITY_SHA256);
   assert.equal(winnerTeamLabel("not-a-team"), null);
