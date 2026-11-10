@@ -1,5 +1,6 @@
 // Display helpers. Public grades are rubric-only: Hit / Miss / Pending / Unscorable / In review.
 // Partial and Community verified are not public labels.
+import { CITE_ONLY_LINK_DOMAINS, citeOnlyRuleFor } from "./linkPolicy.js";
 
 export function hexA(hex, a) {
   const n = parseInt(hex.slice(1), 16);
@@ -88,7 +89,6 @@ const OUTLET_LABELS = {
   eppc: "EPPC",
   finviz: "Finviz",
   foxsports: "FOX Sports",
-  heathstory: "heathstory.substack.com",
   nfl: "NFL.com",
   sabatoscrystalball: "Sabato's Crystal Ball",
   si: "Sports Illustrated",
@@ -96,9 +96,52 @@ const OUTLET_LABELS = {
   tsn: "TSN",
 };
 
-export function accountLabel(account) {
+/** Cite-only publication name when `value` is exactly that host (or a URL on it). */
+function citeOnlyPublicationName(value) {
+  const s = String(value ?? "").trim();
+  if (!s) return null;
+  const url = /^https?:\/\//i.test(s) ? s : /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(s) ? `https://${s}/` : "";
+  return citeOnlyRuleFor(url)?.name || null;
+}
+
+/**
+ * Public org label. A real registry name wins. A cite-only host stored as an org
+ * (speakers-v1 1.6.3 still has Jim Heath's id; the publication name is HEATHSTORY)
+ * is never shown: use the registry name, or the cite-only publication name when
+ * the registry itself still holds that host. Other firms stay as stored
+ * (firm as of the claim date).
+ */
+export function displayOrg(storedOrg, registryOrg) {
+  const stored = String(storedOrg ?? "").trim();
+  const registry = String(registryOrg ?? "").trim();
+  const storedName = citeOnlyPublicationName(stored);
+  if (storedName) {
+    if (registry && !citeOnlyPublicationName(registry)) return registry;
+    return storedName;
+  }
+  return stored || registry;
+}
+
+/** Cite-only domain whose first label is this outlet slug, if any. */
+function citeOnlyForOutletSlug(slug) {
+  return Object.entries(CITE_ONLY_LINK_DOMAINS).find(([domain]) => domain.split(".")[0] === slug) || null;
+}
+
+export function accountLabel(account, registryOrg) {
   const s = String(account ?? "").trim();
   const m = s.match(/^outlet:(.+)$/);
   if (!m) return s;
-  return OUTLET_LABELS[m[1]] || m[1];
+  const mapped = OUTLET_LABELS[m[1]];
+  // A mapped public name that is not itself a cite-only host stays as written.
+  if (mapped && !citeOnlyPublicationName(mapped)) return mapped;
+  // No public name, or the old label was the cite-only host: read the speaker
+  // registry org, then the cite-only publication name. Never return the host.
+  const cite = citeOnlyForOutletSlug(m[1]);
+  if (cite || mapped) {
+    const fromRegistry = displayOrg(registryOrg, registryOrg);
+    if (fromRegistry && !citeOnlyPublicationName(fromRegistry)) return fromRegistry;
+    if (cite) return cite[1].name;
+    return citeOnlyPublicationName(mapped);
+  }
+  return m[1];
 }

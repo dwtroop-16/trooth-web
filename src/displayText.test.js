@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { accountLabel } from "./helpers.js";
+import { accountLabel, displayOrg } from "./helpers.js";
 
 test("accountLabel maps known outlets to public names", () => {
   assert.equal(accountLabel("outlet:cbssports"), "CBS Sports");
@@ -21,6 +21,18 @@ test("accountLabel maps known outlets to public names", () => {
 test("accountLabel never leaks the outlet: prefix", () => {
   assert.equal(accountLabel("outlet:some-new-outlet"), "some-new-outlet");
   assert.ok(!accountLabel("outlet:abc7").includes("outlet:"));
+});
+
+test("heathstory outlet reads the registry org, never the cite-only host", () => {
+  assert.equal(displayOrg("heathstory.substack.com", "HEATHSTORY"), "HEATHSTORY");
+  assert.equal(displayOrg("HEATHSTORY", "HEATHSTORY"), "HEATHSTORY");
+  assert.equal(displayOrg("heathstory.substack.com", "heathstory.substack.com"), "HEATHSTORY");
+  assert.equal(displayOrg("Piper Sandler", "BMO Capital Markets"), "Piper Sandler");
+  assert.equal(accountLabel("outlet:heathstory", "HEATHSTORY"), "HEATHSTORY");
+  assert.equal(accountLabel("outlet:heathstory"), "HEATHSTORY");
+  assert.equal(accountLabel("outlet:foxsports", "FOX Sports (Big Noon Kickoff)"), "FOX Sports");
+  assert.ok(!/substack\.com/i.test(accountLabel("outlet:heathstory")));
+  assert.ok(!/substack\.com/i.test(displayOrg("heathstory.substack.com", "HEATHSTORY")));
 });
 
 test("accountLabel passes through non-outlet accounts and blanks", () => {
