@@ -94,7 +94,7 @@ test("shipped boards are the min-3 preview, with pinned input hashes", () => {
   assert.equal(sports.rankMin, 3);
   assert.match(sports.rankNote, /ranked at 3 resolved/);
   assert.match(sports.pickNote, /ranked at 3 resolved/);
-  assert.equal(FORECASTS.length, 2519);
+  assert.equal(FORECASTS.length, 2530);
   assert.equal(SCORES.length, 2519);
   const identity = createHash("sha256").update(SCORES.map((s) => `${s.forecast_id}\t${s.status}\t${s.actual_value ?? ""}`).sort().join("\n")).digest("hex");
   assert.equal(identity, SCORE_IDENTITY_SHA256);
