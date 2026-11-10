@@ -1,4 +1,4 @@
-import { css } from "../helpers.js";
+import { css, accountLabel } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
@@ -76,7 +76,7 @@ export default function Profile({ vals, openClaim }) {
           <h1 style={css("font-family:Newsreader,serif;font-size:28px;font-weight:600;letter-spacing:-0.01em;margin:0;color:var(--ink);")}>{p.name}</h1>
           <div style={css("font-size:13.5px;color:var(--muted);margin-top:2px;")}>{p.kindLabel ? <span style={css("font-size:11px;font-weight:700;border:1px solid var(--hair);border-radius:999px;padding:1px 7px;margin-right:6px;")}>{p.kindLabel}</span> : null}{p.org || "—"}</div>
           <div style={css("font-size:13px;color:var(--body);margin-top:6px;")}>
-            Source accounts · {p.accounts.length ? p.accounts.join(" · ") : "none listed"}
+            Source accounts · {p.accounts.length ? p.accounts.map(accountLabel).join(" · ") : "none listed"}
           </div>
           <div style={css("font-size:14px;color:var(--body);margin-top:6px;max-width:560px;line-height:1.45;")}>{p.bio}</div>
         </div>

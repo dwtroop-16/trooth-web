@@ -71,3 +71,34 @@ export function hostnameFromUrl(url) {
   }
 }
 
+/** Display label for a speaker source account. Accounts are stored as internal
+ * handles like "outlet:cbssports"; never show that raw form to readers. Known
+ * outlets map to their public names; an unknown outlet slug shows without the
+ * "outlet:" prefix; anything else passes through unchanged. */
+const OUTLET_LABELS = {
+  "247wallst": "24/7 Wall St.",
+  abc7: "ABC7",
+  bakercityherald: "Baker City Herald",
+  benzinga: "Benzinga",
+  bleacherreport: "Bleacher Report",
+  cbssports: "CBS Sports",
+  cnbc: "CNBC",
+  cryptobriefing: "Crypto Briefing",
+  dailykos: "Daily Kos",
+  eppc: "EPPC",
+  finviz: "Finviz",
+  foxsports: "FOX Sports",
+  heathstory: "heathstory.substack.com",
+  nfl: "NFL.com",
+  sabatoscrystalball: "Sabato's Crystal Ball",
+  si: "Sports Illustrated",
+  thehill: "The Hill",
+  tsn: "TSN",
+};
+
+export function accountLabel(account) {
+  const s = String(account ?? "").trim();
+  const m = s.match(/^outlet:(.+)$/);
+  if (!m) return s;
+  return OUTLET_LABELS[m[1]] || m[1];
+}
