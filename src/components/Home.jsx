@@ -129,7 +129,7 @@ export default function Home({ vals, openClaim }) {
           </p>
           <div style={css("margin:20px auto 0;max-width:680px;display:flex;align-items:center;gap:10px;justify-content:center;background:var(--surface);border:1px solid #BFE8B4;border-radius:999px;padding:9px 18px;")}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F2E" strokeWidth="3" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
-            <span style={css("font-size:13.5px;color:var(--forest-deep);")}><strong>Pending is not a miss</strong> \u2014 pending forecasts are never counted as misses and never folded into hit rate.</span>
+            <span style={css("font-size:13.5px;color:var(--forest-deep);")}><strong>Pending is not a miss</strong> — pending forecasts are never counted as misses and never folded into hit rate.</span>
           </div>
           <div style={css("display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px;")}>
             {entryTabs.map((tab) => {
