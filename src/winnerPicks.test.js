@@ -7,15 +7,54 @@ import { FORECASTS, SCORES, SPEAKERS, CATCOLORS } from "./data.js";
 import boards from "./generated/boards.json" with { type: "json" };
 import { shippedBoardSnapshotStatus } from "./rankingContract.js";
 
-const PREVIEW_INPUT_SHA256 = {
-  "models_board.json": "d64a81dc9e18ef94cf04101ad02529ec52188a92bd8df5ef421f9d1c50f7cbc0",
-  "people_board.json": "7f519b45c2ede459b101165b4f58b9e6b368b1e7a5710751d45c3a80b0b26312",
-  "pick_record.json": "a43960d4bf3b7b2bd1cde5d75683f37e1549bf23e90767969edd5a664aeb52fd",
+// Scorer input files the min-3 snapshot was built from. Not the live scores file.
+const PREVIEW_INPUTS = {
+  "models_board.json": { sha256: "d64a81dc9e18ef94cf04101ad02529ec52188a92bd8df5ef421f9d1c50f7cbc0", bytes: 374 },
+  "people_board.json": { sha256: "7f519b45c2ede459b101165b4f58b9e6b368b1e7a5710751d45c3a80b0b26312", bytes: 51929 },
+  "pick_record.json": { sha256: "a43960d4bf3b7b2bd1cde5d75683f37e1549bf23e90767969edd5a664aeb52fd", bytes: 3694 },
 };
-// Identity of the committed score rows (forecast_id, status, actual_value). Not a pre-Nov 6 snapshot.
-// Re-pinned after the Nov 10 PM publish: score ids regenerated; forecast_id/status/hit unchanged.
-// boards.json intentionally kept as the min-3 snapshot.
-const SCORE_IDENTITY_SHA256 = "3bc7d6c492459ac60f1fd25433e672d24db997af2b4cb9607241a05d4ff1a9b8";
+// Shipped people/pick/models rows inside boards.json. An edit to those rows fails here
+// even if provenance is left stale. New scores do not change it.
+const BOARD_BODY_SHA256 = "7d033d419464ffd17ff55530d6711afcf7467646cf2248496d9959559c367c01";
+
+function shippedBoardBodyHash(snapshot) {
+  return createHash("sha256")
+    .update(JSON.stringify({
+      people_board: snapshot.people_board,
+      pick_record: snapshot.pick_record,
+      models_board: snapshot.models_board,
+    }))
+    .digest("hex");
+}
+
+// Snapshot stores counts per speaker, not forecast ids. Live scores may gain Pending
+// rows and new score ids. A counted Hit or Miss must still be there, joined on
+// forecast_id, with the same status and hit flag.
+function liveResolvedCounts() {
+  const forecastById = new Map(FORECASTS.map((f) => [f.id, f]));
+  const counts = new Map();
+  for (const score of SCORES) {
+    if (score.status !== "hit" && score.status !== "miss") continue;
+    const forecast = forecastById.get(score.forecast_id);
+    assert.ok(forecast, score.forecast_id);
+    assert.equal(score.hit === true, score.status === "hit", score.forecast_id);
+    const kind = isWinnerPick(forecast) ? "pick" : "exact";
+    const key = `${forecast.speaker_id}\t${kind}`;
+    const row = counts.get(key) || { hit: 0, miss: 0 };
+    row[score.status] += 1;
+    counts.set(key, row);
+  }
+  return counts;
+}
+
+function assertCountedResultsRemain(rows, kind, counts) {
+  for (const row of rows) {
+    assert.equal((row.n_hit || 0) + (row.n_miss || 0), row.n_resolved, row.speaker_id);
+    const live = counts.get(`${row.speaker_id}\t${kind}`) || { hit: 0, miss: 0 };
+    assert.ok(live.hit >= row.n_hit, `${row.speaker_id} ${kind} hits`);
+    assert.ok(live.miss >= row.n_miss, `${row.speaker_id} ${kind} misses`);
+  }
+}
 
 const winners = FORECASTS.filter(isWinnerPick);
 
@@ -81,9 +120,10 @@ test("shipped boards are the min-3 preview, with pinned input hashes", () => {
   assert.equal(boards.provenance.models_ranked, false);
   assert.equal(boards.provenance.pooling, "none");
   assert.equal(boards.provenance.source_dir, "scorer/preview-2026-11-06-min3");
+  assert.equal(shippedBoardBodyHash(boards), BOARD_BODY_SHA256);
   assert.deepEqual(
-    Object.fromEntries(boards.provenance.inputs.map((input) => [input.name, input.sha256])),
-    PREVIEW_INPUT_SHA256,
+    Object.fromEntries(boards.provenance.inputs.map((input) => [input.name, { sha256: input.sha256, bytes: input.bytes }])),
+    PREVIEW_INPUTS,
   );
   const people = scorerBoardRows(boards.people_board, SPEAKERS, null, boards.min_resolved);
   const picks = scorerBoardRows(boards.pick_record, SPEAKERS, null, boards.min_resolved);
@@ -96,10 +136,12 @@ test("shipped boards are the min-3 preview, with pinned input hashes", () => {
   assert.equal(sports.rankMin, 3);
   assert.match(sports.rankNote, /ranked at 3 resolved/);
   assert.match(sports.pickNote, /ranked at 3 resolved/);
-  assert.equal(FORECASTS.length, 2539);
-  assert.equal(SCORES.length, 2539);
-  const identity = createHash("sha256").update(SCORES.map((s) => `${s.forecast_id}\t${s.status}\t${s.actual_value ?? ""}`).sort().join("\n")).digest("hex");
-  assert.equal(identity, SCORE_IDENTITY_SHA256);
+  const forecastIds = new Set(FORECASTS.map((f) => f.id));
+  assert.ok(SCORES.length <= FORECASTS.length);
+  assert.ok(SCORES.every((score) => forecastIds.has(score.forecast_id)));
+  const resolved = liveResolvedCounts();
+  assertCountedResultsRemain(boards.people_board, "exact", resolved);
+  assertCountedResultsRemain(boards.pick_record, "pick", resolved);
   assert.equal(winnerTeamLabel("not-a-team"), null);
 });
 
