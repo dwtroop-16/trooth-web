@@ -1,5 +1,5 @@
 import { avatarFor } from "./avatar.js";
-import { formatWhen, formatPct, pctFromCounts, formatMetric, statusMeta, hostnameFromUrl } from "./helpers.js";
+import { formatWhen, formatPct, pctFromCounts, formatMetric, statusMeta, hostnameFromUrl, displayOrg } from "./helpers.js";
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { displayedPcts } from "./missRate.js";
 import { horizonDisplay } from "./kickoffStatus.js";
@@ -128,7 +128,8 @@ export function winnerTeamLabel(slug, division) {
  * carries one (e.g. "FOX Sports (Big Noon Kickoff)"). Cards keep the firm as of the claim date.
  */
 export function boardOrg(sp, row) {
-  const base = String(sp?.org || row?.org || "");
+  const registry = String(sp?.org || "");
+  const base = displayOrg(String(sp?.org || row?.org || ""), registry);
   const show = sp?.show ? String(sp.show) : "";
   return show && base && !base.includes(`(${show})`) ? `${base} (${show})` : base;
 }
@@ -192,7 +193,7 @@ export function buildModelsView(speakers, forecasts, scores, cards, boards, open
       return {
         id: sp.id,
         name: sp.name,
-        credit: sp.org || sp.name,
+        credit: displayOrg(sp.org, sp.org) || sp.name,
         label: "Model",
         rank: null,
         exact: { n_resolved: ex.n_resolved, n_pending: ex.n_pending, hit_rate: scoreLine(ex), rank: null },
@@ -399,7 +400,9 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     speakerName: (speaker && speaker.name) || forecast.speaker.name,
     // Firm as of the claim date: the forecast row's own speaker.org wins over the registry's current org
     // (Card QA P1, ruling 05ac: e.g. Harsh Kumar was at Piper Sandler before moving to BMO 2026-07-13).
-    speakerOrg: forecast.speaker?.org || (speaker && speaker.org) || null,
+    // A cite-only host stored as that org is not a firm name: show the registry org
+    // (speakers-v1 1.6.3: Jim Heath's org is HEATHSTORY; the speaker id is unchanged).
+    speakerOrg: displayOrg(forecast.speaker?.org || (speaker && speaker.org) || "", (speaker && speaker.org) || "") || null,
     claimText: forecast.claim.text,
     sourceUrl: forecast.source.url,
     // Cite-only hosts (linkPolicy): title/date from data fields only, never fetched.
@@ -566,7 +569,7 @@ export function buildVals(state, actions, data) {
 
   const matchesQuery = (sp) => {
     if (!q) return true;
-    const hitName = [sp.name, sp.org, ...(sp.accounts || [])].join(" ").toLowerCase().includes(q);
+    const hitName = [sp.name, displayOrg(sp.org, sp.org), ...(sp.accounts || [])].join(" ").toLowerCase().includes(q);
     const hitClaim = cards.some((c) => c.speakerId === sp.id && c.claimText.toLowerCase().includes(q));
     return hitName || hitClaim;
   };
@@ -629,7 +632,7 @@ export function buildVals(state, actions, data) {
   const matchingSpeakers = q
     ? speakers
         .filter((sp) => {
-          const hay = [sp.name, sp.org, ...(sp.accounts || [])].join(" ").toLowerCase();
+          const hay = [sp.name, displayOrg(sp.org, sp.org), ...(sp.accounts || [])].join(" ").toLowerCase();
           if (hay.includes(q)) return true;
           return cards.some((c) => c.speakerId === sp.id && claimMatchesQuery(c, q));
         })
@@ -637,7 +640,7 @@ export function buildVals(state, actions, data) {
         .map((sp) => ({
           id: sp.id,
           name: sp.name,
-          org: sp.org,
+          org: displayOrg(sp.org, sp.org),
           kind: "speaker",
           open: () => {
             markSuggestionClick();
@@ -732,7 +735,7 @@ export function buildVals(state, actions, data) {
           : null,
         id: sp.id,
         name: sp.name,
-        org: sp.org,
+        org: displayOrg(sp.org, sp.org),
         accounts: sp.accounts || [],
         initials: sp.initials,
         avatar: avatarFor(sp.id),

@@ -35,6 +35,29 @@ test("SI and FOX claim pages: rendered body, document title and <head> carry no 
       assert.ok(!/ld\+json|\bog:|twitter:/i.test(html), `${id} body injects meta`);
       assert.ok(!CITE_HOST_TEXT.test(String(vals.d.claimText)), `${id} document.title source`);
     }
+    const HEATH_HOST = /heathstory\.substack\.com/i;
+    const heath = buildVals({ view: "prediction", forecastId: "fct_01M6E59NPPEKB194QM4VBY7KG8", cat: "All", q: "" }, noop, dataArg);
+    assert.equal(heath.d.speakerOrg, "HEATHSTORY");
+    assert.equal(heath.d.speakerId, "heathstory-jim-heath");
+    const heathHtml = renderToStaticMarkup(React.createElement(PredictionDetail, { vals: heath }));
+    assert.ok(heathHtml.includes("HEATHSTORY"), "claim card shows HEATHSTORY");
+    assert.ok(heathHtml.includes("Source: HEATHSTORY"), "cite uses the publication name");
+    assert.ok(!HEATH_HOST.test(heathHtml), "claim body has no heathstory host");
+    assert.ok(!/href="[^"]*heathstory/i.test(heathHtml), "claim has no heathstory href");
+    assert.ok(!/ld\+json|\bog:|twitter:/i.test(heathHtml));
+    assert.ok(!HEATH_HOST.test(String(heath.d.claimText)));
+    const Profile = (await server.ssrLoadModule("/src/components/Profile.jsx")).default;
+    const person = buildVals({ view: "profile", speakerId: "heathstory-jim-heath", cat: "All", q: "" }, noop, dataArg);
+    assert.equal(person.p.org, "HEATHSTORY");
+    assert.equal(person.p.id, "heathstory-jim-heath");
+    const personHtml = renderToStaticMarkup(React.createElement(Profile, { vals: person, openClaim: () => {} }));
+    assert.ok(personHtml.includes("HEATHSTORY"));
+    assert.ok(!HEATH_HOST.test(personHtml), "profile body has no heathstory host");
+    assert.ok(!/href="[^"]*heathstory/i.test(personHtml));
+    assert.ok(!/ld\+json|\bog:|twitter:/i.test(personHtml));
+    const politics = buildVals({ view: "home", cat: "Politics", q: "" }, noop, dataArg);
+    const boardRow = politics.rows.find((r) => r.speakerId === "heathstory-jim-heath");
+    assert.equal(boardRow.org, "HEATHSTORY");
   } finally {
     await server.close();
   }
