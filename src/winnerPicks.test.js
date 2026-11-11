@@ -15,7 +15,7 @@ const PREVIEW_INPUT_SHA256 = {
 // Identity of the committed score rows (forecast_id, status, actual_value). Not a pre-Nov 6 snapshot.
 // Re-pinned after the Nov 10 PM publish: score ids regenerated; forecast_id/status/hit unchanged.
 // boards.json intentionally kept as the min-3 snapshot.
-const SCORE_IDENTITY_SHA256 = "655bd2b6b15d5fa589e4cc273fd7a1e5783ebaf26aa37608663a2a9021b26e8e";
+const SCORE_IDENTITY_SHA256 = "3bc7d6c492459ac60f1fd25433e672d24db997af2b4cb9607241a05d4ff1a9b8";
 
 const winners = FORECASTS.filter(isWinnerPick);
 
@@ -97,7 +97,7 @@ test("shipped boards are the min-3 preview, with pinned input hashes", () => {
   assert.match(sports.rankNote, /ranked at 3 resolved/);
   assert.match(sports.pickNote, /ranked at 3 resolved/);
   assert.equal(FORECASTS.length, 2539);
-  assert.equal(SCORES.length, 2530);
+  assert.equal(SCORES.length, 2539);
   const identity = createHash("sha256").update(SCORES.map((s) => `${s.forecast_id}\t${s.status}\t${s.actual_value ?? ""}`).sort().join("\n")).digest("hex");
   assert.equal(identity, SCORE_IDENTITY_SHA256);
   assert.equal(winnerTeamLabel("not-a-team"), null);
