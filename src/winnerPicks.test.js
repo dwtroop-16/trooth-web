@@ -12,8 +12,10 @@ const PREVIEW_INPUT_SHA256 = {
   "people_board.json": "7f519b45c2ede459b101165b4f58b9e6b368b1e7a5710751d45c3a80b0b26312",
   "pick_record.json": "a43960d4bf3b7b2bd1cde5d75683f37e1549bf23e90767969edd5a664aeb52fd",
 };
-// Identity of the committed score rows only. Not a pre-Nov 6 snapshot.
-const SCORE_IDENTITY_SHA256 = "2a4a8d8618ed5ed0071e85da04599a9055328b222dc1c05a0ab7620fb2f98961";
+// Identity of the committed score rows (forecast_id, status, actual_value). Not a pre-Nov 6 snapshot.
+// Re-pinned after the Nov 10 PM publish: score ids regenerated; forecast_id/status/hit unchanged.
+// boards.json intentionally kept as the min-3 snapshot.
+const SCORE_IDENTITY_SHA256 = "655bd2b6b15d5fa589e4cc273fd7a1e5783ebaf26aa37608663a2a9021b26e8e";
 
 const winners = FORECASTS.filter(isWinnerPick);
 
