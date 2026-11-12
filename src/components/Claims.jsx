@@ -71,7 +71,7 @@ export default function Claims({ vals, openClaim }) {
     <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;animation:vFadeUp .28s ease;")}>
       <Hover as="button" onClick={vals.goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:18px;" hover="color:var(--forest);">← Home</Hover>
       <div style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.2em;color:var(--forest);margin-bottom:10px;")}>CLAIMS</div>
-      <h1 style={css("font-family:Newsreader,serif;font-size:32px;font-weight:600;margin:0 0 8px;color:var(--ink);letter-spacing:-0.015em;")}>All claims</h1>
+      <h1 style={css("font-family:Newsreader,serif;font-size:32px;font-weight:600;margin:0 0 8px;color:var(--ink);letter-spacing:-0.015em;")}>{vals.claimSubject && vals.claimSubject !== "All" ? `Who called it? ${vals.subjectLabel || ""}` : "All claims"}</h1>
       <p style={css("margin:0 0 20px;font-size:14px;color:var(--muted);line-height:1.45;max-width:42rem;")}>
         Filter by domain, grade, speaker, and horizon. Share the URL to restore the same view.
       </p>
@@ -135,7 +135,12 @@ export default function Claims({ vals, openClaim }) {
 
       <div style={css("display:flex;flex-direction:column;gap:10px;")}>
         {vals.claimList.map((card) => (
-          <ClaimCard key={card.id} card={card} compact onOpen={() => openClaimsCard(card)} />
+          <div key={card.id}>
+            {card.boardNote ? (
+              <div style={css("font-size:12.5px;color:var(--muted);margin:0 2px 6px;")}>{card.speakerName} · {card.boardNote}</div>
+            ) : null}
+            <ClaimCard card={card} compact onOpen={() => openClaimsCard(card)} />
+          </div>
         ))}
         {vals.claimList.length === 0 && (
           <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:28px 22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.55;")}>

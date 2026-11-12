@@ -18,7 +18,6 @@ const VIEW_LABEL = {
   method: "method",
   changelog: "changelog",
   notfound: "notfound",
-  best: "best",
 };
 
 /** @type {null | { capture: Function, opt_out_capturing?: Function }} */
@@ -74,7 +73,6 @@ export function viewFromPath(pathname) {
   if (path === "/claims") return "claims";
   if (/^\/person\/[^/]+$/.test(path)) return "profile";
   if (/^\/claim\/[^/]+$/.test(path)) return "prediction";
-  if (/^\/best\/[^/]+$/.test(path)) return "best";
   return "notfound";
 }
 

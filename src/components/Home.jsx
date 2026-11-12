@@ -6,7 +6,7 @@ import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
 import { CATCOLORS } from "../data.js";
 import GaugeMark from "./GaugeMark.jsx";
 import { visibleBoardRank, unresolvedLabel } from "../rankingContract.js";
-import TrustFinder from "./TrustFinder.jsx";
+import BoardPicker from "./BoardPicker.jsx";
 
 function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain, rankMin = 3 }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
@@ -60,7 +60,14 @@ function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, sho
               <span className="trooth-board-domain" style={css("font-size:13px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;")}>{r.domain}</span>
             ) : null}
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{resolvedCell}</span>
-            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (!ranked ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{rateCell}{ranked && r.rateDetail ? <span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{r.rateDetail}</span> : null}{(() => { const pct = parseFloat(String(rateCell)); return ranked && Number.isFinite(pct) ? (<span style={css("display:block;width:64px;height:5px;border-radius:999px;background:var(--row);margin-top:5px;overflow:hidden;")}><span style={css("display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#06380F,#0E9F2E,#46D62E);width:" + Math.max(3, Math.min(100, pct)) + "%;")} /></span>) : null; })()}</span>
+            <span style={css("font-family:'IBM Plex Mono',monospace;font-size:" + (!ranked ? "12px;font-weight:500;color:var(--muted);" : "15px;font-weight:600;color:var(--ink);"))}>{(() => {
+              const gradedN = Number(r.nGraded);
+              const countFirst = ranked && Number.isFinite(gradedN) && gradedN > 0 && gradedN < 10 && r.nHit != null;
+              const pct = parseFloat(String(rateCell));
+              const bar = ranked && Number.isFinite(pct) ? (<span style={css("display:block;width:64px;height:5px;border-radius:999px;background:var(--row);margin-top:5px;overflow:hidden;")}><span style={css("display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#06380F,#0E9F2E,#46D62E);width:" + Math.max(3, Math.min(100, pct)) + "%;")} /></span>) : null;
+              if (!countFirst) return <>{rateCell}{ranked && r.rateDetail ? <span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{r.rateDetail}</span> : null}{bar}</>;
+              return <>{r.nHit} / {gradedN}<span style={css("display:block;font-size:11px;font-weight:400;color:var(--muted);")}>{rateCell}</span>{bar}</>;
+            })()}</span>
             <span style={css("font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--body);")}>{r.pending}</span>
           </Hover>
           </div>
@@ -128,7 +135,7 @@ export default function Home({ vals, openClaim }) {
           <p style={css("font-size:clamp(20px,3.4vw,30px);font-weight:700;color:var(--ink);letter-spacing:-0.01em;margin:20px auto 0;max-width:640px;line-height:1.25;")}>
             Public forecasts, scored against official prints.
           </p>
-          {vals.trust ? <TrustFinder trust={vals.trust} openClaim={openClaim} showResults={false} /> : null}
+          <BoardPicker vals={vals} />
           <div style={css("margin:20px auto 0;max-width:680px;display:flex;align-items:center;gap:10px;justify-content:center;background:var(--surface);border:1px solid #BFE8B4;border-radius:999px;padding:9px 18px;")}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F2E" strokeWidth="3" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
             <span style={css("font-size:13.5px;color:var(--forest-deep);")}><strong>Pending is not a miss</strong> — pending forecasts are never counted as misses and never folded into hit rate.</span>
@@ -155,6 +162,13 @@ export default function Home({ vals, openClaim }) {
         </section>
       )}
 
+      {vals.asOf ? (
+        <p style={css("margin:0 0 8px;font-size:13px;color:var(--muted);")}>
+          {vals.asOf}
+          {" · "}
+          <a href="/method" onClick={(e) => { e.preventDefault(); vals.goMethod?.(); }}>How grading works</a>
+        </p>
+      ) : null}
       <div style={css("display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;")}>
         {vals.categories.map((tab) => (
           <Hover

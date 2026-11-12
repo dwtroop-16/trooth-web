@@ -4,6 +4,7 @@ import { loadData, submitSourceTip } from "./dataSource.js";
 import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS, SUBJECTS } from "./data.js";
 import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
+import { parseBoardQuery, pathForBoard } from "./boardFilter.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import Models from "./components/Models.jsx";
@@ -24,7 +25,6 @@ const PredictionDetail = lazy(() => import("./components/PredictionDetail.jsx"))
 const Method = lazy(() => import("./components/Method.jsx"));
 const Changelog = lazy(() => import("./components/Changelog.jsx"));
 const Claims = lazy(() => import("./components/Claims.jsx"));
-const Best = lazy(() => import("./components/Best.jsx"));
 const LogModal = lazy(() => import("./components/LogModal.jsx"));
 const AccountModal = lazy(() => import("./components/AccountModal.jsx"));
 const Toast = lazy(() => import("./components/Toast.jsx"));
@@ -34,22 +34,24 @@ function filtersFromLocation() {
   const filters =
     parsed.view === "claims"
       ? parseClaimsQuery(window.location.search)
-      : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All" };
-  return { parsed, filters };
+      : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All", subject: "All" };
+  const home = parsed.view === "home" ? parseBoardQuery(window.location.search) : { board: "", domain: "" };
+  return { parsed, filters, home };
 }
 
 function initialFromLocation() {
-  const { parsed, filters } = filtersFromLocation();
+  const { parsed, filters, home } = filtersFromLocation();
   return {
     view: parsed.view,
     speakerId: parsed.speakerId || null,
     forecastId: parsed.forecastId || null,
-    subjectId: parsed.subjectId || null,
-    cat: filters.domain || "All",
+    board: home.board || "",
+    cat: home.board ? home.domain : (filters.domain || "All"),
     q: filters.q || "",
     claimStatus: filters.grade || "All",
     claimSpeaker: filters.speaker || "All",
     claimHorizon: filters.horizon || "All",
+    claimSubject: filters.subject || "All",
     modal: false,
     toast: "",
     mClaim: "",
@@ -97,18 +99,19 @@ export default function App() {
 
   useEffect(() => {
     const onPop = () => {
-      const { parsed, filters } = filtersFromLocation();
+      const { parsed, filters, home } = filtersFromLocation();
       setStateRaw((prev) => ({
         ...prev,
         view: parsed.view,
         speakerId: parsed.speakerId || null,
         forecastId: parsed.forecastId || null,
-        subjectId: parsed.subjectId || null,
-        cat: parsed.view === "claims" ? filters.domain : prev.cat,
+        board: parsed.view === "home" ? home.board : "",
+        cat: parsed.view === "claims" ? filters.domain : parsed.view === "home" && home.board ? home.domain : prev.cat,
         q: parsed.view === "claims" ? filters.q : prev.q,
         claimStatus: parsed.view === "claims" ? filters.grade : prev.claimStatus,
         claimSpeaker: parsed.view === "claims" ? filters.speaker : prev.claimSpeaker,
         claimHorizon: parsed.view === "claims" ? filters.horizon : prev.claimHorizon,
+        claimSubject: parsed.view === "claims" ? filters.subject : prev.claimSubject,
       }));
     };
     window.addEventListener("popstate", onPop);
@@ -144,11 +147,13 @@ export default function App() {
     if (current !== full) window.history.pushState({}, "", full);
     const parsed = parsePath(pathname);
     const claimsFilters = parsed.view === "claims" ? parseClaimsQuery(search ? `?${search}` : "") : null;
+    const home = parsed.view === "home" ? parseBoardQuery(search ? `?${search}` : "") : null;
     setState({
       view: parsed.view,
       speakerId: parsed.speakerId || null,
       forecastId: parsed.forecastId || null,
-      subjectId: parsed.subjectId || null,
+      board: home ? home.board : "",
+      ...(home?.board ? { cat: home.domain } : {}),
       ...(claimsFilters
         ? {
             cat: claimsFilters.domain,
@@ -156,6 +161,7 @@ export default function App() {
             claimStatus: claimsFilters.grade,
             claimSpeaker: claimsFilters.speaker,
             claimHorizon: claimsFilters.horizon,
+            claimSubject: claimsFilters.subject,
           }
         : {}),
       ...patch,
@@ -170,6 +176,7 @@ export default function App() {
       grade: s.claimStatus,
       speaker: s.claimSpeaker,
       horizon: s.claimHorizon,
+      subject: s.claimSubject,
     });
 
   const setClaimsFilter = (patch, { push = false, replace = false } = {}) => {
@@ -233,7 +240,8 @@ export default function App() {
     navigate(pathFor("prediction", id));
   };
   const goHome = () => navigate(pathFor("home"));
-  const openBest = (id) => navigate(pathFor("best", id));
+  const openBoard = ({ board, domain }) => navigate(pathForBoard({ board, domain }));
+  const openSubject = (id) => goClaims({ subject: id, domain: "All", grade: "All", speaker: "All", horizon: "All", q: "" });
   const goMethod = () => navigate(pathFor("method"));
   const goModels = () => navigate(pathFor("models"));
   const goChangelog = () => navigate(pathFor("changelog"));
@@ -255,6 +263,12 @@ export default function App() {
         if (full !== current) window.history.pushState({}, "", full);
         return next;
       }
+      if (prev.view === "home" && prev.board) {
+        const board = prev.board === "pick" && cat !== "Sports" ? "score" : prev.board;
+        const full = pathForBoard({ board, domain: cat });
+        if (window.location.pathname + window.location.search !== full) window.history.pushState({}, "", full);
+        return { ...prev, cat: board === "pick" ? "Sports" : cat, board };
+      }
       return { ...prev, cat };
     });
   };
@@ -268,14 +282,16 @@ export default function App() {
     const grade = opts.grade !== undefined ? opts.grade : "All";
     const speaker = opts.speaker !== undefined ? opts.speaker : "All";
     const horizon = opts.horizon !== undefined ? opts.horizon : "All";
+    const subject = opts.subject !== undefined ? opts.subject : "All";
     navigate(
-      pathForClaims({ q, domain, grade, speaker, horizon }),
+      pathForClaims({ q, domain, grade, speaker, horizon, subject }),
       {
         cat: normalizeDomain(domain),
         q: (q || "").trim(),
         claimStatus: grade || "All",
         claimSpeaker: speaker || "All",
         claimHorizon: horizon || "All",
+        claimSubject: subject || "All",
       }
     );
   };
@@ -455,7 +471,8 @@ export default function App() {
       goChangelog,
       goClaims,
       goModels,
-      openBest,
+      openBoard,
+      openSubject,
       submit,
       account,
       openModal: openTipModal,
@@ -470,15 +487,14 @@ export default function App() {
     else if (vals.isModels) title = "Computer models · Trooth";
     else if (vals.isMethod) title = "Method · Trooth";
     else if (vals.isChangelog) title = "Changelog · Trooth";
-    else if (vals.isBest && vals.trust?.subject) title = "Who to trust for " + vals.trust.subject.label + " · Trooth";
-    else if (vals.isBest) title = "Who to trust · Trooth";
+    else if (vals.isClaims && vals.claimSubject && vals.claimSubject !== "All" && vals.subjectLabel) title = "Who called it? " + vals.subjectLabel + " · Trooth";
     else if (vals.isProfile && vals.p) title = vals.p.name + " · Trooth";
     else if (vals.isPrediction && vals.d) {
       const claim = String(vals.d.claimText || "");
       title = (claim.length > 48 ? claim.slice(0, 48) : claim) + " · Trooth";
     }
     document.title = title;
-  }, [vals.isHome, vals.isClaims, vals.isModels, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.isBest, vals.trust, vals.p, vals.d]);
+  }, [vals.isHome, vals.isClaims, vals.isModels, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.claimSubject, vals.subjectLabel, vals.p, vals.d]);
 
   return (
     <div style={css("min-height:100vh;background:var(--paper);font-family:Archivo,sans-serif;color:var(--ink);display:flex;flex-direction:column;")}>
@@ -490,7 +506,6 @@ export default function App() {
         {vals.isModels && <Models vals={vals} openClaim={openClaim} />}
         <Suspense fallback={<SuspenseFallback />}>
           {vals.isProfile && <Profile vals={vals} openClaim={openClaim} />}
-          {vals.isBest && <Best vals={vals} openClaim={openClaim} />}
           {vals.isPrediction && <PredictionDetail vals={vals} />}
           {vals.isMethod && <Method goHome={goHome} goChangelog={goChangelog} />}
           {vals.isChangelog && <Changelog goHome={goHome} />}
