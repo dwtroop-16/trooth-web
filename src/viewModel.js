@@ -3,7 +3,8 @@ import { formatWhen, formatPct, pctFromCounts, formatMetric, statusMeta, hostnam
 import { publicGrade, renderPublicClaimCard } from "./claimCard.js";
 import { displayedPcts } from "./missRate.js";
 import { horizonDisplay } from "./kickoffStatus.js";
-import { DOMAINS, OFFICIAL_PRINT, SUBJECTS } from "./data.js";
+import { DOMAINS, OFFICIAL_PRINT, SUBJECTS, SPEAKERS } from "./data.js";
+import { displaySubjectLabel, personDisplayName } from "./displayNames.js";
 import { pathFor, normalizeDomain } from "./router.js";
 import {
   trackSearchPerformed,
@@ -396,6 +397,16 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   // Winner rows graded winner_from_score (pagemap v1.2.0): "{Winner} won, {winner score}–{loser score}" (Card QA P3, 2026-11-02; pagemap v1.2.0 said away–home, pending Architect); tie "Tie, x–x".
   let actualDisplay = actualValue;
   if (winner && graded) actualDisplay = winnerResultLine(forecast, score, shown, division) ?? actualValue;
+  if (
+    !winner &&
+    graded &&
+    forecast.domain === "politics" &&
+    forecast.claim?.unit === "enum" &&
+    typeof actualDisplay === "string" &&
+    actualDisplay !== "pending"
+  ) {
+    actualDisplay = personDisplayName(actualDisplay, SPEAKERS);
+  }
   const card = {
     id: forecast.id,
     speakerId: speaker?.id || forecast.speaker_id,
@@ -429,7 +440,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     unit: forecast.claim.unit,
     band: forecast.claim.band,
     subjectId: forecast.subject?.id || "",
-    subjectLabel: forecast.subject?.label || "",
+    subjectLabel: displaySubjectLabel(forecast.subject?.label || ""),
     sportLabel: division || "",
     teamLabels,
     accounts: speaker?.accounts || [],
@@ -848,6 +859,11 @@ export function buildVals(state, actions, data) {
     asOf: formatAsOf(scorerBoards?.provenance?.built_at),
     eventChoices,
     claimSubject,
+    claimShown: s.claimShown || 50,
+    setClaimShown: (n) => {
+      if (typeof actions.setClaimsFilter === "function") actions.setClaimsFilter({ claimShown: n }, { push: true });
+      else setState({ claimShown: n });
+    },
     subjectLabel: subjectChoice?.label || "",
     openBoard: (choice) => (typeof actions.openBoard === "function" ? actions.openBoard(choice) : undefined),
     openSubject: (id) => (typeof actions.openSubject === "function" ? actions.openSubject(id) : undefined),

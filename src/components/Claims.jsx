@@ -134,7 +134,7 @@ export default function Claims({ vals, openClaim }) {
       <div style={css("font-size:12.5px;color:var(--muted);margin-bottom:12px;")}>{vals.claimListCount}</div>
 
       <div style={css("display:flex;flex-direction:column;gap:10px;")}>
-        {vals.claimList.map((card) => (
+        {vals.claimList.slice(0, vals.claimShown || 50).map((card) => (
           <div key={card.id}>
             {card.boardNote ? (
               <div style={css("font-size:12.5px;color:var(--muted);margin:0 2px 6px;")}>{card.speakerName} · {card.boardNote}</div>
@@ -142,6 +142,16 @@ export default function Claims({ vals, openClaim }) {
             <ClaimCard card={card} compact onOpen={() => openClaimsCard(card)} />
           </div>
         ))}
+        {vals.claimList.length > (vals.claimShown || 50) ? (
+          <Hover
+            as="button"
+            onClick={() => vals.setClaimShown((vals.claimShown || 50) + 50)}
+            style="background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:10px 16px;font-size:14px;font-weight:600;cursor:pointer;align-self:center;"
+            hover="border-color:var(--forest);"
+          >
+            Show more · {Math.min(vals.claimList.length, vals.claimShown || 50)} of {vals.claimList.length}
+          </Hover>
+        ) : null}
         {vals.claimList.length === 0 && (
           <div style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:28px 22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.55;")}>
             {q
