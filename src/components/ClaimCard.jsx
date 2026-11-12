@@ -1,5 +1,6 @@
 import { renderPublicClaimCard } from "../claimCard.js";
 import { formatWhen, statusMeta, css, hostnameFromUrl } from "../helpers.js";
+import { X_AFFILIATION } from "../xSource.js";
 import Hover from "./Hover.jsx";
 import { trackSourceLinkClicked } from "../analytics.js";
 
@@ -40,7 +41,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
         <span className="trooth-grade" data-grade={rendered.grade} style={css(`font-size:12px;font-weight:700;letter-spacing:0.02em;color:${gradeInk};background:${sm.tint};border:1px solid ${sm.border};border-radius:999px;padding:4px 10px;white-space:nowrap;flex-shrink:0;`)}>{rendered.grade}</span>
       </div>
 
-      <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "16px" : "19px") + ";font-weight:500;line-height:1.35;color:var(--ink);margin-top:8px;" + (compact ? "display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;" : ""))}>{rendered.claimText}</div>
+      <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "16px" : "19px") + ";font-weight:500;line-height:1.35;color:var(--ink);margin-top:8px;" + (compact ? "display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;" : ""))}>{card.xSource ? <span style={css("color:var(--faint);font-family:Archivo,sans-serif;font-size:12px;font-weight:700;letter-spacing:0.04em;display:block;margin-bottom:4px;")}>Our reading:</span> : null}{rendered.claimText}</div>
       {card.isWinnerPick ? (
         <div style={css("font-size:13px;color:var(--body);margin-top:4px;")}>
           <span style={css("color:var(--faint);")}>Pick · </span>{card.pickedTeam || "In review"}
@@ -49,8 +50,15 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
 
       <div style={css(`margin-top:8px;font-size:${metaSize};color:var(--body);line-height:1.65;display:flex;flex-wrap:wrap;gap:0 14px;`)}>
         <span style={metaWrap}>
+          {card.xSource ? (
+            <>
+              <a href={card.xSource.href} target="_blank" rel="noreferrer" style={css("color:var(--forest);")}>{card.xSource.label}</a>
+              {card.xSource.dateLabel ? <span> · {card.xSource.dateLabel}</span> : null}
+            </>
+          ) : (
+          <>
           {rendered.sourceParts[0]?.role === "cite" ? null : <span style={faint}>Source · </span>}
-          {rendered.sourceParts.map((part, i) =>
+          {rendered.sourceParts.map((part, i) => (
             part.kind === "link" ? (
               <a
                 key={i}
@@ -74,6 +82,8 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
             ) : (
               <span key={i} data-link-rule={part.role}>{i > 0 ? " " : ""}{part.text}</span>
             )
+          ))}
+          </>
           )}
         </span>
         <span style={metaItem}><span style={faint}>Date said · </span>{formatWhen(rendered.publishedAt)}</span>
@@ -125,6 +135,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
           </span>
         ) : null}
       </div>
+      {card.xSource ? <div style={css("margin-top:8px;font-size:12px;color:var(--muted);")}>{X_AFFILIATION}</div> : null}
     </>
   );
 

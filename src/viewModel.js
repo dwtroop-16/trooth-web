@@ -21,6 +21,8 @@ import {
   unresolvedLabel,
 } from "./rankingContract.js";
 import { boardContextLine, boardHeading, boardSubhead, eventCatalog, formatAsOf } from "./boardFilter.js";
+import { isXRenderable, isXSourced, removalNote, xSourceView } from "./xSource.js";
+import xRemoved from "./generated/xRemoved.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -414,6 +416,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     kickoffStatus: forecast.kickoff_status ?? null,
     horizon: forecast.kickoff_status === "pending" ? null : forecast.horizon_end,
     actual: actualDisplay,
+    xSource: xSourceView(forecast),
     isWinnerPick: winner,
     pickedTeam,
     comparisonMethod: score?.comparison_method ?? null,
@@ -537,9 +540,10 @@ export function buildVals(state, actions, data) {
   const { setState, openSpeaker, openClaim, goHome, setCat, goMethod, goChangelog, goClaims, submit, account, openModal } = actions;
   // actions.setClaimsFilter optional (URL sync on /claims)
   const speakers = data.speakers || [];
-  const forecasts = data.forecasts || [];
+  const forecasts = (data.forecasts || []).filter((f) => !isXSourced(f) || isXRenderable(f));
+  const visibleForecastIds = new Set(forecasts.map((f) => f.id));
   const actuals = data.actuals || [];
-  const scores = data.scores || [];
+  const scores = (data.scores || []).filter((sc) => visibleForecastIds.has(sc.forecast_id));
   const CATCOLORS = data.CATCOLORS;
   const s = state;
   const cat = normalizeDomain(s.cat);
@@ -757,6 +761,7 @@ export function buildVals(state, actions, data) {
         miss_rate: st.n_resolved ? displayedPcts({ n_hit: st.n_hit, n_resolved: st.n_resolved }).miss + "%" : "— no resolved yet",
         n_hit: st.n_hit,
         n_miss: st.n_resolved - st.n_hit,
+        xRemovedNote: removalNote(xRemoved?.bySpeaker?.[sp.id]),
         mae: formatMetric(st.mean_abs_error, 2),
         ape: formatMetric(st.mean_ape, 3),
         brier: formatMetric(st.mean_brier, 3),
@@ -882,6 +887,7 @@ export function buildVals(state, actions, data) {
       resolved: nResolved,
       pending: nPending,
     },
+    xRemovedNote: removalNote(xRemoved?.total),
     boardTitle: board ? boardHeading(board, boardDomain) : (cat === "All" ? "Leaderboard" : cat + " scorecard"),
     resultCount: boardCountLabel(board === "pick" ? pickAll.filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : rows),
     rankMin: displayRankingMin(scorerBoards),
