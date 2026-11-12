@@ -10,7 +10,7 @@ export default function Footer({ vals }) {
         <span style={css("font-family:Archivo,sans-serif;font-style:italic;font-weight:800;color:var(--ink);")}>Trooth<span style={css("color:var(--forest);font-style:normal;")}>.app</span></span>
       </span>
       <span style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;color:var(--muted);")}>SPORTS | FINANCE | WEATHER</span>
-      <span style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;font-weight:600;color:var(--forest-deep);")}>HONEST. ACCURATE. RELIABLE.</span>
+      <span style={css("font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;font-weight:600;color:var(--forest-deep);")}>Public calls. Official results.</span>
       <Hover as="button" onClick={vals.goMethod} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Method</Hover>
       <Hover as="button" onClick={vals.goClaims} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Claims</Hover>
       <Hover as="button" onClick={vals.goChangelog} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Changelog</Hover>
