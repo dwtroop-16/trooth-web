@@ -2,6 +2,29 @@ import { css, accountLabel } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 
+function RecordBar({ hit, miss, pending }) {
+  const h = Number(hit) || 0;
+  const m = Number(miss) || 0;
+  const p = Number(pending) || 0;
+  const total = h + m + p;
+  if (!total) return null;
+  const width = (n) => `${(n / total) * 100}%`;
+  return (
+    <div style={css("margin-top:16px;")}>
+      <div className="trooth-record" role="img" aria-label={`${h} hit, ${m} miss, ${p} pending`}>
+        <span className="trooth-record-seg trooth-record-hit" style={{ width: width(h) }} />
+        <span className="trooth-record-seg trooth-record-miss" style={{ width: width(m) }} />
+        <span className="trooth-record-seg trooth-record-pending" style={{ width: width(p) }} />
+      </div>
+      <div style={css("display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:8px;font-size:13px;color:var(--body);")}>
+        <span>Hit {h}</span>
+        <span>Miss {m}</span>
+        <span>Pending {p}</span>
+      </div>
+    </div>
+  );
+}
+
 function ProfileStatTable({ title, columns, rows, emptyLabel }) {
   const rowClass =
     columns.length >= 5 ? "trooth-profile-board-row trooth-profile-board-row--5" : "trooth-profile-board-row";
@@ -67,7 +90,7 @@ export default function Profile({ vals, openClaim }) {
   }));
   const showTeamSection = (p.teamBoards && p.teamBoards.length > 0) || p.hasSports;
   return (
-    <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;animation:vFadeUp .28s ease;")}>
+    <main className="trooth-page" style={css("max-width:1180px;margin:0 auto;padding:28px 20px 48px;animation:vFadeUp .28s ease;")}>
       <Hover as="button" onClick={vals.goHome} style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:0;margin-bottom:20px;display:flex;align-items:center;gap:6px;" hover="color:var(--forest);">← All speakers</Hover>
 
       <div style={css("display:flex;align-items:center;gap:14px;margin-bottom:22px;")}>
@@ -92,6 +115,7 @@ export default function Profile({ vals, openClaim }) {
             <a href="/method" onClick={(e) => { e.preventDefault(); vals.goMethod && vals.goMethod(); }} style={css("color:var(--forest);")}>How we score</a>
           </span>
         </div>
+        <RecordBar hit={p.n_hit} miss={p.n_miss} pending={p.n_pending} />
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
           {counts.map(([label, n]) => (
             <div key={label} style={css("min-width:72px;")}>

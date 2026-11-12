@@ -9,6 +9,7 @@ test("parsePath maps known routes", () => {
   assert.deepEqual(parsePath("/claims"), { view: "claims" });
   assert.deepEqual(parsePath("/person/x"), { view: "profile", speakerId: "x" });
   assert.deepEqual(parsePath("/claim/x"), { view: "prediction", forecastId: "x" });
+  assert.deepEqual(parsePath("/best/us-senate-majority-2026"), { view: "notfound" });
 });
 
 test("parsePath unknown paths are notfound, not home", () => {
@@ -48,6 +49,7 @@ test("parseClaimsQuery reads q, domain, grade, speaker, horizon (+ aliases)", ()
     grade: "Hit",
     speaker: "All",
     horizon: "All",
+    subject: "All",
   });
   assert.deepEqual(parseClaimsQuery("?cat=Sports&status=miss&horizon=past&speaker=abc"), {
     q: "",
@@ -55,6 +57,7 @@ test("parseClaimsQuery reads q, domain, grade, speaker, horizon (+ aliases)", ()
     grade: "Miss",
     speaker: "abc",
     horizon: "past",
+    subject: "All",
   });
   assert.equal(parseClaimsQuery("?grade=in-review").grade, "In review");
   assert.equal(parseClaimsQuery("?grade=void").grade, "In review");
@@ -78,7 +81,9 @@ test("pathForClaims omits defaults and round-trips with parseClaimsQuery", () =>
     grade: "Hit",
     speaker: "jane",
     horizon: "pending",
+    subject: "All",
   });
+  assert.equal(pathForClaims({ subject: "us-senate-majority-2026" }), "/claims?subject=us-senate-majority-2026");
 });
 
 test("claimsFiltersFromLocation only parses /claims", () => {
@@ -89,5 +94,6 @@ test("claimsFiltersFromLocation only parses /claims", () => {
     grade: "Pending",
     speaker: "All",
     horizon: "All",
+    subject: "All",
   });
 });

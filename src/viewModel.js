@@ -20,6 +20,7 @@ import {
   rowIsModel,
   unresolvedLabel,
 } from "./rankingContract.js";
+import { boardContextLine, boardHeading, boardSubhead, eventCatalog, formatAsOf } from "./boardFilter.js";
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -170,9 +171,11 @@ export function scorerBoardRows(list, speakers, openSpeaker, minResolved = RANKI
         initials: sp?.initials || String(r.speaker).replace(/[^A-Za-z ]/g, "").split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join(""),
         avatar: sp ? avatarFor(sp.id) : "#6B7280",
         domain: domainLabel,
+        nHit: r.n_hit ?? Math.round((r.hit_rate || 0) * (r.n_resolved || 0)),
+        nGraded: r.n_resolved ?? 0,
         nResolved: ranked ? r.n_resolved : unresolvedLabel(r.n_resolved, minResolved),
         hitRate: ranked ? pctFromCounts(r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved), r.n_resolved) : "Not ranked yet",
-        rateDetail: `${r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved)} of ${r.n_resolved} resolved`,
+        rateDetail: `${r.n_hit ?? Math.round((r.hit_rate || 0) * r.n_resolved)} of ${r.n_resolved} graded`,
         pending: r.n_pending,
         open: () => (sp && openSpeaker ? openSpeaker(sp.id, { entry: "board", domain: domainLabel, rank: ranked ? r.rank : null }) : undefined),
       };
@@ -675,6 +678,7 @@ export function buildVals(state, actions, data) {
   const claimStatus = s.claimStatus || "All";
   const claimSpeaker = s.claimSpeaker || "All";
   const claimHorizon = s.claimHorizon || "All";
+  const claimSubject = s.claimSubject || "All";
   const now = Date.now();
 
   let claimList = scopedCards.filter((c) => claimMatchesQuery(c, q));
@@ -688,6 +692,9 @@ export function buildVals(state, actions, data) {
     claimList = claimList.filter((c) => horizonIsPast(c, now) === false);
   } else if (claimHorizon === "past") {
     claimList = claimList.filter((c) => horizonIsPast(c, now) === true);
+  }
+  if (claimSubject !== "All") {
+    claimList = claimList.filter((c) => c.subjectId === claimSubject);
   }
   claimList = sortClaimList(claimList);
 
@@ -791,6 +798,19 @@ export function buildVals(state, actions, data) {
   const nPending = scores.filter((sc) => sc.status === "pending").length;
   const nResolved = scores.filter((sc) => sc.status === "hit" || sc.status === "miss").length;
 
+  const board = s.board === "pick" ? "pick" : s.board === "score" ? "score" : "";
+  const boardDomain = board === "pick" ? "Sports" : (board === "score" ? (cat === "All" ? "Sports" : cat) : "");
+  const peopleAll = scorerBoardRows(scorerBoards.people_board, speakers, openSpeaker, displayRankingMin(scorerBoards));
+  const pickAll = scorerBoardRows(scorerBoards.pick_record, speakers, openSpeaker, displayRankingMin(scorerBoards));
+  if (claimSubject !== "All") {
+    claimList = claimList.map((card) => ({
+      ...card,
+      boardNote: boardContextLine(card, peopleAll, pickAll),
+    }));
+  }
+  const eventChoices = s.view === "home" || s.view === "claims" ? eventCatalog(forecasts, data.subjects || data.SUBJECTS) : [];
+  const subjectChoice = eventChoices.find((c) => c.id === claimSubject) || null;
+
   return {
     goHome,
     goMethod,
@@ -822,6 +842,15 @@ export function buildVals(state, actions, data) {
     searchSuggestions,
     openModal: openModal || (() => setState({ modal: true })),
     isHome: s.view === "home",
+    boardFilter: { board, domain: boardDomain },
+    boardHeading: board ? boardHeading(board, boardDomain) : "",
+    boardSubhead: board ? boardSubhead(board, boardDomain) : "",
+    asOf: formatAsOf(scorerBoards?.provenance?.built_at),
+    eventChoices,
+    claimSubject,
+    subjectLabel: subjectChoice?.label || "",
+    openBoard: (choice) => (typeof actions.openBoard === "function" ? actions.openBoard(choice) : undefined),
+    openSubject: (id) => (typeof actions.openSubject === "function" ? actions.openSubject(id) : undefined),
     isProfile: s.view === "profile" && !!p,
     isPrediction: s.view === "prediction" && !!d,
     isMethod: s.view === "method",
@@ -853,22 +882,22 @@ export function buildVals(state, actions, data) {
       resolved: nResolved,
       pending: nPending,
     },
-    boardTitle: cat === "All" ? "Leaderboard" : cat + " scorecard",
-    resultCount: boardCountLabel(rows),
+    boardTitle: board ? boardHeading(board, boardDomain) : (cat === "All" ? "Leaderboard" : cat + " scorecard"),
+    resultCount: boardCountLabel(board === "pick" ? pickAll.filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : rows),
     rankMin: displayRankingMin(scorerBoards),
     rankNote: "ranked at " + displayRankingMin(scorerBoards) + " resolved · pending is not a miss",
-    // Pick record: Sports tab only, below the Score board (pagemap v1.2.0). Not on home.
-    pickRows: cat === "Sports" ? scorerBoardRows(scorerBoards.pick_record, speakers, openSpeaker, displayRankingMin(scorerBoards)).filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : [],
-    pickTitle: "Pick record: who picked the winner",
+    // Pick record stays off the score board when a board filter is on.
+    pickRows: board || cat !== "Sports" ? [] : pickAll.filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })),
+    pickTitle: board === "pick" ? boardHeading("pick", "Sports") : "Pick record: who picked the winner",
     get pickCount() { return boardCountLabel(this.pickRows); },
     pickNote: "winner picks only · ranked at " + displayRankingMin(scorerBoards) + " resolved",
-    showModelsLink: cat === "Sports",
+    showModelsLink: cat === "Sports" || board === "pick",
     goModels: () => (typeof actions.goModels === "function" ? actions.goModels() : undefined),
     isModels: s.view === "models",
     models: buildModelsView(speakers, forecasts, scores, cards, scorerBoards, openSpeaker),
-    rows,
-    boardShowDomain: cat === "All",
-    boardSections,
+    rows: board === "pick" ? pickAll.filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : rows,
+    boardShowDomain: board ? false : cat === "All",
+    boardSections: board ? null : boardSections,
     boardCapped: false,
     noResults: allRows.length === 0,
     recentResolved,

@@ -78,7 +78,8 @@ export function parseClaimsQuery(search) {
   const grade = normalizeGrade(params.get("grade") || params.get("status") || "All");
   const speaker = (params.get("speaker") || "All").trim() || "All";
   const horizon = normalizeHorizon(params.get("horizon") || "All");
-  return { q, domain, grade, speaker, horizon };
+  const subject = (params.get("subject") || "All").trim() || "All";
+  return { q, domain, grade, speaker, horizon, subject };
 }
 
 /**
@@ -96,6 +97,8 @@ export function pathForClaims(filters = {}) {
   if (speaker && speaker !== "All") params.set("speaker", speaker);
   const horizon = normalizeHorizon(filters.horizon || "All");
   if (horizon && horizon !== "All") params.set("horizon", horizon);
+  const subject = (filters.subject || "All").trim();
+  if (subject && subject !== "All") params.set("subject", subject);
   const qs = params.toString();
   return qs ? `/claims?${qs}` : "/claims";
 }

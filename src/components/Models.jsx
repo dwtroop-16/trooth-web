@@ -21,7 +21,7 @@ export default function Models({ vals, openClaim }) {
         m.models.map((md) => (
           <section key={md.id} style={css("background:var(--surface);border:1px solid var(--hair);border-radius:var(--radius);padding:18px;margin-bottom:18px;")}>
             <div style={css("display:flex;align-items:center;gap:8px;")}>
-              <span style={css("font-size:11px;font-weight:700;border:1px solid var(--hair);border-radius:999px;padding:1px 7px;")}>{md.label}</span>
+              <span style={css("font-size:11px;font-weight:700;border:1px solid var(--hair);border-radius:999px;padding:1px 7px;")}>Model — not ranked</span>
               <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;")}>{md.name}</h2>
               <span style={css("font-size:13px;color:var(--muted);")}>{md.credit}</span>
             </div>
