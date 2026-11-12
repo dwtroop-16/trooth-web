@@ -20,6 +20,7 @@ import {
   rowIsModel,
   unresolvedLabel,
 } from "./rankingContract.js";
+import { eventCatalog, rankEventTrust } from "./trustFinder.js";
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
 const FBS_TEAM_LABELS = teamLabels.fbs || {};
@@ -791,6 +792,20 @@ export function buildVals(state, actions, data) {
   const nPending = scores.filter((sc) => sc.status === "pending").length;
   const nResolved = scores.filter((sc) => sc.status === "hit" || sc.status === "miss").length;
 
+  const showTrust = s.view === "home" || s.view === "best";
+  const trustSpeakers = speakers.map((sp) => ({ ...sp, kind: speakerKindOf(sp) }));
+  const trustChoices = showTrust ? eventCatalog(forecasts, data.subjects || data.SUBJECTS) : [];
+  const trustSubject = trustChoices.find((c) => c.id === s.subjectId) || null;
+  const trust = {
+    subjectId: s.subjectId || "",
+    subject: trustSubject,
+    choices: trustChoices,
+    result: showTrust && s.subjectId
+      ? rankEventTrust({ subjectId: s.subjectId, forecasts, scores, speakers: trustSpeakers })
+      : null,
+    onSelect: (id) => (typeof actions.openBest === "function" ? actions.openBest(id) : undefined),
+  };
+
   return {
     goHome,
     goMethod,
@@ -822,6 +837,8 @@ export function buildVals(state, actions, data) {
     searchSuggestions,
     openModal: openModal || (() => setState({ modal: true })),
     isHome: s.view === "home",
+    isBest: s.view === "best",
+    trust,
     isProfile: s.view === "profile" && !!p,
     isPrediction: s.view === "prediction" && !!d,
     isMethod: s.view === "method",

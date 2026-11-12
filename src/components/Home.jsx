@@ -6,6 +6,7 @@ import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
 import { CATCOLORS } from "../data.js";
 import GaugeMark from "./GaugeMark.jsx";
 import { visibleBoardRank, unresolvedLabel } from "../rankingContract.js";
+import TrustFinder from "./TrustFinder.jsx";
 
 function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain, rankMin = 3 }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
@@ -118,7 +119,7 @@ export default function Home({ vals, openClaim }) {
   const entryTabs = (vals.categories || []).filter((tab) => tab.label !== "All");
 
   return (
-    <main style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;")}>
+    <main className="trooth-page" style={css("max-width:1180px;margin:0 auto;padding:28px 20px 56px;")}>
       {!q && (
         <section style={css("text-align:center;padding:18px 0 26px;")}>
           <div style={css("display:flex;justify-content:center;")}><GaugeMark height={104} /></div>
@@ -127,6 +128,7 @@ export default function Home({ vals, openClaim }) {
           <p style={css("font-size:clamp(20px,3.4vw,30px);font-weight:700;color:var(--ink);letter-spacing:-0.01em;margin:20px auto 0;max-width:640px;line-height:1.25;")}>
             Public forecasts, scored against official prints.
           </p>
+          {vals.trust ? <TrustFinder trust={vals.trust} openClaim={openClaim} showResults={false} /> : null}
           <div style={css("margin:20px auto 0;max-width:680px;display:flex;align-items:center;gap:10px;justify-content:center;background:var(--surface);border:1px solid #BFE8B4;border-radius:999px;padding:9px 18px;")}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F2E" strokeWidth="3" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg>
             <span style={css("font-size:13.5px;color:var(--forest-deep);")}><strong>Pending is not a miss</strong> — pending forecasts are never counted as misses and never folded into hit rate.</span>
@@ -159,6 +161,8 @@ export default function Home({ vals, openClaim }) {
             key={tab.label}
             as="button"
             onClick={tab.onClick}
+            className="trooth-chip"
+            aria-pressed={tab.active}
             style={
               "border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;" +
               (tab.active

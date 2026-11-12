@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { buildVals } from "./viewModel.js";
 import { loadData, submitSourceTip } from "./dataSource.js";
 import { hasSupabase } from "./lib/flags.js";
-import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
+import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS, SUBJECTS } from "./data.js";
 import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
@@ -24,6 +24,7 @@ const PredictionDetail = lazy(() => import("./components/PredictionDetail.jsx"))
 const Method = lazy(() => import("./components/Method.jsx"));
 const Changelog = lazy(() => import("./components/Changelog.jsx"));
 const Claims = lazy(() => import("./components/Claims.jsx"));
+const Best = lazy(() => import("./components/Best.jsx"));
 const LogModal = lazy(() => import("./components/LogModal.jsx"));
 const AccountModal = lazy(() => import("./components/AccountModal.jsx"));
 const Toast = lazy(() => import("./components/Toast.jsx"));
@@ -43,6 +44,7 @@ function initialFromLocation() {
     view: parsed.view,
     speakerId: parsed.speakerId || null,
     forecastId: parsed.forecastId || null,
+    subjectId: parsed.subjectId || null,
     cat: filters.domain || "All",
     q: filters.q || "",
     claimStatus: filters.grade || "All",
@@ -68,6 +70,7 @@ const BUNDLED = {
   actuals: ACTUALS,
   scores: SCORES,
   CATCOLORS,
+  subjects: SUBJECTS,
   source: "live",
 };
 
@@ -100,6 +103,7 @@ export default function App() {
         view: parsed.view,
         speakerId: parsed.speakerId || null,
         forecastId: parsed.forecastId || null,
+        subjectId: parsed.subjectId || null,
         cat: parsed.view === "claims" ? filters.domain : prev.cat,
         q: parsed.view === "claims" ? filters.q : prev.q,
         claimStatus: parsed.view === "claims" ? filters.grade : prev.claimStatus,
@@ -144,6 +148,7 @@ export default function App() {
       view: parsed.view,
       speakerId: parsed.speakerId || null,
       forecastId: parsed.forecastId || null,
+      subjectId: parsed.subjectId || null,
       ...(claimsFilters
         ? {
             cat: claimsFilters.domain,
@@ -228,6 +233,7 @@ export default function App() {
     navigate(pathFor("prediction", id));
   };
   const goHome = () => navigate(pathFor("home"));
+  const openBest = (id) => navigate(pathFor("best", id));
   const goMethod = () => navigate(pathFor("method"));
   const goModels = () => navigate(pathFor("models"));
   const goChangelog = () => navigate(pathFor("changelog"));
@@ -449,6 +455,7 @@ export default function App() {
       goChangelog,
       goClaims,
       goModels,
+      openBest,
       submit,
       account,
       openModal: openTipModal,
@@ -463,13 +470,15 @@ export default function App() {
     else if (vals.isModels) title = "Computer models · Trooth";
     else if (vals.isMethod) title = "Method · Trooth";
     else if (vals.isChangelog) title = "Changelog · Trooth";
+    else if (vals.isBest && vals.trust?.subject) title = "Who to trust for " + vals.trust.subject.label + " · Trooth";
+    else if (vals.isBest) title = "Who to trust · Trooth";
     else if (vals.isProfile && vals.p) title = vals.p.name + " · Trooth";
     else if (vals.isPrediction && vals.d) {
       const claim = String(vals.d.claimText || "");
       title = (claim.length > 48 ? claim.slice(0, 48) : claim) + " · Trooth";
     }
     document.title = title;
-  }, [vals.isHome, vals.isClaims, vals.isModels, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.p, vals.d]);
+  }, [vals.isHome, vals.isClaims, vals.isModels, vals.isMethod, vals.isChangelog, vals.isNotFound, vals.isProfile, vals.isPrediction, vals.isBest, vals.trust, vals.p, vals.d]);
 
   return (
     <div style={css("min-height:100vh;background:var(--paper);font-family:Archivo,sans-serif;color:var(--ink);display:flex;flex-direction:column;")}>
@@ -481,6 +490,7 @@ export default function App() {
         {vals.isModels && <Models vals={vals} openClaim={openClaim} />}
         <Suspense fallback={<SuspenseFallback />}>
           {vals.isProfile && <Profile vals={vals} openClaim={openClaim} />}
+          {vals.isBest && <Best vals={vals} openClaim={openClaim} />}
           {vals.isPrediction && <PredictionDetail vals={vals} />}
           {vals.isMethod && <Method goHome={goHome} goChangelog={goChangelog} />}
           {vals.isChangelog && <Changelog goHome={goHome} />}

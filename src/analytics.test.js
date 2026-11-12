@@ -143,6 +143,7 @@ test("viewFromPath maps SPA routes", () => {
   assert.equal(viewFromPath("/claims"), "claims");
   assert.equal(viewFromPath("/person/cbs-pete-prisco"), "profile");
   assert.equal(viewFromPath("/claim/fct_01ABC"), "prediction");
+  assert.equal(viewFromPath("/best/us-nyc-central-park-tmax"), "best");
   assert.equal(viewFromPath("/method"), "method");
   assert.equal(viewFromPath("/changelog"), "changelog");
   assert.equal(viewFromPath("/nope"), "notfound");

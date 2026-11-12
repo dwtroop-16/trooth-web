@@ -25,6 +25,31 @@ body {
 a { color: var(--forest); text-decoration: none; }
 a:hover { color: var(--forest-deep); }
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--forest-deep);
+  outline-offset: 2px;
+}
+
+.trooth-record {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--row);
+}
+.trooth-record-seg { display: block; height: 100%; }
+.trooth-record-hit { background: #0E9F2E; }
+.trooth-record-miss { background: #BC2E29; }
+.trooth-record-pending { background: #C4A35A; }
+
+@media (max-width: 700px) {
+  .trooth-page { padding-left: 16px !important; padding-right: 16px !important; }
+  .trooth-finder-input { font-size: 16px; }
+}
+
 input, button, select, textarea { font-family: inherit; }
 
 ::selection { background: var(--forest); color: var(--paper); }

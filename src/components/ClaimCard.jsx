@@ -9,6 +9,7 @@ const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_u
 export default function ClaimCard({ card, compact, quiet, onOpen }) {
   const rendered = renderPublicClaimCard(card);
   const sm = statusMeta(card.status);
+  const gradeInk = { Hit: "#06380F", Miss: "#6E1A16", Pending: "#5C4300", Unscorable: "#243028", "In review": "#3D2A5C" }[rendered.grade] || sm.color;
   // Actual value and actual source show only on graded (Hit / Miss) cards; Pending shows "pending";
   // In review and Unscorable show no actual and no actual-source link.
   const graded = rendered.grade === "Hit" || rendered.grade === "Miss";
@@ -36,7 +37,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
             <div style={css("font-size:12.5px;color:var(--muted);margin-top:2px;")}>{rendered.speakerOrg}</div>
           ) : null}
         </div>
-        <span style={css(`font-size:11px;font-weight:700;color:${sm.color};background:${sm.tint};border-radius:999px;padding:3px 9px;white-space:nowrap;flex-shrink:0;`)}>{rendered.grade}</span>
+        <span className="trooth-grade" data-grade={rendered.grade} style={css(`font-size:12px;font-weight:700;letter-spacing:0.02em;color:${gradeInk};background:${sm.tint};border:1px solid ${sm.border};border-radius:999px;padding:4px 10px;white-space:nowrap;flex-shrink:0;`)}>{rendered.grade}</span>
       </div>
 
       <div style={css("font-family:Newsreader,serif;font-size:" + (compact ? "16px" : "19px") + ";font-weight:500;line-height:1.35;color:var(--ink);margin-top:8px;" + (compact ? "display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;" : ""))}>{rendered.claimText}</div>

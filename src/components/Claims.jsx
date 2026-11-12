@@ -24,6 +24,8 @@ function Pill({ active, onClick, children }) {
     <Hover
       as="button"
       onClick={onClick}
+      className="trooth-chip"
+      aria-pressed={!!active}
       style={
         "border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer;" +
         (active
