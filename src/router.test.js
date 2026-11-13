@@ -50,6 +50,7 @@ test("parseClaimsQuery reads q, domain, grade, speaker, horizon (+ aliases)", ()
     speaker: "All",
     horizon: "All",
     subject: "All",
+    shown: 50,
   });
   assert.deepEqual(parseClaimsQuery("?cat=Sports&status=miss&horizon=past&speaker=abc"), {
     q: "",
@@ -58,6 +59,7 @@ test("parseClaimsQuery reads q, domain, grade, speaker, horizon (+ aliases)", ()
     speaker: "abc",
     horizon: "past",
     subject: "All",
+    shown: 50,
   });
   assert.equal(parseClaimsQuery("?grade=in-review").grade, "In review");
   assert.equal(parseClaimsQuery("?grade=void").grade, "In review");
@@ -82,8 +84,11 @@ test("pathForClaims omits defaults and round-trips with parseClaimsQuery", () =>
     speaker: "jane",
     horizon: "pending",
     subject: "All",
+    shown: 50,
   });
   assert.equal(pathForClaims({ subject: "us-senate-majority-2026" }), "/claims?subject=us-senate-majority-2026");
+  assert.equal(pathForClaims({ shown: 100 }), "/claims?shown=100");
+  assert.equal(parseClaimsQuery("?shown=100").shown, 100);
 });
 
 test("claimsFiltersFromLocation only parses /claims", () => {
@@ -95,5 +100,6 @@ test("claimsFiltersFromLocation only parses /claims", () => {
     speaker: "All",
     horizon: "All",
     subject: "All",
+    shown: 50,
   });
 });
