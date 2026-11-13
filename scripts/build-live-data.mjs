@@ -11,6 +11,7 @@ import { publicChangelogDay } from "../src/changelogPublic.js";
 import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus.js";
 import { loadScorerBoardFiles } from "../src/boardProvenance.js";
 import { countRemovalStubs } from "../src/xSource.js";
+import { displayedSubjectLabel } from "../src/subjectLabel.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -348,7 +349,8 @@ function build() {
     const speaker_id = speakerIdByName.get(f.speaker?.name) || kebabCase(f.speaker?.name);
     const subject = {
       id: f.subject?.id,
-      label: f.subject?.label || f.subject?.id,
+      // Registry label wins. The row label is only the fallback for an id the catalog does not have.
+      label: displayedSubjectLabel(f.subject, subjectsById),
     };
     if (subject.id) usedSubjectIds.add(subject.id);
     forecasts.push(withKickoffStatus({
