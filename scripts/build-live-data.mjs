@@ -12,6 +12,7 @@ import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus
 import { loadScorerBoardFiles } from "../src/boardProvenance.js";
 import { countRemovalStubs } from "../src/xSource.js";
 import { actualFilesToRead, cliActualCredit } from "../src/nwsCli.js";
+import { nceiAccessed, nceiActualCredit } from "../src/nceiActual.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -214,6 +215,8 @@ function mapScore(row) {
 // Legal 05b condition 5 / 09-attribution-footers: KNYC observation actuals (api.weather.gov)
 // must credit "National Weather Service" on the card, not the "NWS" abbreviation.
 function actualSourceName(row, fileRel = "") {
+  const ncei = nceiActualCredit(fileRel, row);
+  if (ncei) return ncei;
   const cli = cliActualCredit(fileRel, row);
   if (cli) return cli;
   const url = row.source?.url || "";
@@ -232,6 +235,7 @@ function retentionFields(src) {
 }
 
 function mapActual(row, fileRel = "") {
+  const ncei = nceiActualCredit(fileRel, row);
   return {
     schema_version: row.schema_version || "1.1.0",
     id: row.id,
@@ -248,6 +252,7 @@ function mapActual(row, fileRel = "") {
       ...retentionFields(row.source),
     },
     status: row.status,
+    ...(ncei ? { accessed: nceiAccessed(row).value || null, revisable: row.revisable === true || row.revisable === "true" } : {}),
   };
 }
 
@@ -269,7 +274,7 @@ function build() {
   let cliOnDisk = [];
   try {
     cliOnDisk = readdirSync(join(ROOT, "data/actuals"))
-      .filter((name) => /^nws-cli-.*\.jsonl$/.test(name))
+      .filter((name) => /^nws-(?:cli|ncei)-.*\.jsonl$/.test(name))
       .sort()
       .map((name) => `data/actuals/${name}`);
   } catch {

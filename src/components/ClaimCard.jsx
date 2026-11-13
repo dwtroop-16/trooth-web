@@ -135,6 +135,7 @@ export default function ClaimCard({ card, compact, quiet, onOpen }) {
           </span>
         ) : null}
       </div>
+      {card.nceiRevisionNote ? <div data-ncei-revision="" style={css("margin-top:8px;font-size:12px;color:var(--muted);")}>{card.nceiRevisionNote}</div> : null}
       {card.xSource ? <div style={css("margin-top:8px;font-size:12px;color:var(--muted);")}>{X_AFFILIATION}</div> : null}
     </>
   );

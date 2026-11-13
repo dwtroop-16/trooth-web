@@ -1,4 +1,4 @@
-import { sourceLinkParts, citeOnlyRuleFor } from "./linkPolicy.js";
+import { sourceLinkParts, citeOnlyRuleFor, isNceiApiUrl } from "./linkPolicy.js";
 import { horizonDisplay, isKickoffPending } from "./kickoffStatus.js";
 
 // Public claim card: the eight required fields, in order.
@@ -97,7 +97,7 @@ export function actualSourceParts(card) {
   const citeRule = citeOnlyRuleFor(card.actualSourceUrl);
   const parts = citeRule
     ? [{ kind: "text", role: "cite", text: citeRule.name }]
-    : sourceLinkParts(card.actualSourceUrl, (isNws ? card.actualSourceName : host) || card.actualSourceName);
+    : sourceLinkParts(card.actualSourceUrl, (isNws || isNceiApiUrl(card.actualSourceUrl) ? card.actualSourceName : host) || card.actualSourceName);
   if (card.actualRetentionNote) {
     if (card.actualObservationRef) parts.push({ kind: "text", role: "observation_ref", text: card.actualObservationRef });
     if (card.actualObservedAt) parts.push({ kind: "text", role: "observed_at", text: `observed ${card.actualObservedAt}` });

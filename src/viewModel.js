@@ -23,6 +23,7 @@ import {
 import { boardContextLine, boardHeading, boardSubhead, eventCatalog, formatAsOf } from "./boardFilter.js";
 import { isXRenderable, isXSourced, removalNote, xSourceView } from "./xSource.js";
 import { isHeldNewStation } from "./nwsCli.js";
+import { nceiActualCredit, nceiRevisionNote } from "./nceiActual.js";
 import xRemoved from "./generated/xRemoved.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -388,7 +389,8 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
   const graded = status === "hit" || status === "miss";
   const shown = graded && actual && actual.status === "resolved" ? actual : null;
   const actualValue = shown ? shown.value : "pending";
-  const actualSourceName = shown ? shown.source.name : src.name;
+  const nceiCredit = shown ? nceiActualCredit("", shown) : null;
+  const actualSourceName = nceiCredit || (shown ? shown.source.name : src.name);
   const actualSourceUrl = shown ? shown.source.url : src.url;
   // Legal 05b Clarification 2026-10-02 (data-driven): an actual carrying retention_note has aged
   // out of the API. Link stays the endpoint; observation_ref is shown as plain text with observed_at.
@@ -427,6 +429,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
     actualObservedAt: retained ? retained.observed_at ?? null : null,
     actualRetentionNote: retained ? retained.source.retention_note : null,
+    nceiRevisionNote: nceiRevisionNote(shown),
     grade,
     status,
     domain: forecast.domain === "finance" ? "Finance" : forecast.domain[0].toUpperCase() + forecast.domain.slice(1),
