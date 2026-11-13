@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url";
 import { publicChangelogDay } from "../src/changelogPublic.js";
 import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus.js";
 import { loadScorerBoardFiles } from "../src/boardProvenance.js";
+import { countRemovalStubs } from "../src/xSource.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -513,6 +514,19 @@ export const DATA_SOURCE = live.source || "live";
   writeFileSync(join(SITE, "src/generated/speakerKinds.json"), JSON.stringify(speakerKinds, null, 2) + "\n");
 
   writeFileSync(join(SITE, "src/generated/teamLabels.json"), JSON.stringify(teamLabels, null, 2) + "\n");
+
+  // X removal stubs (ingest/x-removed/*.jsonl). Missing directory writes a zero count.
+  // Does not change forecasts, scores, or boards.
+  let xLines = [];
+  try {
+    const xDir = join(ROOT, "ingest/x-removed");
+    for (const name of readdirSync(xDir).filter((f) => f.endsWith(".jsonl")).sort()) {
+      xLines.push(readFileSync(join(xDir, name), "utf8"));
+    }
+  } catch {
+    xLines = [];
+  }
+  writeFileSync(join(SITE, "src/generated/xRemoved.json"), JSON.stringify(countRemovalStubs(xLines.join("\n")), null, 2) + "\n");
 
   // Changelog days into site working copy
   const changelogSrc = join(ROOT, "changelog");

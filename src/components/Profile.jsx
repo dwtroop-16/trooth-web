@@ -115,6 +115,7 @@ export default function Profile({ vals, openClaim }) {
             <a href="/method" onClick={(e) => { e.preventDefault(); vals.goMethod && vals.goMethod(); }} style={css("color:var(--forest);")}>How we score</a>
           </span>
         </div>
+        {p.xRemovedNote ? <p style={css("margin:12px 0 0;font-size:13px;color:var(--muted);")}>{p.xRemovedNote}</p> : null}
         <RecordBar hit={p.n_hit} miss={p.n_miss} pending={p.n_pending} />
         <div style={css("display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:16px;padding-top:16px;border-top:1px solid var(--hair);")}>
           {counts.map(([label, n]) => (

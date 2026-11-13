@@ -159,6 +159,7 @@ export default function Home({ vals, openClaim }) {
               </div>
             ))}
           </div>
+          {vals.xRemovedNote ? <p style={css("margin:16px 0 0;font-size:13px;color:var(--muted);")}>{vals.xRemovedNote}</p> : null}
         </section>
       )}
 

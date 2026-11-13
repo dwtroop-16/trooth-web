@@ -507,8 +507,8 @@ export default function App() {
         <Suspense fallback={<SuspenseFallback />}>
           {vals.isProfile && <Profile vals={vals} openClaim={openClaim} />}
           {vals.isPrediction && <PredictionDetail vals={vals} />}
-          {vals.isMethod && <Method goHome={goHome} goChangelog={goChangelog} />}
-          {vals.isChangelog && <Changelog goHome={goHome} />}
+          {vals.isMethod && <Method goHome={goHome} goChangelog={goChangelog} xRemovedNote={vals.xRemovedNote} />}
+          {vals.isChangelog && <Changelog goHome={goHome} xRemovedNote={vals.xRemovedNote} />}
           {vals.isClaims && <Claims vals={vals} openClaim={openClaim} />}
           {vals.modal && <LogModal vals={vals} />}
           {vals.accountModal && <AccountModal vals={vals} />}
