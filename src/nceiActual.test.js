@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { renderPublicClaimCard } from "./claimCard.js";
-import { NCEI_REVISION_NOTE, nceiAccessed, nceiActualCredit } from "./nceiActual.js";
+import { NCEI_CREDIT_BASE, NCEI_REVISION_NOTE, nceiAccessed, nceiActualCredit } from "./nceiActual.js";
 import { actualFilesToRead } from "./nwsCli.js";
 import { toPublicClaimCard } from "./viewModel.js";
 
@@ -44,17 +44,26 @@ test("missing NCEI files are skipped and a present one is read", () => {
   assert.equal(missing.includes("data/actuals/nws-ncei-ghcnd-nyc.jsonl"), false);
 });
 
-test("the citation date prefers accessed, then retrieved", () => {
+test("the citation date reads source.accessed_at in Eastern Time, then the older fields", () => {
   const row = {
-    accessed: "2026-11-13",
-    retrieved: "2026-11-01",
-    source: { id: "ncei-ghcn-daily-summaries", url: API },
+    accessed: "2026-11-01",
+    source: { source_id: "ncei-ghcn-daily-summaries", accessed_at: "2026-11-13T15:36:06Z", url: API },
   };
-  assert.equal(nceiAccessed(row).field, "accessed");
-  assert.equal(nceiActualCredit("data/actuals/nws-ncei-ghcnd-nyc.jsonl", row), CREDIT);
-  const fallback = { retrieved: "2026-11-02", source: { id: "ncei-ghcn-daily-summaries" } };
+  assert.equal(nceiAccessed(row).field, "source.accessed_at");
+  assert.equal(nceiActualCredit("", row), CREDIT);
+  const evening = {
+    source: { source_id: "ncei-ghcn-daily-summaries", accessed_at: "2026-11-14T03:30:00Z" },
+  };
+  assert.match(nceiActualCredit("", evening), /accessed Nov 13, 2026$/);
+  const fallback = { retrieved: "2026-11-02", source: { source_id: "ncei-ghcn-daily-summaries" } };
   assert.equal(nceiAccessed(fallback).field, "retrieved");
   assert.match(nceiActualCredit("", fallback), /accessed Nov 2, 2026$/);
+});
+
+test("an ncei.noaa.gov URL alone is not an NCEI actual", () => {
+  const row = { source: { url: API, name: "NOAA", id: "ncei-ghcn-daily-summaries" } };
+  assert.equal(nceiActualCredit("", row), null);
+  assert.equal(nceiActualCredit("data/actuals/nws-ncei-ghcnd-nyc.jsonl", { source: { url: "https://example.com/a" } }), NCEI_CREDIT_BASE);
 });
 
 test("a revisable NCEI Hit shows the credit and the revision note, with no API link or logo", async () => {
@@ -64,13 +73,16 @@ test("a revisable NCEI Hit shows the credit and the revision note, with no API l
     value: 76,
     revisable: true,
     accessed: "2026-11-13",
-    source: { id: "ncei-ghcn-daily-summaries", name: "NOAA", url: API },
+    note: "Station USW00094728 may still be revised.",
+    source: { source_id: "ncei-ghcn-daily-summaries", name: "NOAA", url: API, accessed_at: "2026-11-13T15:36:06Z" },
   };
   const card = toPublicClaimCard(forecast(), speaker, { forecast_id: "fct_ncei", status: "hit", hit: true }, actual);
   assert.equal(card.grade, "Hit");
   assert.equal(card.actual, 76);
   assert.equal(card.actualSourceName, CREDIT);
-  assert.equal(card.nceiRevisionNote, NCEI_REVISION_NOTE);
+  assert.equal(card.nceiRevisionNote, "Station USW00094728 may still be revised.");
+  const fallbackNote = toPublicClaimCard(forecast(), speaker, { forecast_id: "fct_ncei", status: "hit", hit: true }, { ...actual, note: "" });
+  assert.equal(fallbackNote.nceiRevisionNote, NCEI_REVISION_NOTE);
   const rendered = renderPublicClaimCard(card);
   assert.equal(rendered.actualSourceParts.some((part) => part.kind === "link"), false);
   assert.equal(rendered.actualSourceParts[0].text, CREDIT);
@@ -100,8 +112,8 @@ test("a revisable NCEI Hit shows the credit and the revision note, with no API l
   const html = renderToStaticMarkup(React.createElement(ClaimCard, { card }));
   assert.match(html, /Actual · <\/span>76/);
   assert.match(html, /GHCN-Daily v3, USW00094728 TMAX\/TMIN, NOAA National Centers for Environmental Information, doi:10\.7289\/V5D21VHZ, accessed Nov 13, 2026/);
-  assert.ok(html.includes("From NOAA NCEI"));
-  assert.ok(html.includes("this figure may still be revised."));
+  assert.ok(html.includes("Station USW00094728 may still be revised."));
+  assert.equal(html.includes(NCEI_REVISION_NOTE), false);
   assert.equal(/<img/i.test(html), false);
   assert.equal(/href="https?:\/\/[^"]*ncei\.noaa\.gov/i.test(html), false);
   assert.equal(/href="https?:\/\/[^"]*noaa\.gov/i.test(html), false);
