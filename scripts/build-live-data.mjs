@@ -4,13 +4,14 @@
  * Does not invent forecasts, actuals, or grades. Does not scrape.
  */
 import { avatarFor } from "../src/avatar.js";
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { publicChangelogDay } from "../src/changelogPublic.js";
 import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus.js";
 import { loadScorerBoardFiles } from "../src/boardProvenance.js";
 import { countRemovalStubs } from "../src/xSource.js";
+import { actualFilesToRead, cliActualCredit } from "../src/nwsCli.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = join(__dirname, "..");
@@ -212,7 +213,9 @@ function mapScore(row) {
 
 // Legal 05b condition 5 / 09-attribution-footers: KNYC observation actuals (api.weather.gov)
 // must credit "National Weather Service" on the card, not the "NWS" abbreviation.
-function actualSourceName(row) {
+function actualSourceName(row, fileRel = "") {
+  const cli = cliActualCredit(fileRel, row);
+  if (cli) return cli;
   const url = row.source?.url || "";
   if (/^https:\/\/api\.weather\.gov\//.test(url)) return "National Weather Service";
   return row.source?.name || "Official print";
@@ -228,7 +231,7 @@ function retentionFields(src) {
   };
 }
 
-function mapActual(row) {
+function mapActual(row, fileRel = "") {
   return {
     schema_version: row.schema_version || "1.1.0",
     id: row.id,
@@ -238,7 +241,7 @@ function mapActual(row) {
     unit: row.unit,
     observed_at: row.observed_at,
     source: {
-      name: actualSourceName(row),
+      name: actualSourceName(row, fileRel),
       url: row.source?.url || "/method",
       // Legal 05b Clarification 2026-10-02: aged-out KNYC observations keep the endpoint link
       // and carry the stored timestamped URL (plain text, never linked) plus a retention note.
@@ -263,18 +266,32 @@ function build() {
   const scoresRaw = readJsonl(join(ROOT, SCORES_FILE));
   const scoreByForecast = Object.fromEntries(scoresRaw.map((s) => [s.forecast_id, s]));
 
+  let cliOnDisk = [];
+  try {
+    cliOnDisk = readdirSync(join(ROOT, "data/actuals"))
+      .filter((name) => /^nws-cli-.*\.jsonl$/.test(name))
+      .sort()
+      .map((name) => `data/actuals/${name}`);
+  } catch {
+    cliOnDisk = [];
+  }
+  const actualRels = actualFilesToRead(ACTUAL_FILES, {
+    cliNames: cliOnDisk,
+    existing: (rel) => existsSync(join(ROOT, rel)),
+  });
   const actualsRaw = [];
-  for (const rel of ACTUAL_FILES) {
-    actualsRaw.push(...readJsonl(join(ROOT, rel)));
+  for (const rel of actualRels) {
+    for (const row of readJsonl(join(ROOT, rel))) actualsRaw.push({ row, fileRel: rel });
   }
   // Keep all unique actual ids (scores join by actual_id). Same match_key can
   // appear in early week dumps and later typed 05o files with different ids.
   const actualById = new Map();
-  for (const a of actualsRaw) {
+  for (const item of actualsRaw) {
+    const a = item.row;
     if (!a?.id) continue;
     const prev = actualById.get(a.id);
-    if (!prev || (a.status === "resolved" && prev.status !== "resolved")) {
-      actualById.set(a.id, a);
+    if (!prev || (a.status === "resolved" && prev.row.status !== "resolved")) {
+      actualById.set(a.id, item);
     }
   }
 
@@ -402,7 +419,7 @@ function build() {
     }
   }
 
-  const ACTUALS = [...actualById.values()].map(mapActual);
+  const ACTUALS = [...actualById.values()].map((item) => mapActual(item.row, item.fileRel));
   const SCORES = scoresRaw.map(mapScore);
 
   const statusCounts = {};

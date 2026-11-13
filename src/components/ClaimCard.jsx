@@ -5,7 +5,7 @@ import Hover from "./Hover.jsx";
 import { trackSourceLinkClicked } from "../analytics.js";
 
 // Plain-text parts produced by the Legal-Ops link rules (linkPolicy.js), shown inline beside the link.
-const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_url", "cite"]);
+const LINK_RULE_ROLES = new Set(["blocked_credit", "unlinked_url", "plain_text_url", "cite", "plain_name"]);
 
 export default function ClaimCard({ card, compact, quiet, onOpen }) {
   const rendered = renderPublicClaimCard(card);

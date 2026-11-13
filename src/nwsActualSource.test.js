@@ -1,16 +1,9 @@
 // KNYC weather actual-source attribution.
 //
-// Legal 05b condition 5 (KNYC observations as actuals, Pass signed by the owner
-// 2026-10-02 08:04 ET): every weather card graded from api.weather.gov credits
-// "National Weather Service" and links the timestamped observation JSON URL
-// (https://api.weather.gov/stations/KNYC/observations/<ISO>), never the bare list endpoint.
-//
-// Legal 05b "Clarification 2026-10-02" (legacy grades; follows the pending 05u §6 item):
-// api.weather.gov keeps ~7 days of observations, so aged-out readings keep the bare endpoint
-// as the link and show the stored timestamped URL (observation_ref) as PLAIN TEXT, never a
-// link, together with observed_at and the retention_note verbatim. The rule is data-driven:
-// the bare endpoint is allowed only when the actual carries retention_note (Scorer adds it as
-// each card ages out). No date logic or id allowlist on the site.
+// KNYC observations still credit "National Weather Service". CB-008 (owner 2026-11-13):
+// api.weather.gov is the JSON API, so the name is plain text and the URL is never an href.
+// Aged-out readings still show observation_ref, observed_at, and the retention note as
+// plain text. The timestamp stays on the card's actualSourceUrl field for the join.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync } from "node:fs";
@@ -51,8 +44,9 @@ test("every graded api.weather.gov card credits National Weather Service", () =>
   const bad = weatherGraded.filter(({ card }) => card.actualSourceName !== "National Weather Service");
   assert.deepEqual(bad.map(({ card }) => `${card.id}:${card.actualSourceName}`), []);
   for (const { card } of weatherGraded) {
-    const link = actualSourceParts(card).find((p) => p.kind === "link");
-    assert.equal(link.text, "National Weather Service", card.id);
+    const parts = actualSourceParts(card);
+    assert.equal(parts.some((p) => p.kind === "link"), false, card.id);
+    assert.equal(parts.find((p) => p.role === "plain_name")?.text, "National Weather Service", card.id);
   }
 });
 
@@ -61,15 +55,16 @@ test("bare /observations endpoint is linked only when the actual carries retenti
   assert.deepEqual(bad.map(({ card }) => card.id), []);
 });
 
-test("cards within the retention window link a timestamped observation URL matching observed_at", () => {
+test("cards within the retention window keep a timestamped observation URL matching observed_at, with no href", () => {
   for (const { card, actual } of current) {
     assert.match(card.actualSourceUrl, TIMESTAMPED, card.id);
     const stamp = card.actualSourceUrl.split("/observations/")[1];
     assert.equal(new Date(stamp).toISOString(), new Date(actual.observed_at).toISOString(), card.id);
+    assert.equal(actualSourceParts(card).some((p) => p.kind === "link"), false, card.id);
   }
 });
 
-test("aged-out cards link the endpoint and carry observation_ref, observed_at and the retention note verbatim", () => {
+test("aged-out cards keep the endpoint and carry observation_ref, observed_at and the retention note verbatim", () => {
   for (const { card, actual } of retained) {
     assert.match(card.actualSourceUrl, LIST_ENDPOINT, card.id);
     assert.match(actual.source.observation_ref, TIMESTAMPED, card.id);
@@ -78,8 +73,7 @@ test("aged-out cards link the endpoint and carry observation_ref, observed_at an
     assert.equal(card.actualObservedAt, actual.observed_at);
     assert.equal(card.actualRetentionNote, actual.source.retention_note);
     const parts = actualSourceParts(card);
-    assert.equal(parts.filter((p) => p.kind === "link").length, 1, card.id);
-    assert.ok(parts.every((p) => p.kind !== "link" || p.href !== actual.source.observation_ref), card.id);
+    assert.equal(parts.filter((p) => p.kind === "link").length, 0, card.id);
     assert.ok(parts.some((p) => p.kind === "text" && p.text === actual.source.retention_note), card.id);
   }
 });
@@ -107,19 +101,20 @@ test("ClaimCard renders the retention note as plain text and never links observa
   const html = renderToStaticMarkup(React.createElement(ClaimCard, { card }));
   const ref = actual.source.observation_ref;
   const note = actual.source.retention_note.replace(/'/g, "&#x27;");
-  assert.ok(html.includes(">National Weather Service</a>"), "NWS name is the link text");
-  assert.ok(html.includes(`href="${actual.source.url}"`), "link goes to the endpoint");
+  assert.ok(html.includes("National Weather Service"), "NWS name is shown");
+  assert.ok(!html.includes(`href="${actual.source.url}"`), "the JSON API is not an href");
   assert.ok(!html.includes(`href="${ref}"`), "observation_ref is never an href");
   assert.ok(!/<a[^>]*>[^<]*observations\/\d{4}-/.test(html), "observation_ref is never link text");
   assert.ok(html.includes(ref), "observation_ref shown as plain text");
   assert.ok(html.includes(actual.observed_at), "observed_at shown");
   assert.ok(html.includes(note), "retention note shown verbatim");
 
-  // A card inside the retention window renders no note and links the timestamped URL.
+  // A card inside the retention window renders no note and does not link the JSON API.
   if (current.length) {
     const c = current[0].card;
     const html2 = renderToStaticMarkup(React.createElement(ClaimCard, { card: c }));
-    assert.ok(html2.includes(`href="${c.actualSourceUrl}"`));
+    assert.ok(!html2.includes(`href="${c.actualSourceUrl}"`));
+    assert.ok(!/href="https:\/\/api\.weather\.gov\//.test(html2));
     assert.ok(!html2.includes("data-actual-retention"));
   }
   assert.ok(renderPublicClaimCard(card).actualSourceParts.length >= 3);

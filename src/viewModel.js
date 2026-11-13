@@ -22,6 +22,7 @@ import {
 } from "./rankingContract.js";
 import { boardContextLine, boardHeading, boardSubhead, eventCatalog, formatAsOf } from "./boardFilter.js";
 import { isXRenderable, isXSourced, removalNote, xSourceView } from "./xSource.js";
+import { isHeldNewStation } from "./nwsCli.js";
 import xRemoved from "./generated/xRemoved.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -303,7 +304,7 @@ export function buildSpeakerScoreboards(speaker, forecasts, scores) {
   let hasSports = false;
 
   for (const f of mine) {
-    const st = byF[f.id]?.status || (f.scorable ? "pending" : "unscorable");
+    const st = isHeldNewStation(f) ? "pending" : byF[f.id]?.status || (f.scorable ? "pending" : "unscorable");
     const { division, teams } = forecastBoardAttribution(f);
     if (division === "NFL" || division === "NCAA FBS") hasSports = true;
     if (division) {
@@ -377,7 +378,8 @@ function officialFor(forecast) {
 }
 
 export function toPublicClaimCard(forecast, speaker, score, actual) {
-  const status = score?.status || (forecast.scorable ? "pending" : "unscorable");
+  // Rochester and Evansville are held (weather_v2_new_stations). A score must not publish a grade.
+  const status = isHeldNewStation(forecast) ? "pending" : score?.status || (forecast.scorable ? "pending" : "unscorable");
   const grade = publicGrade(status);
   const src = officialFor(forecast);
   // Card contract (QA P0 2026-10-02): an actual value and actual source come from the resolved
@@ -483,7 +485,7 @@ export function speakerStats(speaker, forecasts, scores, mode = "exact") {
   const briers = [];
   for (const f of mine) {
     if (f.scorable) n_scorable += 1;
-    const st = byF[f.id]?.status || (f.scorable ? "pending" : "unscorable");
+    const st = isHeldNewStation(f) ? "pending" : byF[f.id]?.status || (f.scorable ? "pending" : "unscorable");
     if (st === "hit" || st === "miss") n_resolved += 1;
     if (st === "hit") n_hit += 1;
     if (st === "pending") n_pending += 1;

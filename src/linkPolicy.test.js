@@ -90,6 +90,16 @@ test("linkPolicy: cite-only hosts render 'Source: Outlet, “title”, date', ne
   assert.equal(isAllowedHref("https://www.notsi.com/"), true);
 });
 
+test("linkPolicy: api.weather.gov JSON is the source name as plain text, never an href", () => {
+  const cli = "https://api.weather.gov/stations/KNYC/observations/2026-11-12T12:00:00Z";
+  const credit = "National Weather Service, Daily Climate Report (CLI), Central Park";
+  assert.equal(isAllowedHref(cli), false);
+  assert.equal(isAllowedHref("https://api.weather.gov/gridpoints/OKX/34,45/forecast"), false);
+  assert.deepEqual(sourceLinkParts(cli, credit), [{ kind: "text", role: "plain_name", text: credit }]);
+  assert.equal(sourceLinkParts(cli, credit).some((p) => p.kind === "link"), false);
+  assert.equal(isAllowedHref("https://www.weather.gov/okx/"), true);
+});
+
 test("every card's link parts obey the rules (view-model scan of all cards)", () => {
   assert.equal(cards.length, FORECASTS.length);
   let msConverted = 0;
@@ -135,6 +145,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         if (isNfl(href) && href !== NFL_HOME) bad.push(`${card.id} nfl ${href}`);
         if (/ncaa\.com/i.test(href)) bad.push(`${card.id} ncaa ${href}`);
         if (/stlouisfed\.org/i.test(href)) bad.push(`${card.id} fred ${href}`);
+        if (/^https:\/\/api\.weather\.gov\//.test(href)) bad.push(`${card.id} nws-api ${href}`);
         if (/(^|\.)(foxsports|si)\.com$/.test(hostOf(href))) bad.push(`${card.id} si/fox ${href}`);
       }
       if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_CREDIT), card.id);
