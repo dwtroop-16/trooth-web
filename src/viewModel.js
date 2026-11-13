@@ -22,6 +22,7 @@ import {
 } from "./rankingContract.js";
 import { boardContextLine, boardHeading, boardSubhead, eventCatalog, formatAsOf } from "./boardFilter.js";
 import { isXRenderable, isXSourced, removalNote, xSourceView } from "./xSource.js";
+import { displayedSubjectLabel } from "./subjectLabel.js";
 import xRemoved from "./generated/xRemoved.json" with { type: "json" };
 
 const NFL_TEAM_LABELS = teamLabels.nfl || {};
@@ -432,7 +433,7 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     unit: forecast.claim.unit,
     band: forecast.claim.band,
     subjectId: forecast.subject?.id || "",
-    subjectLabel: forecast.subject?.label || "",
+    subjectLabel: displayedSubjectLabel(forecast.subject, SUBJECTS),
     sportLabel: division || "",
     teamLabels,
     accounts: speaker?.accounts || [],
