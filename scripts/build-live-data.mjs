@@ -250,9 +250,11 @@ function mapActual(row, fileRel = "") {
       // Legal 05b Clarification 2026-10-02: aged-out KNYC observations keep the endpoint link
       // and carry the stored timestamped URL (plain text, never linked) plus a retention note.
       ...retentionFields(row.source),
+      ...(ncei && row.source?.source_id ? { source_id: row.source.source_id } : {}),
     },
     status: row.status,
     ...(ncei ? { accessed: nceiAccessed(row).value || null, revisable: row.revisable === true || row.revisable === "true" } : {}),
+    ...(ncei && row.note ? { note: row.note } : {}),
   };
 }
 

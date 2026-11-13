@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { renderPublicClaimCard } from "./claimCard.js";
-import { NCEI_CREDIT_BASE, NCEI_REVISION_NOTE, nceiAccessed, nceiActualCredit } from "./nceiActual.js";
+import { NCEI_CREDIT_BASE, NCEI_REVISION_NOTE, isNceiActual, nceiAccessed, nceiActualCredit, nceiRevisionNote } from "./nceiActual.js";
 import { actualFilesToRead } from "./nwsCli.js";
 import { toPublicClaimCard } from "./viewModel.js";
 
@@ -58,6 +58,22 @@ test("the citation date reads source.accessed_at in Eastern Time, then the older
   const fallback = { retrieved: "2026-11-02", source: { source_id: "ncei-ghcn-daily-summaries" } };
   assert.equal(nceiAccessed(fallback).field, "retrieved");
   assert.match(nceiActualCredit("", fallback), /accessed Nov 2, 2026$/);
+});
+
+test("a mapped NCEI actual is recognized from source_id and shows its note", () => {
+  const mapped = {
+    revisable: true,
+    note: "Station USW00094728 may still be revised.",
+    accessed: "2026-11-13T15:36:06Z",
+    source: {
+      name: CREDIT,
+      url: API,
+      source_id: "ncei-ghcn-daily-summaries",
+    },
+  };
+  assert.equal(isNceiActual("", mapped), true);
+  assert.equal(nceiRevisionNote(mapped), mapped.note);
+  assert.equal(nceiActualCredit("", mapped), CREDIT);
 });
 
 test("an ncei.noaa.gov URL alone is not an NCEI actual", () => {

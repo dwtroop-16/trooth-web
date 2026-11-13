@@ -13,6 +13,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
 import { toPublicClaimCard } from "./viewModel.js";
 import { renderPublicClaimCard, actualSourceParts } from "./claimCard.js";
+import { isCliCredit } from "./nwsCli.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const LIST_ENDPOINT = /^https:\/\/api\.weather\.gov\/stations\/KNYC\/observations\/?$/;
@@ -21,16 +22,28 @@ const TIMESTAMPED =
 
 const scoreBy = Object.fromEntries(SCORES.map((s) => [s.forecast_id, s]));
 const actualByKey = Object.fromEntries(ACTUALS.map((a) => [a.match_key, a]));
+const actualById = Object.fromEntries(ACTUALS.map((a) => [a.id, a]));
 const speakerBy = Object.fromEntries(SPEAKERS.map((s) => [s.id, s]));
+const OBSERVATION = /^https:\/\/api\.weather\.gov\/stations\/KNYC\/observations/;
+const CLI_PRODUCT = /^https:\/\/api\.weather\.gov\/products\//;
 
-const weatherGraded = FORECASTS.filter((f) => f.domain === "weather")
-  .map((f) => ({
-    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key]),
-    score: scoreBy[f.id],
-    actual: actualByKey[f.match_key],
-  }))
+const weatherRows = FORECASTS.filter((f) => f.domain === "weather").map((f) => {
+  const score = scoreBy[f.id];
+  const actual = actualById[score?.actual_id] ?? actualByKey[f.match_key];
+  return {
+    card: toPublicClaimCard(f, speakerBy[f.speaker_id], score, actual),
+    score,
+    actual,
+  };
+});
+
+const weatherGraded = weatherRows
   .filter(({ card }) => card.status === "hit" || card.status === "miss")
-  .filter(({ card }) => /^https:\/\/api\.weather\.gov\//.test(card.actualSourceUrl));
+  .filter(({ card }) => OBSERVATION.test(card.actualSourceUrl));
+
+const cliGraded = weatherRows
+  .filter(({ card }) => card.status === "hit" || card.status === "miss")
+  .filter(({ card }) => CLI_PRODUCT.test(card.actualSourceUrl));
 
 const retained = weatherGraded.filter(({ actual }) => actual.source.retention_note);
 const current = weatherGraded.filter(({ actual }) => !actual.source.retention_note);
@@ -118,4 +131,18 @@ test("ClaimCard renders the retention note as plain text and never links observa
     assert.ok(!html2.includes("data-actual-retention"));
   }
   assert.ok(renderPublicClaimCard(card).actualSourceParts.length >= 3);
+});
+
+test("a CLI product card credits the Daily Climate Report and does not link the API", () => {
+  const synthetic = {
+    actualSourceName: "National Weather Service, Daily Climate Report (CLI), Central Park",
+    actualSourceUrl: "https://api.weather.gov/products/00000000-0000-4000-8000-000000000001",
+  };
+  assert.equal(isCliCredit(synthetic.actualSourceName), true);
+  assert.equal(actualSourceParts(synthetic).some((part) => part.kind === "link"), false);
+  for (const { card, score, actual } of cliGraded) {
+    assert.equal(actual.id, score.actual_id, card.id);
+    assert.equal(isCliCredit(card.actualSourceName), true, card.id);
+    assert.equal(actualSourceParts(card).some((part) => part.kind === "link"), false, card.id);
+  }
 });
