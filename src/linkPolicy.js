@@ -16,7 +16,9 @@
 //     fred.stlouisfed.org (Architect 2026-10-02): "FRED (<full URL> ; not linked)", never an href.
 //
 //
-// Every other host (NWS, ...) is returned unchanged.
+// api.weather.gov is the JSON API, not a page for readers (CB-008, owner 2026-11-13).
+// A card shows the source name as plain text and never an href. www.weather.gov
+// pages are unchanged.
 
 export const BLOCKED_LINK_DOMAINS = {
   "marketscreener.com": { credit: "dpa-AFX Analyser via MarketScreener (not linked)" },
@@ -106,11 +108,27 @@ export function plainTextRuleFor(url) {
   return ruleFor(PLAIN_TEXT_LINK_DOMAINS, hostOf(url));
 }
 
+/** The NWS JSON API host. Not a reader page. */
+export function isWeatherApiUrl(url) {
+  return hostOf(url) === "api.weather.gov";
+}
+
+/**
+ * When the only source URL is the JSON API, the reader sees the source name
+ * and no link. Returns null for every other host.
+ */
+export function weatherApiSourceParts(url, name) {
+  if (!isWeatherApiUrl(url)) return null;
+  const text = String(name || "").trim() || "National Weather Service";
+  return [{ kind: "text", role: "plain_name", text }];
+}
+
 /** True when an <a href> to this URL is allowed by the link rules. */
 export function isAllowedHref(url) {
   if (blockedRuleFor(url)) return false;
   if (plainTextRuleFor(url)) return false;
   if (citeOnlyRuleFor(url)) return false;
+  if (isWeatherApiUrl(url)) return false;
   const home = homeOnlyRuleFor(url);
   if (home) return String(url).trim() === home.home;
   return true;
@@ -121,6 +139,8 @@ export function isAllowedHref(url) {
  * `text` is the link text to use when the URL is not subject to a rule.
  */
 export function sourceLinkParts(url, text, cite = {}) {
+  const weatherApi = weatherApiSourceParts(url, text);
+  if (weatherApi) return weatherApi;
   const citeRule = citeOnlyRuleFor(url);
   if (citeRule) return [{ kind: "text", role: "cite", text: citeText(citeRule.name, cite.title, cite.date) }];
   const blocked = blockedRuleFor(url);
