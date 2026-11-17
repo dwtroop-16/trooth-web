@@ -113,6 +113,12 @@ export function isWeatherApiUrl(url) {
   return hostOf(url) === "api.weather.gov";
 }
 
+/** NOAA NCEI data API. Not a reader page and not a place for a logo. */
+export function isNceiApiUrl(url) {
+  const host = hostOf(url);
+  return host === "ncei.noaa.gov" || host.endsWith(".ncei.noaa.gov");
+}
+
 /**
  * When the only source URL is the JSON API, the reader sees the source name
  * and no link. Returns null for every other host.
@@ -123,12 +129,19 @@ export function weatherApiSourceParts(url, name) {
   return [{ kind: "text", role: "plain_name", text }];
 }
 
+export function nceiApiSourceParts(url, name) {
+  if (!isNceiApiUrl(url)) return null;
+  const text = String(name || "").trim() || "NOAA National Centers for Environmental Information";
+  return [{ kind: "text", role: "plain_name", text }];
+}
+
 /** True when an <a href> to this URL is allowed by the link rules. */
 export function isAllowedHref(url) {
   if (blockedRuleFor(url)) return false;
   if (plainTextRuleFor(url)) return false;
   if (citeOnlyRuleFor(url)) return false;
   if (isWeatherApiUrl(url)) return false;
+  if (isNceiApiUrl(url)) return false;
   const home = homeOnlyRuleFor(url);
   if (home) return String(url).trim() === home.home;
   return true;
@@ -141,6 +154,8 @@ export function isAllowedHref(url) {
 export function sourceLinkParts(url, text, cite = {}) {
   const weatherApi = weatherApiSourceParts(url, text);
   if (weatherApi) return weatherApi;
+  const nceiApi = nceiApiSourceParts(url, text);
+  if (nceiApi) return nceiApi;
   const citeRule = citeOnlyRuleFor(url);
   if (citeRule) return [{ kind: "text", role: "cite", text: citeText(citeRule.name, cite.title, cite.date) }];
   const blocked = blockedRuleFor(url);

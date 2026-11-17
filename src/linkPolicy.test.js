@@ -100,6 +100,15 @@ test("linkPolicy: api.weather.gov JSON is the source name as plain text, never a
   assert.equal(isAllowedHref("https://www.weather.gov/okx/"), true);
 });
 
+test("linkPolicy: ncei.noaa.gov API is plain text, never an href", () => {
+  const url = "https://www.ncei.noaa.gov/access/services/data/v1?dataset=daily-summaries";
+  const credit = "GHCN-Daily v3, USW00094728 TMAX/TMIN, NOAA National Centers for Environmental Information, doi:10.7289/V5D21VHZ, accessed Nov 13, 2026";
+  assert.equal(isAllowedHref(url), false);
+  assert.equal(isAllowedHref("https://ncei.noaa.gov/cdo-web/api/v2/data"), false);
+  assert.deepEqual(sourceLinkParts(url, credit), [{ kind: "text", role: "plain_name", text: credit }]);
+  assert.equal(JSON.stringify(sourceLinkParts(url, credit)).includes("noaa.gov"), false);
+});
+
 test("every card's link parts obey the rules (view-model scan of all cards)", () => {
   assert.equal(cards.length, FORECASTS.length);
   let msConverted = 0;
@@ -146,6 +155,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         if (/ncaa\.com/i.test(href)) bad.push(`${card.id} ncaa ${href}`);
         if (/stlouisfed\.org/i.test(href)) bad.push(`${card.id} fred ${href}`);
         if (/^https:\/\/api\.weather\.gov\//.test(href)) bad.push(`${card.id} nws-api ${href}`);
+        if (/ncei\.noaa\.gov/i.test(href)) bad.push(`${card.id} ncei ${href}`);
         if (/(^|\.)(foxsports|si)\.com$/.test(hostOf(href))) bad.push(`${card.id} si/fox ${href}`);
       }
       if (isMs(card.sourceUrl)) assert.ok(html.includes(MS_CREDIT), card.id);

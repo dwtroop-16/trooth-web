@@ -62,15 +62,15 @@ export function actualFilesToRead(listed, { cliNames = [], existing }) {
   const extras = [];
   for (const name of cliNames) {
     const base = String(name).split("/").pop();
-    if (/^nws-cli-.*\.jsonl$/.test(base)) extras.push(String(name).includes("/") ? String(name) : `data/actuals/${base}`);
+    if (/^nws-(?:cli|ncei)-.*\.jsonl$/.test(base)) extras.push(String(name).includes("/") ? String(name) : `data/actuals/${base}`);
   }
   const seen = new Set();
   const out = [];
-  for (const rel of [...listed, ...CLI_ACTUAL_FILES, ...extras]) {
+  for (const rel of [...listed, ...CLI_ACTUAL_FILES, "data/actuals/nws-ncei-ghcnd-nyc.jsonl", ...extras]) {
     if (seen.has(rel)) continue;
     seen.add(rel);
     if (typeof existing === "function" && !existing(rel)) {
-      if (/\/nws-cli-.*\.jsonl$/.test(rel)) continue;
+      if (/\/nws-(?:cli|ncei)-.*\.jsonl$/.test(rel)) continue;
     }
     out.push(rel);
   }
