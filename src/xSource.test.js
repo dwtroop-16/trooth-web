@@ -4,14 +4,15 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { CATCOLORS } from "./data.js";
-import { buildVals } from "./viewModel.js";
+import { ACTUALS, CATCOLORS, FORECASTS, SCORES, SPEAKERS } from "./data.js";
+import { buildVals, toPublicClaimCard } from "./viewModel.js";
 import {
   X_AFFILIATION,
   countRemovalStubs,
   isXRenderable,
   isXSourced,
   removalNote,
+  xFieldsFromIngest,
   xSourceView,
   xStatusHref,
 } from "./xSource.js";
@@ -225,4 +226,77 @@ test("method always states the affiliation; the removal note appears only when N
   assert.equal(logEmpty.includes("X-sourced records removed"), false);
   const logNote = await render("components/Changelog.jsx", { xRemovedNote: "4 X-sourced records removed" });
   assert.match(logNote, /4 X-sourced records removed/);
+});
+
+test("xFieldsFromIngest copies only the schema fields and a withheld post is not renderable", () => {
+  const row = {
+    published_at: "2026-11-11T21:15:00Z",
+    source: {
+      type: "x",
+      account: "EvvRathe",
+      title: "verbatim post text",
+      media: [{ url: "https://pbs.twimg.com/media/x.jpg" }],
+      embed: "<blockquote>embed</blockquote>",
+      x_status: "available",
+      x_post_id: "2120626370674127122",
+      x_handle_current: "@EvvRathe",
+      x_last_rehydrated_at: "2026-11-17T20:44:51Z",
+      x_withheld: true,
+    },
+  };
+  const fields = xFieldsFromIngest(row);
+  assert.deepEqual(fields, {
+    x_status: "available",
+    x_status_id: "2120626370674127122",
+    x_handle: "EvvRathe",
+    x_last_rehydrated_at: "2026-11-17T20:44:51Z",
+    x_posted_at: "2026-11-11T21:15:00Z",
+    x_withheld: true,
+  });
+  assert.equal(isXRenderable({ ...row, ...fields }), false);
+  assert.equal(xFieldsFromIngest({ source: { type: "x", account: "ada" } }).x_handle, "ada");
+});
+
+const EVV = ["fct_01M781MXP380V43QQ18KQG3JNR", "fct_01M781MXP35EQWR5GKXT65X26N"];
+
+test("every live type-x forecast is an X card, including both EvvRathe rows", async () => {
+  const xs = FORECASTS.filter((f) => f.source?.type === "x");
+  assert.deepEqual(xs.map((f) => f.id).sort(), [...EVV].sort());
+  const byScore = new Map(SCORES.map((s) => [s.forecast_id, s]));
+  const byActual = new Map(ACTUALS.map((a) => [a.id, a]));
+  const bySpeaker = new Map(SPEAKERS.map((s) => [s.id, s]));
+  for (const f of xs) {
+    assert.equal(isXSourced(f), true, f.id);
+    assert.equal(isXRenderable(f), true, f.id);
+    const score = byScore.get(f.id);
+    const card = toPublicClaimCard(f, bySpeaker.get(f.speaker_id), score, byActual.get(score?.actual_id));
+    assert.equal(card.xSource.label, "Source: @EvvRathe on X");
+    assert.match(card.xSource.href, /^https:\/\/x\.com\/EvvRathe\/status\/\d+$/);
+    assert.equal(card.speakerOrg, null);
+  }
+  const { transformSync } = await import("esbuild");
+  const here = dirname(fileURLToPath(import.meta.url));
+  const src = readFileSync(join(here, "components/ClaimCard.jsx"), "utf8")
+    .replace('"../claimCard.js"', JSON.stringify(pathToFileURL(join(here, "claimCard.js")).href))
+    .replace('"../helpers.js"', JSON.stringify(pathToFileURL(join(here, "helpers.js")).href))
+    .replace('"../xSource.js"', JSON.stringify(pathToFileURL(join(here, "xSource.js")).href))
+    .replace('"../analytics.js"', JSON.stringify("data:text/javascript,export function trackSourceLinkClicked(){}"))
+    .replace('"./Hover.jsx"', JSON.stringify("data:text/javascript,export default function Hover(p){return null}"));
+  const { code } = transformSync(src, { loader: "jsx", format: "esm", jsx: "automatic" });
+  const file = join(mkdtempSync(join(tmpdir(), "xcard-")), "ClaimCard.mjs");
+  writeFileSync(file, code.replace(/from "react\/jsx-runtime"/g, `from ${JSON.stringify(pathToFileURL(join(here, "../node_modules/react/jsx-runtime.js")).href)}`));
+  const ClaimCard = (await import(pathToFileURL(file).href)).default;
+  const React = (await import("react")).default;
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  for (const f of xs) {
+    const score = byScore.get(f.id);
+    const card = toPublicClaimCard(f, bySpeaker.get(f.speaker_id), score, byActual.get(score?.actual_id));
+    const html = renderToStaticMarkup(React.createElement(ClaimCard, { card }));
+    assert.match(html, /Our reading:/);
+    assert.match(html, /Source: @EvvRathe on X/);
+    assert.match(html, new RegExp(`https://x.com/EvvRathe/status/${f.x_status_id}`));
+    assert.equal(html.includes(">x.com<"), false);
+    assert.match(html, /Trooth is not affiliated with X\./);
+    assert.equal(html.includes("null"), false);
+  }
 });
