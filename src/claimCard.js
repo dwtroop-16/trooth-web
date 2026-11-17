@@ -1,4 +1,4 @@
-import { sourceLinkParts, citeOnlyRuleFor, isNceiApiUrl } from "./linkPolicy.js";
+import { sourceLinkParts, citeOnlyRuleFor, isNceiApiUrl, nflCiteText } from "./linkPolicy.js";
 import { horizonDisplay, isKickoffPending } from "./kickoffStatus.js";
 
 // Public claim card: the eight required fields, in order.
@@ -90,13 +90,13 @@ export function claimSourceParts(card) {
 export function actualSourceParts(card) {
   const host = hostOf(card.actualSourceUrl);
   const isNws = /(^|\.)weather\.gov$/.test(host);
-  // Legal-Ops link rules (linkPolicy.js): blocked domains render as plain-text credit;
-  // home-only domains (nfl.com) link the home page and show the specific URL as plain text.
+  // Legal-Ops link rules (linkPolicy.js): blocked domains render as plain-text credit.
   // Architect pagemap v1.2.1 item 7: an actual source on a cite-only host shows the outlet name only
-  // (no URL text, no link, no title/date).
+  // (no URL text, no link, no title/date), except nfl.com (Legal 05cg): 'NFL.com, <title>' or
+  // 'NFL.com, <date>'.
   const citeRule = citeOnlyRuleFor(card.actualSourceUrl);
   const parts = citeRule
-    ? [{ kind: "text", role: "cite", text: citeRule.name }]
+    ? [{ kind: "text", role: "cite", text: citeRule.domain === "nfl.com" ? nflCiteText(card.actualSourceTitle, card.actualSourceDate) : citeRule.name }]
     : sourceLinkParts(card.actualSourceUrl, (isNws || isNceiApiUrl(card.actualSourceUrl) ? card.actualSourceName : host) || card.actualSourceName);
   if (card.actualRetentionNote) {
     if (card.actualObservationRef) parts.push({ kind: "text", role: "observation_ref", text: card.actualObservationRef });

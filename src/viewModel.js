@@ -426,6 +426,8 @@ export function toPublicClaimCard(forecast, speaker, score, actual) {
     comparisonMethod: score?.comparison_method ?? null,
     actualSourceName,
     actualSourceUrl,
+    actualSourceTitle: shown?.source?.title ?? null,
+    actualSourceDate: shown?.source?.published_at ?? shown?.source?.date ?? shown?.observed_at ?? null,
     actualObservationRef: retained ? retained.source.observation_ref ?? null : null,
     actualObservedAt: retained ? retained.observed_at ?? null : null,
     actualRetentionNote: retained ? retained.source.retention_note : null,
