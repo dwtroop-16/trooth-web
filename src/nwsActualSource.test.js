@@ -30,7 +30,24 @@ const weatherGraded = FORECASTS.filter((f) => f.domain === "weather")
     actual: actualByKey[f.match_key],
   }))
   .filter(({ card }) => card.status === "hit" || card.status === "miss")
-  .filter(({ card }) => /^https:\/\/api\.weather\.gov\//.test(card.actualSourceUrl));
+  .filter(({ card }) => /^https:\/\/api\.weather\.gov\//.test(card.actualSourceUrl))
+  // CLI (Daily Climate Report) actuals are credited by their own name (PR #147); covered below.
+  .filter(({ actual }) => !/Daily Climate Report \(CLI\)/.test(actual.source.name));
+
+const cliGraded = FORECASTS.filter((f) => f.domain === "weather")
+  .map((f) => ({
+    card: toPublicClaimCard(f, speakerBy[f.speaker_id], scoreBy[f.id], actualByKey[f.match_key]),
+    actual: actualByKey[f.match_key],
+  }))
+  .filter(({ card, actual }) => (card.status === "hit" || card.status === "miss") && /Daily Climate Report \(CLI\)/.test(actual?.source?.name || ""));
+
+test("graded CLI cards credit the Daily Climate Report by name with no link", () => {
+  assert.ok(cliGraded.length > 0);
+  for (const { card, actual } of cliGraded) {
+    assert.equal(card.actualSourceName, actual.source.name, card.id);
+    assert.equal(actualSourceParts(card).some((p) => p.kind === "link"), false, card.id);
+  }
+});
 
 const retained = weatherGraded.filter(({ actual }) => actual.source.retention_note);
 const current = weatherGraded.filter(({ actual }) => !actual.source.retention_note);
