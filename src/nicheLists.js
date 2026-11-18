@@ -1,6 +1,7 @@
 // Niche lists (insights-niches-v1.md v1.0.0, decision 33).
 // Filtered re-tallies of published score statuses. No new grades.
 
+import { pctFromCounts } from "./helpers.js";
 import teamLabels from "./generated/teamLabels.json" with { type: "json" };
 import speakerKinds from "./generated/speakerKinds.json" with { type: "json" };
 import { FORECASTS, SCORES, SPEAKERS, GENERATED_AT } from "./data.js";
@@ -329,6 +330,11 @@ export function shownListsForDomain(domainLabel, result = buildNicheLists()) {
   const domain = String(domainLabel || "").toLowerCase();
   if (!domain || domain === "all") return [];
   return result.shown.filter((list) => list.domain === domain);
+}
+
+export function nicheRateText(row) {
+  if (row?.rank == null) return "Not ranked yet";
+  return `${pctFromCounts(row.n_hit, row.n_resolved)} · ${row.n_hit} of ${row.n_resolved} resolved`;
 }
 
 export function recordHeading(record) {

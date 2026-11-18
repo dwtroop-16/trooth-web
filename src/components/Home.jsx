@@ -9,13 +9,13 @@ import GaugeMark from "./GaugeMark.jsx";
 import { visibleBoardRank, unresolvedLabel } from "../rankingContract.js";
 import BoardPicker from "./BoardPicker.jsx";
 
-function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain, rankMin = 3 }) {
+function Scoreboard({ title, resultCount, rankNote, rows, empty, emptyLabel, showDomain, rankMin = 3, showTitle = true }) {
   const rowClass = showDomain ? "trooth-board-row" : "trooth-board-row trooth-board-row--scoped";
   const unrankedCount = rows.filter((x) => visibleBoardRank(x) == null).length;
   return (
     <div>
       <div style={css("display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;")}>
-        <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>{title}</h2>
+        {showTitle ? <h2 style={css("font-family:Newsreader,serif;font-size:22px;font-weight:600;margin:0;color:var(--ink);letter-spacing:-0.01em;")}>{title}</h2> : null}
         {rankNote ? (
           <span style={css("font-size:12.5px;color:var(--muted);")}>{resultCount} · {rankNote}</span>
         ) : (
@@ -270,6 +270,7 @@ export default function Home({ vals, openClaim }) {
       ) : (
       <Scoreboard
         title={vals.boardTitle}
+        showTitle={!vals.boardFilter?.board}
         resultCount={vals.resultCount}
         rankNote={vals.rankNote}
         rankMin={vals.rankMin}

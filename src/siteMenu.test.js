@@ -4,9 +4,19 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parsePath } from "./router.js";
-import { buildSiteMenu, flatMenuLinks, homeTabFromSearch, missingMenuRoutes } from "./siteMenu.js";
+import { buildSiteMenu, flatMenuLinks, homeTabFromSearch, missingMenuRoutes, nextMenuIndex } from "./siteMenu.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+
+test("arrow keys, Home, and End move through an open menu", () => {
+  assert.equal(nextMenuIndex(4, -1, "ArrowDown"), 0);
+  assert.equal(nextMenuIndex(4, 0, "ArrowDown"), 1);
+  assert.equal(nextMenuIndex(4, 3, "ArrowDown"), 0);
+  assert.equal(nextMenuIndex(4, 0, "ArrowUp"), 3);
+  assert.equal(nextMenuIndex(4, 2, "ArrowUp"), 1);
+  assert.equal(nextMenuIndex(4, 2, "Home"), 0);
+  assert.equal(nextMenuIndex(4, 2, "End"), 3);
+});
 
 test("site menu order is wordmark, scoreboards, claims, how we grade, corrections", () => {
   const menu = buildSiteMenu({ view: "home", domain: "All" });
@@ -62,8 +72,36 @@ test("aria-current marks the open page and the menu renders in order", async () 
     `import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import Header from ${JSON.stringify(join(HERE, "components/Header.jsx"))};
+import Home from ${JSON.stringify(join(HERE, "components/Home.jsx"))};
 const vals = { q: "", siteNav: { view: "method" }, searchSuggestions: [], onSearch() {}, followLink() {} };
 export const html = renderToStaticMarkup(React.createElement(Header, { vals }));
+const homeVals = {
+  q: "",
+  boardShowDomain: false,
+  recentResolved: [],
+  featuredClaim: null,
+  categories: [{ label: "Sports", active: true, onClick() {} }],
+  boardSections: null,
+  boardFilter: { board: "score", domain: "Sports" },
+  boardHeading: "Best graded record: Sports score board",
+  boardSubhead: "Who has called the Sports score board best so far",
+  boardTitle: "Best graded record: Sports score board",
+  resultCount: "1",
+  rankNote: "ranked at 3 resolved",
+  rankMin: 3,
+  rows: [],
+  noResults: true,
+  showModelsLink: false,
+  pickRows: [],
+  matchingClaims: [],
+  eventChoices: [],
+  activeCat: "All",
+  goClaims() {},
+  goModels() {},
+  openBoard() {},
+  openSubject() {},
+};
+export const homeHtml = renderToStaticMarkup(React.createElement(Home, { vals: homeVals, openClaim() {} }));
 `,
   );
   const outfile = join(dir, "out.mjs");
@@ -80,8 +118,10 @@ export const html = renderToStaticMarkup(React.createElement(Header, { vals }));
   });
   let html = "";
   try {
-  const { html: rendered } = await import(outfile);
-  html = rendered;
+  const rendered = await import(outfile);
+  html = rendered.html;
+  const headings = rendered.homeHtml.match(/<h2[^>]*>Best graded record: Sports score board<\/h2>/g) || [];
+  assert.equal(headings.length, 1);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
