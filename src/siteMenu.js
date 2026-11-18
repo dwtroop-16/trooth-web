@@ -102,6 +102,21 @@ export function flatMenuLinks(menu = buildSiteMenu()) {
   return links;
 }
 
+export function nextMenuIndex(length, index, key) {
+  if (length <= 0) return 0;
+  if (key === "Home") return 0;
+  if (key === "End") return length - 1;
+  if (key === "ArrowDown") {
+    if (index < 0 || index >= length - 1) return 0;
+    return index + 1;
+  }
+  if (key === "ArrowUp") {
+    if (index <= 0) return length - 1;
+    return index - 1;
+  }
+  return index < 0 ? 0 : index;
+}
+
 export function missingMenuRoutes(menu = buildSiteMenu()) {
   const missing = [];
   for (const link of flatMenuLinks(menu)) {

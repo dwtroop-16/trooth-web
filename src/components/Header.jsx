@@ -2,14 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import GaugeMark from "./GaugeMark.jsx";
-import { buildSiteMenu } from "../siteMenu.js";
+import { buildSiteMenu, nextMenuIndex } from "../siteMenu.js";
 
 export default function Header({ vals }) {
   const [open, setOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scoreOpen, setScoreOpen] = useState(false);
+  const [nicheOpen, setNicheOpen] = useState(false);
   const wrapRef = useRef(null);
   const inputRef = useRef(null);
+  const scoreButtonRef = useRef(null);
+  const panelRef = useRef(null);
+  const pendingFocus = useRef(null);
   const q = vals.q || "";
   const suggestions = vals.searchSuggestions || [];
   const showDropdown = open && q.trim() && suggestions.length > 0;
@@ -39,7 +43,45 @@ export default function Header({ vals }) {
   };
 
   const menu = buildSiteMenu(vals.siteNav || {});
-  const showScores = menuOpen || scoreOpen;
+  const scoreItems = menu.find((item) => item.id === "scoreboards").menu;
+  const nicheStart = scoreItems.findIndex((item) => item.heading || item.niche);
+  const scoreLinks = nicheStart < 0 ? scoreItems : scoreItems.slice(0, nicheStart);
+  const nicheLinks = scoreItems.filter((item) => item.niche);
+  const visibleLinks = () => [...(panelRef.current?.querySelectorAll("a[href]") || [])].filter((el) => el.getClientRects().length > 0);
+  useEffect(() => {
+    if (!scoreOpen || pendingFocus.current == null) return;
+    const where = pendingFocus.current;
+    pendingFocus.current = null;
+    const links = visibleLinks();
+    if (!links.length) return;
+    links[where === "end" ? links.length - 1 : 0].focus();
+  }, [scoreOpen, nicheOpen]);
+  const closeScores = () => {
+    setScoreOpen(false);
+    setNicheOpen(false);
+    scoreButtonRef.current?.focus();
+  };
+  const onScoreKeyDown = (event) => {
+    if (!["ArrowDown", "ArrowUp", "Home", "End", "Escape"].includes(event.key)) return;
+    if (event.key === "Escape") {
+      if (!scoreOpen) return;
+      event.preventDefault();
+      event.stopPropagation();
+      closeScores();
+      return;
+    }
+    event.preventDefault();
+    const fromButton = event.target === scoreButtonRef.current;
+    if (!scoreOpen) {
+      pendingFocus.current = event.key === "End" || event.key === "ArrowUp" ? "end" : "start";
+      setScoreOpen(true);
+      return;
+    }
+    const links = visibleLinks();
+    const current = fromButton ? -1 : links.indexOf(document.activeElement);
+    const next = nextMenuIndex(links.length, current, event.key);
+    links[next]?.focus();
+  };
   const follow = (event, href) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
     event.preventDefault();
@@ -54,7 +96,7 @@ export default function Header({ vals }) {
       aria-current={item.current ? "page" : undefined}
       onClick={(event) => follow(event, item.href)}
       style={css(
-        "display:inline-block;padding:6px 0;font-size:13px;white-space:nowrap;text-decoration:" +
+        "display:block;padding:6px 0;font-size:13px;text-decoration:" +
           (item.current ? "underline" : "none") +
           ";font-weight:" +
           (item.current ? "700" : "500") +
@@ -81,8 +123,13 @@ export default function Header({ vals }) {
           aria-expanded={menuOpen}
           aria-controls="site-menu"
           onClick={() => {
-            setMenuOpen((value) => !value);
-            setScoreOpen(true);
+            setMenuOpen((value) => {
+              if (value) {
+                setScoreOpen(false);
+                setNicheOpen(false);
+              }
+              return !value;
+            });
           }}
           style={css("margin-left:auto;background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;")}
         >
@@ -90,31 +137,37 @@ export default function Header({ vals }) {
         </button>
 
         <nav id="site-menu" className={"trooth-site-nav" + (menuOpen ? " trooth-site-nav--open" : "")} aria-label="Site">
-          <div className="trooth-scoreboards" style={css("position:relative;")}>
+          <div className="trooth-scoreboards" style={css("position:relative;")} onKeyDown={onScoreKeyDown}>
             <button
+              ref={scoreButtonRef}
               type="button"
-              aria-expanded={showScores}
+              aria-expanded={scoreOpen}
               aria-controls="scoreboards-menu"
               onClick={() => setScoreOpen((value) => !value)}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") setScoreOpen(false);
-                if (event.key === "ArrowDown") {
-                  event.preventDefault();
-                  setScoreOpen(true);
-                }
-              }}
               style={css("background:none;border:none;cursor:pointer;padding:6px 0;font-size:13px;font-weight:600;color:var(--ink);")}
             >
               Scoreboards
             </button>
-            <div id="scoreboards-menu" className="trooth-scoreboards-panel" hidden={!showScores}>
-              {menu.find((item) => item.id === "scoreboards").menu.map((item) =>
-                item.heading ? (
-                  <div key={item.id} style={css("padding:10px 0 4px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);")}>{item.label}</div>
-                ) : (
-                  itemLink(item)
-                )
-              )}
+            <div id="scoreboards-menu" ref={panelRef} className="trooth-scoreboards-panel" hidden={!scoreOpen}>
+              {scoreLinks.map(itemLink)}
+              {nicheLinks.length ? (
+                <>
+                  <div className="trooth-niche-heading" style={css("padding:10px 0 4px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);")}>Best by niche</div>
+                  <button
+                    type="button"
+                    className="trooth-niche-toggle"
+                    aria-expanded={nicheOpen}
+                    aria-controls="niche-menu"
+                    onClick={() => setNicheOpen((value) => !value)}
+                    style={css("background:none;border:none;cursor:pointer;padding:8px 0;font-size:13px;font-weight:600;color:var(--ink);text-align:left;")}
+                  >
+                    Best by niche
+                  </button>
+                  <div id="niche-menu" className={"trooth-niche-links" + (nicheOpen ? " trooth-niche-links--open" : "")}>
+                    {nicheLinks.map(itemLink)}
+                  </div>
+                </>
+              ) : null}
             </div>
           </div>
           {menu.filter((item) => item.href && item.id !== "home").map(itemLink)}

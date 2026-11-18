@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { css } from "../helpers.js";
 import { formatAsOf } from "../boardFilter.js";
-import { buildNicheLists, nicheMethodology, recordHeading } from "../nicheLists.js";
+import { buildNicheLists, nicheMethodology, nicheRateText, recordHeading } from "../nicheLists.js";
 
 function prettyDay(ymd) {
   if (!ymd) return "";
@@ -81,7 +81,7 @@ function ListTable({ list, openSpeaker }) {
                     {row.early ? <span style={css("margin-left:8px;color:var(--muted);font-size:12px;")}>early</span> : null}
                   </td>
                   <td style={css("padding:8px;white-space:nowrap;")}>{ranked ? row.n_resolved : `${row.n_resolved} of 3 resolved`}</td>
-                  <td style={css("padding:8px;white-space:nowrap;")}>{ranked ? `${row.n_hit} of ${row.n_resolved} resolved` : "Not ranked yet"}</td>
+                  <td style={css("padding:8px;white-space:nowrap;")}>{nicheRateText(row)}</td>
                   <td style={css("padding:8px;")}>{row.n_pending}</td>
                 </tr>
               );

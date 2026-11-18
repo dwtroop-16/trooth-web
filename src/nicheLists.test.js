@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { FORECASTS, SCORES, SPEAKERS } from "./data.js";
 import { buildSpeakerScoreboards } from "./viewModel.js";
-import { buildNicheLists, nicheIdsForForecast } from "./nicheLists.js";
+import { buildNicheLists, nicheIdsForForecast, nicheRateText } from "./nicheLists.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -139,6 +139,13 @@ test("no forecast is repeated on one list, and score and pick records stay apart
     assert.equal(ids.includes("team:nfl:cincinnati:score"), false);
   }
   assert.equal(built.lists.some((list) => list.rows.some((row) => row.kind === "model")), false);
+});
+
+test("a ranked niche row shows the hit percentage beside the sample", () => {
+  const row = built.shown.flatMap((list) => list.rows).find((item) => item.rank != null && item.n_hit === 0 && item.n_resolved > 0);
+  assert.ok(row);
+  assert.equal(nicheRateText(row), `0% · 0 of ${row.n_resolved} resolved`);
+  assert.equal(nicheRateText({ rank: null, n_hit: 1, n_resolved: 2 }), "Not ranked yet");
 });
 
 test("sports rows that match no claim type are reported and not guessed", () => {
