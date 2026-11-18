@@ -7,15 +7,16 @@ import { FORECASTS, SCORES, SPEAKERS, CATCOLORS } from "./data.js";
 import boards from "./generated/boards.json" with { type: "json" };
 import { shippedBoardSnapshotStatus } from "./rankingContract.js";
 
-// Scorer input files the min-3 snapshot was built from. Not the live scores file.
+// Board input files for the Nov 18, 2026 snapshot. Counts were recomputed from the
+// published live bundle (scorer/out was not available) with the same min-3 rule.
 const PREVIEW_INPUTS = {
-  "models_board.json": { sha256: "d64a81dc9e18ef94cf04101ad02529ec52188a92bd8df5ef421f9d1c50f7cbc0", bytes: 374 },
-  "people_board.json": { sha256: "7f519b45c2ede459b101165b4f58b9e6b368b1e7a5710751d45c3a80b0b26312", bytes: 51929 },
-  "pick_record.json": { sha256: "a43960d4bf3b7b2bd1cde5d75683f37e1549bf23e90767969edd5a664aeb52fd", bytes: 3694 },
+  "models_board.json": { sha256: "6aba93a7370e2c4e50f02600dd942e4791db93c039056a83867a71eca4a376ec", bytes: 103 },
+  "people_board.json": { sha256: "4be7393a10a0747912308677d9f33b03798628d3ada7fc327a7d59abf0655a05", bytes: 54063 },
+  "pick_record.json": { sha256: "5cd621000956b139bbb3678d02567fd95fa23c0d87bebc8d09d1890d4744c644", bytes: 3476 },
 };
 // Shipped people/pick/models rows inside boards.json. An edit to those rows fails here
 // even if provenance is left stale. New scores do not change it.
-const BOARD_BODY_SHA256 = "7d033d419464ffd17ff55530d6711afcf7467646cf2248496d9959559c367c01";
+const BOARD_BODY_SHA256 = "64c1a1171e3222506a4cfe50482e1c8b46c4cc8ddef89996613649b0bbc99020";
 
 function shippedBoardBodyHash(snapshot) {
   return createHash("sha256")
@@ -110,7 +111,7 @@ test("exact-score stats exclude winner picks; pick record counts only them", () 
   assert.equal(speakerStats(sp, [f], scores, "pick").n_hit, 1);
 });
 
-test("shipped boards are the min-3 preview, with pinned input hashes", () => {
+test("shipped boards are the Nov 18, 2026 snapshot, with pinned input hashes", () => {
   const status = shippedBoardSnapshotStatus(boards);
   assert.equal(status.ok, true);
   assert.equal(boards.rubric, "1.3.10");
@@ -119,7 +120,7 @@ test("shipped boards are the min-3 preview, with pinned input hashes", () => {
   assert.equal(boards.provenance.min_resolved, 3);
   assert.equal(boards.provenance.models_ranked, false);
   assert.equal(boards.provenance.pooling, "none");
-  assert.equal(boards.provenance.source_dir, "scorer/preview-2026-11-06-min3");
+  assert.equal(boards.provenance.source_dir, "live-bundle-2026-11-18");
   assert.equal(shippedBoardBodyHash(boards), BOARD_BODY_SHA256);
   assert.deepEqual(
     Object.fromEntries(boards.provenance.inputs.map((input) => [input.name, { sha256: input.sha256, bytes: input.bytes }])),
@@ -127,8 +128,8 @@ test("shipped boards are the min-3 preview, with pinned input hashes", () => {
   );
   const people = scorerBoardRows(boards.people_board, SPEAKERS, null, boards.min_resolved);
   const picks = scorerBoardRows(boards.pick_record, SPEAKERS, null, boards.min_resolved);
-  assert.equal(people.filter((row) => row.ranked).length, 87);
-  assert.equal(picks.filter((row) => row.ranked).length, 3);
+  assert.equal(people.filter((row) => row.ranked).length, 92);
+  assert.equal(picks.filter((row) => row.ranked).length, 9);
   assert.equal(people.some((row) => row.model || row.kindLabel === "Model"), false);
   assert.equal(scorerBoardRows(boards.models_board.exact, SPEAKERS, null, 3, { people: false }).some((row) => row.rank != null), false);
   assert.equal(scorerBoardRows(boards.models_board.pick, SPEAKERS, null, 3, { people: false }).some((row) => row.rank != null), false);
