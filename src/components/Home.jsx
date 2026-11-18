@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { css } from "../helpers.js";
+import NicheLists from "./NicheLists.jsx";
 import Hover from "./Hover.jsx";
 import ClaimCard from "./ClaimCard.jsx";
 import { attachScrollDepth, trackSearchNoResults } from "../analytics.js";
@@ -299,6 +300,9 @@ export default function Home({ vals, openClaim }) {
             showDomain={false}
           />
         </div>
+      ) : null}
+      {vals.activeCat && vals.activeCat !== "All" ? (
+        <NicheLists domain={vals.activeCat} nicheId={vals.nicheId} openSpeaker={vals.openSpeaker} openNiche={vals.openNiche} />
       ) : null}
       <div style={css("margin-top:10px;")}>
         <Hover as="button" onClick={() => vals.goClaims()} style="background:none;border:none;cursor:pointer;padding:0;font-size:13px;color:var(--muted);" hover="color:var(--forest);">Browse all claims</Hover>

@@ -4,7 +4,7 @@ import { loadData, submitSourceTip } from "./dataSource.js";
 import { hasSupabase } from "./lib/flags.js";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS, SUBJECTS } from "./data.js";
 import { parsePath, pathFor, pathForClaims, parseClaimsQuery, normalizeDomain } from "./router.js";
-import { parseBoardQuery, pathForBoard } from "./boardFilter.js";
+import { domainForNiche, parseBoardQuery, parseNicheQuery, pathForBoard } from "./boardFilter.js";
 import Header from "./components/Header.jsx";
 import Home from "./components/Home.jsx";
 import Models from "./components/Models.jsx";
@@ -36,17 +36,20 @@ function filtersFromLocation() {
       ? parseClaimsQuery(window.location.search)
       : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All", subject: "All" };
   const home = parsed.view === "home" ? parseBoardQuery(window.location.search) : { board: "", domain: "" };
-  return { parsed, filters, home };
+  const niche = parsed.view === "home" ? parseNicheQuery(window.location.search) : "";
+  return { parsed, filters, home, niche };
 }
 
 function initialFromLocation() {
-  const { parsed, filters, home } = filtersFromLocation();
+  const { parsed, filters, home, niche } = filtersFromLocation();
+  const nicheDomain = domainForNiche(niche);
   return {
     view: parsed.view,
     speakerId: parsed.speakerId || null,
     forecastId: parsed.forecastId || null,
-    board: home.board || "",
-    cat: home.board ? home.domain : (filters.domain || "All"),
+    board: home.board || (nicheDomain ? "score" : ""),
+    niche: niche || "",
+    cat: home.board ? home.domain : (nicheDomain || filters.domain || "All"),
     q: filters.q || "",
     claimStatus: filters.grade || "All",
     claimSpeaker: filters.speaker || "All",
@@ -99,14 +102,16 @@ export default function App() {
 
   useEffect(() => {
     const onPop = () => {
-      const { parsed, filters, home } = filtersFromLocation();
+      const { parsed, filters, home, niche } = filtersFromLocation();
+      const nicheDomain = domainForNiche(niche);
       setStateRaw((prev) => ({
         ...prev,
         view: parsed.view,
         speakerId: parsed.speakerId || null,
         forecastId: parsed.forecastId || null,
-        board: parsed.view === "home" ? home.board : "",
-        cat: parsed.view === "claims" ? filters.domain : parsed.view === "home" && home.board ? home.domain : prev.cat,
+        board: parsed.view === "home" ? (home.board || (nicheDomain ? "score" : "")) : "",
+        niche: parsed.view === "home" ? niche : "",
+        cat: parsed.view === "claims" ? filters.domain : parsed.view === "home" && home.board ? home.domain : parsed.view === "home" && nicheDomain ? nicheDomain : prev.cat,
         q: parsed.view === "claims" ? filters.q : prev.q,
         claimStatus: parsed.view === "claims" ? filters.grade : prev.claimStatus,
         claimSpeaker: parsed.view === "claims" ? filters.speaker : prev.claimSpeaker,
@@ -148,12 +153,15 @@ export default function App() {
     const parsed = parsePath(pathname);
     const claimsFilters = parsed.view === "claims" ? parseClaimsQuery(search ? `?${search}` : "") : null;
     const home = parsed.view === "home" ? parseBoardQuery(search ? `?${search}` : "") : null;
+    const niche = parsed.view === "home" ? parseNicheQuery(search ? `?${search}` : "") : "";
+    const nicheDomain = domainForNiche(niche);
     setState({
       view: parsed.view,
       speakerId: parsed.speakerId || null,
       forecastId: parsed.forecastId || null,
       board: home ? home.board : "",
-      ...(home?.board ? { cat: home.domain } : {}),
+      niche,
+      ...(home?.board ? { cat: home.domain } : nicheDomain ? { cat: nicheDomain, board: "score" } : {}),
       ...(claimsFilters
         ? {
             cat: claimsFilters.domain,
@@ -267,9 +275,18 @@ export default function App() {
         const board = prev.board === "pick" && cat !== "Sports" ? "score" : prev.board;
         const full = pathForBoard({ board, domain: cat });
         if (window.location.pathname + window.location.search !== full) window.history.pushState({}, "", full);
-        return { ...prev, cat: board === "pick" ? "Sports" : cat, board };
+        return { ...prev, cat: board === "pick" ? "Sports" : cat, board, niche: "" };
       }
-      return { ...prev, cat };
+      return { ...prev, cat, niche: "" };
+    });
+  };
+  const openNiche = (nicheId) => {
+    setStateRaw((prev) => {
+      const domain = domainForNiche(nicheId) || (prev.cat !== "All" ? prev.cat : "Sports");
+      const board = prev.board === "pick" && domain === "Sports" ? "pick" : "score";
+      const full = pathForBoard({ board, domain, niche: nicheId });
+      if (window.location.pathname + window.location.search !== full) window.history.pushState({}, "", full);
+      return { ...prev, niche: nicheId || "", board, cat: domain };
     });
   };
   const goClaims = (opts = {}) => {
@@ -472,6 +489,7 @@ export default function App() {
       goClaims,
       goModels,
       openBoard,
+      openNiche,
       openSubject,
       submit,
       account,
