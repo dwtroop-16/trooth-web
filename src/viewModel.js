@@ -71,6 +71,12 @@ export function claimMatchesQuery(card, q) {
 
 const DIVISION_SPORT_ORDER = ["NFL", "NCAA FBS"];
 
+/** Award subjects named in insights-niches-v1.md §2.2. The live bundle does not carry resolution.kind. */
+export function isAwardSubject(sid) {
+  const id = sid || "";
+  return id.startsWith("heisman-") || id.endsWith("-heisman") || id.endsWith("-mvp");
+}
+
 /** Map subject id → sport division label (NFL / NCAA FBS) or null. */
 export function sportDivision(sid) {
   const id = sid || "";
@@ -271,12 +277,13 @@ export function forecastBoardAttribution(forecast) {
   const division = sportDivision(sid) || domainDivisionLabel(domain);
   const teams = [];
 
-  if (division === "NFL" || division === "NCAA FBS") {
+    if (division === "NFL" || division === "NCAA FBS") {
     const game = parseGameTeams(sid);
+    // Awards (MVP, Heisman) are not team lists. A player is not a team slug we hold.
     if (game) {
       teams.push({ teamSlug: game.away, division });
       teams.push({ teamSlug: game.home, division });
-    } else if (forecast.claim?.unit === "enum") {
+    } else if (forecast.claim?.unit === "enum" && !isAwardSubject(sid)) {
       const value = forecast.claim?.value;
       if (value && ALL_TEAM_SLUGS.has(value)) {
         const teamDiv =
@@ -906,6 +913,10 @@ export function buildVals(state, actions, data) {
     pickNote: "winner picks only · ranked at " + displayRankingMin(scorerBoards) + " resolved",
     showModelsLink: cat === "Sports" || board === "pick",
     goModels: () => (typeof actions.goModels === "function" ? actions.goModels() : undefined),
+    openSpeaker,
+    openNiche: typeof actions.openNiche === "function" ? actions.openNiche : undefined,
+    nicheId: s.niche || "",
+    activeCat: cat,
     isModels: s.view === "models",
     models: buildModelsView(speakers, forecasts, scores, cards, scorerBoards, openSpeaker),
     rows: board === "pick" ? pickAll.filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : rows,

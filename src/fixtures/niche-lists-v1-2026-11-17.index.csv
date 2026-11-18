@@ -1,0 +1,369 @@
+niche_id,label,family,record,domain,display,n_ranked,n_speakers,n_hit,n_miss,n_resolved,n_pending,n_unscorable,n_void,n_forecasts,resolved_horizon_start_et,resolved_horizon_end_et,team_slug,team_label,league
+league:nfl:score,NFL — Score record,league,score,sports,shown,79,89,2,1078,1080,3,0,0,1083,2025-09-06,2026-11-16,,,
+league:nfl:pick,NFL — Pick record (who picked the winner),league,pick,sports,shown,6,7,58,23,81,0,0,0,81,2026-10-30,2026-11-03,,,
+league:ncaa-fbs:score,College football (FBS) — Score record,league,score,sports,shown,11,31,4,540,544,192,0,0,736,2025-12-07,2026-11-01,,,
+league:ncaa-fbs:pick,College football (FBS) — Pick record,league,pick,sports,shown,3,3,8,10,18,3,0,0,21,2026-11-01,2026-11-01,,,
+claim-type:nfl:game-exact-score,NFL — exact final scores,claim_type,score,sports,shown,10,12,1,795,796,3,0,0,799,2025-09-06,2026-11-16,,,
+claim-type:nfl:season-title,NFL — champions and playoff seeds,claim_type,score,sports,shown,69,78,1,215,216,0,0,0,216,2026-01-26,2026-02-09,,,
+claim-type:nfl:award,"NFL — awards (MVP, Heisman)",claim_type,score,sports,internal,0,68,0,68,68,0,0,0,68,2026-02-06,2026-02-06,,,
+claim-type:ncaa-fbs:game-exact-score,College football (FBS) — exact final scores,claim_type,score,sports,shown,4,11,1,489,490,22,0,0,512,2026-10-04,2026-11-01,,,
+claim-type:ncaa-fbs:season-title,College football (FBS) — champions and playoff seeds,claim_type,score,sports,shown,9,29,3,42,45,146,0,0,191,2025-12-07,2026-01-20,,,
+claim-type:ncaa-fbs:award,"College football (FBS) — awards (MVP, Heisman)",claim_type,score,sports,internal,0,24,0,9,9,24,0,0,33,2025-12-13,2025-12-13,,,
+team:nfl:arizona:score,Arizona Cardinals (NFL) — Score record,team,score,sports,shown,3,8,0,51,51,0,0,0,51,2025-09-08,2026-11-16,arizona,Arizona Cardinals,nfl
+team:nfl:arizona:pick,Arizona Cardinals (NFL) — Pick record,team,pick,sports,internal,0,6,0,6,6,0,0,0,6,2026-11-02,2026-11-02,arizona,Arizona Cardinals,nfl
+team:nfl:atlanta:score,Atlanta Falcons (NFL) — Score record,team,score,sports,shown,3,10,0,54,54,0,0,0,54,2025-09-08,2026-11-16,atlanta,Atlanta Falcons,nfl
+team:nfl:atlanta:pick,Atlanta Falcons (NFL) — Pick record,team,pick,sports,internal,0,5,3,2,5,0,0,0,5,2026-11-02,2026-11-02,atlanta,Atlanta Falcons,nfl
+team:nfl:baltimore:score,Baltimore Ravens (NFL) — Score record,team,score,sports,internal,2,41,0,101,101,3,0,0,104,2025-09-08,2026-11-02,baltimore,Baltimore Ravens,nfl
+team:nfl:baltimore:pick,Baltimore Ravens (NFL) — Pick record,team,pick,sports,internal,0,6,5,1,6,0,0,0,6,2026-11-02,2026-11-02,baltimore,Baltimore Ravens,nfl
+team:nfl:buffalo:score,Buffalo Bills (NFL) — Score record,team,score,sports,shown,4,38,0,98,98,0,0,0,98,2025-09-08,2026-11-16,buffalo,Buffalo Bills,nfl
+team:nfl:buffalo:pick,Buffalo Bills (NFL) — Pick record,team,pick,sports,internal,0,6,5,1,6,0,0,0,6,2026-11-02,2026-11-02,buffalo,Buffalo Bills,nfl
+team:nfl:carolina:score,Carolina Panthers (NFL) — Score record,team,score,sports,shown,3,10,0,52,52,0,0,0,52,2025-09-08,2026-11-16,carolina,Carolina Panthers,nfl
+team:nfl:carolina:pick,Carolina Panthers (NFL) — Pick record,team,pick,sports,internal,0,6,5,1,6,0,0,0,6,2026-10-30,2026-10-30,carolina,Carolina Panthers,nfl
+team:nfl:chicago:score,Chicago Bears (NFL) — Score record,team,score,sports,shown,3,10,0,51,51,0,0,0,51,2025-09-09,2026-11-09,chicago,Chicago Bears,nfl
+team:nfl:chicago:pick,Chicago Bears (NFL) — Pick record,team,pick,sports,internal,0,5,3,2,5,0,0,0,5,2026-11-03,2026-11-03,chicago,Chicago Bears,nfl
+team:nfl:cincinnati:score,Cincinnati Bengals (NFL) — Score record,team,score,sports,shown,3,8,0,47,47,0,0,0,47,2025-09-08,2026-11-16,cincinnati,Cincinnati Bengals,nfl
+team:nfl:cincinnati:pick,Cincinnati Bengals (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,cincinnati,Cincinnati Bengals,nfl
+team:nfl:cleveland:score,Cleveland Browns (NFL) — Score record,team,score,sports,shown,3,10,0,55,55,0,0,0,55,2025-09-08,2026-11-16,cleveland,Cleveland Browns,nfl
+team:nfl:cleveland:pick,Cleveland Browns (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,cleveland,Cleveland Browns,nfl
+team:nfl:dallas:score,Dallas Cowboys (NFL) — Score record,team,score,sports,shown,3,10,0,49,49,0,0,0,49,2025-09-15,2026-11-16,dallas,Dallas Cowboys,nfl
+team:nfl:dallas:pick,Dallas Cowboys (NFL) — Pick record,team,pick,sports,internal,0,6,0,6,6,0,0,0,6,2026-11-02,2026-11-02,dallas,Dallas Cowboys,nfl
+team:nfl:denver:score,Denver Broncos (NFL) — Score record,team,score,sports,shown,3,11,0,54,54,0,0,0,54,2025-09-08,2026-11-09,denver,Denver Broncos,nfl
+team:nfl:denver:pick,Denver Broncos (NFL) — Pick record,team,pick,sports,internal,0,5,2,3,5,0,0,0,5,2026-11-02,2026-11-02,denver,Denver Broncos,nfl
+team:nfl:detroit:score,Detroit Lions (NFL) — Score record,team,score,sports,shown,3,17,0,59,59,0,0,0,59,2025-09-08,2026-11-16,detroit,Detroit Lions,nfl
+team:nfl:detroit:pick,Detroit Lions (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,detroit,Detroit Lions,nfl
+team:nfl:green-bay:score,Green Bay Packers (NFL) — Score record,team,score,sports,shown,3,32,0,76,76,0,0,0,76,2025-09-08,2026-11-16,green-bay,Green Bay Packers,nfl
+team:nfl:green-bay:pick,Green Bay Packers (NFL) — Pick record,team,pick,sports,internal,0,6,5,1,6,0,0,0,6,2026-10-30,2026-10-30,green-bay,Green Bay Packers,nfl
+team:nfl:houston:score,Houston Texans (NFL) — Score record,team,score,sports,shown,3,10,0,51,51,0,0,0,51,2025-09-08,2026-11-16,houston,Houston Texans,nfl
+team:nfl:houston:pick,Houston Texans (NFL) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,houston,Houston Texans,nfl
+team:nfl:indianapolis:score,Indianapolis Colts (NFL) — Score record,team,score,sports,shown,3,8,0,53,53,0,0,0,53,2025-09-08,2026-11-16,indianapolis,Indianapolis Colts,nfl
+team:nfl:indianapolis:pick,Indianapolis Colts (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,indianapolis,Indianapolis Colts,nfl
+team:nfl:jacksonville:score,Jacksonville Jaguars (NFL) — Score record,team,score,sports,shown,3,5,0,46,46,0,0,0,46,2025-09-08,2026-11-16,jacksonville,Jacksonville Jaguars,nfl
+team:nfl:jacksonville:pick,Jacksonville Jaguars (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,jacksonville,Jacksonville Jaguars,nfl
+team:nfl:kansas-city:score,Kansas City Chiefs (NFL) — Score record,team,score,sports,shown,3,18,0,63,63,0,0,0,63,2025-09-06,2026-11-16,kansas-city,Kansas City Chiefs,nfl
+team:nfl:kansas-city:pick,Kansas City Chiefs (NFL) — Pick record,team,pick,sports,internal,0,5,2,3,5,0,0,0,5,2026-11-02,2026-11-02,kansas-city,Kansas City Chiefs,nfl
+team:nfl:la-chargers:score,Los Angeles Chargers (NFL) — Score record,team,score,sports,shown,3,8,0,45,45,3,0,0,48,2025-09-06,2026-11-09,la-chargers,Los Angeles Chargers,nfl
+team:nfl:la-chargers:pick,Los Angeles Chargers (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,la-chargers,Los Angeles Chargers,nfl
+team:nfl:la-rams:score,Los Angeles Rams (NFL) — Score record,team,score,sports,shown,3,9,0,58,58,0,0,0,58,2025-09-08,2026-11-16,la-rams,Los Angeles Rams,nfl
+team:nfl:la-rams:pick,Los Angeles Rams (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,la-rams,Los Angeles Rams,nfl
+team:nfl:las-vegas:score,Las Vegas Raiders (NFL) — Score record,team,score,sports,shown,3,8,0,51,51,0,0,0,51,2025-09-08,2026-11-16,las-vegas,Las Vegas Raiders,nfl
+team:nfl:las-vegas:pick,Las Vegas Raiders (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,las-vegas,Las Vegas Raiders,nfl
+team:nfl:miami:score,Miami Dolphins (NFL) — Score record,team,score,sports,shown,3,8,0,47,47,0,0,0,47,2025-09-08,2026-11-16,miami,Miami Dolphins,nfl
+team:nfl:miami:pick,Miami Dolphins (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,miami,Miami Dolphins,nfl
+team:nfl:minnesota:score,Minnesota Vikings (NFL) — Score record,team,score,sports,shown,3,9,0,49,49,0,0,0,49,2025-09-09,2026-11-16,minnesota,Minnesota Vikings,nfl
+team:nfl:minnesota:pick,Minnesota Vikings (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,minnesota,Minnesota Vikings,nfl
+team:nfl:new-england:score,New England Patriots (NFL) — Score record,team,score,sports,shown,3,10,0,62,62,0,0,0,62,2025-09-08,2026-11-16,new-england,New England Patriots,nfl
+team:nfl:new-england:pick,New England Patriots (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,new-england,New England Patriots,nfl
+team:nfl:new-orleans:score,New Orleans Saints (NFL) — Score record,team,score,sports,shown,3,8,0,49,49,0,0,0,49,2025-09-08,2026-11-16,new-orleans,New Orleans Saints,nfl
+team:nfl:new-orleans:pick,New Orleans Saints (NFL) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,new-orleans,New Orleans Saints,nfl
+team:nfl:ny-giants:score,New York Giants (NFL) — Score record,team,score,sports,shown,3,9,1,48,49,0,0,0,49,2025-09-08,2026-11-13,ny-giants,New York Giants,nfl
+team:nfl:ny-giants:pick,New York Giants (NFL) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,ny-giants,New York Giants,nfl
+team:nfl:ny-jets:score,New York Jets (NFL) — Score record,team,score,sports,shown,3,8,0,51,51,0,0,0,51,2025-09-08,2026-11-16,ny-jets,New York Jets,nfl
+team:nfl:ny-jets:pick,New York Jets (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,ny-jets,New York Jets,nfl
+team:nfl:philadelphia:score,Philadelphia Eagles (NFL) — Score record,team,score,sports,shown,3,36,0,79,79,0,0,0,79,2025-09-15,2026-11-09,philadelphia,Philadelphia Eagles,nfl
+team:nfl:philadelphia:pick,Philadelphia Eagles (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,philadelphia,Philadelphia Eagles,nfl
+team:nfl:pittsburgh:score,Pittsburgh Steelers (NFL) — Score record,team,score,sports,shown,3,3,0,47,47,0,0,0,47,2025-09-08,2026-11-16,pittsburgh,Pittsburgh Steelers,nfl
+team:nfl:pittsburgh:pick,Pittsburgh Steelers (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,pittsburgh,Pittsburgh Steelers,nfl
+team:nfl:san-francisco:score,San Francisco 49ers (NFL) — Score record,team,score,sports,shown,3,13,0,54,54,0,0,0,54,2025-09-08,2026-11-16,san-francisco,San Francisco 49ers,nfl
+team:nfl:san-francisco:pick,San Francisco 49ers (NFL) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,san-francisco,San Francisco 49ers,nfl
+team:nfl:seattle:score,Seattle Seahawks (NFL) — Score record,team,score,sports,shown,3,11,1,56,57,0,0,0,57,2025-09-08,2026-11-16,seattle,Seattle Seahawks,nfl
+team:nfl:seattle:pick,Seattle Seahawks (NFL) — Pick record,team,pick,sports,internal,0,5,3,2,5,0,0,0,5,2026-11-03,2026-11-03,seattle,Seattle Seahawks,nfl
+team:nfl:tampa-bay:score,Tampa Bay Buccaneers (NFL) — Score record,team,score,sports,shown,3,13,0,55,55,0,0,0,55,2025-09-08,2026-11-09,tampa-bay,Tampa Bay Buccaneers,nfl
+team:nfl:tampa-bay:pick,Tampa Bay Buccaneers (NFL) — Pick record,team,pick,sports,internal,0,5,3,2,5,0,0,0,5,2026-11-02,2026-11-02,tampa-bay,Tampa Bay Buccaneers,nfl
+team:nfl:tennessee:score,Tennessee Titans (NFL) — Score record,team,score,sports,shown,3,3,0,44,44,0,0,0,44,2025-09-08,2026-11-16,tennessee,Tennessee Titans,nfl
+team:nfl:tennessee:pick,Tennessee Titans (NFL) — Pick record,team,pick,sports,internal,0,6,6,0,6,0,0,0,6,2026-11-02,2026-11-02,tennessee,Tennessee Titans,nfl
+team:nfl:washington:score,Washington Commanders (NFL) — Score record,team,score,sports,shown,3,13,1,50,51,0,0,0,51,2025-09-08,2026-11-13,washington,Washington Commanders,nfl
+team:nfl:washington:pick,Washington Commanders (NFL) — Pick record,team,pick,sports,internal,0,6,4,2,6,0,0,0,6,2026-11-02,2026-11-02,washington,Washington Commanders,nfl
+team:ncaa-fbs:air-force:score,Air Force (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,1,0,0,3,2026-10-18,2026-11-01,air-force,Air Force,ncaa-fbs
+team:ncaa-fbs:air-force:pick,Air Force (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,air-force,Air Force,ncaa-fbs
+team:ncaa-fbs:akron:score,Akron (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,akron,Akron,ncaa-fbs
+team:ncaa-fbs:akron:pick,Akron (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,akron,Akron,ncaa-fbs
+team:ncaa-fbs:alabama:score,Alabama (NCAA FBS) — Score record,team,score,sports,internal,2,7,0,33,33,3,0,0,36,2025-12-07,2026-10-18,alabama,Alabama,ncaa-fbs
+team:ncaa-fbs:alabama:pick,Alabama (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,alabama,Alabama,ncaa-fbs
+team:ncaa-fbs:appalachian-state:score,Appalachian State (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-17,2026-11-01,appalachian-state,Appalachian State,ncaa-fbs
+team:ncaa-fbs:appalachian-state:pick,Appalachian State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,appalachian-state,Appalachian State,ncaa-fbs
+team:ncaa-fbs:arizona:score,Arizona (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,4,4,0,0,0,4,2026-10-25,2026-11-01,arizona,Arizona,ncaa-fbs
+team:ncaa-fbs:arizona:pick,Arizona (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,3,3,0,0,0,3,2026-11-01,2026-11-01,arizona,Arizona,ncaa-fbs
+team:ncaa-fbs:arizona-state:score,Arizona State (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,7,7,0,0,0,7,2026-10-18,2026-10-18,arizona-state,Arizona State,ncaa-fbs
+team:ncaa-fbs:arizona-state:pick,Arizona State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,arizona-state,Arizona State,ncaa-fbs
+team:ncaa-fbs:arkansas:score,Arkansas (NCAA FBS) — Score record,team,score,sports,internal,2,2,0,10,10,0,0,0,10,,,arkansas,Arkansas,ncaa-fbs
+team:ncaa-fbs:arkansas:pick,Arkansas (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,arkansas,Arkansas,ncaa-fbs
+team:ncaa-fbs:arkansas-state:score,Arkansas State (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,arkansas-state,Arkansas State,ncaa-fbs
+team:ncaa-fbs:arkansas-state:pick,Arkansas State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,arkansas-state,Arkansas State,ncaa-fbs
+team:ncaa-fbs:army:score,Army (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,1,0,0,2,2026-10-24,2026-10-24,army,Army,ncaa-fbs
+team:ncaa-fbs:army:pick,Army (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,army,Army,ncaa-fbs
+team:ncaa-fbs:auburn:score,Auburn (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,18,18,0,0,0,18,2026-10-18,2026-11-01,auburn,Auburn,ncaa-fbs
+team:ncaa-fbs:auburn:pick,Auburn (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,3,0,3,0,0,0,3,2026-11-01,2026-11-01,auburn,Auburn,ncaa-fbs
+team:ncaa-fbs:ball-state:score,Ball State (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,ball-state,Ball State,ncaa-fbs
+team:ncaa-fbs:ball-state:pick,Ball State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,ball-state,Ball State,ncaa-fbs
+team:ncaa-fbs:baylor:score,Baylor (NCAA FBS) — Score record,team,score,sports,internal,1,3,0,7,7,0,0,0,7,2026-10-18,2026-10-31,baylor,Baylor,ncaa-fbs
+team:ncaa-fbs:baylor:pick,Baylor (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,baylor,Baylor,ncaa-fbs
+team:ncaa-fbs:boise-state:score,Boise State (NCAA FBS) — Score record,team,score,sports,internal,0,7,0,6,6,5,0,0,11,2026-10-25,2026-11-01,boise-state,Boise State,ncaa-fbs
+team:ncaa-fbs:boise-state:pick,Boise State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,boise-state,Boise State,ncaa-fbs
+team:ncaa-fbs:boston-college:score,Boston College (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-11-01,boston-college,Boston College,ncaa-fbs
+team:ncaa-fbs:boston-college:pick,Boston College (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,boston-college,Boston College,ncaa-fbs
+team:ncaa-fbs:bowling-green:score,Bowling Green (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-11-01,bowling-green,Bowling Green,ncaa-fbs
+team:ncaa-fbs:bowling-green:pick,Bowling Green (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,bowling-green,Bowling Green,ncaa-fbs
+team:ncaa-fbs:buffalo:score,Buffalo (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,buffalo,Buffalo,ncaa-fbs
+team:ncaa-fbs:buffalo:pick,Buffalo (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,buffalo,Buffalo,ncaa-fbs
+team:ncaa-fbs:byu:score,BYU (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,10,10,3,0,0,13,,,byu,BYU,ncaa-fbs
+team:ncaa-fbs:byu:pick,BYU (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,byu,BYU,ncaa-fbs
+team:ncaa-fbs:california:score,California (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-11-01,california,California,ncaa-fbs
+team:ncaa-fbs:california:pick,California (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,california,California,ncaa-fbs
+team:ncaa-fbs:central-michigan:score,Central Michigan (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,central-michigan,Central Michigan,ncaa-fbs
+team:ncaa-fbs:central-michigan:pick,Central Michigan (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,central-michigan,Central Michigan,ncaa-fbs
+team:ncaa-fbs:charlotte:score,Charlotte (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-31,charlotte,Charlotte,ncaa-fbs
+team:ncaa-fbs:charlotte:pick,Charlotte (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,charlotte,Charlotte,ncaa-fbs
+team:ncaa-fbs:cincinnati:score,Cincinnati (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,12,12,3,0,0,15,2026-10-18,2026-11-01,cincinnati,Cincinnati,ncaa-fbs
+team:ncaa-fbs:cincinnati:pick,Cincinnati (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,3,0,3,0,0,0,3,2026-11-01,2026-11-01,cincinnati,Cincinnati,ncaa-fbs
+team:ncaa-fbs:clemson:score,Clemson (NCAA FBS) — Score record,team,score,sports,internal,2,10,0,21,21,4,0,0,25,2025-12-07,2026-01-20,clemson,Clemson,ncaa-fbs
+team:ncaa-fbs:clemson:pick,Clemson (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,clemson,Clemson,ncaa-fbs
+team:ncaa-fbs:coastal-carolina:score,Coastal Carolina (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-17,2026-11-01,coastal-carolina,Coastal Carolina,ncaa-fbs
+team:ncaa-fbs:coastal-carolina:pick,Coastal Carolina (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,coastal-carolina,Coastal Carolina,ncaa-fbs
+team:ncaa-fbs:colorado:score,Colorado (NCAA FBS) — Score record,team,score,sports,internal,1,3,0,5,5,0,0,0,5,2026-10-18,2026-11-01,colorado,Colorado,ncaa-fbs
+team:ncaa-fbs:colorado:pick,Colorado (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,colorado,Colorado,ncaa-fbs
+team:ncaa-fbs:colorado-state:score,Colorado State (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-16,2026-11-01,colorado-state,Colorado State,ncaa-fbs
+team:ncaa-fbs:colorado-state:pick,Colorado State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,colorado-state,Colorado State,ncaa-fbs
+team:ncaa-fbs:connecticut:score,UConn (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-24,2026-11-01,connecticut,UConn,ncaa-fbs
+team:ncaa-fbs:connecticut:pick,UConn (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,connecticut,UConn,ncaa-fbs
+team:ncaa-fbs:delaware:score,Delaware (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,delaware,Delaware,ncaa-fbs
+team:ncaa-fbs:delaware:pick,Delaware (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,delaware,Delaware,ncaa-fbs
+team:ncaa-fbs:duke:score,Duke (NCAA FBS) — Score record,team,score,sports,shown,3,3,0,11,11,0,0,0,11,2026-10-18,2026-11-01,duke,Duke,ncaa-fbs
+team:ncaa-fbs:duke:pick,Duke (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,duke,Duke,ncaa-fbs
+team:ncaa-fbs:east-carolina:score,East Carolina (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-16,2026-11-01,east-carolina,East Carolina,ncaa-fbs
+team:ncaa-fbs:east-carolina:pick,East Carolina (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,east-carolina,East Carolina,ncaa-fbs
+team:ncaa-fbs:eastern-michigan:score,Eastern Michigan (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,eastern-michigan,Eastern Michigan,ncaa-fbs
+team:ncaa-fbs:eastern-michigan:pick,Eastern Michigan (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,eastern-michigan,Eastern Michigan,ncaa-fbs
+team:ncaa-fbs:florida:score,Florida (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,21,21,0,0,0,21,2026-10-04,2026-11-01,florida,Florida,ncaa-fbs
+team:ncaa-fbs:florida:pick,Florida (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,2,1,3,0,0,0,3,2026-11-01,2026-11-01,florida,Florida,ncaa-fbs
+team:ncaa-fbs:florida-atlantic:score,Florida Atlantic (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-25,2026-10-30,florida-atlantic,Florida Atlantic,ncaa-fbs
+team:ncaa-fbs:florida-atlantic:pick,Florida Atlantic (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,florida-atlantic,Florida Atlantic,ncaa-fbs
+team:ncaa-fbs:florida-international:score,Florida International (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,0,0,1,0,0,1,,,florida-international,Florida International,ncaa-fbs
+team:ncaa-fbs:florida-international:pick,Florida International (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,florida-international,Florida International,ncaa-fbs
+team:ncaa-fbs:florida-state:score,Florida State (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,10,10,3,0,0,13,,,florida-state,Florida State,ncaa-fbs
+team:ncaa-fbs:florida-state:pick,Florida State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,florida-state,Florida State,ncaa-fbs
+team:ncaa-fbs:fresno-state:score,Fresno State (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,fresno-state,Fresno State,ncaa-fbs
+team:ncaa-fbs:fresno-state:pick,Fresno State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,fresno-state,Fresno State,ncaa-fbs
+team:ncaa-fbs:georgia:score,Georgia (NCAA FBS) — Score record,team,score,sports,internal,2,11,0,26,26,10,0,0,36,2026-10-11,2026-11-01,georgia,Georgia,ncaa-fbs
+team:ncaa-fbs:georgia:pick,Georgia (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,2,1,3,0,0,0,3,2026-11-01,2026-11-01,georgia,Georgia,ncaa-fbs
+team:ncaa-fbs:georgia-southern:score,Georgia Southern (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-11-01,2026-11-01,georgia-southern,Georgia Southern,ncaa-fbs
+team:ncaa-fbs:georgia-southern:pick,Georgia Southern (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,georgia-southern,Georgia Southern,ncaa-fbs
+team:ncaa-fbs:georgia-state:score,Georgia State (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-11-01,georgia-state,Georgia State,ncaa-fbs
+team:ncaa-fbs:georgia-state:pick,Georgia State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,georgia-state,Georgia State,ncaa-fbs
+team:ncaa-fbs:georgia-tech:score,Georgia Tech (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,12,12,0,0,0,12,2026-10-25,2026-11-01,georgia-tech,Georgia Tech,ncaa-fbs
+team:ncaa-fbs:georgia-tech:pick,Georgia Tech (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,georgia-tech,Georgia Tech,ncaa-fbs
+team:ncaa-fbs:hawaii:score,Hawaii (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-10-25,2026-10-25,hawaii,Hawaii,ncaa-fbs
+team:ncaa-fbs:hawaii:pick,Hawaii (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,hawaii,Hawaii,ncaa-fbs
+team:ncaa-fbs:houston:score,Houston (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,10,10,0,0,0,10,2026-10-18,2026-10-25,houston,Houston,ncaa-fbs
+team:ncaa-fbs:houston:pick,Houston (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,houston,Houston,ncaa-fbs
+team:ncaa-fbs:illinois:score,Illinois (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,10,10,0,0,0,10,2026-10-25,2026-11-01,illinois,Illinois,ncaa-fbs
+team:ncaa-fbs:illinois:pick,Illinois (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,illinois,Illinois,ncaa-fbs
+team:ncaa-fbs:indiana:score,Indiana (NCAA FBS) — Score record,team,score,sports,shown,3,11,0,35,35,11,0,0,46,2026-10-11,2026-11-01,indiana,Indiana,ncaa-fbs
+team:ncaa-fbs:indiana:pick,Indiana (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,indiana,Indiana,ncaa-fbs
+team:ncaa-fbs:iowa:score,Iowa (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,10,10,6,0,0,16,2026-10-04,2026-10-04,iowa,Iowa,ncaa-fbs
+team:ncaa-fbs:iowa:pick,Iowa (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,0,0,3,0,0,3,,,iowa,Iowa,ncaa-fbs
+team:ncaa-fbs:iowa-state:score,Iowa State (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,9,9,0,0,0,9,2025-12-07,2026-11-01,iowa-state,Iowa State,ncaa-fbs
+team:ncaa-fbs:iowa-state:pick,Iowa State (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,3,3,0,0,0,3,2026-11-01,2026-11-01,iowa-state,Iowa State,ncaa-fbs
+team:ncaa-fbs:jacksonville-state:score,Jacksonville State (NCAA FBS) — Score record,team,score,sports,internal,0,2,0,2,2,0,0,0,2,,,jacksonville-state,Jacksonville State,ncaa-fbs
+team:ncaa-fbs:jacksonville-state:pick,Jacksonville State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,jacksonville-state,Jacksonville State,ncaa-fbs
+team:ncaa-fbs:james-madison:score,James Madison (NCAA FBS) — Score record,team,score,sports,internal,1,4,0,7,7,1,0,0,8,2026-10-18,2026-10-30,james-madison,James Madison,ncaa-fbs
+team:ncaa-fbs:james-madison:pick,James Madison (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,james-madison,James Madison,ncaa-fbs
+team:ncaa-fbs:kansas:score,Kansas (NCAA FBS) — Score record,team,score,sports,internal,1,3,0,5,5,0,0,0,5,2026-10-18,2026-11-01,kansas,Kansas,ncaa-fbs
+team:ncaa-fbs:kansas:pick,Kansas (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,kansas,Kansas,ncaa-fbs
+team:ncaa-fbs:kansas-state:score,Kansas State (NCAA FBS) — Score record,team,score,sports,internal,0,2,0,3,3,0,0,0,3,2025-12-07,2026-11-01,kansas-state,Kansas State,ncaa-fbs
+team:ncaa-fbs:kansas-state:pick,Kansas State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,kansas-state,Kansas State,ncaa-fbs
+team:ncaa-fbs:kennesaw-state:score,Kennesaw State (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,3,3,0,0,0,3,2026-10-23,2026-10-23,kennesaw-state,Kennesaw State,ncaa-fbs
+team:ncaa-fbs:kennesaw-state:pick,Kennesaw State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,kennesaw-state,Kennesaw State,ncaa-fbs
+team:ncaa-fbs:kent-state:score,Kent State (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-10-31,kent-state,Kent State,ncaa-fbs
+team:ncaa-fbs:kent-state:pick,Kent State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,kent-state,Kent State,ncaa-fbs
+team:ncaa-fbs:kentucky:score,Kentucky (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,5,5,0,0,0,5,2026-10-18,2026-10-18,kentucky,Kentucky,ncaa-fbs
+team:ncaa-fbs:kentucky:pick,Kentucky (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,kentucky,Kentucky,ncaa-fbs
+team:ncaa-fbs:liberty:score,Liberty (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,1,0,0,2,2026-10-23,2026-10-23,liberty,Liberty,ncaa-fbs
+team:ncaa-fbs:liberty:pick,Liberty (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,liberty,Liberty,ncaa-fbs
+team:ncaa-fbs:louisiana:score,Louisiana (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,louisiana,Louisiana,ncaa-fbs
+team:ncaa-fbs:louisiana:pick,Louisiana (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,louisiana,Louisiana,ncaa-fbs
+team:ncaa-fbs:louisiana-monroe:score,Louisiana-Monroe (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-25,2026-11-01,louisiana-monroe,Louisiana-Monroe,ncaa-fbs
+team:ncaa-fbs:louisiana-monroe:pick,Louisiana-Monroe (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,louisiana-monroe,Louisiana-Monroe,ncaa-fbs
+team:ncaa-fbs:louisiana-tech:score,Louisiana Tech (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-25,2026-11-01,louisiana-tech,Louisiana Tech,ncaa-fbs
+team:ncaa-fbs:louisiana-tech:pick,Louisiana Tech (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,louisiana-tech,Louisiana Tech,ncaa-fbs
+team:ncaa-fbs:louisville:score,Louisville (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,6,6,0,0,0,6,2026-10-18,2026-11-01,louisville,Louisville,ncaa-fbs
+team:ncaa-fbs:louisville:pick,Louisville (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,louisville,Louisville,ncaa-fbs
+team:ncaa-fbs:lsu:score,LSU (NCAA FBS) — Score record,team,score,sports,internal,2,8,1,19,20,7,0,0,27,2025-12-07,2026-01-20,lsu,LSU,ncaa-fbs
+team:ncaa-fbs:lsu:pick,LSU (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,lsu,LSU,ncaa-fbs
+team:ncaa-fbs:marshall:score,Marshall (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,0,0,1,0,0,1,,,marshall,Marshall,ncaa-fbs
+team:ncaa-fbs:marshall:pick,Marshall (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,marshall,Marshall,ncaa-fbs
+team:ncaa-fbs:maryland:score,Maryland (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,6,6,0,0,0,6,2026-10-18,2026-11-01,maryland,Maryland,ncaa-fbs
+team:ncaa-fbs:maryland:pick,Maryland (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,maryland,Maryland,ncaa-fbs
+team:ncaa-fbs:memphis:score,Memphis (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,4,4,1,0,0,5,2026-10-17,2026-10-23,memphis,Memphis,ncaa-fbs
+team:ncaa-fbs:memphis:pick,Memphis (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,memphis,Memphis,ncaa-fbs
+team:ncaa-fbs:miami-fl:score,Miami (FL) (NCAA FBS) — Score record,team,score,sports,internal,2,11,0,28,28,10,0,0,38,2025-12-07,2026-10-25,miami-fl,Miami (FL),ncaa-fbs
+team:ncaa-fbs:miami-fl:pick,Miami (FL) (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,miami-fl,Miami (FL),ncaa-fbs
+team:ncaa-fbs:miami-oh:score,Miami (OH) (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,4,4,0,0,0,4,2026-10-18,2026-10-25,miami-oh,Miami (OH),ncaa-fbs
+team:ncaa-fbs:miami-oh:pick,Miami (OH) (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,miami-oh,Miami (OH),ncaa-fbs
+team:ncaa-fbs:michigan:score,Michigan (NCAA FBS) — Score record,team,score,sports,shown,3,5,0,23,23,2,0,0,25,2026-10-18,2026-11-01,michigan,Michigan,ncaa-fbs
+team:ncaa-fbs:michigan:pick,Michigan (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,michigan,Michigan,ncaa-fbs
+team:ncaa-fbs:michigan-state:score,Michigan State (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,7,7,0,0,0,7,2026-10-18,2026-10-18,michigan-state,Michigan State,ncaa-fbs
+team:ncaa-fbs:michigan-state:pick,Michigan State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,michigan-state,Michigan State,ncaa-fbs
+team:ncaa-fbs:middle-tennessee:score,Middle Tennessee (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,middle-tennessee,Middle Tennessee,ncaa-fbs
+team:ncaa-fbs:middle-tennessee:pick,Middle Tennessee (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,middle-tennessee,Middle Tennessee,ncaa-fbs
+team:ncaa-fbs:minnesota:score,Minnesota (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,3,3,3,0,0,6,2026-11-01,2026-11-01,minnesota,Minnesota,ncaa-fbs
+team:ncaa-fbs:minnesota:pick,Minnesota (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,minnesota,Minnesota,ncaa-fbs
+team:ncaa-fbs:mississippi-state:score,Mississippi State (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,12,12,0,0,0,12,2026-10-04,2026-10-25,mississippi-state,Mississippi State,ncaa-fbs
+team:ncaa-fbs:mississippi-state:pick,Mississippi State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,mississippi-state,Mississippi State,ncaa-fbs
+team:ncaa-fbs:missouri:score,Missouri (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,18,18,0,0,0,18,2026-10-04,2026-10-18,missouri,Missouri,ncaa-fbs
+team:ncaa-fbs:missouri:pick,Missouri (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,missouri,Missouri,ncaa-fbs
+team:ncaa-fbs:missouri-state:score,Missouri State (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,missouri-state,Missouri State,ncaa-fbs
+team:ncaa-fbs:missouri-state:pick,Missouri State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,missouri-state,Missouri State,ncaa-fbs
+team:ncaa-fbs:navy:score,Navy (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,6,6,0,0,0,6,2026-10-25,2026-11-01,navy,Navy,ncaa-fbs
+team:ncaa-fbs:navy:pick,Navy (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,navy,Navy,ncaa-fbs
+team:ncaa-fbs:nc-state:score,NC State (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,4,4,0,0,0,4,2026-10-24,2026-11-01,nc-state,NC State,ncaa-fbs
+team:ncaa-fbs:nc-state:pick,NC State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,nc-state,NC State,ncaa-fbs
+team:ncaa-fbs:nebraska:score,Nebraska (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,16,16,0,0,0,16,2026-10-11,2026-11-01,nebraska,Nebraska,ncaa-fbs
+team:ncaa-fbs:nebraska:pick,Nebraska (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,nebraska,Nebraska,ncaa-fbs
+team:ncaa-fbs:nevada:score,Nevada (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,1,0,0,3,2026-10-18,2026-10-25,nevada,Nevada,ncaa-fbs
+team:ncaa-fbs:nevada:pick,Nevada (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,nevada,Nevada,ncaa-fbs
+team:ncaa-fbs:new-mexico:score,New Mexico (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,new-mexico,New Mexico,ncaa-fbs
+team:ncaa-fbs:new-mexico:pick,New Mexico (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,new-mexico,New Mexico,ncaa-fbs
+team:ncaa-fbs:new-mexico-state:score,New Mexico State (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,new-mexico-state,New Mexico State,ncaa-fbs
+team:ncaa-fbs:new-mexico-state:pick,New Mexico State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,new-mexico-state,New Mexico State,ncaa-fbs
+team:ncaa-fbs:north-carolina:score,North Carolina (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,6,6,0,0,0,6,2026-10-18,2026-10-25,north-carolina,North Carolina,ncaa-fbs
+team:ncaa-fbs:north-carolina:pick,North Carolina (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,north-carolina,North Carolina,ncaa-fbs
+team:ncaa-fbs:north-dakota-state:score,North Dakota State (NCAA FBS) — Score record,team,score,sports,internal,0,2,0,2,2,1,0,0,3,2026-10-18,2026-11-01,north-dakota-state,North Dakota State,ncaa-fbs
+team:ncaa-fbs:north-dakota-state:pick,North Dakota State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,north-dakota-state,North Dakota State,ncaa-fbs
+team:ncaa-fbs:north-texas:score,North Texas (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,4,4,0,0,0,4,2026-10-25,2026-10-30,north-texas,North Texas,ncaa-fbs
+team:ncaa-fbs:north-texas:pick,North Texas (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,north-texas,North Texas,ncaa-fbs
+team:ncaa-fbs:northern-illinois:score,Northern Illinois (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-11-01,northern-illinois,Northern Illinois,ncaa-fbs
+team:ncaa-fbs:northern-illinois:pick,Northern Illinois (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,northern-illinois,Northern Illinois,ncaa-fbs
+team:ncaa-fbs:northwestern:score,Northwestern (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,6,6,0,0,0,6,2026-10-18,2026-10-25,northwestern,Northwestern,ncaa-fbs
+team:ncaa-fbs:northwestern:pick,Northwestern (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,northwestern,Northwestern,ncaa-fbs
+team:ncaa-fbs:notre-dame:score,Notre Dame (NCAA FBS) — Score record,team,score,sports,internal,2,17,0,17,17,19,0,0,36,2026-11-01,2026-11-01,notre-dame,Notre Dame,ncaa-fbs
+team:ncaa-fbs:notre-dame:pick,Notre Dame (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,notre-dame,Notre Dame,ncaa-fbs
+team:ncaa-fbs:ohio:score,Ohio (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,ohio,Ohio,ncaa-fbs
+team:ncaa-fbs:ohio:pick,Ohio (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,ohio,Ohio,ncaa-fbs
+team:ncaa-fbs:ohio-state:score,Ohio State (NCAA FBS) — Score record,team,score,sports,internal,2,16,0,26,26,17,0,0,43,2025-12-07,2026-11-01,ohio-state,Ohio State,ncaa-fbs
+team:ncaa-fbs:ohio-state:pick,Ohio State (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,3,3,0,0,0,3,2026-11-01,2026-11-01,ohio-state,Ohio State,ncaa-fbs
+team:ncaa-fbs:oklahoma:score,Oklahoma (NCAA FBS) — Score record,team,score,sports,shown,3,9,0,27,27,7,0,0,34,2026-10-18,2026-11-01,oklahoma,Oklahoma,ncaa-fbs
+team:ncaa-fbs:oklahoma:pick,Oklahoma (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,oklahoma,Oklahoma,ncaa-fbs
+team:ncaa-fbs:oklahoma-state:score,Oklahoma State (NCAA FBS) — Score record,team,score,sports,internal,1,3,0,7,7,0,0,0,7,2026-10-18,2026-11-01,oklahoma-state,Oklahoma State,ncaa-fbs
+team:ncaa-fbs:oklahoma-state:pick,Oklahoma State (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,3,3,0,0,0,3,2026-11-01,2026-11-01,oklahoma-state,Oklahoma State,ncaa-fbs
+team:ncaa-fbs:old-dominion:score,Old Dominion (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,1,0,0,2,2026-10-25,2026-10-25,old-dominion,Old Dominion,ncaa-fbs
+team:ncaa-fbs:old-dominion:pick,Old Dominion (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,old-dominion,Old Dominion,ncaa-fbs
+team:ncaa-fbs:ole-miss:score,Ole Miss (NCAA FBS) — Score record,team,score,sports,shown,3,6,0,29,29,3,0,0,32,2026-10-18,2026-11-01,ole-miss,Ole Miss,ncaa-fbs
+team:ncaa-fbs:ole-miss:pick,Ole Miss (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,3,0,3,0,0,0,3,2026-11-01,2026-11-01,ole-miss,Ole Miss,ncaa-fbs
+team:ncaa-fbs:oregon:score,Oregon (NCAA FBS) — Score record,team,score,sports,internal,2,16,0,23,23,17,0,0,40,2025-12-07,2026-10-25,oregon,Oregon,ncaa-fbs
+team:ncaa-fbs:oregon:pick,Oregon (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,oregon,Oregon,ncaa-fbs
+team:ncaa-fbs:oregon-state:score,Oregon State (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,oregon-state,Oregon State,ncaa-fbs
+team:ncaa-fbs:oregon-state:pick,Oregon State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,oregon-state,Oregon State,ncaa-fbs
+team:ncaa-fbs:penn-state:score,Penn State (NCAA FBS) — Score record,team,score,sports,internal,2,6,0,21,21,0,0,0,21,2025-12-07,2026-10-18,penn-state,Penn State,ncaa-fbs
+team:ncaa-fbs:penn-state:pick,Penn State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,penn-state,Penn State,ncaa-fbs
+team:ncaa-fbs:pitt:score,Pittsburgh (NCAA FBS) — Score record,team,score,sports,shown,3,3,0,13,13,0,0,0,13,2026-10-18,2026-11-01,pitt,Pittsburgh,ncaa-fbs
+team:ncaa-fbs:pitt:pick,Pittsburgh (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,pitt,Pittsburgh,ncaa-fbs
+team:ncaa-fbs:purdue:score,Purdue (NCAA FBS) — Score record,team,score,sports,internal,0,2,0,4,4,0,0,0,4,,,purdue,Purdue,ncaa-fbs
+team:ncaa-fbs:purdue:pick,Purdue (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,purdue,Purdue,ncaa-fbs
+team:ncaa-fbs:rice:score,Rice (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,rice,Rice,ncaa-fbs
+team:ncaa-fbs:rice:pick,Rice (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,rice,Rice,ncaa-fbs
+team:ncaa-fbs:rutgers:score,Rutgers (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-11-01,rutgers,Rutgers,ncaa-fbs
+team:ncaa-fbs:rutgers:pick,Rutgers (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,rutgers,Rutgers,ncaa-fbs
+team:ncaa-fbs:sacramento-state:score,Sacramento State (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-10-31,sacramento-state,Sacramento State,ncaa-fbs
+team:ncaa-fbs:sacramento-state:pick,Sacramento State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,sacramento-state,Sacramento State,ncaa-fbs
+team:ncaa-fbs:sam-houston:score,Sam Houston (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,sam-houston,Sam Houston,ncaa-fbs
+team:ncaa-fbs:sam-houston:pick,Sam Houston (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,sam-houston,Sam Houston,ncaa-fbs
+team:ncaa-fbs:san-diego-state:score,San Diego State (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-10-25,2026-10-25,san-diego-state,San Diego State,ncaa-fbs
+team:ncaa-fbs:san-diego-state:pick,San Diego State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,san-diego-state,San Diego State,ncaa-fbs
+team:ncaa-fbs:san-jose-state:score,San Jose State (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-10-25,2026-10-25,san-jose-state,San Jose State,ncaa-fbs
+team:ncaa-fbs:san-jose-state:pick,San Jose State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,san-jose-state,San Jose State,ncaa-fbs
+team:ncaa-fbs:smu:score,SMU (NCAA FBS) — Score record,team,score,sports,shown,3,3,0,11,11,2,0,0,13,2026-10-18,2026-11-01,smu,SMU,ncaa-fbs
+team:ncaa-fbs:smu:pick,SMU (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,smu,SMU,ncaa-fbs
+team:ncaa-fbs:south-alabama:score,South Alabama (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-11-01,2026-11-01,south-alabama,South Alabama,ncaa-fbs
+team:ncaa-fbs:south-alabama:pick,South Alabama (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,south-alabama,South Alabama,ncaa-fbs
+team:ncaa-fbs:south-carolina:score,South Carolina (NCAA FBS) — Score record,team,score,sports,internal,2,3,1,18,19,3,0,0,22,2026-11-01,2026-11-01,south-carolina,South Carolina,ncaa-fbs
+team:ncaa-fbs:south-carolina:pick,South Carolina (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,south-carolina,South Carolina,ncaa-fbs
+team:ncaa-fbs:south-florida:score,South Florida (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,10,10,1,0,0,11,2026-10-18,2026-11-01,south-florida,South Florida,ncaa-fbs
+team:ncaa-fbs:south-florida:pick,South Florida (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,south-florida,South Florida,ncaa-fbs
+team:ncaa-fbs:southern-miss:score,Southern Miss (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-18,2026-11-01,southern-miss,Southern Miss,ncaa-fbs
+team:ncaa-fbs:southern-miss:pick,Southern Miss (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,southern-miss,Southern Miss,ncaa-fbs
+team:ncaa-fbs:stanford:score,Stanford (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-24,2026-11-01,stanford,Stanford,ncaa-fbs
+team:ncaa-fbs:stanford:pick,Stanford (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,stanford,Stanford,ncaa-fbs
+team:ncaa-fbs:syracuse:score,Syracuse (NCAA FBS) — Score record,team,score,sports,internal,1,3,0,5,5,0,0,0,5,2026-10-18,2026-11-01,syracuse,Syracuse,ncaa-fbs
+team:ncaa-fbs:syracuse:pick,Syracuse (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,syracuse,Syracuse,ncaa-fbs
+team:ncaa-fbs:tcu:score,TCU (NCAA FBS) — Score record,team,score,sports,shown,3,3,0,9,9,0,0,0,9,2026-10-18,2026-11-01,tcu,TCU,ncaa-fbs
+team:ncaa-fbs:tcu:pick,TCU (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,tcu,TCU,ncaa-fbs
+team:ncaa-fbs:temple:score,Temple (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-11-01,temple,Temple,ncaa-fbs
+team:ncaa-fbs:temple:pick,Temple (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,temple,Temple,ncaa-fbs
+team:ncaa-fbs:tennessee:score,Tennessee (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,17,17,3,0,0,20,2026-10-18,2026-10-18,tennessee,Tennessee,ncaa-fbs
+team:ncaa-fbs:tennessee:pick,Tennessee (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,tennessee,Tennessee,ncaa-fbs
+team:ncaa-fbs:texas:score,Texas (NCAA FBS) — Score record,team,score,sports,internal,2,13,0,33,33,14,0,0,47,2025-12-07,2026-10-25,texas,Texas,ncaa-fbs
+team:ncaa-fbs:texas:pick,Texas (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,texas,Texas,ncaa-fbs
+team:ncaa-fbs:texas-am:score,Texas A&M (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,20,20,2,0,0,22,,,texas-am,Texas A&M,ncaa-fbs
+team:ncaa-fbs:texas-am:pick,Texas A&M (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,texas-am,Texas A&M,ncaa-fbs
+team:ncaa-fbs:texas-state:score,Texas State (NCAA FBS) — Score record,team,score,sports,internal,1,1,0,3,3,0,0,0,3,2026-10-16,2026-11-01,texas-state,Texas State,ncaa-fbs
+team:ncaa-fbs:texas-state:pick,Texas State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,texas-state,Texas State,ncaa-fbs
+team:ncaa-fbs:texas-tech:score,Texas Tech (NCAA FBS) — Score record,team,score,sports,internal,2,10,3,16,19,12,0,0,31,2025-12-07,2026-11-01,texas-tech,Texas Tech,ncaa-fbs
+team:ncaa-fbs:texas-tech:pick,Texas Tech (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,3,3,0,0,0,3,2026-11-01,2026-11-01,texas-tech,Texas Tech,ncaa-fbs
+team:ncaa-fbs:toledo:score,Toledo (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-25,toledo,Toledo,ncaa-fbs
+team:ncaa-fbs:toledo:pick,Toledo (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,toledo,Toledo,ncaa-fbs
+team:ncaa-fbs:troy:score,Troy (NCAA FBS) — Score record,team,score,sports,internal,1,3,0,5,5,0,0,0,5,2026-10-18,2026-10-30,troy,Troy,ncaa-fbs
+team:ncaa-fbs:troy:pick,Troy (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,troy,Troy,ncaa-fbs
+team:ncaa-fbs:tulane:score,Tulane (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,8,8,0,0,0,8,2026-10-17,2026-10-31,tulane,Tulane,ncaa-fbs
+team:ncaa-fbs:tulane:pick,Tulane (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,tulane,Tulane,ncaa-fbs
+team:ncaa-fbs:tulsa:score,Tulsa (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-24,tulsa,Tulsa,ncaa-fbs
+team:ncaa-fbs:tulsa:pick,Tulsa (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,tulsa,Tulsa,ncaa-fbs
+team:ncaa-fbs:uab:score,UAB (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-16,2026-11-01,uab,UAB,ncaa-fbs
+team:ncaa-fbs:uab:pick,UAB (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,uab,UAB,ncaa-fbs
+team:ncaa-fbs:ucf:score,UCF (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-10-31,2026-10-31,ucf,UCF,ncaa-fbs
+team:ncaa-fbs:ucf:pick,UCF (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,ucf,UCF,ncaa-fbs
+team:ncaa-fbs:ucla:score,UCLA (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,9,9,1,0,0,10,2026-10-11,2026-10-18,ucla,UCLA,ncaa-fbs
+team:ncaa-fbs:ucla:pick,UCLA (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,ucla,UCLA,ncaa-fbs
+team:ncaa-fbs:umass:score,UMass (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-10-24,umass,UMass,ncaa-fbs
+team:ncaa-fbs:umass:pick,UMass (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,umass,UMass,ncaa-fbs
+team:ncaa-fbs:unlv:score,UNLV (NCAA FBS) — Score record,team,score,sports,internal,0,4,0,6,6,2,0,0,8,2026-10-18,2026-11-01,unlv,UNLV,ncaa-fbs
+team:ncaa-fbs:unlv:pick,UNLV (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,unlv,UNLV,ncaa-fbs
+team:ncaa-fbs:usc:score,USC (NCAA FBS) — Score record,team,score,sports,internal,2,4,0,23,23,2,0,0,25,2026-10-04,2026-11-01,usc,USC,ncaa-fbs
+team:ncaa-fbs:usc:pick,USC (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,3,3,0,0,0,3,2026-11-01,2026-11-01,usc,USC,ncaa-fbs
+team:ncaa-fbs:utah:score,Utah (NCAA FBS) — Score record,team,score,sports,shown,3,7,0,19,19,0,0,0,19,2025-12-07,2026-11-01,utah,Utah,ncaa-fbs
+team:ncaa-fbs:utah:pick,Utah (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,3,0,3,0,0,0,3,2026-11-01,2026-11-01,utah,Utah,ncaa-fbs
+team:ncaa-fbs:utah-state:score,Utah State (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-25,2026-11-01,utah-state,Utah State,ncaa-fbs
+team:ncaa-fbs:utah-state:pick,Utah State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,utah-state,Utah State,ncaa-fbs
+team:ncaa-fbs:utep:score,UTEP (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-11-01,2026-11-01,utep,UTEP,ncaa-fbs
+team:ncaa-fbs:utep:pick,UTEP (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,utep,UTEP,ncaa-fbs
+team:ncaa-fbs:utsa:score,UTSA (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,utsa,UTSA,ncaa-fbs
+team:ncaa-fbs:utsa:pick,UTSA (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,utsa,UTSA,ncaa-fbs
+team:ncaa-fbs:vanderbilt:score,Vanderbilt (NCAA FBS) — Score record,team,score,sports,internal,2,2,0,14,14,0,0,0,14,,,vanderbilt,Vanderbilt,ncaa-fbs
+team:ncaa-fbs:vanderbilt:pick,Vanderbilt (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,vanderbilt,Vanderbilt,ncaa-fbs
+team:ncaa-fbs:virginia:score,Virginia (NCAA FBS) — Score record,team,score,sports,shown,3,3,0,9,9,0,0,0,9,2026-10-18,2026-11-01,virginia,Virginia,ncaa-fbs
+team:ncaa-fbs:virginia:pick,Virginia (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,virginia,Virginia,ncaa-fbs
+team:ncaa-fbs:virginia-tech:score,Virginia Tech (NCAA FBS) — Score record,team,score,sports,internal,0,2,0,4,4,0,0,0,4,,,virginia-tech,Virginia Tech,ncaa-fbs
+team:ncaa-fbs:virginia-tech:pick,Virginia Tech (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,virginia-tech,Virginia Tech,ncaa-fbs
+team:ncaa-fbs:wake-forest:score,Wake Forest (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,2,2,0,0,0,2,2026-10-18,2026-11-01,wake-forest,Wake Forest,ncaa-fbs
+team:ncaa-fbs:wake-forest:pick,Wake Forest (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,wake-forest,Wake Forest,ncaa-fbs
+team:ncaa-fbs:washington:score,Washington (NCAA FBS) — Score record,team,score,sports,internal,1,5,0,7,7,1,0,0,8,2026-10-04,2026-11-01,washington,Washington,ncaa-fbs
+team:ncaa-fbs:washington:pick,Washington (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,washington,Washington,ncaa-fbs
+team:ncaa-fbs:washington-state:score,Washington State (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,0,0,0,1,2026-10-25,2026-10-25,washington-state,Washington State,ncaa-fbs
+team:ncaa-fbs:washington-state:pick,Washington State (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,washington-state,Washington State,ncaa-fbs
+team:ncaa-fbs:west-virginia:score,West Virginia (NCAA FBS) — Score record,team,score,sports,internal,0,3,0,4,4,0,0,0,4,2026-10-18,2026-10-25,west-virginia,West Virginia,ncaa-fbs
+team:ncaa-fbs:west-virginia:pick,West Virginia (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,west-virginia,West Virginia,ncaa-fbs
+team:ncaa-fbs:western-kentucky:score,Western Kentucky (NCAA FBS) — Score record,team,score,sports,internal,0,0,0,0,0,0,0,0,0,,,western-kentucky,Western Kentucky,ncaa-fbs
+team:ncaa-fbs:western-kentucky:pick,Western Kentucky (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,western-kentucky,Western Kentucky,ncaa-fbs
+team:ncaa-fbs:western-michigan:score,Western Michigan (NCAA FBS) — Score record,team,score,sports,internal,1,3,0,5,5,0,0,0,5,2026-10-18,2026-11-01,western-michigan,Western Michigan,ncaa-fbs
+team:ncaa-fbs:western-michigan:pick,Western Michigan (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,western-michigan,Western Michigan,ncaa-fbs
+team:ncaa-fbs:wisconsin:score,Wisconsin (NCAA FBS) — Score record,team,score,sports,internal,2,3,0,14,14,3,0,0,17,2026-10-18,2026-10-25,wisconsin,Wisconsin,ncaa-fbs
+team:ncaa-fbs:wisconsin:pick,Wisconsin (NCAA FBS) — Pick record,team,pick,sports,internal,0,3,0,0,0,3,0,0,3,,,wisconsin,Wisconsin,ncaa-fbs
+team:ncaa-fbs:wyoming:score,Wyoming (NCAA FBS) — Score record,team,score,sports,internal,0,1,0,1,1,1,0,0,2,2026-10-18,2026-10-18,wyoming,Wyoming,ncaa-fbs
+team:ncaa-fbs:wyoming:pick,Wyoming (NCAA FBS) — Pick record,team,pick,sports,internal,0,0,0,0,0,0,0,0,0,,,wyoming,Wyoming,ncaa-fbs
+finance:equity-price-target-12m,Stock price targets (12-month),finance,score,finance,internal,0,18,0,0,0,73,0,0,73,,,,,
+finance:macro,Economy and the Fed,finance,score,finance,internal,1,1,2,10,12,0,4,0,16,2026-01-02,2026-01-31,,,
+finance:index-level,Stock index level,finance,score,finance,internal,0,0,0,0,0,0,0,0,0,,,,,
+politics:president,Presidential race,politics,score,politics,internal,0,3,2,1,3,0,0,0,3,2025-01-07,2025-01-07,,,
+politics:senate-seat,Senate races (state winners),politics,score,politics,internal,0,2,0,0,0,19,0,0,19,,,,,
+politics:senate-control,Senate control,politics,score,politics,internal,0,4,0,0,0,7,0,0,7,,,,,
+weather:station:us-nyc-central-park,Central Park (KNYC),weather,score,weather,internal,1,1,71,406,477,48,0,0,525,2026-09-02,2026-11-16,,,
+weather:station:us-nyc-laguardia,LaGuardia (KLGA),weather,score,weather,internal,0,1,0,0,0,14,0,0,14,,,,,
+weather:station:us-bos-boston-logan,Boston (KBOS),weather,score,weather,internal,0,1,0,0,0,14,0,0,14,,,,,
+weather:station:us-phl-philadelphia-intl,Philadelphia (KPHL),weather,score,weather,internal,0,1,0,0,0,14,0,0,14,,,,,
+weather:station:us-dc-washington-national,"Washington, DC (KDCA)",weather,score,weather,internal,0,1,0,0,0,14,0,0,14,,,,,
+weather:station:us-chi-chicago-ohare,Chicago (KORD),weather,score,weather,internal,0,1,0,0,0,14,0,0,14,,,,,
+weather:station:us-roc-rochester-intl,"Rochester, NY (KROC)",weather,score,weather,internal,0,0,0,0,0,0,0,0,0,,,,,
+weather:station:us-evv-evansville-regional,"Evansville, IN (KEVV)",weather,score,weather,internal,0,0,0,0,0,0,0,0,0,,,,,
+weather:metric:tmax,Daily high,weather,score,weather,internal,1,6,37,210,247,57,0,0,304,2026-09-02,2026-11-16,,,
+weather:metric:tmin,Daily low,weather,score,weather,internal,1,6,34,196,230,61,0,0,291,2026-09-03,2026-11-16,,,
+weather:metric:precip,Rain,weather,score,weather,internal,0,0,0,0,0,0,0,0,0,,,,,
+weather:metric:snowfall,Snow,weather,score,weather,internal,0,0,0,0,0,0,0,0,0,,,,,

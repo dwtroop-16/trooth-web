@@ -42,6 +42,21 @@ export function boardSubhead(board, domain) {
 }
 
 /** Shareable home filter. Models are not a ranked board here. */
+export function domainForNiche(niche) {
+  const id = String(niche || "");
+  if (id.startsWith("finance:")) return "Finance";
+  if (id.startsWith("politics:")) return "Politics";
+  if (id.startsWith("weather:")) return "Weather";
+  if (id.startsWith("league:") || id.startsWith("claim-type:") || id.startsWith("team:")) return "Sports";
+  return "";
+}
+
+export function parseNicheQuery(search) {
+  const raw = typeof search === "string" ? search : "";
+  const qs = raw.startsWith("?") ? raw.slice(1) : raw;
+  return (new URLSearchParams(qs).get("niche") || "").trim();
+}
+
 export function parseBoardQuery(search) {
   const raw = typeof search === "string" ? search : "";
   const qs = raw.startsWith("?") ? raw.slice(1) : raw;
@@ -54,13 +69,14 @@ export function parseBoardQuery(search) {
   return { board: "", domain: "" };
 }
 
-export function pathForBoard({ board, domain } = {}) {
+export function pathForBoard({ board, domain, niche } = {}) {
   const parsed = board === "pick"
     ? { board: "pick", domain: "Sports" }
     : { board: "score", domain: SCORE_DOMAINS.includes(domain) ? domain : "Sports" };
   const params = new URLSearchParams();
   params.set("board", parsed.board);
   params.set("domain", parsed.domain);
+  if (niche) params.set("niche", niche);
   return `/?${params.toString()}`;
 }
 
