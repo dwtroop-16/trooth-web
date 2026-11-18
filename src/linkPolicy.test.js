@@ -1,7 +1,7 @@
 // Legal-Ops link rules (2026-10-02, owner-approved): MarketScreener is blocked (plain-text credit,
-// no hyperlink); nfl.com is home-only (only https://www.nfl.com/ is clickable; the specific page URL
-// is shown beside it as plain text). Checked across every card in the live bundle, rendered
-// through the real ClaimCard component.
+// no hyperlink). nfl.com is cite-only (Legal 05cg / decision 31): "NFL.com, <title>" or
+// "NFL.com, <date>", never a link and never the URL. Checked across every card in the live bundle,
+// rendered through the real ClaimCard component.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, writeFileSync, readFileSync } from "node:fs";
@@ -10,11 +10,10 @@ import { join, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { SPEAKERS, FORECASTS, ACTUALS, SCORES } from "./data.js";
 import { toPublicClaimCard } from "./viewModel.js";
-import { renderPublicClaimCard } from "./claimCard.js";
+import { renderPublicClaimCard, actualSourceParts } from "./claimCard.js";
 import { sourceLinkParts, isAllowedHref, hostOf, formatCiteDate } from "./linkPolicy.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const NFL_HOME = "https://www.nfl.com/";
 const MS_CREDIT = "dpa-AFX Analyser via MarketScreener (not linked)";
 const isMs = (u) => /(^|\.)marketscreener\.com$/.test(hostOf(u));
 const isNfl = (u) => /(^|\.)nfl\.com$/.test(hostOf(u));
@@ -50,16 +49,28 @@ test("linkPolicy: MarketScreener (any subdomain) is never a link; credit is plai
   assert.equal(isAllowedHref("https://notmarketscreener.com/"), true);
 });
 
-test("linkPolicy: nfl.com links only the home page and shows the specific URL as plain text", () => {
-  const deep = "https://www.nfl.com/games/chiefs-at-chargers-2025-reg-1";
-  assert.deepEqual(sourceLinkParts(deep, "www.nfl.com"), [
-    { kind: "link", href: NFL_HOME, text: "NFL.com" },
-    { kind: "text", role: "unlinked_url", text: `(${deep} ; not linked per NFL terms)` },
+test("linkPolicy: nfl.com is cite-only, including subdomains (Legal 05cg / decision 31)", () => {
+  const article = "https://www.nfl.com/news/what-we-learned-week-11";
+  assert.deepEqual(sourceLinkParts(article, "www.nfl.com", { title: "What We Learned, Week 11", date: "2026-11-17T12:00:00Z" }), [
+    { kind: "text", role: "cite", text: "NFL.com, What We Learned, Week 11" },
   ]);
-  assert.deepEqual(sourceLinkParts(NFL_HOME, "x"), [{ kind: "link", href: NFL_HOME, text: "NFL.com" }]);
-  assert.equal(isAllowedHref(NFL_HOME), true);
-  assert.equal(isAllowedHref(deep), false);
-  assert.equal(isAllowedHref("https://nfl.com/news/x"), false);
+  assert.equal(sourceLinkParts("https://www.nfl.com/scores/", "x", { date: "2026-11-17" })[0].text, "NFL.com, Nov 17, 2026");
+  assert.equal(sourceLinkParts("https://www.nfl.com/", "x", {})[0].text, "NFL.com");
+  for (const u of [article, "https://www.nfl.com/", "https://nfl.com/news/x", "https://sports.nfl.com/x"]) {
+    assert.equal(isAllowedHref(u), false);
+    assert.equal(sourceLinkParts(u, "x").some((p) => p.kind === "link"), false);
+    assert.equal(/https?:\/\//.test(sourceLinkParts(u, "x")[0].text), false);
+  }
+  const actual = actualSourceParts({
+    actualSourceUrl: article,
+    actualSourceName: "NFL",
+    actualSourceTitle: "What We Learned, Week 11",
+    actualSourceDate: "2026-11-17T18:00:00Z",
+  });
+  assert.deepEqual(actual, [{ kind: "text", role: "cite", text: "NFL.com, What We Learned, Week 11" }]);
+  // chicagobears.com was already cite-only; subdomains stay unlinked and the URL stays out of the credit.
+  assert.equal(isAllowedHref("https://www.chicagobears.com/news/a"), false);
+  assert.equal(/chicagobears\.com/.test(sourceLinkParts("https://www.chicagobears.com/news/a", "x", { title: "Notes", date: "2026-11-01" })[0].text), false);
 });
 
 test("linkPolicy: ncaa.com (any subdomain, home page included) is plain text, never a link", () => {
@@ -124,9 +135,13 @@ test("every card's link parts obey the rules (view-model scan of all cards)", ()
       }
       if (isNcaa(url) && parts.some((p) => p.role === "plain_text_url")) ncaaConverted++;
       if (isNcaa(url)) assert.ok(parts.every((p) => p.kind !== "link"), card.id);
-      if (isNfl(url) && url !== NFL_HOME) {
+      if (isNfl(url)) {
         nflConverted++;
-        assert.ok(parts.some((p) => p.kind === "text" && p.text.includes(url) && p.text.includes("not linked per NFL terms")), card.id);
+        assert.ok(parts.every((p) => p.kind !== "link"), card.id);
+        const blob = parts.map((p) => p.text || "").join(" ");
+        assert.equal(/https?:\/\//i.test(blob), false, card.id);
+        assert.equal(/www\.nfl\.com/i.test(blob), false, card.id);
+        assert.ok(blob.startsWith("NFL.com"), card.id);
       }
     }
   }
@@ -135,7 +150,7 @@ test("every card's link parts obey the rules (view-model scan of all cards)", ()
   assert.ok(nflConverted > 0, "fixture: nfl.com deep-link rows exist");
 });
 
-test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.com only https://www.nfl.com/", async () => {
+test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener or nfl.com", async () => {
   const ClaimCard = await loadClaimCard();
   const React = (await import("react")).default;
   const { renderToStaticMarkup } = await import("react-dom/server");
@@ -151,7 +166,7 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         anchors++;
         const href = unescape(m[1]);
         if (/marketscreener/i.test(href)) bad.push(`${card.id} ms ${href}`);
-        if (isNfl(href) && href !== NFL_HOME) bad.push(`${card.id} nfl ${href}`);
+        if (isNfl(href)) bad.push(`${card.id} nfl ${href}`);
         if (/ncaa\.com/i.test(href)) bad.push(`${card.id} ncaa ${href}`);
         if (/stlouisfed\.org/i.test(href)) bad.push(`${card.id} fred ${href}`);
         if (/^https:\/\/api\.weather\.gov\//.test(href)) bad.push(`${card.id} nws-api ${href}`);
@@ -167,9 +182,11 @@ test("rendered ClaimCard HTML for all cards: no <a href> to marketscreener; nfl.
         ncaaRendered++;
         assert.ok(unescape(html).includes(`NCAA.com (${card.actualSourceUrl} ; not linked)`), card.id);
       }
-      if ((card.grade === "Hit" || card.grade === "Miss") && isNfl(card.actualSourceUrl) && card.actualSourceUrl !== NFL_HOME) {
-        assert.ok(html.includes(`>NFL.com</a>`), card.id);
-        assert.ok(unescape(html).includes(`(${card.actualSourceUrl} ; not linked per NFL terms)`), card.id);
+      if (isNfl(card.sourceUrl) || ((card.grade === "Hit" || card.grade === "Miss") && isNfl(card.actualSourceUrl))) {
+        const text = unescape(html);
+        assert.equal(/https?:\/\/([a-z0-9-]+\.)*nfl\.com/i.test(text), false, card.id);
+        assert.equal(/www\.nfl\.com/i.test(text), false, card.id);
+        assert.ok(text.includes("NFL.com"), card.id);
       }
     }
   }

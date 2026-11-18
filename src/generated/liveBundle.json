@@ -89090,7 +89090,12 @@
       "scorable": true,
       "unscorable_reason": null,
       "match_key": "sports|nfl-2026-washington-ny-giants-20261112|nfl-2026-washington-ny-giants-20261112|score",
-      "kickoff_status": "verified"
+      "kickoff_status": "verified",
+      "x_status": "available",
+      "x_status_id": "2120626370674127122",
+      "x_handle": "EvvRathe",
+      "x_last_rehydrated_at": "2026-11-17T20:44:51Z",
+      "x_posted_at": "2026-11-11T21:15:00Z"
     },
     {
       "schema_version": "1.5.0",
@@ -89126,7 +89131,12 @@
       "scorable": true,
       "unscorable_reason": null,
       "match_key": "sports|nfl-2026-new-england-detroit-20261115|nfl-2026-new-england-detroit-20261115|score",
-      "kickoff_status": "verified"
+      "kickoff_status": "verified",
+      "x_status": "available",
+      "x_status_id": "2120652798819704987",
+      "x_handle": "EvvRathe",
+      "x_last_rehydrated_at": "2026-11-17T20:44:51Z",
+      "x_posted_at": "2026-11-11T23:00:01Z"
     },
     {
       "schema_version": "1.0.0",

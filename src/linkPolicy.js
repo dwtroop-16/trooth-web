@@ -7,8 +7,7 @@
 //     247wallst.com and every subdomain (Legal 05ak, site-wide BLOCK): "24/7 Wall St. (not linked)"
 // (2) HOME-ONLY domains: the only clickable URL allowed is the domain's home page. Any other page
 //     on the domain links the home page instead, and the full specific URL is shown beside it as
-//     plain, unlinked text. nfl.com: link https://www.nfl.com/ with the name "NFL.com" (no logos),
-//     then "(<full URL> ; not linked per NFL terms)".
+//     plain, unlinked text. None remain. nfl.com moved to cite-only (Legal 05cg / decision 31).
 //
 // (3) PLAIN-TEXT domains (Legal + Architect, 2026-10-02): any URL on the domain is shown as plain
 //     text, never as a link. ncaa.com and every subdomain: "NCAA.com (<full URL> ; not linked)".
@@ -25,9 +24,7 @@ export const BLOCKED_LINK_DOMAINS = {
   "247wallst.com": { credit: "24/7 Wall St. (not linked)" },
 };
 
-export const HOME_ONLY_LINK_DOMAINS = {
-  "nfl.com": { home: "https://www.nfl.com/", name: "NFL.com", note: "not linked per NFL terms" },
-};
+export const HOME_ONLY_LINK_DOMAINS = {};
 
 export const PLAIN_TEXT_LINK_DOMAINS = {
   "ncaa.com": { name: "NCAA.com", note: "not linked" },
@@ -35,13 +32,17 @@ export const PLAIN_TEXT_LINK_DOMAINS = {
 };
 
 // (4) CITE-ONLY domains (Legal-Ops 05bh FOX Sports, 05bi Sports Illustrated, 2026-10-29; wording update
-//     2026-10-30; club sites per PR #95): never an href and the URL is never shown. The card renders
+//     2026-10-30; club sites per PR #95; nfl.com Legal 05cg / Architect decision 31, rubric 1.3.18):
+//     never an href and the URL is never shown. The card renders
 //     'Source: <Outlet>, “<title>”, <Mon D, YYYY>' (or 'Source: <Outlet>, <date>' when no title field
-//     exists). The URL stays in data only. Titles come from data fields only; nothing is fetched.
+//     exists). nfl.com (and subdomains) is 'NFL.com, <title>' when a title is present, otherwise
+//     'NFL.com, <date>'. The URL stays in data only. Titles come from data fields only; nothing is fetched.
 export const CITE_ONLY_LINK_DOMAINS = {
   "si.com": { name: "Sports Illustrated" },
   "foxsports.com": { name: "FOX Sports" },
   "chicagobears.com": { name: "Chicago Bears" },
+  // Legal 05cg / decision 31 (rubric 1.3.18): nfl.com terms §8. Subdomains included. No home-page link.
+  "nfl.com": { name: "NFL.com" },
   "49ers.com": { name: "San Francisco 49ers" },
   // Legal 05bn / pagemap v1.2.1 item 3 (2026-10-31): packers.com and subdomains.
   "packers.com": { name: "Green Bay Packers" },
@@ -64,6 +65,14 @@ export function formatCiteDate(iso) {
   const d = new Date(dateOnly ? `${String(iso).trim()}T00:00:00Z` : iso);
   if (Number.isNaN(d.getTime())) return null;
   return (dateOnly ? CITE_DATE_UTC : CITE_DATE).format(d);
+}
+
+/** nfl.com terms §8: title when present, otherwise the name and the date. Never a URL. */
+export function nflCiteText(title, dateIso) {
+  const t = title == null ? "" : String(title).trim();
+  if (t && t !== "null") return `NFL.com, ${t}`;
+  const d = formatCiteDate(dateIso);
+  return d ? `NFL.com, ${d}` : "NFL.com";
 }
 
 /** 'Source: <Outlet>, “<title>”, <Mon D, YYYY>'; title/date omitted when absent. */
@@ -157,7 +166,10 @@ export function sourceLinkParts(url, text, cite = {}) {
   const nceiApi = nceiApiSourceParts(url, text);
   if (nceiApi) return nceiApi;
   const citeRule = citeOnlyRuleFor(url);
-  if (citeRule) return [{ kind: "text", role: "cite", text: citeText(citeRule.name, cite.title, cite.date) }];
+  if (citeRule) {
+    const text = citeRule.domain === "nfl.com" ? nflCiteText(cite.title, cite.date) : citeText(citeRule.name, cite.title, cite.date);
+    return [{ kind: "text", role: "cite", text }];
+  }
   const blocked = blockedRuleFor(url);
   if (blocked) return [{ kind: "text", role: "blocked_credit", text: blocked.credit }];
   const plain = plainTextRuleFor(url);

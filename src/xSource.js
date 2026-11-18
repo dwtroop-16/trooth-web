@@ -40,10 +40,30 @@ export function xStatusHref(forecast) {
 
 export function isXRenderable(forecast, now = Date.now()) {
   if (!isXSourced(forecast)) return true;
+  if (forecast.x_withheld === true) return false;
   if (forecast.x_status !== "available") return false;
   const at = Date.parse(forecast.x_last_rehydrated_at || "");
   if (!Number.isFinite(at)) return false;
   return now - at <= X_FRESH_MS;
+}
+
+/**
+ * Copy schema 1.5.0 X fields off an Ingest row. Post text, media and embeds stay behind.
+ * x_withheld true is kept so the card can be hidden.
+ */
+export function xFieldsFromIngest(row) {
+  if (String(row?.source?.type || "").toLowerCase() !== "x") return null;
+  const src = row.source || {};
+  const handle = String(src.x_handle_current || src.account || "").trim().replace(/^@/, "");
+  const statusId = String(src.x_post_id || "").trim();
+  const out = {};
+  if (src.x_status != null && String(src.x_status).trim()) out.x_status = String(src.x_status).trim();
+  if (/^\d+$/.test(statusId)) out.x_status_id = statusId;
+  if (handle) out.x_handle = handle;
+  if (src.x_last_rehydrated_at) out.x_last_rehydrated_at = src.x_last_rehydrated_at;
+  if (row.published_at) out.x_posted_at = row.published_at;
+  if (src.x_withheld != null) out.x_withheld = src.x_withheld === true;
+  return out;
 }
 
 export function xReading(forecast) {

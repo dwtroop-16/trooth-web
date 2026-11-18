@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { publicChangelogDay } from "../src/changelogPublic.js";
 import { buildKickoffStatusIndex, withKickoffStatus } from "../src/kickoffStatus.js";
 import { loadScorerBoardFiles } from "../src/boardProvenance.js";
-import { countRemovalStubs } from "../src/xSource.js";
+import { countRemovalStubs, xFieldsFromIngest } from "../src/xSource.js";
 import { actualFilesToRead, cliActualCredit } from "../src/nwsCli.js";
 import { nceiAccessed, nceiActualCredit } from "../src/nceiActual.js";
 
@@ -375,6 +375,7 @@ function build() {
       label: f.subject?.label || f.subject?.id,
     };
     if (subject.id) usedSubjectIds.add(subject.id);
+    const xFields = xFieldsFromIngest(f);
     forecasts.push(withKickoffStatus({
       schema_version: f.schema_version || "1.1.0",
       id: f.id,
@@ -407,6 +408,7 @@ function build() {
       scorable: !!f.scorable,
       unscorable_reason: f.unscorable_reason ?? null,
       match_key,
+      ...(xFields || {}),
     }, kickoffIndex));
   }
 
