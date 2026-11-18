@@ -917,6 +917,13 @@ export function buildVals(state, actions, data) {
     openNiche: typeof actions.openNiche === "function" ? actions.openNiche : undefined,
     nicheId: s.niche || "",
     activeCat: cat,
+    followLink: (href) => (typeof actions.followLink === "function" ? actions.followLink(href) : undefined),
+    siteNav: {
+      view: s.view,
+      board: board || "",
+      domain: s.view === "home" ? (board ? boardDomain : cat) : "",
+      niche: s.niche || "",
+    },
     isModels: s.view === "models",
     models: buildModelsView(speakers, forecasts, scores, cards, scorerBoards, openSpeaker),
     rows: board === "pick" ? pickAll.filter((r) => matchesQuery({ name: r.name, org: r.org, accounts: [] })) : rows,

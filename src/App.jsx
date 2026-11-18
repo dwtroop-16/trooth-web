@@ -490,6 +490,7 @@ export default function App() {
       goModels,
       openBoard,
       openNiche,
+      followLink: navigate,
       openSubject,
       submit,
       account,

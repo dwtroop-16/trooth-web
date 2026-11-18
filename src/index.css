@@ -111,12 +111,64 @@ input::placeholder, textarea::placeholder { color: var(--faint); }
   }
 }
 
-/* Header: mobile search wraps under logo; calm nav rhythm */
+/* Header: mobile search wraps under logo; the site menu collapses to Menu. */
 .trooth-header-inner {
   padding-top: 8px;
   padding-bottom: 8px;
 }
+.trooth-site-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.trooth-menu-button {
+  display: none;
+}
+.trooth-scoreboards-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 240px;
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(0, 42, 13, 0.1);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.trooth-scoreboards-panel[hidden] {
+  display: none;
+}
 @media (max-width: 720px) {
+  .trooth-menu-button {
+    display: inline-flex;
+  }
+  .trooth-site-nav {
+    display: none;
+    order: 4;
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 8px;
+  }
+  .trooth-site-nav--open {
+    display: flex;
+  }
+  .trooth-scoreboards-panel,
+  #scoreboards-menu {
+    position: static;
+    box-shadow: none;
+    border: none;
+    max-height: none;
+    padding-left: 0;
+  }
   .trooth-header-nav {
     order: 3;
     width: 100%;
