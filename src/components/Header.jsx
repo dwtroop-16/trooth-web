@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { css } from "../helpers.js";
 import Hover from "./Hover.jsx";
 import GaugeMark from "./GaugeMark.jsx";
+import { buildSiteMenu } from "../siteMenu.js";
 
 export default function Header({ vals }) {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scoreOpen, setScoreOpen] = useState(false);
   const wrapRef = useRef(null);
   const inputRef = useRef(null);
   const q = vals.q || "";
@@ -35,32 +38,86 @@ export default function Header({ vals }) {
     }
   };
 
-  const navLink = (label, onClick, active) => (
-    <Hover
-      as="button"
-      onClick={onClick}
-      style={
-        "background:none;border:none;cursor:pointer;padding:0;font-size:13px;white-space:nowrap;flex-shrink:0;" +
-        (active ? "color:var(--forest);font-weight:600;" : "color:var(--muted);")
-      }
-      hover="color:var(--forest);"
+  const menu = buildSiteMenu(vals.siteNav || {});
+  const showScores = menuOpen || scoreOpen;
+  const follow = (event, href) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
+    setMenuOpen(false);
+    setScoreOpen(false);
+    vals.followLink?.(href);
+  };
+  const itemLink = (item) => (
+    <a
+      key={item.id}
+      href={item.href}
+      aria-current={item.current ? "page" : undefined}
+      onClick={(event) => follow(event, item.href)}
+      style={css(
+        "display:inline-block;padding:6px 0;font-size:13px;white-space:nowrap;text-decoration:" +
+          (item.current ? "underline" : "none") +
+          ";font-weight:" +
+          (item.current ? "700" : "500") +
+          ";color:" +
+          (item.current ? "var(--forest)" : "var(--muted)") +
+          ";" +
+          (item.sportsExtra || item.niche ? "padding-left:12px;" : "")
+      )}
     >
-      {label}
-    </Hover>
+      {item.label}
+    </a>
   );
 
   return (
     <header style={css("position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair);")}>
       <div className="trooth-header-inner" style={css("max-width:1180px;margin:0 auto;padding:0 20px;min-height:56px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;")}>
-        <button onClick={vals.goHome} style={css("display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0;")}>
+        <a href="/" onClick={(event) => follow(event, "/")} aria-current={menu[0].current ? "page" : undefined} style={css("display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;" + (menu[0].current ? "text-decoration:underline;" : ""))}>
           <GaugeMark height={30} />
           <span style={css("font-family:Archivo,sans-serif;font-style:italic;font-size:23px;font-weight:800;letter-spacing:-0.01em;color:var(--ink);")}>Trooth<span style={css("color:var(--forest);font-style:normal;")}>.app</span></span>
+        </a>
+        <button
+          type="button"
+          className="trooth-menu-button"
+          aria-expanded={menuOpen}
+          aria-controls="site-menu"
+          onClick={() => {
+            setMenuOpen((value) => !value);
+            setScoreOpen(true);
+          }}
+          style={css("margin-left:auto;background:var(--surface);border:1px solid var(--hair);border-radius:8px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;")}
+        >
+          Menu
         </button>
 
-        <nav className="trooth-header-nav" style={css("display:flex;align-items:center;gap:14px;flex-shrink:0;")}>
-          {navLink("Claims", vals.goClaims, vals.isClaims)}
-          {navLink("Method", vals.goMethod, vals.isMethod)}
-          {navLink("Changelog", vals.goChangelog, vals.isChangelog)}
+        <nav id="site-menu" className={"trooth-site-nav" + (menuOpen ? " trooth-site-nav--open" : "")} aria-label="Site">
+          <div className="trooth-scoreboards" style={css("position:relative;")}>
+            <button
+              type="button"
+              aria-expanded={showScores}
+              aria-controls="scoreboards-menu"
+              onClick={() => setScoreOpen((value) => !value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") setScoreOpen(false);
+                if (event.key === "ArrowDown") {
+                  event.preventDefault();
+                  setScoreOpen(true);
+                }
+              }}
+              style={css("background:none;border:none;cursor:pointer;padding:6px 0;font-size:13px;font-weight:600;color:var(--ink);")}
+            >
+              Scoreboards
+            </button>
+            <div id="scoreboards-menu" className="trooth-scoreboards-panel" hidden={!showScores}>
+              {menu.find((item) => item.id === "scoreboards").menu.map((item) =>
+                item.heading ? (
+                  <div key={item.id} style={css("padding:10px 0 4px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint);")}>{item.label}</div>
+                ) : (
+                  itemLink(item)
+                )
+              )}
+            </div>
+          </div>
+          {menu.filter((item) => item.href && item.id !== "home").map(itemLink)}
         </nav>
 
         <div className="trooth-header-spacer" style={css("flex:1;min-width:8px;")} />
