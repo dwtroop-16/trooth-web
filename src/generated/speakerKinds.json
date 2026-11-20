@@ -151,5 +151,11 @@
   "nfl-gennaro-filice": "person",
   "nfl-bobby-kownack": "person",
   "nfl-dan-parr": "person",
-  "x-evvrathe": "person"
+  "x-evvrathe": "person",
+  "national-weather-service-box-forecast-office": "outlet_feed",
+  "national-weather-service-lot-forecast-office": "outlet_feed",
+  "national-weather-service-lwx-forecast-office": "outlet_feed",
+  "national-weather-service-okx-forecast-office": "outlet_feed",
+  "national-weather-service-phi-forecast-office": "outlet_feed",
+  "buck": "person"
 }

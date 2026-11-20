@@ -51,6 +51,31 @@ test("CLI credits name Central Park, Rochester, and Evansville", () => {
   assert.equal(cliActualCredit("data/actuals/nws-knyc.jsonl", { source: { url: API } }), null);
 });
 
+const NEW_CLI_STATIONS = [
+  ["nws-cli-bos", "Boston Logan", "weather|us-bos-boston-logan-tmax|2026-11-17|degF"],
+  ["nws-cli-lga", "LaGuardia", "weather|us-nyc-laguardia-tmax|2026-11-17|degF"],
+  ["nws-cli-phl", "Philadelphia Intl", "weather|us-phl-philadelphia-intl-tmax|2026-11-17|degF"],
+  ["nws-cli-dca", "Washington National", "weather|us-dc-washington-national-tmax|2026-11-17|degF"],
+  ["nws-cli-ord", "Chicago O'Hare", "weather|us-chi-chicago-ohare-tmax|2026-11-17|degF"],
+];
+
+test("CLI credits name the five new stations from the filename and from the row", () => {
+  for (const [file, place, matchKey] of NEW_CLI_STATIONS) {
+    const credit = cliCredit(place);
+    assert.equal(cliActualCredit(`data/actuals/${file}.jsonl`, {}), credit, file);
+    assert.equal(
+      cliActualCredit("", {
+        match_key: matchKey,
+        product: "CLI",
+        source: { name: "NWS", url: "https://api.weather.gov/products/test" },
+      }),
+      credit,
+      matchKey,
+    );
+  }
+  assert.equal(cliActualCredit("data/actuals/nws-knyc.jsonl", { source: { url: API } }), null);
+});
+
 test("a CLI Hit shows the value and the credit, with no API href and no missing actual", async () => {
   const credit = cliCredit("Central Park");
   const card = toPublicClaimCard(

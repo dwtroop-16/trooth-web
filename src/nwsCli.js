@@ -12,6 +12,11 @@ const CLI_FILE_PLACE = [
   ["nws-cli-nyc", "Central Park"],
   ["nws-cli-roc", "Rochester"],
   ["nws-cli-evv", "Evansville"],
+  ["nws-cli-bos", "Boston Logan"],
+  ["nws-cli-lga", "LaGuardia"],
+  ["nws-cli-phl", "Philadelphia Intl"],
+  ["nws-cli-dca", "Washington National"],
+  ["nws-cli-ord", "Chicago O'Hare"],
 ];
 
 export function cliCredit(place) {
@@ -41,6 +46,11 @@ export function cliPlace(fileRel = "", row = {}) {
   if (/(^|[^a-z0-9])knyc([^a-z0-9]|$)|central-park|central park/i.test(blob)) return "Central Park";
   if (/(^|[^a-z0-9])kroc([^a-z0-9]|$)|rochester/i.test(blob)) return "Rochester";
   if (/(^|[^a-z0-9])kevv([^a-z0-9]|$)|evansville/i.test(blob)) return "Evansville";
+  if (/(^|[^a-z0-9])kbos([^a-z0-9]|$)|boston-logan|boston logan/i.test(blob)) return "Boston Logan";
+  if (/(^|[^a-z0-9])klga([^a-z0-9]|$)|laguardia/i.test(blob)) return "LaGuardia";
+  if (/(^|[^a-z0-9])kphl([^a-z0-9]|$)|philadelphia-intl|philadelphia intl/i.test(blob)) return "Philadelphia Intl";
+  if (/(^|[^a-z0-9])kdca([^a-z0-9]|$)|washington-national|washington national/i.test(blob)) return "Washington National";
+  if (/(^|[^a-z0-9])kord([^a-z0-9]|$)|chicago-ohare|chicago o'hare/i.test(blob)) return "Chicago O'Hare";
   return null;
 }
 

@@ -1,0 +1,9 @@
+{
+  "corrections": [
+    "Published new scores as of Nov 20. The site now has 2,711 forecasts: 158 Hits, 2,107 Misses, 382 Pending, and 64 Unscorable. The Nov 18 leaderboard is unchanged.",
+    "Two more niche lists now appear, because each has at least three ranked speakers: Baltimore Ravens exact scores, and daily high temperature. No grades were changed to create the lists.",
+    "Daily Climate Report cards for Boston Logan, LaGuardia, Philadelphia Intl, Washington National, and Chicago O'Hare now credit that report as plain text, the same way Central Park already did. They do not link the weather API. 25 graded cards were affected. Grades did not change."
+  ],
+  "voids": [],
+  "retractions": []
+}
