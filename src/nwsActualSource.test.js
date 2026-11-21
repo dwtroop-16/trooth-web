@@ -146,3 +146,37 @@ test("a CLI product card credits the Daily Climate Report and does not link the 
     assert.equal(actualSourceParts(card).some((part) => part.kind === "link"), false, card.id);
   }
 });
+
+const NEW_CLI_PLACES = [
+  "Boston Logan",
+  "LaGuardia",
+  "Philadelphia Intl",
+  "Washington National",
+  "Chicago O'Hare",
+];
+
+test("the five new CLI stations credit the Daily Climate Report on all 25 graded cards, with no API link", () => {
+  const prefix = "National Weather Service, Daily Climate Report (CLI), ";
+  const byPlace = new Map(NEW_CLI_PLACES.map((place) => [place, []]));
+  for (const row of cliGraded) {
+    const name = row.card.actualSourceName || "";
+    if (!name.startsWith(prefix)) continue;
+    const place = name.slice(prefix.length);
+    if (byPlace.has(place)) byPlace.get(place).push(row);
+  }
+  let total = 0;
+  for (const place of NEW_CLI_PLACES) {
+    const rows = byPlace.get(place);
+    assert.ok(rows.length > 0, place);
+    total += rows.length;
+    for (const { card, score, actual } of rows) {
+      assert.equal(actual.id, score.actual_id, card.id);
+      assert.equal(card.actualSourceName, prefix + place, card.id);
+      assert.equal(isCliCredit(card.actualSourceName), true, card.id);
+      assert.equal(actualSourceParts(card).some((part) => part.kind === "link"), false, card.id);
+    }
+  }
+  assert.equal(total, 25);
+  const leftover = cliGraded.filter(({ card }) => !isCliCredit(card.actualSourceName));
+  assert.deepEqual(leftover.map(({ card }) => `${card.id}:${card.actualSourceName}`), []);
+});
