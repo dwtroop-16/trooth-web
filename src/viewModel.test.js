@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DOMAINS, SPEAKERS, FORECASTS, ACTUALS, SCORES, CATCOLORS } from "./data.js";
 import { buildVals, speakerStats, claimMatchesQuery, claimSearchText, toPublicClaimCard } from "./viewModel.js";
-import { hostnameFromUrl } from "./helpers.js";
+import { hostnameFromUrl, displayOrg, accountLabel } from "./helpers.js";
 
 const noop = () => {};
 const actions = {
@@ -175,7 +175,7 @@ test("cards show the firm as of the claim date (forecast row speaker.org), not t
   for (const f of FORECASTS) {
     const sp = byId[f.speaker_id];
     const card = toPublicClaimCard(f, sp, null, null);
-    if (f.speaker?.org) assert.equal(card.speakerOrg, f.speaker.org, f.id);
+    if (f.speaker?.org) assert.equal(card.speakerOrg, displayOrg(f.speaker.org, sp?.org || "") || null, f.id);
     if (sp && f.speaker?.org && f.speaker.org !== sp.org) differing++;
   }
   for (const id of ["fct_01M36VSXRDWH8QDWTD9QB5BNA7", "fct_01M36VSXRDT8BCT4D33FVKVEWH"]) {
@@ -184,6 +184,36 @@ test("cards show the firm as of the claim date (forecast row speaker.org), not t
     assert.equal(toPublicClaimCard(f, byId[f.speaker_id], null, null).speakerOrg, "Piper Sandler");
   }
   assert.ok(differing >= 2);
+});
+
+test("Jim Heath org renders HEATHSTORY from the speaker registry (id unchanged)", () => {
+  const sp = SPEAKERS.find((s) => s.id === "heathstory-jim-heath");
+  assert.ok(sp);
+  assert.equal(sp.id, "heathstory-jim-heath");
+  assert.equal(sp.org, "HEATHSTORY");
+  assert.equal(accountLabel("outlet:heathstory", sp.org), sp.org);
+  assert.equal(accountLabel("outlet:heathstory"), "HEATHSTORY");
+  const f = FORECASTS.find((x) => x.id === "fct_01M6E59NPPEKB194QM4VBY7KG8");
+  assert.ok(f);
+  assert.equal(f.speaker_id, sp.id);
+  assert.equal(f.speaker.org, "heathstory.substack.com");
+  const card = toPublicClaimCard(f, sp, null, null);
+  assert.equal(card.speakerOrg, sp.org);
+  assert.equal(card.speakerId, sp.id);
+  const profile = buildVals({ view: "profile", speakerId: sp.id, cat: "All", q: "" }, actions, data).p;
+  assert.equal(profile.org, sp.org);
+  assert.equal(accountLabel(profile.accounts[0], profile.org), "HEATHSTORY");
+  const row = buildVals({ view: "home", cat: "Politics", q: "" }, actions, data).rows.find((r) => r.speakerId === sp.id);
+  assert.ok(row);
+  assert.equal(row.org, "HEATHSTORY");
+  const suggestion = buildVals({ view: "home", cat: "All", q: "jim heath" }, actions, data).searchSuggestions.find((s) => s.id === sp.id);
+  assert.equal(suggestion.org, "HEATHSTORY");
+  const host = /heathstory\.substack\.com/i;
+  assert.ok(!host.test(card.speakerOrg));
+  assert.ok(!host.test(profile.org));
+  assert.ok(!host.test(row.org));
+  assert.ok(!host.test(suggestion.org));
+  assert.ok(!host.test(accountLabel(profile.accounts[0], profile.org)));
 });
 
 test("no rendered rate has a decimal (boards, pick record, All sections, person pages)", () => {
