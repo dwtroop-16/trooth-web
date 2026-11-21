@@ -79,7 +79,10 @@ export function parseClaimsQuery(search) {
   const speaker = (params.get("speaker") || "All").trim() || "All";
   const horizon = normalizeHorizon(params.get("horizon") || "All");
   const subject = (params.get("subject") || "All").trim() || "All";
-  return { q, domain, grade, speaker, horizon, subject };
+  const shownRaw = params.get("shown");
+  const shownNum = Number.parseInt(String(shownRaw ?? ""), 10);
+  const shown = shownRaw == null || shownRaw === "" || !Number.isFinite(shownNum) || shownNum < 1 ? 50 : Math.min(shownNum, 10000);
+  return { q, domain, grade, speaker, horizon, subject, shown };
 }
 
 /**
@@ -99,6 +102,8 @@ export function pathForClaims(filters = {}) {
   if (horizon && horizon !== "All") params.set("horizon", horizon);
   const subject = (filters.subject || "All").trim();
   if (subject && subject !== "All") params.set("subject", subject);
+  const shownNum = Number.parseInt(String(filters.shown ?? ""), 10);
+  if (Number.isFinite(shownNum) && shownNum > 50) params.set("shown", String(Math.min(shownNum, 10000)));
   const qs = params.toString();
   return qs ? `/claims?${qs}` : "/claims";
 }

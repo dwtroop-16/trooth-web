@@ -4,6 +4,7 @@
 // the exact-score rate. Pending is never part of the hit-rate denominator.
 
 import { pctFromCounts } from "./helpers.js";
+import { displaySubjectLabel } from "./displayNames.js";
 
 export const SCORE_DOMAINS = ["Sports", "Finance", "Weather", "Politics"];
 
@@ -12,12 +13,12 @@ export function eventCatalog(forecasts, subjects) {
   const list = !subjects ? [] : Array.isArray(subjects) ? subjects : Object.values(subjects);
   for (const s of list) {
     if (!s?.id) continue;
-    byId.set(s.id, { id: s.id, label: s.label || s.id, domain: s.domain || "" });
+    byId.set(s.id, { id: s.id, label: displaySubjectLabel(s.label || s.id), domain: s.domain || "" });
   }
   for (const f of forecasts || []) {
     const id = f.subject?.id;
     if (!id || byId.has(id)) continue;
-    byId.set(id, { id, label: f.subject?.label || id, domain: f.domain || "" });
+    byId.set(id, { id, label: displaySubjectLabel(f.subject?.label || id), domain: f.domain || "" });
   }
   return [...byId.values()].sort((a, b) => a.label.localeCompare(b.label) || a.id.localeCompare(b.id));
 }

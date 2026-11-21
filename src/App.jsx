@@ -34,7 +34,7 @@ function filtersFromLocation() {
   const filters =
     parsed.view === "claims"
       ? parseClaimsQuery(window.location.search)
-      : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All", subject: "All" };
+      : { q: "", domain: "All", grade: "All", speaker: "All", horizon: "All", subject: "All", shown: 50 };
   const home = parsed.view === "home" ? parseBoardQuery(window.location.search) : { board: "", domain: "" };
   const niche = parsed.view === "home" ? parseNicheQuery(window.location.search) : "";
   return { parsed, filters, home, niche };
@@ -55,6 +55,7 @@ function initialFromLocation() {
     claimSpeaker: filters.speaker || "All",
     claimHorizon: filters.horizon || "All",
     claimSubject: filters.subject || "All",
+    claimShown: filters.shown || 50,
     modal: false,
     toast: "",
     mClaim: "",
@@ -117,6 +118,7 @@ export default function App() {
         claimSpeaker: parsed.view === "claims" ? filters.speaker : prev.claimSpeaker,
         claimHorizon: parsed.view === "claims" ? filters.horizon : prev.claimHorizon,
         claimSubject: parsed.view === "claims" ? filters.subject : prev.claimSubject,
+        claimShown: parsed.view === "claims" ? filters.shown || 50 : prev.claimShown,
       }));
     };
     window.addEventListener("popstate", onPop);
@@ -170,6 +172,7 @@ export default function App() {
             claimSpeaker: claimsFilters.speaker,
             claimHorizon: claimsFilters.horizon,
             claimSubject: claimsFilters.subject,
+            claimShown: claimsFilters.shown || 50,
           }
         : {}),
       ...patch,
@@ -185,11 +188,16 @@ export default function App() {
       speaker: s.claimSpeaker,
       horizon: s.claimHorizon,
       subject: s.claimSubject,
+      shown: s.claimShown,
     });
 
   const setClaimsFilter = (patch, { push = false, replace = false } = {}) => {
     setStateRaw((prev) => {
       const next = { ...prev, ...patch };
+      const filterChanged = ["claimStatus", "claimSpeaker", "claimHorizon", "claimSubject", "q", "cat"].some(
+        (key) => Object.prototype.hasOwnProperty.call(patch, key) && patch[key] !== prev[key],
+      );
+      if (filterChanged && !Object.prototype.hasOwnProperty.call(patch, "claimShown")) next.claimShown = 50;
       if (Object.prototype.hasOwnProperty.call(patch, "claimStatus") && patch.claimStatus !== prev.claimStatus) {
         trackFilterUsed({
           filter_type: "grade",
@@ -265,7 +273,7 @@ export default function App() {
         });
       }
       if (prev.view === "claims") {
-        const next = { ...prev, cat };
+        const next = { ...prev, cat, claimShown: 50 };
         const full = claimsPathFromState(next);
         const current = window.location.pathname + window.location.search;
         if (full !== current) window.history.pushState({}, "", full);
@@ -309,6 +317,7 @@ export default function App() {
         claimSpeaker: speaker || "All",
         claimHorizon: horizon || "All",
         claimSubject: subject || "All",
+        claimShown: 50,
       }
     );
   };
