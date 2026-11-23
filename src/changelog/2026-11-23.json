@@ -1,0 +1,9 @@
+{
+  "corrections": [
+    "Published new scores as of Nov 23. The site now has 2,724 forecasts: 163 Hits, 2,150 Misses, 347 Pending, and 64 Unscorable. The Nov 18 leaderboard is unchanged.",
+    "New Daily Climate Report (CLI) observations from Nov 22 graded 15 weather cards that were Pending: 1 Hit and 14 Misses. The Hit is Central Park daily high 61°F. Credits stay plain text and do not link the weather API.",
+    "Added 13 new Central Park forecasts from the Nov 23 National Weather Service New York (OKX) forecast, covering Nov 23–30. They are Pending."
+  ],
+  "voids": [],
+  "retractions": []
+}
