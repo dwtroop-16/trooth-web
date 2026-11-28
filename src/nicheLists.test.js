@@ -36,14 +36,14 @@ const detailRows = parseCsv(readFileSync(join(HERE, "fixtures/niche-lists-v1-202
 const built = buildNicheLists();
 const byId = new Map(built.lists.map((list) => [list.niche_id, list]));
 
-test("the current bundle shows 51 niche lists: 4 league, 4 claim-type, 42 team, 1 weather", () => {
+test("the current bundle shows 52 niche lists: 4 league, 4 claim-type, 42 team, 2 weather", () => {
   const shown = built.shown;
-  assert.equal(shown.length, 51);
+  assert.equal(shown.length, 52);
   const family = (name) => shown.filter((list) => list.family === name).length;
   assert.equal(family("league"), 4);
   assert.equal(family("claim_type"), 4);
   assert.equal(family("team"), 42);
-  assert.equal(family("weather"), 1);
+  assert.equal(family("weather"), 2);
   assert.equal(shown.filter((list) => list.family === "team" && list.record !== "score").length, 0);
   assert.deepEqual(
     shown.map((list) => list.niche_id).sort(),

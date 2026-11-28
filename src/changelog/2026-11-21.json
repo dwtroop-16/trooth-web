@@ -1,0 +1,9 @@
+{
+  "corrections": [
+    "Published new scores as of Nov 21. The site now has 2,711 forecasts: 160 Hits, 2,122 Misses, 365 Pending, and 64 Unscorable. The Nov 18 leaderboard is unchanged.",
+    "New Daily Climate Report (CLI) observations from Nov 20 graded 17 weather cards that were Pending: 2 Hits and 15 Misses. The Hits are Philadelphia Intl daily low 41°F and Chicago O'Hare daily low 43°F. Credits stay plain text and do not link the weather API.",
+    "One more niche list now appears, because it has at least three ranked speakers: daily low temperature. No grades were changed to create the list."
+  ],
+  "voids": [],
+  "retractions": []
+}

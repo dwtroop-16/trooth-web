@@ -155,7 +155,7 @@ const NEW_CLI_PLACES = [
   "Chicago O'Hare",
 ];
 
-test("the five new CLI stations credit the Daily Climate Report on all 25 graded cards, with no API link", () => {
+test("the five new CLI stations credit the Daily Climate Report on all 55 graded cards, with no API link", () => {
   const prefix = "National Weather Service, Daily Climate Report (CLI), ";
   const byPlace = new Map(NEW_CLI_PLACES.map((place) => [place, []]));
   for (const row of cliGraded) {
@@ -176,7 +176,7 @@ test("the five new CLI stations credit the Daily Climate Report on all 25 graded
       assert.equal(actualSourceParts(card).some((part) => part.kind === "link"), false, card.id);
     }
   }
-  assert.equal(total, 25);
+  assert.equal(total, 55);
   const leftover = cliGraded.filter(({ card }) => !isCliCredit(card.actualSourceName));
   assert.deepEqual(leftover.map(({ card }) => `${card.id}:${card.actualSourceName}`), []);
 });
